@@ -1,0 +1,12 @@
+name: ebisu
+version: 0.0.1
+author: Daniel Davidson <dbdavidson@yahoo.com>
+description: >
+  A library that supports code generation of the structure Dart (and potentially
+  other languages like D) using a fairly declarative aproach.
+  
+dependencies:
+  pathos:  "any"
+# custom <ebisu dependencies>
+# end <ebisu dependencies>
+

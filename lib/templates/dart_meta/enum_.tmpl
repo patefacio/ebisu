@@ -1,0 +1,58 @@
+#< if(_.doc != null) { >
+${docComment(_.doc)}
+#< } >
+class ${_.enumName} { 
+#< int i = 0; >
+#< for(var value in _.values) { >
+  static const ${value.shout} = const ${_.enumName}._(${i++});
+#< } >
+
+  static get values => [
+    ${_.values.map((v) => v.shout).join(",\n    ")}
+  ];
+
+  final int value;
+
+  const ${_.enumName}._(this.value);
+
+  String toString() { 
+    switch(this) { 
+#< for(var value in _.values) { >
+      case ${value.shout}: return "${value.shout}";
+#< } >
+    }
+  }
+
+  static ${_.enumName} fromString(String s) { 
+    switch(s) { 
+#< for(var value in _.values) { >
+      case "${value.shout}": return ${value.shout};
+#< } >
+    }
+  }
+
+#< if(_.jsonSupport) { >
+  int toJson() { 
+    return this.value;
+  }
+
+  static int randJson() { 
+   return _randomJsonGenerator.nextInt(${_.values.length});
+  }
+
+  static ${_.enumName} fromJson(int v) { 
+    switch(v) { 
+#< i = 0; >
+#< for(var value in _.values) { >
+      case ${i++}: return ${value.shout};
+#< } >
+    }
+  }
+
+#< } >
+#< if(_.hasCustom) { >
+
+${rightTrim(indentBlock(customBlock("enum ${_.name}")))}
+#< } >
+
+}

@@ -1,0 +1,22 @@
+#< bool hasGetter = (_.access == Access.RO); >
+#< bool hasSetter = _.access == Access.RW; >
+#< if(_.doc != null && !hasGetter) { >
+${docComment(rightTrim(_.doc))}
+#< } >
+#< if(_.classInit == null) { >
+${_.isFinal? 'final ':''}${_.type} ${_.varName};
+#< } else { >
+#<   if(_.type == 'String') { >
+${_.isFinal? 'final ':''}${_.type} ${_.varName} = "${_.classInit}";
+#<   } else { >
+${_.isFinal? 'final ':''}${_.type} ${_.varName} = ${_.classInit};
+#<   } >
+#< } >
+#< if(!_.isPublic) { >
+#<   if(hasGetter) { >
+#<     if(_.doc != null) { >
+${docComment(_.doc)}
+#<     } >
+${_.type} get ${_.name} => ${_.varName};
+#<   } >
+#< } >

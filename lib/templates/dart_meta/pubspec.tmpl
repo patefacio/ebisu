@@ -1,0 +1,44 @@
+name: ${_.name}
+version: ${_.version}
+#< if(_.author != null) {                         >
+author: ${_.author}
+#< }                                              >
+#< if(_.homepage != null) {                       >
+homepage: ${_.homepage}
+#< }                                              >
+#< if(_.doc != null) {                            >
+description: >
+${indentBlock(_.doc)}
+#< }                                              >
+dependencies:
+#< for(PubDependency pbdep in _.dependencies) {   >
+#<   if(pbdep.isHosted) {         >
+  ${pbdep.name}:  ${pbdep.version!=null? '"${pbdep.version}"' : ''}
+#<   } else if(pbdep.isPath) {                    >
+  ${pbdep.name}:
+#<   } else {                                     >
+  ${pbdep.name}: '${pbdep.version}'
+#<   }                                            >
+#<   if(pbdep.path == null) {                     >
+#<## Accept default                               >
+#<   } else {                                     >
+#<     if(pbdep.isHosted) {                       >
+      hosted: 
+        name: ${pbdep.name}
+        url: ${pbdep.path}
+      version: '${pbdep.version}' 
+#<     } else if(pbdep.isGit) {                   >
+#<       if(pbdep.gitRef != null) {               >
+      git: 
+        url: ${pbdep.path}
+        ref: ${pbdep.gitRef}
+#<       } else {                                 >
+      git: ${pbdep.path}
+#<       }                                        >
+
+#<     } else {                                   >
+      path: ${pbdep.path}
+#<     }                                          >
+#<   }                                            >
+#< } >
+${scriptCustomBlock('${_.name} dependencies')}
