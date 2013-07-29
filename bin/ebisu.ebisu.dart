@@ -344,6 +344,8 @@ At some point when true enums are provided this may be revisited.
           ..classInit = 'any',
           member('path')
           ..doc = "Path to package, infers package type for git (git:...), hosted (http:...), path ",
+          member('git_ref')
+          ..doc = "Git reference",
           member('type')
           ..doc = "Type for the pub dependency"
           ..type = 'PubDepType'

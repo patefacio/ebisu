@@ -241,6 +241,8 @@ class PubDependency {
   String version = "any";
   /// Path to package, infers package type for git (git:...), hosted (http:...), path
   String path;
+  /// Git reference
+  String gitRef;
   /// Type for the pub dependency
   PubDepType _type;
   final RegExp pubTypeRe = new RegExp(r"(git:|http:|[./.])");
@@ -287,6 +289,7 @@ class PubDependency {
     "name": EBISU_UTILS.toJson(name),
     "version": EBISU_UTILS.toJson(version),
     "path": EBISU_UTILS.toJson(path),
+    "gitRef": EBISU_UTILS.toJson(gitRef),
     "type": EBISU_UTILS.toJson(_type),
     "pubTypeRe": EBISU_UTILS.toJson(pubTypeRe),
     // TODO: "PubDependency": super.toJson(),
@@ -298,6 +301,7 @@ class PubDependency {
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "gitRef": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "type": EBISU_UTILS.randJson(_randomJsonGenerator, PubDepType.randJson),
     "pubTypeRe": EBISU_UTILS.randJson(_randomJsonGenerator, RegExp.randJson),
     };
