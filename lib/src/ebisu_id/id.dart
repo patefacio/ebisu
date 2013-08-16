@@ -2,7 +2,7 @@ part of ebisu_id;
 
 /// Given an id (all lower case string of words separated by '_')
 /// provides consistent representations
-class Id { 
+class Id {
   final String _id;
   /// String containing the lower case words separated by '_'
   String get id => _id;

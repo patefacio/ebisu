@@ -15,15 +15,15 @@ ${rightTrim(docComment(_.doc))}
  String abstractTag = _.isAbstract? 'abstract ':''; 
  if(_.mixins.length>0) { 
   _buf.add('''
-${abstractTag}class ${_.className} extends ${_.extend} with ${_.mixins.join(',')}${_.implementsClause}{ 
+${abstractTag}class ${_.className} extends ${_.extend} with ${_.mixins.join(',')}${_.implementsClause}{
 ''');
  } else if(null != _.extend) { 
   _buf.add('''
-${abstractTag}class ${_.className} extends ${_.extend}${_.implementsClause}{ 
+${abstractTag}class ${_.className} extends ${_.extend}${_.implementsClause}{
 ''');
  } else { 
   _buf.add('''
-${abstractTag}class ${_.className}${_.implementsClause}{ 
+${abstractTag}class ${_.className}${_.implementsClause}{
 ''');
  } 
  _.ctors.forEach((ctorName, ctor) { 
@@ -45,8 +45,8 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
  if(_.toJsonSupport) { 
   _buf.add('''
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
 ''');
    for(Member member in _.members.where((m) => !m.jsonTransient)) { 
   _buf.add('''
@@ -66,22 +66,22 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
 ''');
    for(Member member in _.members.where((m) => !m.jsonTransient)) { 
      if(isMapType(member.type)) { 
        String valType = jsonMapValueType(member.type);  
        if(isJsonableType(valType)) { 
   _buf.add('''
-    "${member.name}": 
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator, 
+    "${member.name}":
+       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
         () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
         "${member.name}"),
 ''');
        } else { 
   _buf.add('''
-    "${member.name}": 
+    "${member.name}":
        EBISU_UTILS.randJsonMap(_randomJsonGenerator,
         () => ${valType}.randJson(),
         "${member.name}"),
@@ -91,14 +91,14 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
        String valType = jsonListValueType(member.type);  
        if(isJsonableType(valType)) { 
   _buf.add('''
-    "${member.name}": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
 ''');
        } else { 
   _buf.add('''
-    "${member.name}": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => ${valType}.randJson()),
 ''');
        }  
@@ -149,7 +149,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
     // ${m.name} map of <String, ${valType}>
     ${m.name} = { };
-    jsonMap["${m.name}"].forEach((k,v) { 
+    jsonMap["${m.name}"].forEach((k,v) {
       ${m.varName}[k] = ${valType}.fromJsonMap(v);
     });
 ''');
@@ -160,7 +160,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
     // ${m.name} list of ${valType}
     ${m.varName} = new ${m.type}();
-    jsonMap["${m.name}"].forEach((v) { 
+    jsonMap["${m.name}"].forEach((v) {
       ${m.varName}.add(${valType}.fromJsonMap(v));
     });
 ''');

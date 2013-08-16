@@ -1,7 +1,7 @@
 #< if(_.doc != null) { >
 ${docComment(_.doc)}
 #< } >
-class ${_.enumName} { 
+class ${_.enumName} {
 #< int i = 0; >
 #< for(var value in _.values) { >
   static const ${value.shout} = const ${_.enumName}._(${i++});
@@ -15,16 +15,16 @@ class ${_.enumName} {
 
   const ${_.enumName}._(this.value);
 
-  String toString() { 
-    switch(this) { 
+  String toString() {
+    switch(this) {
 #< for(var value in _.values) { >
       case ${value.shout}: return "${value.shout}";
 #< } >
     }
   }
 
-  static ${_.enumName} fromString(String s) { 
-    switch(s) { 
+  static ${_.enumName} fromString(String s) {
+    switch(s) {
 #< for(var value in _.values) { >
       case "${value.shout}": return ${value.shout};
 #< } >
@@ -32,16 +32,16 @@ class ${_.enumName} {
   }
 
 #< if(_.jsonSupport) { >
-  int toJson() { 
+  int toJson() {
     return this.value;
   }
 
-  static int randJson() { 
+  static int randJson() {
    return _randomJsonGenerator.nextInt(${_.values.length});
   }
 
-  static ${_.enumName} fromJson(int v) { 
-    switch(v) { 
+  static ${_.enumName} fromJson(int v) {
+    switch(v) {
 #< i = 0; >
 #< for(var value in _.values) { >
       case ${i++}: return ${value.shout};

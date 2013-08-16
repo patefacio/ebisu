@@ -1,7 +1,7 @@
 part of ebisu_dart_meta;
 
 /// Access for member variable - ia - inaccessible, ro - read/only, rw read/write
-class Access { 
+class Access {
   static const IA = const Access._(0);
   static const RO = const Access._(1);
   static const RW = const Access._(2);
@@ -16,16 +16,16 @@ class Access {
 
   const Access._(this.value);
 
-  String toString() { 
-    switch(this) { 
+  String toString() {
+    switch(this) {
       case IA: return "IA";
       case RO: return "RO";
       case RW: return "RW";
     }
   }
 
-  static Access fromString(String s) { 
-    switch(s) { 
+  static Access fromString(String s) {
+    switch(s) {
       case "IA": return IA;
       case "RO": return RO;
       case "RW": return RW;
@@ -36,7 +36,7 @@ class Access {
 }
 
 /// Dependency type of a PubDependency 
-class PubDepType { 
+class PubDepType {
   static const PATH = const PubDepType._(0);
   static const GIT = const PubDepType._(1);
   static const HOSTED = const PubDepType._(2);
@@ -51,16 +51,16 @@ class PubDepType {
 
   const PubDepType._(this.value);
 
-  String toString() { 
-    switch(this) { 
+  String toString() {
+    switch(this) {
       case PATH: return "PATH";
       case GIT: return "GIT";
       case HOSTED: return "HOSTED";
     }
   }
 
-  static PubDepType fromString(String s) { 
-    switch(s) { 
+  static PubDepType fromString(String s) {
+    switch(s) {
       case "PATH": return PATH;
       case "GIT": return GIT;
       case "HOSTED": return HOSTED;
@@ -70,11 +70,11 @@ class PubDepType {
 
 }
 
-class Variable { 
+class Variable {
   Variable(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -120,8 +120,8 @@ class Variable {
 
 // end <class Variable>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
@@ -136,8 +136,8 @@ class Variable {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
@@ -157,11 +157,11 @@ class Variable {
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 /// At some point when true enums are provided this may be revisited.
 ///
-class Enum { 
+class Enum {
   Enum(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -202,8 +202,8 @@ class Enum {
 
 // end <class Enum>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
@@ -216,13 +216,13 @@ class Enum {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "values": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "values":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Id.randJson()),
     "jsonSupport": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
@@ -234,7 +234,7 @@ class Enum {
 }
 
 /// A dependency of the system
-class PubDependency { 
+class PubDependency {
   /// Name of dependency
   String name;
   /// Required version for this dependency
@@ -284,8 +284,8 @@ class PubDependency {
 
 // end <class PubDependency>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "name": EBISU_UTILS.toJson(name),
     "version": EBISU_UTILS.toJson(version),
     "path": EBISU_UTILS.toJson(path),
@@ -296,8 +296,8 @@ class PubDependency {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
@@ -310,11 +310,11 @@ class PubDependency {
 }
 
 /// Information for the pubspec of the system
-class PubSpec { 
+class PubSpec {
   PubSpec(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -364,8 +364,8 @@ class PubSpec {
 
 // end <class PubSpec>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "version": EBISU_UTILS.toJson(version),
@@ -377,16 +377,16 @@ class PubSpec {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "author": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "homepage": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "dependencies": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "dependencies":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => PubDependency.randJson()),
     };
   }
@@ -394,7 +394,7 @@ class PubSpec {
 }
 
 /// Defines a dart system (collection of libraries and apps)
-class System { 
+class System {
   Id _id;
   /// Id for this system
   Id get id => _id;
@@ -488,8 +488,8 @@ class System {
 
 // end <class System>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "rootPath": EBISU_UTILS.toJson(rootPath),
@@ -504,20 +504,20 @@ class System {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "rootPath": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "scripts": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "scripts":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Script.randJson()),
     "app": EBISU_UTILS.randJson(_randomJsonGenerator, App.randJson),
-    "libraries": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "libraries":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Library.randJson()),
     "pubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, PubSpec.randJson),
-    "jsonableClasses": 
+    "jsonableClasses":
        EBISU_UTILS.randJsonMap(_randomJsonGenerator,
         () => Class.randJson(),
         "jsonableClasses"),
@@ -529,11 +529,11 @@ class System {
 }
 
 /// An agrument to a script
-class ScriptArg { 
+class ScriptArg {
   ScriptArg(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -571,8 +571,8 @@ class ScriptArg {
 
 // end <class ScriptArg>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "name": EBISU_UTILS.toJson(_name),
@@ -587,8 +587,8 @@ class ScriptArg {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
@@ -596,8 +596,8 @@ class ScriptArg {
     "isFlag": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isMultiple": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "defaultsTo": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
-    "allowed": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "allowed":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
     "position": EBISU_UTILS.randJson(_randomJsonGenerator, int),
     "abbr": EBISU_UTILS.randJson(_randomJsonGenerator, String),
@@ -607,11 +607,11 @@ class ScriptArg {
 }
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
-class Script { 
+class Script {
   Script(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -648,8 +648,8 @@ class Script {
 
 // end <class Script>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
@@ -659,16 +659,16 @@ class Script {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "imports": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "imports":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "args": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "args":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => ScriptArg.randJson()),
     };
   }
@@ -676,11 +676,11 @@ class Script {
 }
 
 /// Defines a dart *web* application. For non-web console app, use Script
-class App { 
+class App {
   App(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -766,8 +766,8 @@ main() {
 
 // end <class App>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
@@ -780,22 +780,22 @@ main() {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "classes": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "classes":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Class.randJson()),
-    "dependencies": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "dependencies":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => PubDependency.randJson()),
-    "libraries": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "libraries":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Library.randJson()),
-    "variables": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "variables":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Variable.randJson()),
     "isWebUi": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     };
@@ -804,11 +804,11 @@ main() {
 }
 
 /// Defines a dart library - a collection of parts
-class Library { 
+class Library {
   Library(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -897,8 +897,8 @@ class Library {
 
 // end <class Library>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
@@ -913,25 +913,25 @@ class Library {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "imports": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "imports":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "parts": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "parts":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Part.randJson()),
-    "variables": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "variables":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Variable.randJson()),
-    "classes": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "classes":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Class.randJson()),
-    "enums": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "enums":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Enum.randJson()),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeLogger": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
@@ -941,11 +941,11 @@ class Library {
 }
 
 /// Defines a dart part - as in 'part of' source file
-class Part { 
+class Part {
   Part(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -987,8 +987,8 @@ class Part {
 
 // end <class Part>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
@@ -1000,16 +1000,16 @@ class Part {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "classes": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "classes":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Class.randJson()),
-    "enums": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "enums":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Enum.randJson()),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "filePath": EBISU_UTILS.randJson(_randomJsonGenerator, String),
@@ -1019,11 +1019,11 @@ class Part {
 }
 
 /// Metadata associated with a Dart class
-class Class { 
+class Class {
   Class(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -1153,8 +1153,8 @@ class Class {
 
 // end <class Class>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
@@ -1177,30 +1177,30 @@ class Class {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "mixins": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "mixins":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
     "extend": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "implement": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "implement":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
     "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "defaultMemberAccess": EBISU_UTILS.randJson(_randomJsonGenerator, Access.randJson),
-    "members": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "members":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Member.randJson()),
-    "ctorCustoms": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "ctorCustoms":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorConst": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "ctorConst":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctors": 
+    "ctors":
        EBISU_UTILS.randJsonMap(_randomJsonGenerator,
         () => Ctor.randJson(),
         "ctors"),
@@ -1216,7 +1216,7 @@ class Class {
 }
 
 /// Metadata associated with a constructor
-class Ctor { 
+class Ctor {
   /// Name of the class of this ctor.
   String className;
   /// Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()
@@ -1314,8 +1314,8 @@ ${guts}
 
 // end <class Ctor>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "className": EBISU_UTILS.toJson(className),
     "name": EBISU_UTILS.toJson(name),
     "members": EBISU_UTILS.toJson(members),
@@ -1327,18 +1327,18 @@ ${guts}
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "className": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "members": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "members":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Member.randJson()),
-    "optMembers": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "optMembers":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Member.randJson()),
-    "namedMembers": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "namedMembers":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Member.randJson()),
     "hasCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
@@ -1348,11 +1348,11 @@ ${guts}
 }
 
 /// Metadata associated with a member of a Dart class
-class Member { 
+class Member {
   Member(
     this._id
   ) {
-  
+
   }
   
   final Id _id;
@@ -1409,8 +1409,8 @@ class Member {
 
 // end <class Member>
 
-  Map toJson() { 
-    return { 
+  Map toJson() {
+    return {
     "id": EBISU_UTILS.toJson(_id),
     "doc": EBISU_UTILS.toJson(doc),
     "type": EBISU_UTILS.toJson(type),
@@ -1430,22 +1430,22 @@ class Member {
     };
   }
 
-  static Map randJson() { 
-    return { 
+  static Map randJson() {
+    return {
     "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "type": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "access": EBISU_UTILS.randJson(_randomJsonGenerator, Access.randJson),
     "classInit": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "ctorInit": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "ctors": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "ctors":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorsOpt": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "ctorsOpt":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorsNamed": 
-       EBISU_UTILS.randJson(_randomJsonGenerator, [], 
+    "ctorsNamed":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
     "isFinal": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),

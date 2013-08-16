@@ -1,7 +1,7 @@
 part of ebisu;
 
 /// Convenience wrapper for a map - passed into templates as variable '_'
-class Context { 
+class Context {
   final Map _data;
   /// Data being wrapped
   Map get data => _data;
@@ -48,7 +48,8 @@ String docComment(String text, [String indent = ' ']) {
 
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
-  return '$indent${block.split("\n").join("\n$indent")}';
+  return '$indent${block.split("\n").join("\n$indent")}'
+    .replaceAll('\n$indent\n', '\n\n');
 }
 
 const String _customBegin = r'//\s*custom';

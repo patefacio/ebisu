@@ -1,7 +1,7 @@
 part of ebisu_compiler;
 
 /// A file with ".tmpl" extension containing mixed dart code and text that can be "realized" by the template engine
-class TemplateFile { 
+class TemplateFile {
   TemplateFile(
     this.inputPath,
     {
@@ -9,7 +9,7 @@ class TemplateFile {
       this.partOf
     }
   ) {
-  
+
   }
   
   /// Path to file containting template code
@@ -29,7 +29,7 @@ class TemplateFile {
       throw new StateError("You must set the inputPath on the TemplateFile to compile");
     }
 
-    _functionName = path.basenameWithoutExtension(inputPath); 
+    _functionName = path.basenameWithoutExtension(inputPath);
 
     if(outputPath == null) {
       outputPath = path.join(path.dirname(inputPath), 'src');
@@ -127,7 +127,7 @@ TemplateFile templateFile(String inputPath,
 
 /// A class to process a folder full of templates, 
 /// all of which get compiled into a single dart library
-class TemplateFolder { 
+class TemplateFolder {
   TemplateFolder(
     this.inputPath,
     [
@@ -135,7 +135,7 @@ class TemplateFolder {
       this.libName
     ]
   ) {
-  
+
   }
   
   /// Path to folder of templates
@@ -177,7 +177,7 @@ class TemplateFolder {
         TemplateFile tFile = templateFile(p,
             outputPath: outputPath,
             partOf: libName);
-            
+
         bool compiled = tFile.compile();
         if(compiled) {
           updateCount++;
@@ -215,7 +215,7 @@ import "package:ebisu/ebisu_dart_meta.dart";
     if(libUpdated) {
       updateCount++;
     }
-    
+
     return updateCount;
   }
 

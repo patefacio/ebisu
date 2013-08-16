@@ -13,7 +13,7 @@ ${docComment(_.doc)}
 ''');
  } 
   _buf.add('''
-class ${_.enumName} { 
+class ${_.enumName} {
 ''');
  int i = 0; 
  for(var value in _.values) { 
@@ -31,8 +31,8 @@ class ${_.enumName} {
 
   const ${_.enumName}._(this.value);
 
-  String toString() { 
-    switch(this) { 
+  String toString() {
+    switch(this) {
 ''');
  for(var value in _.values) { 
   _buf.add('''
@@ -43,8 +43,8 @@ class ${_.enumName} {
     }
   }
 
-  static ${_.enumName} fromString(String s) { 
-    switch(s) { 
+  static ${_.enumName} fromString(String s) {
+    switch(s) {
 ''');
  for(var value in _.values) { 
   _buf.add('''
@@ -58,16 +58,16 @@ class ${_.enumName} {
 ''');
  if(_.jsonSupport) { 
   _buf.add('''
-  int toJson() { 
+  int toJson() {
     return this.value;
   }
 
-  static int randJson() { 
+  static int randJson() {
    return _randomJsonGenerator.nextInt(${_.values.length});
   }
 
-  static ${_.enumName} fromJson(int v) { 
-    switch(v) { 
+  static ${_.enumName} fromJson(int v) {
+    switch(v) {
 ''');
  i = 0; 
  for(var value in _.values) { 
