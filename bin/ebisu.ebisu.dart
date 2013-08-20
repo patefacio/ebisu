@@ -1,5 +1,5 @@
 import "dart:io";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 import "package:ebisu/ebisu.dart";
 import "package:ebisu/ebisu_id.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
@@ -72,7 +72,7 @@ are simple:
       'io',
       '"package:ebisu/ebisu.dart"',
       '"package:ebisu/ebisu_dart_meta.dart"',
-      '"package:pathos/path.dart" as path',
+      '"package:path/path.dart" as path',
     ]
     ..variables = [
       variable('code_re')
@@ -140,7 +140,7 @@ correct naming. Most ebisu entities are named (Libraries, Parts, Classes, etc).
     ..imports = [
       'io',
       '"package:ebisu/ebisu.dart"',
-      '"package:pathos/path.dart" as path',
+      '"package:path/path.dart" as path',
       '"ebisu_utils.dart" as EBISU_UTILS', 
     ]
     ..parts = [
@@ -217,7 +217,7 @@ example, the following is the structure of the ebisu_id library.
         'io',
         '"package:ebisu/ebisu.dart"',
         '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
-        '"package:pathos/path.dart" as path',
+        '"package:path/path.dart" as path',
       ]
       ..parts = [
         part('id')
@@ -479,7 +479,7 @@ At some point when true enums are provided this may be revisited.
           member('libraries')
           ..doc = 'List of libraries of this app'
           ..type = 'List<Library>'
-          ..classInit = '[]',          
+          ..classInit = '[]',
           member('variables')
           ..doc = 'List of global variables for this library'
           ..type = 'List<Variable>'
@@ -700,7 +700,7 @@ A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
 '''
         ..dependencies = [
-          pubdep('pathos'),
+          pubdep('path'),
         ]
                  )
     ..libraries = [
@@ -722,7 +722,7 @@ other languages like D) using a fairly declarative aproach.
       ]
       ..imports = [
         'io',
-        '"package:pathos/path.dart" as path'
+        '"package:path/path.dart" as path'
       ]
       ..parts = [
         part('ebisu')

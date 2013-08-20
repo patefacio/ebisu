@@ -13,7 +13,7 @@
 ///         'io',
 ///         '"package:ebisu/ebisu.dart"',
 ///         '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
-///         '"package:pathos/path.dart" as path',
+///         '"package:path/path.dart" as path',
 ///       ]
 ///       ..parts = [
 ///         part('id')

@@ -26,7 +26,8 @@ class TemplateFile {
   bool compile() {
 
     if(inputPath == null) {
-      throw new StateError("You must set the inputPath on the TemplateFile to compile");
+      throw new StateError(
+        "You must set the inputPath on the TemplateFile to compile");
     }
 
     _functionName = path.basenameWithoutExtension(inputPath);
@@ -153,7 +154,8 @@ class TemplateFolder {
   int compile() {
 
     if(inputPath == null) {
-      throw new StateError("You must set the inputPath on the TemplateFolder to compile");
+      throw new StateError(
+        "You must set the inputPath on the TemplateFolder to compile");
     }
 
     if(outputPath == null) {

@@ -6,7 +6,7 @@ description: >
   other languages like D) using a fairly declarative aproach.
   
 dependencies:
-  pathos:  "any"
+  path:  "any"
 # custom <ebisu dependencies>
 # end <ebisu dependencies>
 

@@ -21,7 +21,7 @@ library ebisu_compiler;
 import "dart:io";
 import "package:ebisu/ebisu.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 part "src/ebisu_compiler/compiler.dart";
 
 // Regex to match a single line if dart code (i.e. in looks like #< ... >)

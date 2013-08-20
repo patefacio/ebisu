@@ -2,7 +2,7 @@
 library ebisu;
 
 import "dart:io";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 part "src/ebisu/ebisu.dart";
 
 // Path to this package - for use until this becomes a pub package

@@ -11,7 +11,7 @@ library ebisu_id;
 
 import "dart:io";
 import "package:ebisu/ebisu.dart";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 import "ebisu_utils.dart" as EBISU_UTILS;
 part "src/ebisu_id/id.dart";
 
