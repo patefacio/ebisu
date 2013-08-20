@@ -333,6 +333,10 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'If true includes custom block for additional user supplied ctor code'
           ..type = 'bool'
           ..classInit = 'false',
+          member('is_snake_string')
+          ..doc = 'If true string value for each entry is snake case (default is shout)'
+          ..type = 'bool'
+          ..classInit = 'false',
         ],
         class_('pub_dependency')
         ..doc = 'A dependency of the system'

@@ -187,6 +187,8 @@ class Enum {
   String get enumName => _enumName;
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
+  /// If true string value for each entry is snake case (default is shout)
+  bool isSnakeString = false;
 
 // custom <class Enum>
 
@@ -200,6 +202,9 @@ class Enum {
     return META.enum_(this);
   }
 
+  String valueAsString(Id value) => isSnakeString?
+    value.snake : value.shout;
+
 // end <class Enum>
 
   Map toJson() {
@@ -212,6 +217,7 @@ class Enum {
     "name": EBISU_UTILS.toJson(_name),
     "enumName": EBISU_UTILS.toJson(_enumName),
     "hasCustom": EBISU_UTILS.toJson(hasCustom),
+    "isSnakeString": EBISU_UTILS.toJson(isSnakeString),
     // TODO: "Enum": super.toJson(),
     };
   }
@@ -228,6 +234,7 @@ class Enum {
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "enumName": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "hasCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "isSnakeString": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     };
   }
 

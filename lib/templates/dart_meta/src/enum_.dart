@@ -36,7 +36,7 @@ class ${_.enumName} {
 ''');
  for(var value in _.values) { 
   _buf.add('''
-      case ${value.shout}: return "${value.shout}";
+      case ${value.shout}: return "${_.valueAsString(value)}";
 ''');
  } 
   _buf.add('''
@@ -48,7 +48,7 @@ class ${_.enumName} {
 ''');
  for(var value in _.values) { 
   _buf.add('''
-      case "${value.shout}": return ${value.shout};
+      case "${_.valueAsString(value)}": return ${value.shout};
 ''');
  } 
   _buf.add('''
