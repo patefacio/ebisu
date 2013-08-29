@@ -874,7 +874,7 @@ class Library {
     'async', 'chrome', 'collection', 'core', 'crypto',
     'html', 'indexed_db', 'io', 'isolate', 'json', 'math',
     'mirrors', 'scalarlist', 'svg', 'uri', 'utf', 'web_audio',
-    'web_sql'
+    'web_sql', 'convert'
   ]);
 
   static final _standardPackageImports = new Set.from([
