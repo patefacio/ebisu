@@ -9,7 +9,7 @@ String variable([dynamic _]) {
 
  if(_.doc != null) { 
   _buf.add('''
-// ${_.doc}
+${rightTrim(docComment(_.doc))}
 ''');
  } 
  if(_.init == null) { 

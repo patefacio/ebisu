@@ -555,7 +555,7 @@ class ScriptArg {
   /// Name of the the arg (emacs naming convention)
   String get name => _name;
   /// If true the argument is required
-  bool isRequired;
+  bool isRequired = false;
   /// If true this argument is a boolean flag (i.e. no option is required)
   bool isFlag = false;
   /// If true the argument may be specified mutiple times
@@ -652,6 +652,9 @@ class Script {
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
     mergeWithFile(META.script(this), scriptPath);
   }
+
+  Iterable get requiredArgs =>
+    args.where((arg) => arg.isRequired);
 
 // end <class Script>
 
@@ -1109,7 +1112,7 @@ class Class {
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
-          ..className = _name
+          ..className = _className
           ..members.add(m);
       });
       m.ctorsOpt.forEach((ctorName) {
@@ -1117,7 +1120,7 @@ class Class {
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
-          ..className = _name
+          ..className = _className
           ..optMembers.add(m);
       });
       m.ctorsNamed.forEach((ctorName) {
@@ -1125,7 +1128,7 @@ class Class {
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
-          ..className = _name
+          ..className = _className
           ..namedMembers.add(m);
       });
     });
@@ -1138,6 +1141,20 @@ class Class {
     }
 
     _parent = p;
+  }
+
+  List get orderedCtors {
+    var keys = _ctors.keys.toList();
+    bool hasDefault = keys.remove('');
+    var privates = keys.where((k) => k[0]=='_').toList();
+    var publics = keys.where((k) => k[0]!='_').toList();
+    privates.sort();
+    publics.sort();
+    var result = new List.from(publics)..addAll(privates);
+    if(hasDefault) {
+      result.insert(0, '');
+    }
+    return result;
   }
 
   String get implementsClause {

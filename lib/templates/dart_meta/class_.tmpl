@@ -9,8 +9,8 @@ ${abstractTag}class ${_.className} extends ${_.extend}${_.implementsClause}{
 #< } else { >
 ${abstractTag}class ${_.className}${_.implementsClause}{
 #< } >
-#< _.ctors.forEach((ctorName, ctor) { >
-${indentBlock(ctor.ctorText)}
+#< _.orderedCtors.forEach((ctorName) { >
+${indentBlock(_.ctors[ctorName].ctorText)}
 #< }); >
 #< for(var member in _.members) { >
 ${indentBlock(chomp(member.define()))}

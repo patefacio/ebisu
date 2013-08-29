@@ -1,5 +1,5 @@
 #< if(_.doc != null) { >
-// ${_.doc}
+${rightTrim(docComment(_.doc))}
 #< } >
 #< if(_.init == null) { >
 ${_.isFinal? 'final ':''}${_.type} ${_.varName};

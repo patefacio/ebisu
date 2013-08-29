@@ -26,9 +26,9 @@ ${abstractTag}class ${_.className} extends ${_.extend}${_.implementsClause}{
 ${abstractTag}class ${_.className}${_.implementsClause}{
 ''');
  } 
- _.ctors.forEach((ctorName, ctor) { 
+ _.orderedCtors.forEach((ctorName) { 
   _buf.add('''
-${indentBlock(ctor.ctorText)}
+${indentBlock(_.ctors[ctorName].ctorText)}
 ''');
  }); 
  for(var member in _.members) { 

@@ -424,7 +424,8 @@ At some point when true enums are provided this may be revisited.
           ..access = Access.RO,
           member('is_required')
           ..doc = 'If true the argument is required'
-          ..type = 'bool',
+          ..type = 'bool'
+          ..classInit = 'false',
           member('is_flag')
           ..doc = 'If true this argument is a boolean flag (i.e. no option is required)'
           ..type = 'bool'

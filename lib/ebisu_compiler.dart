@@ -24,10 +24,10 @@ import "package:ebisu/ebisu_dart_meta.dart";
 import "package:path/path.dart" as path;
 part "src/ebisu_compiler/compiler.dart";
 
-// Regex to match a single line if dart code (i.e. in looks like #< ... >)
+/// Regex to match a single line if dart code (i.e. in looks like #< ... >)
 final RegExp codeRe = new RegExp("^#<(.*)>\\s*");
 
-// Regex to match the comment portion of a comment line (i.e. in looks like #<# ... >)
+/// Regex to match the comment portion of a comment line (i.e. in looks like #<# ... >)
 final RegExp commentRe = new RegExp("^\\s*#");
 
 // custom <library ebisu_compiler>

@@ -120,6 +120,27 @@ main() {
   Map options = argResults['options'];
   List positionals = argResults['rest'];
 
+''');
+ var required = _.requiredArgs.toList();              
+ if(required.length > 0) {                            
+  _buf.add('''
+  try { 
+''');
+   _.requiredArgs.forEach((arg) {                     
+  _buf.add('''
+    if(options["${arg.name}"] == null)
+      throw new ArgumentError("option: ${arg.name} is required");
+
+''');
+   }); 
+  _buf.add('''
+  } on ArgumentError catch(e) { 
+    print(e);
+    _usage();
+  }
+''');
+ } 
+  _buf.add('''
 ${indentBlock(customBlock("${_.id} main"))}
 }
 
