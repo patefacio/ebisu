@@ -88,7 +88,7 @@ ${scriptArg.doc}
  if(_.args.where((sa) => sa.position != null).toList().length > 0) { 
   _buf.add('''
     // Pull out positional args as they were named
-    remaining = argResults.rest;
+    remaining = new List.from(argResults.rest);
 ''');
  } 
  for(var scriptArg in _.args) { 
