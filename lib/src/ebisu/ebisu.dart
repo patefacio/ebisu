@@ -197,6 +197,7 @@ List<String> cleanImports(List<String> dirtyImports) {
   dirtyImports.forEach((i) {
     i = i.replaceAll('"', "'");
     if(hit.contains(i)) return;
+    hit.add(i);
     result.add(i);
   });
   return result;
