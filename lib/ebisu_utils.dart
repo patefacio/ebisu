@@ -1,7 +1,7 @@
 /// Support code to be used by libraries generated with ebisu. Example (toJson)
 library ebisu_utils;
 
-import "dart:math";
+import 'dart:math';
 import 'dart:json' as JSON;
 
 // custom <library ebisu_utils>

@@ -9,10 +9,10 @@
 /// 
 library ebisu_id;
 
-import "dart:io";
-import "package:ebisu/ebisu.dart";
-import "package:path/path.dart" as path;
-import "ebisu_utils.dart" as EBISU_UTILS;
+import 'dart:io';
+import 'package:ebisu/ebisu.dart';
+import 'package:path/path.dart' as path;
+import 'ebisu_utils.dart' as EBISU_UTILS;
 part "src/ebisu_id/id.dart";
 
 // custom <library ebisu_id>

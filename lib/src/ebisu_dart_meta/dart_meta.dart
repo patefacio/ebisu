@@ -645,6 +645,8 @@ class Script {
     imports.add('package:args/args.dart');
     imports.add('package:logging/logging.dart');
     imports.add('package:logging_handlers/logging_handlers_shared.dart');
+    imports = cleanImports(
+      imports.map((i) => importStatement(i)).toList());
   }
 
   void generate() {
@@ -859,6 +861,8 @@ class Library {
       imports.add("package:logging/logging.dart");
       imports.add("package:logging_handlers/logging_handlers_shared.dart");
     }
+    imports = cleanImports(
+      imports.map((i) => importStatement(i)).toList());
     _parent = p;
   }
 

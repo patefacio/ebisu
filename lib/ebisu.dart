@@ -1,8 +1,8 @@
 /// Primary library for client usage of ebisu
 library ebisu;
 
-import "dart:io";
-import "package:path/path.dart" as path;
+import 'dart:io';
+import 'package:path/path.dart' as path;
 part "src/ebisu/ebisu.dart";
 
 /// Path to this package - for use until this becomes a pub package

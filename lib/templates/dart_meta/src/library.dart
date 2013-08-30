@@ -18,7 +18,7 @@ library ${_.name};
 ''');
  for(var i in _.imports) { 
   _buf.add('''
-${Library.importStatement(i)}
+${i}
 ''');
  } 
  for(var part in _.parts) { 

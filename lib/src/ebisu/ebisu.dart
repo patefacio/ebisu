@@ -191,5 +191,16 @@ bool mergeWithFile(String generated, String destFilePath,
   return true;
 }
 
+List<String> cleanImports(List<String> dirtyImports) {
+  List<String> result = [];
+  var hit = new Set<String>();
+  dirtyImports.forEach((i) {
+    i = i.replaceAll('"', "'");
+    if(hit.contains(i)) return;
+    result.add(i);
+  });
+  return result;
+}
+
 // end <part ebisu>
 

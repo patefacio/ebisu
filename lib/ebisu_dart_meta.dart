@@ -48,12 +48,12 @@
 /// 
 library ebisu_dart_meta;
 
-import "dart:io";
-import "dart:json";
-import "package:ebisu/ebisu.dart";
-import "package:ebisu/ebisu_id.dart";
-import "package:ebisu/ebisu_utils.dart" as EBISU_UTILS;
-import "templates/dart_meta.dart" as META;
+import 'dart:io';
+import 'dart:json';
+import 'package:ebisu/ebisu.dart';
+import 'package:ebisu/ebisu_id.dart';
+import 'package:ebisu/ebisu_utils.dart' as EBISU_UTILS;
+import 'templates/dart_meta.dart' as META;
 part "src/ebisu_dart_meta/dart_meta.dart";
 
 // custom <library ebisu_dart_meta>

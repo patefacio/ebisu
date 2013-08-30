@@ -20,7 +20,7 @@ ${docComment(_.doc)}
 ''');
  for(var i in _.imports) { 
   _buf.add('''
-${Library.importStatement(i)}
+${i}
 ''');
  } 
   _buf.add('''
