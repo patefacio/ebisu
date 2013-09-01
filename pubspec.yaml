@@ -7,7 +7,14 @@ description: >
   
 dependencies:
   path:  "any"
+  logging:  "any"
+  logging_handlers:  "any"
 # custom <ebisu dependencies>
+
+  id:
+    git:
+      url: git://github.com/patefacio/id
+      ref: HEAD
 
   logging:
   logging_handlers:

@@ -1479,7 +1479,7 @@ class Ctor {
     className : '${className}.${name}';
 
   String get ctorSansNew {
-    var classId = IdFromEither(className);
+    var classId = idFromString(className);
     var id = (name == 'default' || name == '')? classId : 
     new Id('${classId.snake}_${IdFromEither(name)}');
 
