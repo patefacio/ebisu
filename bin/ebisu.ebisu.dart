@@ -68,6 +68,7 @@ are simple:
 
 
 '''
+    ..includeLogger = true
     ..imports = [
       'io',
       '"package:ebisu/ebisu.dart"',
@@ -137,6 +138,7 @@ with the appropriate conventions (usually via templates) to produce consistent
 correct naming. Most ebisu entities are named (Libraries, Parts, Classes, etc).
 
 '''
+    ..includeLogger = true
     ..imports = [
       'io',
       '"package:ebisu/ebisu.dart"',
@@ -166,6 +168,7 @@ provides consistent representations'''
 
   Library ebisu_utils = library('ebisu_utils')
     ..imports = [ 'math', "'dart:json' as JSON" ]
+    ..includeLogger = true
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
   // The following are commonly used members of the meta data classes
@@ -213,6 +216,7 @@ example, the following is the structure of the ebisu_id library.
 
     Library ebisu_id = library('ebisu_id')
       ..doc = 'Support for consistent use of identifiers...'
+      ..includeLogger = true
       ..imports = [
         'io',
         '"package:ebisu/ebisu.dart"',
@@ -257,6 +261,7 @@ classes with JSON support.
       '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
       '"templates/dart_meta.dart" as META',
     ]
+    ..includeLogger = true
     ..parts = [
       part('dart_meta')
       ..enums = [
@@ -392,8 +397,16 @@ At some point when true enums are provided this may be revisited.
           member('app')
           ..doc = 'App for this package'
           ..type = 'App',
+          member('test_libraries')
+          ..doc = 'List of test libraries of this app'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
           member('libraries')
           ..doc = 'Libraries in the system'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
+          member('all_libraries')
+          ..doc = 'Regular and test libraries'
           ..type = 'List<Library>'
           ..classInit = '[]',
           member('pub_spec')
@@ -411,8 +424,20 @@ At some point when true enums are provided this may be revisited.
           member('generate_pub_spec')
           ..doc = 'If true generate a pubspec.xml file'
           ..type = 'bool'
-          ..classInit = 'true'
+          ..classInit = 'true',
+          member('license')
+          ..doc = 'If found in licenseMap, value is used, else license is used',
+          member('include_readme')
+          ..doc = 'If true standard outline for readme provided'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('include_hop')
+          ..doc = 'If true generates tool folder with hop_runner'
+          ..type = 'bool'
+          ..classInit = 'false',
         ],
+        class_('test')
+        ..doc = 'A test generated in a standard format',
         class_('script_arg')
         ..doc = 'An agrument to a script'
         ..members = [
@@ -522,6 +547,14 @@ At some point when true enums are provided this may be revisited.
           ..access = Access.RO,
           member('include_logger')
           ..doc = 'If true includes logging support and a _logger'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_test')
+          ..doc = 'If true this library is a test library to appear in test folder'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('include_main')
+          ..doc = 'If true a main is included in the library file'
           ..type = 'bool'
           ..classInit = 'false',
         ],
@@ -707,6 +740,7 @@ other languages like D) using a fairly declarative aproach.
     ..libraries = [
       library('ebisu')
       ..doc = 'Primary library for client usage of ebisu'
+      ..includeLogger = true
       ..variables = [
         variable('ebisu_path')
         ..doc = 'Path to this package - for use until this becomes a pub package'
@@ -720,6 +754,13 @@ other languages like D) using a fairly declarative aproach.
         ..doc = 'Hompage for pubspec'
         ..isFinal = true
         ..init = "Platform.environment['EBISU_HOMEPAGE']",
+        variable('license_map')
+        ..init = '''
+{
+   'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>'
+}
+'''
+
       ]
       ..imports = [
         'io',

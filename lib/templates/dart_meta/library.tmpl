@@ -28,3 +28,8 @@ ${v.define()}
 #< if(_.includeCustom) { >
 ${customBlock("library ${_.name}")}
 #< } >
+#< if(_.includeMain) { >
+main() { 
+${customBlock("main")}
+}
+#< } >

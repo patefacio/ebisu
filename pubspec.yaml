@@ -8,5 +8,9 @@ description: >
 dependencies:
   path:  "any"
 # custom <ebisu dependencies>
+
+  logging:
+  logging_handlers:
+
 # end <ebisu dependencies>
 

@@ -57,5 +57,12 @@ ${v.define()}
 ${customBlock("library ${_.name}")}
 ''');
  } 
+ if(_.includeMain) { 
+  _buf.add('''
+main() { 
+${customBlock("main")}
+}
+''');
+ } 
   return _buf.join();
 }

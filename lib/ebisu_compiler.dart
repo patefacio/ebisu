@@ -22,7 +22,11 @@ import 'dart:io';
 import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:path/path.dart' as path;
+import 'package:logging/logging.dart';
+import 'package:logging_handlers/logging_handlers_shared.dart';
 part "src/ebisu_compiler/compiler.dart";
+
+final _logger = new Logger("ebisu_compiler");
 
 /// Regex to match a single line if dart code (i.e. in looks like #< ... >)
 final RegExp codeRe = new RegExp("^#<(.*)>\\s*");

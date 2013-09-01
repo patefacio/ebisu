@@ -413,8 +413,12 @@ class System {
   List<Script> scripts = [];
   /// App for this package
   App app;
+  /// List of test libraries of this app
+  List<Library> testLibraries = [];
   /// Libraries in the system
   List<Library> libraries = [];
+  /// Regular and test libraries
+  List<Library> allLibraries = [];
   /// Information for the pubspec
   PubSpec pubSpec;
   /// Map of all classes that have jsonSupport
@@ -424,6 +428,12 @@ class System {
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
   bool generatePubSpec = true;
+  /// If found in licenseMap, value is used, else license is used
+  String license;
+  /// If true standard outline for readme provided
+  bool includeReadme = false;
+  /// If true generates tool folder with hop_runner
+  bool includeHop = false;
 
 // custom <class System>
 
@@ -433,7 +443,18 @@ class System {
   /// Finalize must be called before generate
   void finalize() {
     if(!_finalized) {
-      libraries.forEach((l) => l.parent = this);
+
+      testLibraries.forEach((library) {
+        if(!library.id.snake.startsWith('test_'))
+          _logger.warning(
+            r"Test library ${library.id.snake} should be named /test_\w+/");
+        library.isTest = true;
+        library.includeMain = true;
+        library.imports.add('package:unittest/unittest.dart');
+      });
+
+      allLibraries = new List.from(libraries)..addAll(testLibraries);
+      allLibraries.forEach((l) => l.parent = this);
       scripts.forEach((s) => s.parent = this);
       if(app != null) {
         app.parent = this;
@@ -443,7 +464,7 @@ class System {
       // Track all classes and enums with json support so the template side can
       // do proper inserts of code. There are classes and enums in the library
       // as well as classes and enums in each part to consider.
-      libraries.forEach((library) {
+      allLibraries.forEach((library) {
         library.classes.forEach((dclass) {
           if(dclass.jsonSupport) {
             jsonableClasses[dclass.name] = dclass;
@@ -486,10 +507,126 @@ class System {
     if(app != null) {
       app.generate();
     }
-    libraries.forEach((lib) => lib.generate());
+    allLibraries.forEach((lib) => lib.generate());
+
     if(pubSpec != null && generatePubSpec) {
       String pubSpecPath = "${rootPath}/pubspec.yaml";
       scriptMergeWithFile(META.pubspec(pubSpec), pubSpecPath);
+    }
+
+    if(license != null) {
+      var text = licenseMap[license];
+      if(text == null) text = license;
+      String licensePath = "${rootPath}/LICENSE";
+      mergeWithFile(text, licensePath);
+    }
+
+    if(includeReadme) {
+      String readmePath = "${rootPath}/README.md";  
+      htmlMergeWithFile('''
+# ${id.title}
+
+${htmlCustomBlock('introduction')}
+
+# Purpose
+
+${htmlCustomBlock('purpose')}
+
+# Examples
+
+${htmlCustomBlock('examples')}
+
+# TODO
+
+${htmlCustomBlock('todos')}
+
+''', 
+          readmePath);      
+    }
+
+    if(includeHop) {
+      String hopRunnerPath = "${rootPath}/tool/hop_runner.dart";
+      String i = '        ';
+      String analyzeTests = testLibraries.length == 0? '' : '''
+  addTask('analyze_test', 
+      createAnalyzerTask([
+${testLibraries.map((tl) => '$i"test/${tl.name}.dart"').toList().join('\n')}
+      ]));
+''';
+
+      mergeWithFile('''
+library hop_runner;
+
+import 'dart:async';
+import 'dart:io';
+import 'package:hop/hop.dart';
+import "package:path/path.dart" as PATH;
+import 'package:hop/hop_tasks.dart';
+import '../test/utils.dart';
+import '../test/runner.dart' as runner;
+
+void main() {
+
+  Directory.current = packageRootPath;
+
+  addTask('analyze_lib', createAnalyzerTask(_getLibs));
+  addTask('docs', createDartDocTask(_getLibs));
+${analyzeTests}
+  addTask('test', createUnitTestTask(runner.testCore));
+
+  runHop();
+}
+
+Future<List<String>> _getLibs() {
+  return new Directory('lib').list()
+      .where((FileSystemEntity fse) => fse is File)
+      .map((File file) => file.path)
+      .toList();
+}
+''',
+                    hopRunnerPath);
+    }
+
+    if(includeHop || testLibraries.length > 0) {
+
+      String testUtilsPath = "${rootPath}/test/utils.dart";
+      mergeWithFile('''
+import 'dart:io';
+import 'package:path/path.dart' as path;
+
+String get packageRootPath {
+  var parts = path.split(path.absolute(new Options().script));
+  int found = parts.lastIndexOf('${id.snake}');
+  if(found >= 0) {
+    return path.joinAll(parts.getRange(0, found+1));
+  }
+  throw new 
+    StateError("Current directory must be within package '${id.snake}'");
+}
+
+main() => print(packageRootPath);
+
+''',
+          testUtilsPath);
+
+      String testRunnerPath = "${rootPath}/test/runner.dart";
+      mergeWithFile('''
+import 'package:unittest/unittest.dart';
+import 'package:unittest/vm_config.dart';
+${testLibraries.map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};").join('\n')}
+
+void testCore(Configuration config) {
+  unittestConfiguration = config;
+  main();
+}
+
+main() {
+${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
+}
+
+''',
+          testRunnerPath);
+
     }
   }
 
@@ -502,11 +639,16 @@ class System {
     "rootPath": EBISU_UTILS.toJson(rootPath),
     "scripts": EBISU_UTILS.toJson(scripts),
     "app": EBISU_UTILS.toJson(app),
+    "testLibraries": EBISU_UTILS.toJson(testLibraries),
     "libraries": EBISU_UTILS.toJson(libraries),
+    "allLibraries": EBISU_UTILS.toJson(allLibraries),
     "pubSpec": EBISU_UTILS.toJson(pubSpec),
     "jsonableClasses": EBISU_UTILS.toJson(jsonableClasses),
     "finalized": EBISU_UTILS.toJson(_finalized),
     "generatePubSpec": EBISU_UTILS.toJson(generatePubSpec),
+    "license": EBISU_UTILS.toJson(license),
+    "includeReadme": EBISU_UTILS.toJson(includeReadme),
+    "includeHop": EBISU_UTILS.toJson(includeHop),
     // TODO: "System": super.toJson(),
     };
   }
@@ -520,7 +662,13 @@ class System {
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Script.randJson()),
     "app": EBISU_UTILS.randJson(_randomJsonGenerator, App.randJson),
+    "testLibraries":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => Library.randJson()),
     "libraries":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => Library.randJson()),
+    "allLibraries":
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Library.randJson()),
     "pubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, PubSpec.randJson),
@@ -530,6 +678,28 @@ class System {
         "jsonableClasses"),
     "finalized": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "generatePubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "license": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "includeReadme": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "includeHop": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    };
+  }
+
+}
+
+/// A test generated in a standard format
+class Test {
+
+  // custom <class Test>
+  // end <class Test>
+
+  Map toJson() {
+    return {
+    // TODO: "Test": super.toJson(),
+    };
+  }
+
+  static Map randJson() {
+    return {
     };
   }
 
@@ -848,6 +1018,10 @@ class Library {
   String get name => _name;
   /// If true includes logging support and a _logger
   bool includeLogger = false;
+  /// If true this library is a test library to appear in test folder
+  bool isTest = false;
+  /// If true a main is included in the library file
+  bool includeMain = false;
 
 // custom <class Library>
 
@@ -867,7 +1041,10 @@ class Library {
   }
 
   void generate() {
-    String libStubPath = "${_parent.rootPath}/lib/${id.snake}.dart";
+    String libStubPath = 
+      isTest? 
+      "${_parent.rootPath}/test/${id.snake}.dart" :
+      "${_parent.rootPath}/lib/${id.snake}.dart";
     mergeWithFile(META.library(this), libStubPath);
     parts.forEach((part) => part.generate());
   }
@@ -923,6 +1100,8 @@ class Library {
     "enums": EBISU_UTILS.toJson(enums),
     "name": EBISU_UTILS.toJson(_name),
     "includeLogger": EBISU_UTILS.toJson(includeLogger),
+    "isTest": EBISU_UTILS.toJson(isTest),
+    "includeMain": EBISU_UTILS.toJson(includeMain),
     // TODO: "Library": super.toJson(),
     };
   }
@@ -949,6 +1128,8 @@ class Library {
         () => Enum.randJson()),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeLogger": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "isTest": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "includeMain": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     };
   }
 
@@ -993,7 +1174,10 @@ class Part {
   }
 
   void generate() {
-    _filePath = "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
+    _filePath = 
+      _parent.isTest?
+      "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
+      "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
     mergeWithFile(META.part(this), _filePath);
   }
 
@@ -1174,7 +1358,7 @@ class Class {
   }
 
   dynamic noSuchMethod(Invocation msg) {
-    throw ArgumentError("Class does not support ${msg.memberName}");
+    throw new ArgumentError("Class does not support ${msg.memberName}");
   }
 
   bool isClassJsonable(String className) => _parent.isClassJsonable(className);

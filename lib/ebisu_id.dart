@@ -13,7 +13,11 @@ import 'dart:io';
 import 'package:ebisu/ebisu.dart';
 import 'package:path/path.dart' as path;
 import 'ebisu_utils.dart' as EBISU_UTILS;
+import 'package:logging/logging.dart';
+import 'package:logging_handlers/logging_handlers_shared.dart';
 part "src/ebisu_id/id.dart";
+
+final _logger = new Logger("ebisu_id");
 
 // custom <library ebisu_id>
 // end <library ebisu_id>

@@ -9,6 +9,7 @@
 /// 
 ///     Library ebisu_id = library('ebisu_id')
 ///       ..doc = 'Support for consistent use of identifiers...'
+///       ..includeLogger = true
 ///       ..imports = [
 ///         'io',
 ///         '"package:ebisu/ebisu.dart"',
@@ -54,7 +55,11 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_id.dart';
 import 'package:ebisu/ebisu_utils.dart' as EBISU_UTILS;
 import 'templates/dart_meta.dart' as META;
+import 'package:logging/logging.dart';
+import 'package:logging_handlers/logging_handlers_shared.dart';
 part "src/ebisu_dart_meta/dart_meta.dart";
+
+final _logger = new Logger("ebisu_dart_meta");
 
 // custom <library ebisu_dart_meta>
 // end <library ebisu_dart_meta>
