@@ -360,7 +360,7 @@ class PubSpec {
 
   void addDependency(PubDependency dep) {
     if(dependencies.any((d) => dep.name == d.name)) {
-      throw new ArgumentError("${d.name} is already a dependency of ${_id}");
+      throw new ArgumentError("${dep.name} is already a dependency of ${_id}");
     }
     dependencies.add(dep);
   }
@@ -507,7 +507,17 @@ class System {
     if(app != null) {
       app.generate();
     }
-    allLibraries.forEach((lib) => lib.generate());
+    allLibraries.forEach((lib) {
+      lib.generate();
+      if(lib.includeLogger) {
+        if(!pubSpec.dependencies.any((d) => d.name == 'logging')) {
+          pubSpec.addDependency(new PubDependency('logging'));
+        }
+        if(!pubSpec.dependencies.any((d) => d.name == 'logging_handlers')) {
+          pubSpec.addDependency(new PubDependency('logging_handlers'));
+        }
+      }
+    });
 
     if(pubSpec != null && generatePubSpec) {
       String pubSpecPath = "${rootPath}/pubspec.yaml";
@@ -519,6 +529,16 @@ class System {
       if(text == null) text = license;
       String licensePath = "${rootPath}/LICENSE";
       mergeWithFile(text, licensePath);
+    }
+
+    {
+      String gitIgnorePath = "${rootPath}/.gitignore";
+      mergeWithFile('''
+*.~*~
+packages
+${scriptCustomBlock('additional')}
+''',
+          gitIgnorePath);
     }
 
     if(includeReadme) {
