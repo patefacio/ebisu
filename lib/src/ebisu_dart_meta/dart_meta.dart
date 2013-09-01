@@ -507,6 +507,14 @@ class System {
     if(app != null) {
       app.generate();
     }
+
+    if(includeHop) {
+      if(!pubSpec.dependencies.any((d) => d.name == 'hop')) {
+        pubSpec.addDependency(
+          new PubDependency('hop')..version = '0.24.2');
+      }
+    }
+
     allLibraries.forEach((lib) {
       lib.generate();
       if(lib.includeLogger) {
@@ -1053,7 +1061,6 @@ class Library {
     classes.forEach((c) => c.parent = this);
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
-      imports.add("package:logging_handlers/logging_handlers_shared.dart");
     }
     imports = cleanImports(
       imports.map((i) => importStatement(i)).toList());
