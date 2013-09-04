@@ -2,7 +2,7 @@
 library ebisu_utils;
 
 import 'dart:math';
-import 'dart:json' as JSON;
+import 'dart:convert' as convert;
 import 'package:logging/logging.dart';
 // custom <additional imports>
 // end <additional imports>
@@ -154,7 +154,7 @@ String prettyJsonMap(dynamic item, [String indent = "", bool showCount = false])
       result.add(prettyJsonMap(map, indent, showCount));
 
     } else {
-      result.add(JSON.stringify(item));
+      result.add(convert.JSON.encode(item));
     }
   }
   return result.join('');  

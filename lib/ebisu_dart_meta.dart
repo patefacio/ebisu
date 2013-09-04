@@ -46,7 +46,7 @@
 library ebisu_dart_meta;
 
 import 'dart:io';
-import 'dart:json';
+import 'dart:convert' as convert;
 import 'package:ebisu/ebisu.dart';
 import 'package:id/id.dart';
 import 'package:ebisu/ebisu_utils.dart' as EBISU_UTILS;

@@ -122,7 +122,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
 
   static ${_.name} fromJson(String json) {
-    Map jsonMap = JSON.parse(json);
+    Map jsonMap = convert.JSON.decode(json);
     ${_.name} result = new ${_.jsonCtor}();
     result._fromJsonMapImpl(jsonMap);
     return result;

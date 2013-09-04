@@ -128,7 +128,7 @@ all of which get compiled into a single dart library'''
     ];
 
   Library ebisu_utils = library('ebisu_utils')
-    ..imports = [ 'math', "'dart:json' as JSON" ]
+    ..imports = [ 'math', "'dart:convert' as convert" ]
     ..includeLogger = true
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
@@ -212,7 +212,7 @@ classes with JSON support.
 
 '''
     ..imports = [
-      'io', 'json', 
+      'io', '"dart:convert" as convert', 
       '"package:ebisu/ebisu.dart"', 
       '"package:id/id.dart"', 
       '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
@@ -742,7 +742,7 @@ other languages like D) using a fairly declarative aproach.
       ],
       ebisu_compiler,
       ebisu_dart_meta,
-      ebisu_utils
+      ebisu_utils,
     ];
 
   ebisu_dart_meta.parts.forEach((part) {
