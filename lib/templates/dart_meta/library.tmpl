@@ -6,6 +6,7 @@ library ${_.name};
 #< for(var i in _.imports) { >
 ${i}
 #< } >
+${customBlock("additional imports")}
 #< for(var part in _.parts) { >
 part "src/${_.name}/${part.name}.dart";
 #< } >

@@ -11,7 +11,7 @@ class TemplateFile {
   ) {
 
   }
-  
+
   /// Path to file containting template code
   String inputPath;
   /// Path to write the supporting dart file for the template
@@ -138,7 +138,7 @@ class TemplateFolder {
   ) {
 
   }
-  
+
   /// Path to folder of templates
   String inputPath;
   /// Path to write the supporting dart files for the template folder

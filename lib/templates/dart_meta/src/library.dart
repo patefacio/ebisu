@@ -21,6 +21,9 @@ library ${_.name};
 ${i}
 ''');
  } 
+  _buf.add('''
+${customBlock("additional imports")}
+''');
  for(var part in _.parts) { 
   _buf.add('''
 part "src/${_.name}/${part.name}.dart";

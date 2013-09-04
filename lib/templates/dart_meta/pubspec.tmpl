@@ -12,33 +12,12 @@ ${indentBlock(_.doc)}
 #< }                                                                    >
 dependencies:
 #< for(PubDependency pbdep in _.dependencies) {                         >
-#<   if(pbdep.isHosted) {         >
-  ${pbdep.name}:  ${pbdep.version!=null? '"${pbdep.version}"' : ''}
-#<   } else if(pbdep.isPath || pbdep.isGit) {                           >
-  ${pbdep.name}:
-#<   } else {                                                           >
-  ${pbdep.name}: '${pbdep.version}'
-#<   }                                                                  >
-#<   if(pbdep.path == null) {                                           >
-#<## Accept default                                                     >
-#<   } else {                                                           >
-#<     if(pbdep.isHosted) {                                             >
-      hosted: 
-        name: ${pbdep.name}
-        url: ${pbdep.path}
-      version: '${pbdep.version}' 
-#<     } else if(pbdep.isGit) {                                         >
-#<       if(pbdep.gitRef != null) {                                     >
-      git: 
-        url: ${pbdep.path}
-        ref: ${pbdep.gitRef}
-#<       } else {                                                       >
-      git: ${pbdep.path}
-#<       }                                                              >
-
-#<     } else {                                                         >
-      path: ${pbdep.path}
-#<     }                                                                >
-#<   }                                                                  >
+${pbdep.yamlEntry}
 #< } >
 ${scriptCustomBlock('${_.name} dependencies')}
+dev_dependencies:
+#< for(PubDependency pbdep in _.devDependencies) {                      >
+${pbdep.yamlEntry}
+#< } >
+${scriptCustomBlock('${_.name} dev dependencies')}
+

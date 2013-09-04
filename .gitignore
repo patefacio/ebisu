@@ -1,5 +1,8 @@
 *.~*~
 packages
 # custom <additional>
+
+pubspec.lock
+
 # end <additional>
 

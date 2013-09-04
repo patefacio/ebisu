@@ -4,6 +4,9 @@ library ebisu;
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
+// custom <additional imports>
+// end <additional imports>
+
 part "src/ebisu/ebisu.dart";
 
 final _logger = new Logger("ebisu");

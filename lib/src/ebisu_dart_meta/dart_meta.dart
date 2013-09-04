@@ -76,7 +76,7 @@ class Variable {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this variable
   Id get id => _id;
@@ -163,7 +163,7 @@ class Enum {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this enum
   Id get id => _id;
@@ -287,6 +287,52 @@ class PubDependency {
   bool get isGit => (type == PubDepType.GIT);
   bool get isPath => (type == PubDepType.PATH);
 
+  String get yamlEntry {
+    String result;
+
+    if(isHosted) {
+      result = '''
+  ${name}: ${version!=null? '"${version}"' : ''}
+''';
+    } else if(isPath || isGit) {
+      result = '''
+  $name:
+''';
+    } else {
+      result = '''
+  $name: '$version'
+''';
+    }
+
+    if(path != null) {
+      if(isHosted) {
+        result += '''
+      hosted: 
+        name: $name
+        url: $path
+      version: '$version' 
+''';
+      } else if(isGit) {
+        if(gitRef != null) {
+          result += '''
+      git: 
+        url: ${path}
+        ref: ${gitRef}
+''';
+        } else {
+          result += '''
+      git: $path
+''';
+        }
+      } else {
+        result += '''
+      git: $path
+''';
+      }
+    }
+    return result;
+  }
+
   PubDependency(String _name) : name = _name { }
 
 // end <class PubDependency>
@@ -323,7 +369,7 @@ class PubSpec {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this pub spec
   Id get id => _id;
@@ -341,6 +387,7 @@ class PubSpec {
   /// Homepage of the pub package
   String homepage;
   List<PubDependency> dependencies = [];
+  List<PubDependency> devDependencies = [];
 
 // custom <class PubSpec>
 
@@ -359,15 +406,28 @@ class PubSpec {
   }
 
   void addDependency(PubDependency dep) {
-    if(dependencies.any((d) => dep.name == d.name)) {
+    if(depNotFound(dep.name)) {
+      dependencies.add(dep);
+    } else {
       throw new ArgumentError("${dep.name} is already a dependency of ${_id}");
     }
-    dependencies.add(dep);
   }
 
-  void addDependencies(List<PubDependency> deps) {
-    deps.forEach((dep) => addDependency(dep));
+  void addDevDependency(PubDependency dep) {
+    if(depNotFound(dep.name)) {
+      devDependencies.add(dep);
+    } else {
+      throw new ArgumentError("${dep.name} is already a dev dependency of ${_id}");
+    }
   }
+
+  void addDependencies(List<PubDependency> deps) =>
+    deps.forEach((dep) => addDependency(dep));
+
+  bool depNotFound(String name) =>
+    !devDependencies.any((d) => d.name == name) &&
+    !dependencies.any((d) => d.name == name);
+    
 
 // end <class PubSpec>
 
@@ -380,6 +440,7 @@ class PubSpec {
     "author": EBISU_UTILS.toJson(author),
     "homepage": EBISU_UTILS.toJson(homepage),
     "dependencies": EBISU_UTILS.toJson(dependencies),
+    "devDependencies": EBISU_UTILS.toJson(devDependencies),
     // TODO: "PubSpec": super.toJson(),
     };
   }
@@ -393,6 +454,9 @@ class PubSpec {
     "author": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "homepage": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "dependencies":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => PubDependency.randJson()),
+    "devDependencies":
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => PubDependency.randJson()),
     };
@@ -496,7 +560,7 @@ class System {
       if(pubSpec != null) {
         pubSpec = new PubSpec(app.id)
           ..addDependency(new PubDependency('browser'))
-          ..addDependency(new PubDependency('pathos'))
+          ..addDependency(new PubDependency('path'))
           ..addDependency(new PubDependency('polymer'))
           ;
       }
@@ -509,8 +573,8 @@ class System {
     }
 
     if(includeHop) {
-      if(!pubSpec.dependencies.any((d) => d.name == 'hop')) {
-        pubSpec.addDependency(
+      if(pubSpec.depNotFound('hop')) {
+        pubSpec.addDevDependency(
           new PubDependency('hop')..version = '0.24.2');
       }
     }
@@ -518,11 +582,15 @@ class System {
     allLibraries.forEach((lib) {
       lib.generate();
       if(lib.includeLogger) {
-        if(!pubSpec.dependencies.any((d) => d.name == 'logging')) {
-          pubSpec.addDependency(new PubDependency('logging'));
+        if(pubSpec.depNotFound('logging')) {
+          pubSpec.addDependency(
+            new PubDependency('logging')
+            ..version = ">=0.6.21+3 <0.6.22");
         }
-        if(!pubSpec.dependencies.any((d) => d.name == 'logging_handlers')) {
-          pubSpec.addDependency(new PubDependency('logging_handlers'));
+        if(pubSpec.depNotFound('logging_handlers')) {
+          pubSpec.addDependency(
+            new PubDependency('logging_handlers')
+            ..version = ">=0.5.0+3 <0.5.1");
         }
       }
     });
@@ -541,7 +609,7 @@ class System {
 
     {
       String gitIgnorePath = "${rootPath}/.gitignore";
-      mergeWithFile('''
+      scriptMergeWithFile('''
 *.~*~
 packages
 ${scriptCustomBlock('additional')}
@@ -551,22 +619,24 @@ ${scriptCustomBlock('additional')}
 
     if(includeReadme) {
       String readmePath = "${rootPath}/README.md";  
-      htmlMergeWithFile('''
+      panDocMergeWithFile('''
 # ${id.title}
 
-${htmlCustomBlock('introduction')}
+${panDocCustomBlock('introduction')}
 
 # Purpose
 
-${htmlCustomBlock('purpose')}
+${panDocCustomBlock('purpose')}
+
+${panDocCustomBlock('body')}
 
 # Examples
 
-${htmlCustomBlock('examples')}
+${panDocCustomBlock('examples')}
 
 # TODO
 
-${htmlCustomBlock('todos')}
+${panDocCustomBlock('todos')}
 
 ''', 
           readmePath);      
@@ -740,7 +810,7 @@ class ScriptArg {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this script argument
   Id get id => _id;
@@ -818,7 +888,7 @@ class Script {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this script
   Id get id => _id;
@@ -892,7 +962,7 @@ class App {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this app
   Id get id => _id;
@@ -1020,7 +1090,7 @@ class Library {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this library
   Id get id => _id;
@@ -1169,7 +1239,7 @@ class Part {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this part
   Id get id => _id;
@@ -1250,7 +1320,7 @@ class Class {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this Dart class
   Id get id => _id;
@@ -1593,7 +1663,7 @@ class Member {
   ) {
 
   }
-  
+
   final Id _id;
   /// Id for this class member
   Id get id => _id;

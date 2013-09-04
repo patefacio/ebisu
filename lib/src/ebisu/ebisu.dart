@@ -42,14 +42,21 @@ String blockComment(String text, [String indent = '   ']) {
 
 /// Return a new string with [text] wrapped in `///` doc comment block
 String docComment(String text, [String indent = ' ']) {
-  String guts = text.split('\n').join("\n///$indent");
+  String guts = text.split('\n')
+    .join("\n///$indent")
+    .replaceAll('///$indent\n', '///\n');
   return "///$indent$guts";
 }
 
+Map _deadSpacePatternMap = {};
+
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
+  var trailingDead = _deadSpacePatternMap.putIfAbsent(indent, 
+      () => new RegExp('\n$indent\$'));
   return '$indent${block.split("\n").join("\n$indent")}'
-    .replaceAll('\n$indent\n', '\n\n');
+    .replaceAll('\n$indent\n', '\n\n')
+    .replaceAll(trailingDead, '\n');
 }
 
 const String _customBegin = r'//\s*custom';
@@ -87,6 +94,20 @@ String htmlCustomBlock(String tag) {
 
 bool htmlMergeWithFile(String generated, String destFilePath) {
   return mergeWithFile(generated, destFilePath, _htmlCustomBegin, _htmlCustomEnd);
+}
+
+const String _panDocCustomBegin = r'<!---\s*custom';
+const String _panDocCustomEnd = r'<!---\s*end';
+const String _panDocCustomBlockText = '''
+<!--- custom <TAG> --->
+<!--- end <TAG> --->
+''';
+String panDocCustomBlock(String tag) {
+  return _panDocCustomBlockText.replaceAll('TAG', tag);
+}
+
+bool panDocMergeWithFile(String generated, String destFilePath) {
+  return mergeWithFile(generated, destFilePath, _panDocCustomBegin, _panDocCustomEnd);
 }
 
 const String _cssCustomBegin = r'/\*\s*custom';

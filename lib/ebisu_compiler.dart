@@ -8,13 +8,13 @@
 /// make their life of coding easier). Rather than try to incorporate one in NIH/DIY
 /// fashion a very simple template engine is provided here. The rules for templating
 /// are simple:
-/// 
+///
 /// - Template file is line based (each line is a comment, code or template text)
 /// - _#<# dart comment here >_
 /// - _#< dart code here >_
 /// - All template text is wrapped in tripple quotes.
-/// 
-/// 
+///
+///
 /// 
 library ebisu_compiler;
 
@@ -23,6 +23,9 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
+// custom <additional imports>
+// end <additional imports>
+
 part "src/ebisu_compiler/compiler.dart";
 
 final _logger = new Logger("ebisu_compiler");

@@ -339,6 +339,9 @@ At some point when true enums are provided this may be revisited.
           member('dependencies')
           ..type = 'List<PubDependency>'
           ..classInit = '[]',
+          member('dev_dependencies')
+          ..type = 'List<PubDependency>'
+          ..classInit = '[]',
         ],
         class_('system')
         ..doc = 'Defines a dart system (collection of libraries and apps)'
