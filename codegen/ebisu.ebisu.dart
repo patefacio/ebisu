@@ -459,9 +459,6 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'Classes defined in this app'
           ..type = 'List<Class>'
           ..classInit = '[]',
-          member('dependencies')
-          ..type = 'List<PubDependency>'
-          ..classInit = '[]',
           member('libraries')
           ..doc = 'List of libraries of this app'
           ..type = 'List<Library>'

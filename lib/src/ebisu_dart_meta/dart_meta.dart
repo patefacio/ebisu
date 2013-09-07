@@ -557,14 +557,13 @@ class System {
   /// Generate the code
   void generate() {
     if(app != null) {
-      if(pubSpec != null) {
+      if(pubSpec == null) {
         pubSpec = new PubSpec(app.id)
           ..addDependency(new PubDependency('browser'))
           ..addDependency(new PubDependency('path'))
           ..addDependency(new PubDependency('polymer'))
           ;
       }
-      app.dependencies.forEach((dep) => pubSpec.addDependency(dep));
     }
     finalize();
     scripts.forEach((script) => script.generate());
@@ -975,7 +974,6 @@ class App {
   bool includeCustom = true;
   /// Classes defined in this app
   List<Class> classes = [];
-  List<PubDependency> dependencies = [];
   /// List of libraries of this app
   List<Library> libraries = [];
   /// List of global variables for this library
@@ -1052,7 +1050,6 @@ main() {
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "classes": EBISU_UTILS.toJson(classes),
-    "dependencies": EBISU_UTILS.toJson(dependencies),
     "libraries": EBISU_UTILS.toJson(libraries),
     "variables": EBISU_UTILS.toJson(variables),
     "isWebUi": EBISU_UTILS.toJson(isWebUi),
@@ -1068,9 +1065,6 @@ main() {
     "classes":
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Class.randJson()),
-    "dependencies":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => PubDependency.randJson()),
     "libraries":
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
         () => Library.randJson()),
