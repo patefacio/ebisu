@@ -514,6 +514,10 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'If true a main is included in the library file'
           ..type = 'bool'
           ..classInit = 'false',
+          member('path')
+          ..doc = 'Set desired if generating just a lib and not a package',
+          member('lib_main')
+          ..doc = 'If set the main function'
         ],
         class_('part')
         ..doc = "Defines a dart part - as in 'part of' source file"

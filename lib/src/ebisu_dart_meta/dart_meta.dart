@@ -552,7 +552,15 @@ class System {
     }
   }
 
-  bool isClassJsonable(String className) => jsonableClasses.containsKey(className);
+  List _nonJsonableTypes = [ 'String', 'int', 'num', 'Map', 'List', 'DateTime' ];
+
+  bool isClassJsonable(String className) {
+    var result =
+      !_nonJsonableTypes.contains(className) &&
+      !className.startsWith('Map<') && 
+      !className.startsWith('List<');
+    return result;
+  }
 
   /// Generate the code
   void generate() {
@@ -1114,6 +1122,10 @@ class Library {
   bool isTest = false;
   /// If true a main is included in the library file
   bool includeMain = false;
+  /// Set desired if generating just a lib and not a package
+  String path;
+  /// If set the main function
+  String libMain;
 
 // custom <class Library>
 
@@ -1132,10 +1144,17 @@ class Library {
   }
 
   void generate() {
+
+    if(_parent == null) {
+      parent = system('ignored');
+    }
+
     String libStubPath = 
-      isTest? 
-      "${_parent.rootPath}/test/${id.snake}.dart" :
-      "${_parent.rootPath}/lib/${id.snake}.dart";
+      (path != null)? "${path}/${id.snake}.dart" :
+      (isTest? 
+          "${_parent.rootPath}/test/${id.snake}.dart" :
+          "${_parent.rootPath}/lib/${id.snake}.dart");
+
     mergeWithFile(META.library(this), libStubPath);
     parts.forEach((part) => part.generate());
   }
@@ -1193,6 +1212,8 @@ class Library {
     "includeLogger": EBISU_UTILS.toJson(includeLogger),
     "isTest": EBISU_UTILS.toJson(isTest),
     "includeMain": EBISU_UTILS.toJson(includeMain),
+    "path": EBISU_UTILS.toJson(path),
+    "libMain": EBISU_UTILS.toJson(libMain),
     // TODO: "Library": super.toJson(),
     };
   }
@@ -1221,6 +1242,8 @@ class Library {
     "includeLogger": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isTest": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "includeMain": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "libMain": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     };
   }
 

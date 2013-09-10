@@ -66,6 +66,10 @@ main() {
 ${customBlock("main")}
 }
 ''');
+ } else if(_.libMain != null) { 
+  _buf.add('''
+${_.libMain}
+''');
  } 
   return _buf.join();
 }
