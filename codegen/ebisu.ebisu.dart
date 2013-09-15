@@ -104,6 +104,7 @@ are simple:
           ..doc = 'Name of library this "part" is a part of'
           ..ctorsNamed = [ '' ],
           member('function_name')
+          ..doc = 'Each file is given a corresponding top level function for running the template'
           ..access = Access.RO
         ],
         class_('template_folder')

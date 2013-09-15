@@ -33,9 +33,11 @@ ${indentBlock(_.ctors[ctorName].ctorText)}
 ''');
  }); 
  for(var member in _.members) { 
+   if(member.hasPublicCode) { 
   _buf.add('''
-${indentBlock(chomp(member.define()))}
+${indentBlock(chomp(member.publicCode))}
 ''');
+   } 
  } 
  if(_.includeCustom) { 
   _buf.add('''
@@ -181,6 +183,13 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
   }
 ''');
+ } 
+ for(var member in _.members) { 
+   if(member.hasPrivateCode) { 
+  _buf.add('''
+${indentBlock(chomp(member.privateCode))}
+''');
+   } 
  } 
   _buf.add('''
 }

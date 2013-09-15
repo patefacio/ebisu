@@ -14,7 +14,9 @@ ${abstractTag}class ${_.className}${_.implementsClause}{
 ${indentBlock(_.ctors[ctorName].ctorText)}
 #< }); >
 #< for(var member in _.members) { >
-${indentBlock(chomp(member.define()))}
+#<   if(member.hasPublicCode) { >
+${indentBlock(chomp(member.publicCode))}
+#<   } >
 #< } >
 #< if(_.includeCustom) { >
 
@@ -120,6 +122,11 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #<     } >
 #<   } >
   }
+#< } >
+#< for(var member in _.members) { >
+#<   if(member.hasPrivateCode) { >
+${indentBlock(chomp(member.privateCode))}
+#<   } >
 #< } >
 }
 #< if(_.ctorSansNew) {  >

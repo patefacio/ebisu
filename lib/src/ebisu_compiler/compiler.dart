@@ -11,7 +11,7 @@ class TemplateFile {
   String outputPath;
   /// Name of library this "part" is a part of
   String partOf;
-  String _functionName;
+  /// Each file is given a corresponding top level function for running the template
   String get functionName => _functionName;
 
 // custom <class TemplateFile>
@@ -104,6 +104,7 @@ String ${_functionName}([dynamic _]) {
   }
 
 // end <class TemplateFile>
+  String _functionName;
 }
 
 /// Create a TemplateFile sans new, for more declarative construction

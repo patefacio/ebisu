@@ -2,7 +2,6 @@ part of ebisu;
 
 /// Convenience wrapper for a map - passed into templates as variable '_'
 class Context {
-  final Map _data;
   /// Data being wrapped
   Map get data => _data;
 
@@ -26,6 +25,7 @@ class Context {
   }
 
 // end <class Context>
+  final Map _data;
 }
 // custom <part ebisu>
 
@@ -54,9 +54,12 @@ Map _deadSpacePatternMap = {};
 String indentBlock(String block, [String indent = '  ']) {
   var trailingDead = _deadSpacePatternMap.putIfAbsent(indent, 
       () => new RegExp('\n$indent\$'));
+  var leadingDead = _deadSpacePatternMap.putIfAbsent(indent, 
+      () => new RegExp('^$indent\n'));
   return '$indent${block.split("\n").join("\n$indent")}'
     .replaceAll('\n$indent\n', '\n\n')
-    .replaceAll(trailingDead, '\n');
+    .replaceAll(trailingDead, '\n')
+    .replaceAll(leadingDead, '\n');
 }
 
 List<String> prepJoin(List<String> lines, [ String suffix = ',' ]) {

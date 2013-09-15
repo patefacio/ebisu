@@ -74,12 +74,10 @@ class Variable {
 
   Variable(this._id);
 
-  final Id _id;
   /// Id for this variable
   Id get id => _id;
   /// Documentation for this variable
   String doc;
-  dynamic _parent;
   /// Reference to parent of this variable
   dynamic get parent => _parent;
   /// True if variable is public.
@@ -96,10 +94,8 @@ class Variable {
   bool isConst = false;
   /// True if the variable is static
   bool isStatic = false;
-  String _name;
   /// Name of the enum class generated sans access prefix
   String get name => _name;
-  String _varName;
   /// Name of variable - varies depending on public/private
   String get varName => _varName;
 
@@ -147,6 +143,10 @@ class Variable {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
+  String _varName;
 }
 
 /// Defines an enum - to be generated idiomatically as a class
@@ -157,7 +157,6 @@ class Enum {
 
   Enum(this._id);
 
-  final Id _id;
   /// Id for this enum
   Id get id => _id;
   /// Documentation for this enum
@@ -165,17 +164,14 @@ class Enum {
   /// True if enum is public.
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
-  dynamic _parent;
   /// Reference to parent of this enum
   dynamic get parent => _parent;
   /// List of id's naming the values
   List<Id> values = [];
   /// If true, generate toJson/fromJson on wrapper class
   bool jsonSupport = false;
-  String _name;
   /// Name of the enum class generated sans access prefix
   String get name => _name;
-  String _enumName;
   /// Name of the enum class generated with access prefix
   String get enumName => _enumName;
   /// If true includes custom block for additional user supplied ctor code
@@ -230,6 +226,10 @@ class Enum {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
+  String _enumName;
 }
 
 /// A dependency of the system
@@ -242,8 +242,6 @@ class PubDependency {
   String path;
   /// Git reference
   String gitRef;
-  /// Type for the pub dependency
-  PubDepType _type;
   final RegExp pubTypeRe = new RegExp(r"(git:|http:|[./.])");
 
 // custom <class PubDependency>
@@ -351,6 +349,8 @@ class PubDependency {
     };
   }
 
+  /// Type for the pub dependency
+  PubDepType _type;
 }
 
 /// Information for the pubspec of the system
@@ -358,12 +358,10 @@ class PubSpec {
 
   PubSpec(this._id);
 
-  final Id _id;
   /// Id for this pub spec
   Id get id => _id;
   /// Documentation for this pub spec
   String doc;
-  dynamic _parent;
   /// Reference to parent of this pub spec
   dynamic get parent => _parent;
   /// Version for this package
@@ -449,11 +447,12 @@ class PubSpec {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
 }
 
 /// Defines a dart system (collection of libraries and apps)
 class System {
-  Id _id;
   /// Id for this system
   Id get id => _id;
   /// Documentation for this system
@@ -474,7 +473,6 @@ class System {
   PubSpec pubSpec;
   /// Map of all classes that have jsonSupport
   Map<String,Class> jsonableClasses = {};
-  bool _finalized = false;
   /// Set to true on finalize
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
@@ -765,6 +763,8 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
     };
   }
 
+  Id _id;
+  bool _finalized = false;
 }
 
 /// A test generated in a standard format
@@ -790,15 +790,12 @@ class ScriptArg {
 
   ScriptArg(this._id);
 
-  final Id _id;
   /// Id for this script argument
   Id get id => _id;
   /// Documentation for this script argument
   String doc;
-  dynamic _parent;
   /// Reference to parent of this script argument
   dynamic get parent => _parent;
-  String _name;
   /// Name of the the arg (emacs naming convention)
   String get name => _name;
   /// If true the argument is required
@@ -857,6 +854,9 @@ class ScriptArg {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
 }
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
@@ -864,12 +864,10 @@ class Script {
 
   Script(this._id);
 
-  final Id _id;
   /// Id for this script
   Id get id => _id;
   /// Documentation for this script
   String doc;
-  dynamic _parent;
   /// Reference to parent of this script
   dynamic get parent => _parent;
   /// If true a custom section will be included for script
@@ -926,6 +924,8 @@ class Script {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
 }
 
 /// Defines a dart *web* application. For non-web console app, use Script
@@ -933,12 +933,10 @@ class App {
 
   App(this._id);
 
-  final Id _id;
   /// Id for this app
   Id get id => _id;
   /// Documentation for this app
   String doc;
-  dynamic _parent;
   /// Reference to parent of this app
   dynamic get parent => _parent;
   /// If true a custom section will be included for app
@@ -1045,6 +1043,8 @@ main() {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
 }
 
 /// Defines a dart library - a collection of parts
@@ -1052,12 +1052,10 @@ class Library {
 
   Library(this._id);
 
-  final Id _id;
   /// Id for this library
   Id get id => _id;
   /// Documentation for this library
   String doc;
-  dynamic _parent;
   /// Reference to parent of this library
   dynamic get parent => _parent;
   /// If true a custom section will be included for library
@@ -1072,7 +1070,6 @@ class Library {
   List<Class> classes = [];
   /// Enums defined in this library
   List<Enum> enums = [];
-  String _name;
   /// Name of the library - for use in naming the library file, the 'library' and 'part of' statements
   String get name => _name;
   /// If true includes logging support and a _logger
@@ -1205,6 +1202,9 @@ class Library {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
 }
 
 /// Defines a dart part - as in 'part of' source file
@@ -1212,12 +1212,10 @@ class Part {
 
   Part(this._id);
 
-  final Id _id;
   /// Id for this part
   Id get id => _id;
   /// Documentation for this part
   String doc;
-  dynamic _parent;
   /// Reference to parent of this part
   dynamic get parent => _parent;
   /// If true a custom section will be included for app
@@ -1226,10 +1224,8 @@ class Part {
   List<Class> classes = [];
   /// Enums defined in this part of the library
   List<Enum> enums = [];
-  String _name;
   /// Name of the part - for use in naming the part file
   String get name => _name;
-  String _filePath;
   /// Path to the generated part dart file
   String get filePath => _filePath;
 
@@ -1282,6 +1278,10 @@ class Part {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
+  String _filePath;
 }
 
 /// Metadata associated with a Dart class
@@ -1289,12 +1289,10 @@ class Class {
 
   Class(this._id);
 
-  final Id _id;
   /// Id for this Dart class
   Id get id => _id;
   /// Documentation for this Dart class
   String doc;
-  dynamic _parent;
   /// Reference to parent of this Dart class
   dynamic get parent => _parent;
   /// True if Dart class is public.
@@ -1316,7 +1314,6 @@ class Class {
   List<String> ctorCustoms = [];
   /// List of ctors that should be const
   List<String> ctorConst = [];
-  Map<String,Ctor> _ctors = {};
   /// List of ctors of this class
   Map<String,Ctor> get ctors => _ctors;
   /// If true, class is abstract
@@ -1327,10 +1324,8 @@ class Class {
   bool ctorSansNew = false;
   /// If true, generate toJson/fromJson on all members that are not jsonTransient
   bool jsonSupport = false;
-  String _name;
   /// Name of the class - sans any access prefix (i.e. no '_')
   String get name => _name;
-  String _className;
   /// Name of the class, including access prefix
   String get className => _className;
 
@@ -1497,6 +1492,11 @@ class Class {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  Map<String,Ctor> _ctors = {};
+  String _name;
+  String _className;
 }
 
 /// Metadata associated with a constructor
@@ -1647,12 +1647,10 @@ class Member {
 
   Member(this._id);
 
-  final Id _id;
   /// Id for this class member
   Id get id => _id;
   /// Documentation for this class member
   String doc;
-  dynamic _parent;
   /// Reference to parent of this class member
   dynamic get parent => _parent;
   /// Type of the member
@@ -1677,10 +1675,8 @@ class Member {
   bool isStatic = false;
   /// True if the member should not be serialized if the parent class has jsonSupport
   bool jsonTransient = false;
-  String _name;
   /// Name of variable for the member, excluding access prefix (i.e. no '_')
   String get name => _name;
-  String _varName;
   /// Name of variable for the member - varies depending on public/private
   String get varName => _varName;
 
@@ -1695,8 +1691,36 @@ class Member {
     _parent = p;
   }
 
-  String define() {
-    return META.member(this);
+  bool get hasGetter => !isPublic && access == RO;
+  bool get hasSetter => !isPublic && access == RW;
+
+  bool get hasPublicCode => isPublic || hasGetter || hasSetter;
+  bool get hasPrivateCode => !isPublic;
+
+  String get finalDecl => isFinal? 'final ' : '';
+
+  String get decl =>
+    (classInit == null)? 
+    "${finalDecl}${type} ${varName};" :
+    ((type == 'String')?
+        "${finalDecl}${type} ${varName} = \"${classInit}\";" :
+        "${finalDecl}${type} ${varName} = ${classInit};");
+
+  String get publicCode {
+    var result = [];
+    if(doc != null) result.add('${docComment(rightTrim(doc))}');
+    if(hasGetter) {
+      result.add('$type get $name => $varName;');
+    }
+    if(isPublic) result.add(decl);
+    return result.join('\n');
+  }
+
+  String get privateCode {
+    var result = [];
+    if(doc != null && !hasPublicCode) result.add('${docComment(rightTrim(doc))}');
+    if(!isPublic) result.add(decl);
+    return result.join('\n');
   }
 
 // end <class Member>
@@ -1747,6 +1771,10 @@ class Member {
     };
   }
 
+  final Id _id;
+  dynamic _parent;
+  String _name;
+  String _varName;
 }
 // custom <part dart_meta>
 
