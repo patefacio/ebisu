@@ -32,7 +32,7 @@ void main() {
         List<String> args = [ options.script, '--no_compile' ]
           ..addAll(options.arguments);
         print("Args are " + args.toString());
-        Process.run('dart', args).then((ProcessResult results) {
+        Process.run('run_dart.dart', args).then((ProcessResult results) {
           print(results.stdout);
           print(results.stderr);
         });
@@ -217,6 +217,14 @@ classes with JSON support.
       '"package:id/id.dart"', 
       '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
       '"templates/dart_meta.dart" as META',
+    ]
+    ..variables = [
+      variable('non_jsonable_types')
+      ..isPublic = false
+      ..type = 'List<String>'
+      ..init = '''[ 
+  'String', 'int', 'num', 'Map', 'List', 'DateTime' 
+]'''
     ]
     ..includeLogger = true
     ..parts = [

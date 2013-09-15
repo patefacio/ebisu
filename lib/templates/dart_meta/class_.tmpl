@@ -10,6 +10,7 @@ ${abstractTag}class ${_.className} extends ${_.extend}${_.implementsClause}{
 ${abstractTag}class ${_.className}${_.implementsClause}{
 #< } >
 #< _.orderedCtors.forEach((ctorName) { >
+
 ${indentBlock(_.ctors[ctorName].ctorText)}
 #< }); >
 #< for(var member in _.members) { >
@@ -28,8 +29,8 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #<   } >
 #<   if(null != _.extend) { >
     "${_.extend}": super.toJson(),
-#<   } else if(null != _.mixins) { >
-    // TODO: "${_.className}": super.toJson(),
+#<   } else if(_.mixins.length > 0) { >
+    // TODO consider mixin support: "${_.className}": super.toJson(),
 #<   } >
     };
   }

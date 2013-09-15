@@ -71,11 +71,8 @@ class PubDepType {
 }
 
 class Variable {
-  Variable(
-    this._id
-  ) {
 
-  }
+  Variable(this._id);
 
   final Id _id;
   /// Id for this variable
@@ -132,7 +129,6 @@ class Variable {
     "isStatic": EBISU_UTILS.toJson(isStatic),
     "name": EBISU_UTILS.toJson(_name),
     "varName": EBISU_UTILS.toJson(_varName),
-    // TODO: "Variable": super.toJson(),
     };
   }
 
@@ -158,11 +154,8 @@ class Variable {
 /// At some point when true enums are provided this may be revisited.
 ///
 class Enum {
-  Enum(
-    this._id
-  ) {
 
-  }
+  Enum(this._id);
 
   final Id _id;
   /// Id for this enum
@@ -218,7 +211,6 @@ class Enum {
     "enumName": EBISU_UTILS.toJson(_enumName),
     "hasCustom": EBISU_UTILS.toJson(hasCustom),
     "isSnakeString": EBISU_UTILS.toJson(isSnakeString),
-    // TODO: "Enum": super.toJson(),
     };
   }
 
@@ -345,7 +337,6 @@ class PubDependency {
     "gitRef": EBISU_UTILS.toJson(gitRef),
     "type": EBISU_UTILS.toJson(_type),
     "pubTypeRe": EBISU_UTILS.toJson(pubTypeRe),
-    // TODO: "PubDependency": super.toJson(),
     };
   }
 
@@ -364,11 +355,8 @@ class PubDependency {
 
 /// Information for the pubspec of the system
 class PubSpec {
-  PubSpec(
-    this._id
-  ) {
 
-  }
+  PubSpec(this._id);
 
   final Id _id;
   /// Id for this pub spec
@@ -441,7 +429,6 @@ class PubSpec {
     "homepage": EBISU_UTILS.toJson(homepage),
     "dependencies": EBISU_UTILS.toJson(dependencies),
     "devDependencies": EBISU_UTILS.toJson(devDependencies),
-    // TODO: "PubSpec": super.toJson(),
     };
   }
 
@@ -552,15 +539,10 @@ class System {
     }
   }
 
-  List _nonJsonableTypes = [ 'String', 'int', 'num', 'Map', 'List', 'DateTime' ];
-
-  bool isClassJsonable(String className) {
-    var result =
+  bool isClassJsonable(String className) =>
       !_nonJsonableTypes.contains(className) &&
       !className.startsWith('Map<') && 
       !className.startsWith('List<');
-    return result;
-  }
 
   /// Generate the code
   void generate() {
@@ -593,11 +575,6 @@ class System {
           pubSpec.addDependency(
             new PubDependency('logging')
             ..version = ">=0.6.21+3 <0.6.22");
-        }
-        if(pubSpec.depNotFound('logging_handlers')) {
-          pubSpec.addDependency(
-            new PubDependency('logging_handlers')
-            ..version = ">=0.5.0+3 <0.5.1");
         }
       }
     });
@@ -754,7 +731,6 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
     "license": EBISU_UTILS.toJson(license),
     "includeReadme": EBISU_UTILS.toJson(includeReadme),
     "includeHop": EBISU_UTILS.toJson(includeHop),
-    // TODO: "System": super.toJson(),
     };
   }
 
@@ -799,7 +775,6 @@ class Test {
 
   Map toJson() {
     return {
-    // TODO: "Test": super.toJson(),
     };
   }
 
@@ -812,11 +787,8 @@ class Test {
 
 /// An agrument to a script
 class ScriptArg {
-  ScriptArg(
-    this._id
-  ) {
 
-  }
+  ScriptArg(this._id);
 
   final Id _id;
   /// Id for this script argument
@@ -865,7 +837,6 @@ class ScriptArg {
     "allowed": EBISU_UTILS.toJson(allowed),
     "position": EBISU_UTILS.toJson(position),
     "abbr": EBISU_UTILS.toJson(abbr),
-    // TODO: "ScriptArg": super.toJson(),
     };
   }
 
@@ -890,11 +861,8 @@ class ScriptArg {
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
 class Script {
-  Script(
-    this._id
-  ) {
 
-  }
+  Script(this._id);
 
   final Id _id;
   /// Id for this script
@@ -919,7 +887,6 @@ class Script {
     imports.add('dart:io');
     imports.add('package:args/args.dart');
     imports.add('package:logging/logging.dart');
-    imports.add('package:logging_handlers/logging_handlers_shared.dart');
     imports = cleanImports(
       imports.map((i) => importStatement(i)).toList());
   }
@@ -942,7 +909,6 @@ class Script {
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "imports": EBISU_UTILS.toJson(imports),
     "args": EBISU_UTILS.toJson(args),
-    // TODO: "Script": super.toJson(),
     };
   }
 
@@ -964,11 +930,8 @@ class Script {
 
 /// Defines a dart *web* application. For non-web console app, use Script
 class App {
-  App(
-    this._id
-  ) {
 
-  }
+  App(this._id);
 
   final Id _id;
   /// Id for this app
@@ -1061,7 +1024,6 @@ main() {
     "libraries": EBISU_UTILS.toJson(libraries),
     "variables": EBISU_UTILS.toJson(variables),
     "isWebUi": EBISU_UTILS.toJson(isWebUi),
-    // TODO: "App": super.toJson(),
     };
   }
 
@@ -1087,11 +1049,8 @@ main() {
 
 /// Defines a dart library - a collection of parts
 class Library {
-  Library(
-    this._id
-  ) {
 
-  }
+  Library(this._id);
 
   final Id _id;
   /// Id for this library
@@ -1214,7 +1173,6 @@ class Library {
     "includeMain": EBISU_UTILS.toJson(includeMain),
     "path": EBISU_UTILS.toJson(path),
     "libMain": EBISU_UTILS.toJson(libMain),
-    // TODO: "Library": super.toJson(),
     };
   }
 
@@ -1251,11 +1209,8 @@ class Library {
 
 /// Defines a dart part - as in 'part of' source file
 class Part {
-  Part(
-    this._id
-  ) {
 
-  }
+  Part(this._id);
 
   final Id _id;
   /// Id for this part
@@ -1308,7 +1263,6 @@ class Part {
     "enums": EBISU_UTILS.toJson(enums),
     "name": EBISU_UTILS.toJson(_name),
     "filePath": EBISU_UTILS.toJson(_filePath),
-    // TODO: "Part": super.toJson(),
     };
   }
 
@@ -1332,11 +1286,8 @@ class Part {
 
 /// Metadata associated with a Dart class
 class Class {
-  Class(
-    this._id
-  ) {
 
-  }
+  Class(this._id);
 
   final Id _id;
   /// Id for this Dart class
@@ -1384,6 +1335,14 @@ class Class {
   String get className => _className;
 
 // custom <class Class>
+
+  List<Member> get publicMembers {
+    return members.where((member) => member.isPublic).toList();
+  }
+
+  List<Member> get privateMembers {
+    return members.where((member) => !member.isPublic).toList();
+  }
 
   String get jsonCtor {
     if(_ctors.containsKey('_json')) {
@@ -1499,7 +1458,6 @@ class Class {
     "jsonSupport": EBISU_UTILS.toJson(jsonSupport),
     "name": EBISU_UTILS.toJson(_name),
     "className": EBISU_UTILS.toJson(_className),
-    // TODO: "Class": super.toJson(),
     };
   }
 
@@ -1606,35 +1564,47 @@ ${className} ${id.camel}(${leftTrim(chomp(indentBlock(parmText, '  ')))}) {
     List<String> result = [];
     if(members.length > 0) {
       List<String> required = [];
-      members.forEach((m) => required.add('  this.${m.varName}'));
-      result.add("${required.join(',\n')}");
+      members.forEach((m) => required.add('this.${m.varName}'));
+      result.addAll(prepJoin(required));
     }
     if(optMembers.length > 0) {
+      if(result.length > 0) result[result.length-1] += ',';
+      result.add('[');
       List<String> optional = [];
       optMembers.forEach((m) => 
-          optional.add('    this.${m.varName}' +
+          optional.add('this.${m.varName}' +
               ((m.ctorInit == null)? '' : ' = ${m.ctorInit}')));
-      result.add("  [\n${optional.join(',\n')}\n  ]");
+      result.addAll(prepJoin(optional));
+      result.add(']');
     }
     if(namedMembers.length > 0) {
+      if(result.length > 0) result[result.length-1] += ',';
+      result.add('{');
       List<String> named = [];
       namedMembers.forEach((m) => 
-        named.add('    this.${m.varName}' +
+        named.add('this.${m.varName}' +
             ((m.ctorInit == null)? '':' : ${m.ctorInit}')));
-      result.add("  {\n${named.join(',\n')}\n  }");
+      result.addAll(prepJoin(named));
+      result.add('}');      
     }
-    String guts = result.join(',\n');
+
     String cb = hasCustom? 
     indentBlock(rightTrim(customBlock('${qualifiedName}'))): '';
     String constTag = isConst? 'const ' : '';
-    String body = isConst? ';' : ''' {
+    String body = (isConst || !hasCustom)? ';' : ''' {
 ${chomp(cb, true)}
 }''';
 
+    List decl = [];
+    var method = '${constTag}${qualifiedName}(';
+    if(result.length > 0) {
+      decl
+        ..add('$method${result.removeAt(0)}')
+        ..addAll(result);
+    }
+
     return '''
-${constTag}${qualifiedName}(
-${guts}
-)${body}
+${formatFill(decl)})${body}
 ''';
   }
 
@@ -1649,7 +1619,6 @@ ${guts}
     "namedMembers": EBISU_UTILS.toJson(namedMembers),
     "hasCustom": EBISU_UTILS.toJson(hasCustom),
     "isConst": EBISU_UTILS.toJson(isConst),
-    // TODO: "Ctor": super.toJson(),
     };
   }
 
@@ -1675,11 +1644,8 @@ ${guts}
 
 /// Metadata associated with a member of a Dart class
 class Member {
-  Member(
-    this._id
-  ) {
 
-  }
+  Member(this._id);
 
   final Id _id;
   /// Id for this class member
@@ -1752,7 +1718,6 @@ class Member {
     "jsonTransient": EBISU_UTILS.toJson(jsonTransient),
     "name": EBISU_UTILS.toJson(_name),
     "varName": EBISU_UTILS.toJson(_varName),
-    // TODO: "Member": super.toJson(),
     };
   }
 

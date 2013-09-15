@@ -28,6 +28,7 @@ ${abstractTag}class ${_.className}${_.implementsClause}{
  } 
  _.orderedCtors.forEach((ctorName) { 
   _buf.add('''
+
 ${indentBlock(_.ctors[ctorName].ctorText)}
 ''');
  }); 
@@ -57,9 +58,9 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
     "${_.extend}": super.toJson(),
 ''');
-   } else if(null != _.mixins) { 
+   } else if(_.mixins.length > 0) { 
   _buf.add('''
-    // TODO: "${_.className}": super.toJson(),
+    // TODO consider mixin support: "${_.className}": super.toJson(),
 ''');
    } 
   _buf.add('''

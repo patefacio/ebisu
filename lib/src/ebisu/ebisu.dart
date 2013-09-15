@@ -59,6 +59,34 @@ String indentBlock(String block, [String indent = '  ']) {
     .replaceAll(trailingDead, '\n');
 }
 
+List<String> prepJoin(List<String> lines, [ String suffix = ',' ]) {
+  for(int i=0; i<lines.length-1; i++) {
+    lines[i] += suffix;
+  }
+  return lines;
+}
+
+String formatFill(List<String> entries, 
+    [ String indent = '  ', String separator = ' ', int maxLength = 80 ]) {
+  if(entries.length == 0) return '';
+  List<String> result = [];
+  String current = '${entries.first}';
+  int currentLength = 0;
+  for(int i=1; i<entries.length; i++) {
+    var entry = entries[i];
+    if((current.length + entry.length) >= maxLength) {
+      result.add(current);
+      current = '$indent$entry';
+    } else {
+      current += '$separator$entry';
+    }
+  }
+  if(current.length > 0) {
+    result.add(current);
+  }
+  return result.join('\n');
+}
+
 const String _customBegin = r'//\s*custom';
 const String _customEnd = r'//\s*end';
 const String _customBlockText = '''

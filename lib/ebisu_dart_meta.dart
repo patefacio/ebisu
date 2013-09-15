@@ -59,6 +59,10 @@ part "src/ebisu_dart_meta/dart_meta.dart";
 
 final _logger = new Logger("ebisu_dart_meta");
 
+List<String> _nonJsonableTypes = [ 
+  'String', 'int', 'num', 'Map', 'List', 'DateTime' 
+];
+
 // custom <library ebisu_dart_meta>
 // end <library ebisu_dart_meta>
 

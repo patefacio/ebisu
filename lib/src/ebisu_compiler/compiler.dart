@@ -2,15 +2,8 @@ part of ebisu_compiler;
 
 /// A file with ".tmpl" extension containing mixed dart code and text that can be "realized" by the template engine
 class TemplateFile {
-  TemplateFile(
-    this.inputPath,
-    {
-      this.outputPath,
-      this.partOf
-    }
-  ) {
 
-  }
+  TemplateFile(this.inputPath, { this.outputPath, this.partOf });
 
   /// Path to file containting template code
   String inputPath;
@@ -129,15 +122,8 @@ TemplateFile templateFile(String inputPath,
 /// A class to process a folder full of templates, 
 /// all of which get compiled into a single dart library
 class TemplateFolder {
-  TemplateFolder(
-    this.inputPath,
-    [
-      this.outputPath,
-      this.libName
-    ]
-  ) {
 
-  }
+  TemplateFolder(this.inputPath, [ this.outputPath, this.libName ]);
 
   /// Path to folder of templates
   String inputPath;
