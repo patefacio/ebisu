@@ -562,7 +562,7 @@ class System {
     if(includeHop) {
       if(pubSpec.depNotFound('hop')) {
         pubSpec.addDevDependency(
-          new PubDependency('hop')..version = '0.24.2');
+          new PubDependency('hop')..version = '0.24.4');
       }
     }
 
@@ -572,7 +572,7 @@ class System {
         if(pubSpec.depNotFound('logging')) {
           pubSpec.addDependency(
             new PubDependency('logging')
-            ..version = ">=0.6.21+3 <0.6.22");
+            ..version = ">=0.7.1");
         }
       }
     });
