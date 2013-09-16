@@ -4,10 +4,14 @@ import "package:ebisu/ebisu.dart";
 import "package:id/id.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
 import "package:ebisu/ebisu_compiler.dart";
+import "package:logging/logging.dart";
 
 String _topDir;
 
 void main() {
+
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
   Options options = new Options();
   String here = path.absolute(options.script);
@@ -230,14 +234,22 @@ classes with JSON support.
     ..includeLogger = true
     ..parts = [
       part('dart_meta')
+      ..variables = [
+        variable('pub_type_re')
+        ..type = 'RegExp'
+        ..isPublic = false
+        ..init = 'new RegExp(r"(git:|http:|[\./.])")'
+      ]
       ..enums = [
         enum_('access')
+        ..jsonSupport = true
         ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
         ..values = [
           id('ia'), id('ro'), id('rw')
         ],
         enum_('pub_dep_type')
         ..doc = 'Dependency type of a PubDependency '
+        ..jsonSupport = true
         ..values = [
           id('path'), id('git'), id('hosted')
         ],
@@ -323,12 +335,9 @@ At some point when true enums are provided this may be revisited.
           ..doc = "Git reference",
           member('type')
           ..doc = "Type for the pub dependency"
+          ..jsonTransient = true
           ..type = 'PubDepType'
           ..access = IA,
-          member('pub_type_re')
-          ..type = 'RegExp'
-          ..isFinal = true
-          ..classInit = 'new RegExp(r"(git:|http:|[\./.])")'
         ],
         class_('pub_spec')
         ..doc = 'Information for the pubspec of the system'
@@ -549,6 +558,10 @@ At some point when true enums are provided this may be revisited.
           member('file_path')
           ..doc = "Path to the generated part dart file"
           ..access = Access.RO,
+          member('variables')
+          ..doc = 'List of global variables in this part'
+          ..type = 'List<Variable>'
+          ..classInit = '[]',
         ],
         class_('class')
         ..doc = 'Metadata associated with a Dart class'
@@ -705,6 +718,7 @@ other languages like D) using a fairly declarative aproach.
 '''
         ..dependencies = [
           pubdep('path'),
+          pubdep('id'),
         ]
                  )
     ..libraries = [
@@ -724,12 +738,27 @@ other languages like D) using a fairly declarative aproach.
         ..doc = 'Hompage for pubspec'
         ..isFinal = true
         ..init = "Platform.environment['EBISU_HOMEPAGE']",
+        variable('ebisu_pub_versions')
+        ..doc = '''
+File containing default pub versions. Dart code generation at times
+generates code that requires packages. For example, generated
+test cases require unittest, generated code can require logging,
+hop support requries hop. Since the pubspec yaml is generated
+the idea here is to pull the versions of these packages out of 
+the code and into a config file. Then to upgrade multiple packages
+with multiple pubspecs would entail updating the config file and
+regenerating.
+'''
+        ..isFinal = true
+        ..init = '''
+(Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
+  Platform.environment['EBISU_PUB_VERSIONS'] :
+  "\${Platform.environment['HOME']}/.ebisu_pub_versions.json"''',
         variable('license_map')
         ..init = '''
 {
    'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>'
-}
-'''
+}'''
 
       ]
       ..imports = [

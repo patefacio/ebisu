@@ -10,3 +10,6 @@ ${chomp(c.define())}
 #< if(_.includeCustom) { >
 ${customBlock("part ${_.name}")}
 #< } >
+#< for(var v in _.variables) { >
+${v.define()}
+#< } >

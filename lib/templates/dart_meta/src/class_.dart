@@ -53,7 +53,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 ''');
    for(Member member in _.members.where((m) => !m.jsonTransient)) { 
   _buf.add('''
-    "${member.name}": EBISU_UTILS.toJson(${member.varName}),
+    "${member.name}": EBISU_UTILS.toJson(${member.hasGetter? member.name : member.varName}),
 ''');
    } 
    if(null != _.extend) { 

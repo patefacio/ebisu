@@ -27,7 +27,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   Map toJson() {
     return {
 #<   for(Member member in _.members.where((m) => !m.jsonTransient)) { >
-    "${member.name}": EBISU_UTILS.toJson(${member.varName}),
+    "${member.name}": EBISU_UTILS.toJson(${member.hasGetter? member.name : member.varName}),
 #<   } >
 #<   if(null != _.extend) { >
     "${_.extend}": super.toJson(),

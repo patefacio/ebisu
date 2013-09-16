@@ -4,20 +4,20 @@ author: Daniel Davidson <dbdavidson@yahoo.com>
 description: >
   A library that supports code generation of the structure Dart (and potentially
   other languages like D) using a fairly declarative aproach.
-  
+
 dependencies:
-  path:  "any"
-  logging:  "any"
-  logging_handlers:  "any"
+  path: ">=0.7.1"
+
+  id: ">=0.0.3"
+
+  logging: ">=0.7.1"
+
 # custom <ebisu dependencies>
 
-  id:
-    git:
-      url: git://github.com/patefacio/id
-      ref: HEAD
-
-  logging:
-  logging_handlers:
-
 # end <ebisu dependencies>
+
+dev_dependencies:
+# custom <ebisu dev dependencies>
+# end <ebisu dev dependencies>
+
 

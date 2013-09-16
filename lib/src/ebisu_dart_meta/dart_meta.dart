@@ -32,6 +32,22 @@ class Access {
     }
   }
 
+  int toJson() {
+    return this.value;
+  }
+
+  static int randJson() {
+   return _randomJsonGenerator.nextInt(3);
+  }
+
+  static Access fromJson(int v) {
+    switch(v) {
+      case 0: return IA;
+      case 1: return RO;
+      case 2: return RW;
+    }
+  }
+
 
 }
 
@@ -64,6 +80,22 @@ class PubDepType {
       case "PATH": return PATH;
       case "GIT": return GIT;
       case "HOSTED": return HOSTED;
+    }
+  }
+
+  int toJson() {
+    return this.value;
+  }
+
+  static int randJson() {
+   return _randomJsonGenerator.nextInt(3);
+  }
+
+  static PubDepType fromJson(int v) {
+    switch(v) {
+      case 0: return PATH;
+      case 1: return GIT;
+      case 2: return HOSTED;
     }
   }
 
@@ -115,7 +147,7 @@ class Variable {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
     "type": EBISU_UTILS.toJson(type),
@@ -123,8 +155,8 @@ class Variable {
     "isFinal": EBISU_UTILS.toJson(isFinal),
     "isConst": EBISU_UTILS.toJson(isConst),
     "isStatic": EBISU_UTILS.toJson(isStatic),
-    "name": EBISU_UTILS.toJson(_name),
-    "varName": EBISU_UTILS.toJson(_varName),
+    "name": EBISU_UTILS.toJson(name),
+    "varName": EBISU_UTILS.toJson(varName),
     };
   }
 
@@ -198,13 +230,13 @@ class Enum {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
     "values": EBISU_UTILS.toJson(values),
     "jsonSupport": EBISU_UTILS.toJson(jsonSupport),
-    "name": EBISU_UTILS.toJson(_name),
-    "enumName": EBISU_UTILS.toJson(_enumName),
+    "name": EBISU_UTILS.toJson(name),
+    "enumName": EBISU_UTILS.toJson(enumName),
     "hasCustom": EBISU_UTILS.toJson(hasCustom),
     "isSnakeString": EBISU_UTILS.toJson(isSnakeString),
     };
@@ -242,14 +274,13 @@ class PubDependency {
   String path;
   /// Git reference
   String gitRef;
-  final RegExp pubTypeRe = new RegExp(r"(git:|http:|[./.])");
 
 // custom <class PubDependency>
 
   PubDepType get type {
     if(_type == null) {
       if(path != null) {
-        var match = pubTypeRe.firstMatch(path);
+        var match = _pubTypeRe.firstMatch(path);
 
         switch(match.group(1)) {
           case 'git:': {
@@ -316,7 +347,7 @@ class PubDependency {
         }
       } else {
         result += '''
-      git: $path
+      path: $path
 ''';
       }
     }
@@ -333,8 +364,6 @@ class PubDependency {
     "version": EBISU_UTILS.toJson(version),
     "path": EBISU_UTILS.toJson(path),
     "gitRef": EBISU_UTILS.toJson(gitRef),
-    "type": EBISU_UTILS.toJson(_type),
-    "pubTypeRe": EBISU_UTILS.toJson(pubTypeRe),
     };
   }
 
@@ -344,8 +373,6 @@ class PubDependency {
     "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "gitRef": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "type": EBISU_UTILS.randJson(_randomJsonGenerator, PubDepType.randJson),
-    "pubTypeRe": EBISU_UTILS.randJson(_randomJsonGenerator, RegExp.randJson),
     };
   }
 
@@ -419,7 +446,7 @@ class PubSpec {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "version": EBISU_UTILS.toJson(version),
     "name": EBISU_UTILS.toJson(name),
@@ -542,6 +569,45 @@ class System {
       !className.startsWith('Map<') && 
       !className.startsWith('List<');
 
+  void overridePubs() {
+    var overrideFile = new File(ebisuPubVersions);
+    if(overrideFile.existsSync()) {
+      var overrideJson = convert.JSON.decode(overrideFile.readAsStringSync());
+      var overrides = overrideJson['versions'];
+      _logger.info("Found version overides: ${overrideJson}");
+      var deps = new List.from(pubSpec.dependencies)..addAll(pubSpec.devDependencies);
+      deps.forEach((dep) {
+        var override = overrides[dep.name];
+        if(override != null) {
+          _logger.info("Overriding: ${dep.name} (${dep.toJson()}) with ${override}");
+          var version = override['version'];
+          if(version != null) {
+            dep.version = version;
+            dep.path = null;
+            dep._type = PubDepType.HOSTED;
+          } else {
+            var path = override['path'];
+            if(path != null) {
+              dep.path = path;
+              dep.version = null;
+              dep.gitRef = null;
+              dep._type = PubDepType.PATH;
+              _logger.info("Yaml: ${dep.yamlEntry}");
+            } else {
+              throw 
+                new FormatException('''
+Entry ($override) in ${ebisuPubVersions} invalid.
+Only "version" and "path" overrides are supported.
+''');
+            }
+          }
+        }
+      });
+    } else {
+      _logger.info("NOT Found version overrides: ${ebisuPubVersions}");        
+    }
+  }
+
   /// Generate the code
   void generate() {
     if(app != null) {
@@ -561,8 +627,7 @@ class System {
 
     if(includeHop) {
       if(pubSpec.depNotFound('hop')) {
-        pubSpec.addDevDependency(
-          new PubDependency('hop')..version = '0.24.4');
+        pubSpec.addDevDependency(new PubDependency('hop'));
       }
     }
 
@@ -570,14 +635,13 @@ class System {
       lib.generate();
       if(lib.includeLogger) {
         if(pubSpec.depNotFound('logging')) {
-          pubSpec.addDependency(
-            new PubDependency('logging')
-            ..version = ">=0.7.1");
+          pubSpec.addDependency(new PubDependency('logging'));
         }
       }
     });
 
     if(pubSpec != null && generatePubSpec) {
+      overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
       scriptMergeWithFile(META.pubspec(pubSpec), pubSpecPath);
     }
@@ -714,7 +778,7 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "rootPath": EBISU_UTILS.toJson(rootPath),
     "scripts": EBISU_UTILS.toJson(scripts),
@@ -724,7 +788,7 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
     "allLibraries": EBISU_UTILS.toJson(allLibraries),
     "pubSpec": EBISU_UTILS.toJson(pubSpec),
     "jsonableClasses": EBISU_UTILS.toJson(jsonableClasses),
-    "finalized": EBISU_UTILS.toJson(_finalized),
+    "finalized": EBISU_UTILS.toJson(finalized),
     "generatePubSpec": EBISU_UTILS.toJson(generatePubSpec),
     "license": EBISU_UTILS.toJson(license),
     "includeReadme": EBISU_UTILS.toJson(includeReadme),
@@ -824,9 +888,9 @@ class ScriptArg {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
-    "name": EBISU_UTILS.toJson(_name),
+    "name": EBISU_UTILS.toJson(name),
     "isRequired": EBISU_UTILS.toJson(isRequired),
     "isFlag": EBISU_UTILS.toJson(isFlag),
     "isMultiple": EBISU_UTILS.toJson(isMultiple),
@@ -902,7 +966,7 @@ class Script {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "imports": EBISU_UTILS.toJson(imports),
@@ -1015,7 +1079,7 @@ main() {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "classes": EBISU_UTILS.toJson(classes),
@@ -1156,7 +1220,7 @@ class Library {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "imports": EBISU_UTILS.toJson(imports),
@@ -1164,7 +1228,7 @@ class Library {
     "variables": EBISU_UTILS.toJson(variables),
     "classes": EBISU_UTILS.toJson(classes),
     "enums": EBISU_UTILS.toJson(enums),
-    "name": EBISU_UTILS.toJson(_name),
+    "name": EBISU_UTILS.toJson(name),
     "includeLogger": EBISU_UTILS.toJson(includeLogger),
     "isTest": EBISU_UTILS.toJson(isTest),
     "includeMain": EBISU_UTILS.toJson(includeMain),
@@ -1228,11 +1292,14 @@ class Part {
   String get name => _name;
   /// Path to the generated part dart file
   String get filePath => _filePath;
+  /// List of global variables in this part
+  List<Variable> variables = [];
 
 // custom <class Part>
 
   set parent(p) {
     _name = _id.snake;
+    variables.forEach((v) => v.parent = this);
     classes.forEach((dc) => dc.parent = this);
     enums.forEach((e) => e.parent = this);
     _parent = p;
@@ -1252,13 +1319,14 @@ class Part {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "includeCustom": EBISU_UTILS.toJson(includeCustom),
     "classes": EBISU_UTILS.toJson(classes),
     "enums": EBISU_UTILS.toJson(enums),
-    "name": EBISU_UTILS.toJson(_name),
-    "filePath": EBISU_UTILS.toJson(_filePath),
+    "name": EBISU_UTILS.toJson(name),
+    "filePath": EBISU_UTILS.toJson(filePath),
+    "variables": EBISU_UTILS.toJson(variables),
     };
   }
 
@@ -1275,6 +1343,9 @@ class Part {
         () => Enum.randJson()),
     "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "filePath": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "variables":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => Variable.randJson()),
     };
   }
 
@@ -1435,7 +1506,7 @@ class Class {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "isPublic": EBISU_UTILS.toJson(isPublic),
     "mixins": EBISU_UTILS.toJson(mixins),
@@ -1446,13 +1517,13 @@ class Class {
     "members": EBISU_UTILS.toJson(members),
     "ctorCustoms": EBISU_UTILS.toJson(ctorCustoms),
     "ctorConst": EBISU_UTILS.toJson(ctorConst),
-    "ctors": EBISU_UTILS.toJson(_ctors),
+    "ctors": EBISU_UTILS.toJson(ctors),
     "isAbstract": EBISU_UTILS.toJson(isAbstract),
     "toJsonSupport": EBISU_UTILS.toJson(toJsonSupport),
     "ctorSansNew": EBISU_UTILS.toJson(ctorSansNew),
     "jsonSupport": EBISU_UTILS.toJson(jsonSupport),
-    "name": EBISU_UTILS.toJson(_name),
-    "className": EBISU_UTILS.toJson(_className),
+    "name": EBISU_UTILS.toJson(name),
+    "className": EBISU_UTILS.toJson(className),
     };
   }
 
@@ -1727,7 +1798,7 @@ class Member {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(_id),
+    "id": EBISU_UTILS.toJson(id),
     "doc": EBISU_UTILS.toJson(doc),
     "type": EBISU_UTILS.toJson(type),
     "access": EBISU_UTILS.toJson(access),
@@ -1740,8 +1811,8 @@ class Member {
     "isConst": EBISU_UTILS.toJson(isConst),
     "isStatic": EBISU_UTILS.toJson(isStatic),
     "jsonTransient": EBISU_UTILS.toJson(jsonTransient),
-    "name": EBISU_UTILS.toJson(_name),
-    "varName": EBISU_UTILS.toJson(_varName),
+    "name": EBISU_UTILS.toJson(name),
+    "varName": EBISU_UTILS.toJson(varName),
     };
   }
 
@@ -1827,4 +1898,6 @@ String importUri(String s) => Library.importUri(s);
 String importStatement(String s) => Library.importStatement(s);
 
 // end <part dart_meta>
+
+RegExp _pubTypeRe = new RegExp(r"(git:|http:|[./.])");
 
