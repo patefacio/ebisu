@@ -130,8 +130,11 @@ ${indentBlock(chomp(member.privateCode))}
 #< } >
 }
 #< if(_.ctorSansNew) {  >
-#<   _.ctors.forEach((ctorName, ctor) { >
+#<   if(_.ctors.length>0) { >
+#<     _.ctors.forEach((ctorName, ctor) { >
 ${ctor.ctorSansNew}
-#< }); >
-
+#<     }); >
+#<   } else { >
+${_.id.camel}() => new ${_.name}();
+#<   } >
 #< } >

@@ -119,7 +119,6 @@ TemplateFile templateFile(String inputPath,
 }
 
 
-
 /// A class to process a folder full of templates, 
 /// all of which get compiled into a single dart library
 class TemplateFolder {

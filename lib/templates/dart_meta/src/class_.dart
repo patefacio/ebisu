@@ -195,14 +195,17 @@ ${indentBlock(chomp(member.privateCode))}
 }
 ''');
  if(_.ctorSansNew) {  
-   _.ctors.forEach((ctorName, ctor) { 
+   if(_.ctors.length>0) { 
+     _.ctors.forEach((ctorName, ctor) { 
   _buf.add('''
 ${ctor.ctorSansNew}
 ''');
- }); 
+     }); 
+   } else { 
   _buf.add('''
-
+${_.id.camel}() => new ${_.name}();
 ''');
+   } 
  } 
   return _buf.join();
 }
