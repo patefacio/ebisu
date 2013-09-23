@@ -21,8 +21,8 @@ library ebisu_compiler;
 import 'dart:io';
 import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
-import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 // custom <additional imports>
 // end <additional imports>
 

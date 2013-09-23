@@ -2,8 +2,8 @@
 library ebisu;
 
 import 'dart:io';
-import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 // custom <additional imports>
 // end <additional imports>
 

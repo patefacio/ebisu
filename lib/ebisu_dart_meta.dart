@@ -45,13 +45,13 @@
 /// 
 library ebisu_dart_meta;
 
-import 'dart:io';
 import 'dart:convert' as convert;
+import 'dart:io';
 import 'package:ebisu/ebisu.dart';
-import 'package:id/id.dart';
 import 'package:ebisu/ebisu_utils.dart' as EBISU_UTILS;
-import 'templates/dart_meta.dart' as META;
+import 'package:id/id.dart';
 import 'package:logging/logging.dart';
+import 'templates/dart_meta.dart' as META;
 // custom <additional imports>
 // end <additional imports>
 

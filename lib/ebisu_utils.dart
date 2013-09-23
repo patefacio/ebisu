@@ -1,8 +1,8 @@
 /// Support code to be used by libraries generated with ebisu. Example (toJson)
 library ebisu_utils;
 
-import 'dart:math';
 import 'dart:convert' as convert;
+import 'dart:math';
 import 'package:logging/logging.dart';
 // custom <additional imports>
 // end <additional imports>

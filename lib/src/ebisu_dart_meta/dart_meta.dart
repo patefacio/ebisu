@@ -508,6 +508,12 @@ class System {
   String license;
   /// If true standard outline for readme provided
   bool includeReadme = false;
+  /// A brief introduction for this system, included in README.md
+  String introduction;
+  /// Purpose for this system, included in README.md
+  String purpose;
+  /// List of todos included in the readme - If any present includeReadme assumed true
+  List<String> todos = [];
   /// If true generates tool folder with hop_runner
   bool includeHop = false;
 
@@ -521,11 +527,10 @@ class System {
     if(!_finalized) {
 
       testLibraries.forEach((library) {
-        if(!library.id.snake.startsWith('test_'))
-          _logger.warning(
-            r"Test library ${library.id.snake} should be named /test_\w+/");
+        if(library.id.snake.startsWith('test_')) {
+          library.includeMain = true;
+        }
         library.isTest = true;
-        library.includeMain = true;
         library.imports.add('package:unittest/unittest.dart');
       });
 
@@ -610,6 +615,9 @@ Only "version" and "path" overrides are supported.
 
   /// Generate the code
   void generate() {
+
+    if(rootPath == null) rootPath = '.';
+
     if(app != null) {
       if(pubSpec == null) {
         pubSpec = new PubSpec(app.id)
@@ -663,15 +671,17 @@ ${scriptCustomBlock('additional')}
           gitIgnorePath);
     }
 
-    if(includeReadme) {
+    if(includeReadme || todos.length > 0) {
       String readmePath = "${rootPath}/README.md";  
       panDocMergeWithFile('''
 # ${id.title}
 
+
+${(introduction != null)? introduction : ''}
 ${panDocCustomBlock('introduction')}
 
 # Purpose
-
+${(purpose != null)? purpose : ''}
 ${panDocCustomBlock('purpose')}
 
 ${panDocCustomBlock('body')}
@@ -680,9 +690,7 @@ ${panDocCustomBlock('body')}
 
 ${panDocCustomBlock('examples')}
 
-# TODO
-
-${panDocCustomBlock('todos')}
+${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
 ''', 
           readmePath);      
@@ -694,7 +702,11 @@ ${panDocCustomBlock('todos')}
       String analyzeTests = testLibraries.length == 0? '' : '''
   addTask('analyze_test', 
       createAnalyzerTask([
-${testLibraries.map((tl) => '$i"test/${tl.name}.dart"').toList().join('\n')}
+${testLibraries
+  .where((tl) => tl.id.snake.startsWith('test_'))
+  .map((tl) => '$i"test/${tl.name}.dart"')
+  .toList()
+  .join('\n')}
       ]));
 ''';
 
@@ -757,7 +769,10 @@ main() => print(packageRootPath);
       mergeWithFile('''
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
-${testLibraries.map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};").join('\n')}
+${testLibraries
+  .where((t) => t.id.snake.startsWith('test_'))
+  .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
+  .join('\n')}
 
 void testCore(Configuration config) {
   unittestConfiguration = config;
@@ -765,7 +780,10 @@ void testCore(Configuration config) {
 }
 
 main() {
-${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
+${testLibraries
+  .where((t) => t.id.snake.startsWith('test_'))
+  .map((t) => "  ${t.id.snake}.main();")
+  .join('\n')}
 }
 
 ''',
@@ -792,6 +810,9 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
     "generatePubSpec": EBISU_UTILS.toJson(generatePubSpec),
     "license": EBISU_UTILS.toJson(license),
     "includeReadme": EBISU_UTILS.toJson(includeReadme),
+    "introduction": EBISU_UTILS.toJson(introduction),
+    "purpose": EBISU_UTILS.toJson(purpose),
+    "todos": EBISU_UTILS.toJson(todos),
     "includeHop": EBISU_UTILS.toJson(includeHop),
     };
   }
@@ -823,6 +844,11 @@ ${testLibraries.map((t) => "  ${t.id.snake}.main();").join('\n')}
     "generatePubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "license": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "includeReadme": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
+    "introduction": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "purpose": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "todos":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
     "includeHop": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     };
   }
@@ -1493,6 +1519,7 @@ class Class {
   }
 
   String define() {
+    if(parent == null) parent = library('stub');
     return META.class_(this);
   }
 

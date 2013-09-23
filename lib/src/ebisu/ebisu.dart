@@ -252,6 +252,7 @@ List<String> cleanImports(List<String> dirtyImports) {
     hit.add(i);
     result.add(i);
   });
+  result.sort();
   return result;
 }
 
