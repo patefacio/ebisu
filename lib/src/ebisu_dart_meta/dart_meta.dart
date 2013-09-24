@@ -671,7 +671,8 @@ ${scriptCustomBlock('additional')}
           gitIgnorePath);
     }
 
-    if(includeReadme || todos.length > 0) {
+    if(includeReadme || todos.length > 0 || 
+       introduction != null || purpose != null) {
       String readmePath = "${rootPath}/README.md";  
       panDocMergeWithFile('''
 # ${id.title}

@@ -5,6 +5,7 @@ import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:unittest/unittest.dart';
+import 'package:yaml/yaml.dart';
 import 'setup.dart';
 // custom <additional imports>
 // end <additional imports>
@@ -21,12 +22,21 @@ main() {
   //Logger.root.onRecord.listen((LogRecord r) =>
   //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
-  print(tempPath);
+  var author = 'Ignatius J. Reilly';
+  var pubDoc = 'Test pubspec';
+  var pubVersion = '1.1.1';
 
   var testSystem = tempSystem('test_basic_class')
     ..includeHop = true
+    ..pubSpec.doc = pubDoc
+    ..pubSpec.author = author
+    ..pubSpec.version = pubVersion
     ..libraries = [
       library('test_basic_class')
+      ..imports = [
+        'io',
+        'async',
+      ]
       ..classes = [
         class_('class_no_init')
         ..members = [
@@ -55,8 +65,31 @@ main() {
   group('test_basic_class', () {
     test('library file exists', () =>
         expect(exists(join(libPath, 'test_basic_class.dart')), true));
+    group('library contents', () {
+      var contents = 
+        new File(join(libPath, 'test_basic_class.dart')).readAsStringSync();
+      test("import recognizes 'io'", 
+          () => expect(contents.indexOf("import 'dart:io';") >=0, true));
+      test("import recognizes 'async'", 
+          () => expect(contents.indexOf("import 'dart:async';") >=0, true));
+      test("library defines ClassNoInit", 
+          () => expect(contents.indexOf("class ClassNoInit") >=0, true));
+      test("library defines ClassWithInit", 
+          () => expect(contents.indexOf("class ClassWithInit") >=0, true));
+    });        
+    
     test('pubspec exists', () =>
         expect(exists(join(tempPath, 'pubspec.yaml')), true));
+    group('pubspec contents', () {
+      var contents = new File(join(tempPath, 'pubspec.yaml')).readAsStringSync();
+      var yaml = loadYaml(contents);
+      test('pubspec name', () => expect(yaml['name'], 'test_basic_class'));
+      test('pubspec author', () => expect(yaml['author'], author));
+      test('pubspec version', () => expect(yaml['version'], pubVersion));
+      test('pubspec doc', () => expect(yaml['description'].trim(), pubDoc));
+      test('pubspec hop', () => 
+          expect(yaml['dev_dependencies']['hop'] != null, true));
+    });
     test('.gitignore exists', () =>
         expect(exists(join(tempPath, '.gitignore')), true));
     test('tool/hop_runner.dart exists', () =>
@@ -67,6 +100,19 @@ main() {
         expect(exists(joinAll([tempPath, 'test', 'runner.dart'])), true));
   });
 
+  var runCode = (code) {
+    print("Running $code");
+    
+  };
+
+  group('code_usage', () {
+    test('basic_usage', () {
+      runCode('''
+import 'scratch_remove_me/lib/test_basic_class.dart';
+
+''');
+    });
+  });
 
 // end <main>
 
