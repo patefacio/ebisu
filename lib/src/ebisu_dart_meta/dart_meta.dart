@@ -393,7 +393,8 @@ class PubSpec {
   dynamic get parent => _parent;
   /// Version for this package
   String version = "0.0.1";
-  /// Name of the project described in spec - if not set, id of system is used to generate
+  /// Name of the project described in spec.
+  /// If not set, id of system is used.
   String name;
   /// Author of the pub package
   String author;
@@ -1449,8 +1450,10 @@ class Class {
     _name = id.capCamel;
     _className = isPublic? _name : "_$_name";
 
-    if(jsonSupport) 
+    if(jsonSupport) {
+      p.imports.add('"package:ebisu/ebisu_utils.dart" as EBISU_UTILS');
       toJsonSupport = true;
+    }
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
@@ -1756,9 +1759,18 @@ class Member {
   String type = "String";
   /// Access level supported for this member
   Access access;
-  /// If provided the member will be initialized to this text in place of declaration of class
-  String classInit;
-  /// If provided the member will be initialized to this text in generated ctor initializers
+  /// If provided the member will be initialized with value.
+  /// The type of the member can be inferred from the type
+  /// of this value.  Member type is defaulted to String. If
+  /// the type of classInit is a String and type of the
+  /// member is String, the text will be quoted if it is not
+  /// already. If the type of classInit is other than string
+  /// and the type of member is String (which is default)
+  /// the type of member will be set to
+  /// classInit.runtimeType.
+  dynamic classInit;
+  /// If provided the member will be initialized to this
+  /// text in generated ctor initializers
   String ctorInit;
   /// List of ctor names to include this member in
   List<String> ctors = [];
@@ -1785,6 +1797,12 @@ class Member {
 
   set parent(p) {
     _name = id.camel;
+    if(type == 'String' && 
+        (classInit != null) &&
+        (classInit is! String)) {
+      type = '${classInit.runtimeType}';
+      if(type == 'LinkedHashMap') type = 'Map';
+    }
     if(access == null) access = Access.RW;
     _varName = isPublic? _name : "_$_name";
     _parent = p;
@@ -1850,7 +1868,7 @@ class Member {
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "type": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "access": EBISU_UTILS.randJson(_randomJsonGenerator, Access.randJson),
-    "classInit": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "classInit": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
     "ctorInit": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "ctors":
        EBISU_UTILS.randJson(_randomJsonGenerator, [],
@@ -1912,7 +1930,7 @@ String jsonMapValueType(String t) {
   if(m != null) {
     return m.group(1);
   }
-  return null;
+  return 'dynamic';
 }
 String jsonListValueType(String t) {
   Match m = _jsonListTypeRe.firstMatch(t);

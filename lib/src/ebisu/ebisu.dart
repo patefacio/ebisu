@@ -229,15 +229,13 @@ bool mergeWithFile(String generated, String destFilePath,
       print("No change: $destFilePath");
       return false;
     } else {
-
       inFile.writeAsStringSync(generated);
       print("Wrote: $destFilePath");
     }
   } else {
     new Directory(path.dirname(destFilePath))
       ..createSync(recursive: true);
-    var out = inFile.openWrite();
-    out.write(generated);
+    inFile.writeAsStringSync(generated);
     print("Created $destFilePath");
   }
   return true;

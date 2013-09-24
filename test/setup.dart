@@ -28,9 +28,11 @@ String get tempPath {
 System tempSystem(String id) =>
   system(id)..rootPath = tempPath;
 
-
 void destroyTempData() {
-  _logger.info("Destroying test data $tempPath");
+  var dir = new Directory(tempPath);
+  if(dir.existsSync()) {
+    dir.deleteSync(recursive : true);
+  }
 }
 
 // end <library setup>

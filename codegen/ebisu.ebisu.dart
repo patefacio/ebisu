@@ -230,7 +230,8 @@ classes with JSON support.
       ..isPublic = false
       ..type = 'List<String>'
       ..init = '''[ 
-  'String', 'int', 'num', 'Map', 'List', 'DateTime' 
+  'String', 'int', 'double', 'bool', 'num',
+  'Map', 'List', 'DateTime', 'dynamic',
 ]'''
     ]
     ..includeLogger = true
@@ -351,7 +352,10 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'Version for this package'
           ..classInit = '0.0.1',
           member('name')
-          ..doc = "Name of the project described in spec - if not set, id of system is used to generate",
+          ..doc = '''
+Name of the project described in spec.
+If not set, id of system is used.
+''',
           member('author')
           ..doc = "Author of the pub package",
           member('homepage')
@@ -678,9 +682,23 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'Access level supported for this member'
           ..type = 'Access',
           member('class_init')
-          ..doc = "If provided the member will be initialized to this text in place of declaration of class",
+          ..type = 'dynamic'
+          ..doc = '''
+If provided the member will be initialized with value.
+The type of the member can be inferred from the type
+of this value.  Member type is defaulted to String. If
+the type of classInit is a String and type of the
+member is String, the text will be quoted if it is not
+already. If the type of classInit is other than string
+and the type of member is String (which is default)
+the type of member will be set to
+classInit.runtimeType.
+
+''',
           member('ctor_init')
-          ..doc = "If provided the member will be initialized to this text in generated ctor initializers",
+          ..doc = '''
+If provided the member will be initialized to this
+text in generated ctor initializers''',
           member('ctors')
           ..doc = "List of ctor names to include this member in"
           ..type = 'List<String>'

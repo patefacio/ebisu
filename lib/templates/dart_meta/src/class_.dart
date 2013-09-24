@@ -148,7 +148,11 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 ''');
      } else if(isMapType(m.type)) { 
        String valType = jsonMapValueType(m.type);  
-       if(valType != null) { 
+       if(valType == 'dynamic') { 
+  _buf.add('''
+    ${m.varName} = jsonMap["${m.name}"];
+''');
+       } else if(valType != null) { 
   _buf.add('''
     // ${m.name} map of <String, ${valType}>
     ${m.name} = { };
@@ -159,7 +163,11 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
        } 
      } else if(isListType(m.type)) { 
        String valType = jsonListValueType(m.type);  
-       if(valType != null) { 
+       if(valType == 'dynamic') { 
+  _buf.add('''
+    ${m.varName} = jsonMap["${m.name}"];
+''');
+       } else if(valType != null) { 
   _buf.add('''
     // ${m.name} list of ${valType}
     ${m.varName} = new ${m.type}();

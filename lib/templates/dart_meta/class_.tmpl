@@ -97,7 +97,9 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
       ${m.type}.fromJson(jsonMap["${m.name}"]);
 #<     } else if(isMapType(m.type)) { >
 #<       String valType = jsonMapValueType(m.type);  >
-#<       if(valType != null) { >
+#<       if(valType == 'dynamic') { >
+    ${m.varName} = jsonMap["${m.name}"];
+#<       } else if(valType != null) { >
     // ${m.name} map of <String, ${valType}>
     ${m.name} = { };
     jsonMap["${m.name}"].forEach((k,v) {
@@ -106,7 +108,9 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #<       } >
 #<     } else if(isListType(m.type)) { >
 #<       String valType = jsonListValueType(m.type);  >
-#<       if(valType != null) { >
+#<       if(valType == 'dynamic') { >
+    ${m.varName} = jsonMap["${m.name}"];
+#<       } else if(valType != null) { >
     // ${m.name} list of ${valType}
     ${m.varName} = new ${m.type}();
     jsonMap["${m.name}"].forEach((v) {
