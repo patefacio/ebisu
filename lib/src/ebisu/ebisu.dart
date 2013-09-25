@@ -2,23 +2,13 @@ part of ebisu;
 
 /// Convenience wrapper for a map - passed into templates as variable '_'
 class Context {
+
+  Context(this._data);
+
   /// Data being wrapped
   Map get data => _data;
 
 // custom <class Context>
-
-  Context(Map data) :
-    _data = data 
-  { 
-  }
-
-  dynamic noSuchMethod(Invocation msg) {
-    String memberName = msg.memberName;
-    if(! _data.containsKey(memberName)) {
-      throw new ArgumentError("Context could not find key '$memberName' in data");
-    }
-    return _data[memberName];
-  }
 
   dynamic operator[](dynamic index) {
     return _data[index];

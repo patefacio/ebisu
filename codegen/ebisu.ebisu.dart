@@ -980,6 +980,7 @@ regenerating.
           ..doc = "Convenience wrapper for a map - passed into templates as variable '_'"
           ..members = [
             member('data')
+            ..ctors = ['']
             ..isFinal = true
             ..doc = "Data being wrapped"
             ..type = 'Map'
