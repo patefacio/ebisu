@@ -171,37 +171,6 @@ class Variable {
   }
 
 // end <class Variable>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "isPublic": EBISU_UTILS.toJson(isPublic),
-    "type": EBISU_UTILS.toJson(type),
-    "init": EBISU_UTILS.toJson(init),
-    "isFinal": EBISU_UTILS.toJson(isFinal),
-    "isConst": EBISU_UTILS.toJson(isConst),
-    "isStatic": EBISU_UTILS.toJson(isStatic),
-    "name": EBISU_UTILS.toJson(name),
-    "varName": EBISU_UTILS.toJson(varName),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "type": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "init": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
-    "isFinal": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isStatic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "varName": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;
@@ -254,37 +223,6 @@ class Enum {
     value.snake : value.shout;
 
 // end <class Enum>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "isPublic": EBISU_UTILS.toJson(isPublic),
-    "values": EBISU_UTILS.toJson(values),
-    "jsonSupport": EBISU_UTILS.toJson(jsonSupport),
-    "name": EBISU_UTILS.toJson(name),
-    "enumName": EBISU_UTILS.toJson(enumName),
-    "hasCustom": EBISU_UTILS.toJson(hasCustom),
-    "isSnakeString": EBISU_UTILS.toJson(isSnakeString),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "values":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Id.randJson()),
-    "jsonSupport": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "enumName": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "hasCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isSnakeString": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;
@@ -394,15 +332,25 @@ class PubDependency {
     };
   }
 
-  static Map randJson() {
-    return {
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "gitRef": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
+  static PubDependency fromJson(String json) {
+    Map jsonMap = convert.JSON.decode(json);
+    PubDependency result = new PubDependency();
+    result._fromJsonMapImpl(jsonMap);
+    return result;
   }
 
+  static PubDependency fromJsonMap(Map jsonMap) {
+    PubDependency result = new PubDependency();
+    result._fromJsonMapImpl(jsonMap);
+    return result;
+  }
+
+  void _fromJsonMapImpl(Map jsonMap) {
+    name = jsonMap["name"];
+    version = jsonMap["version"];
+    path = jsonMap["path"];
+    gitRef = jsonMap["gitRef"];
+  }
   /// Type for the pub dependency
   PubDepType _type;
 }
@@ -411,6 +359,9 @@ class PubDependency {
 class PubSpec {
 
   PubSpec(this._id);
+
+
+  PubSpec._json();
 
   /// Id for this pub spec
   Id get id => _id;
@@ -485,23 +436,39 @@ class PubSpec {
     };
   }
 
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "version": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "author": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "homepage": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "dependencies":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => PubDependency.randJson()),
-    "devDependencies":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => PubDependency.randJson()),
-    };
+  static PubSpec fromJson(String json) {
+    Map jsonMap = convert.JSON.decode(json);
+    PubSpec result = new PubSpec._json();
+    result._fromJsonMapImpl(jsonMap);
+    return result;
   }
 
+  static PubSpec fromJsonMap(Map jsonMap) {
+    PubSpec result = new PubSpec._json();
+    result._fromJsonMapImpl(jsonMap);
+    return result;
+  }
+
+  void _fromJsonMapImpl(Map jsonMap) {
+    _id = (jsonMap["id"] is Map)?
+      Id.fromJsonMap(jsonMap["id"]) :
+      Id.fromJson(jsonMap["id"]);
+    doc = jsonMap["doc"];
+    version = jsonMap["version"];
+    name = jsonMap["name"];
+    author = jsonMap["author"];
+    homepage = jsonMap["homepage"];
+    // dependencies list of PubDependency
+    dependencies = new List<PubDependency>();
+    jsonMap["dependencies"].forEach((v) {
+      dependencies.add(PubDependency.fromJsonMap(v));
+    });
+    // devDependencies list of PubDependency
+    devDependencies = new List<PubDependency>();
+    jsonMap["devDependencies"].forEach((v) {
+      devDependencies.add(PubDependency.fromJsonMap(v));
+    });
+  }
   final Id _id;
   dynamic _parent;
 }
@@ -822,66 +789,6 @@ ${testLibraries
   }
 
 // end <class System>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "rootPath": EBISU_UTILS.toJson(rootPath),
-    "scripts": EBISU_UTILS.toJson(scripts),
-    "app": EBISU_UTILS.toJson(app),
-    "testLibraries": EBISU_UTILS.toJson(testLibraries),
-    "libraries": EBISU_UTILS.toJson(libraries),
-    "allLibraries": EBISU_UTILS.toJson(allLibraries),
-    "pubSpec": EBISU_UTILS.toJson(pubSpec),
-    "jsonableClasses": EBISU_UTILS.toJson(jsonableClasses),
-    "finalized": EBISU_UTILS.toJson(finalized),
-    "generatePubSpec": EBISU_UTILS.toJson(generatePubSpec),
-    "license": EBISU_UTILS.toJson(license),
-    "includeReadme": EBISU_UTILS.toJson(includeReadme),
-    "introduction": EBISU_UTILS.toJson(introduction),
-    "purpose": EBISU_UTILS.toJson(purpose),
-    "todos": EBISU_UTILS.toJson(todos),
-    "includeHop": EBISU_UTILS.toJson(includeHop),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "rootPath": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "scripts":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Script.randJson()),
-    "app": EBISU_UTILS.randJson(_randomJsonGenerator, App.randJson),
-    "testLibraries":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Library.randJson()),
-    "libraries":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Library.randJson()),
-    "allLibraries":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Library.randJson()),
-    "pubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, PubSpec.randJson),
-    "jsonableClasses":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => Class.randJson(),
-        "jsonableClasses"),
-    "finalized": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "generatePubSpec": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "license": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeReadme": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "introduction": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "purpose": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "todos":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "includeHop": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    };
-  }
-
   Id _id;
   bool _finalized = false;
 }
@@ -891,17 +798,6 @@ class Test {
 
   // custom <class Test>
   // end <class Test>
-
-  Map toJson() {
-    return {
-    };
-  }
-
-  static Map randJson() {
-    return {
-    };
-  }
-
 }
 
 /// An agrument to a script
@@ -940,39 +836,6 @@ class ScriptArg {
   }
 
 // end <class ScriptArg>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "name": EBISU_UTILS.toJson(name),
-    "isRequired": EBISU_UTILS.toJson(isRequired),
-    "isFlag": EBISU_UTILS.toJson(isFlag),
-    "isMultiple": EBISU_UTILS.toJson(isMultiple),
-    "defaultsTo": EBISU_UTILS.toJson(defaultsTo),
-    "allowed": EBISU_UTILS.toJson(allowed),
-    "position": EBISU_UTILS.toJson(position),
-    "abbr": EBISU_UTILS.toJson(abbr),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "isRequired": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isFlag": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isMultiple": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "defaultsTo": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
-    "allowed":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "position": EBISU_UTILS.randJson(_randomJsonGenerator, int),
-    "abbr": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;
@@ -1018,31 +881,6 @@ class Script {
     args.where((arg) => arg.isRequired);
 
 // end <class Script>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "includeCustom": EBISU_UTILS.toJson(includeCustom),
-    "imports": EBISU_UTILS.toJson(imports),
-    "args": EBISU_UTILS.toJson(args),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "imports":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "args":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => ScriptArg.randJson()),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
 }
@@ -1131,37 +969,6 @@ main() {
   }
 
 // end <class App>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "includeCustom": EBISU_UTILS.toJson(includeCustom),
-    "classes": EBISU_UTILS.toJson(classes),
-    "libraries": EBISU_UTILS.toJson(libraries),
-    "variables": EBISU_UTILS.toJson(variables),
-    "isWebUi": EBISU_UTILS.toJson(isWebUi),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "classes":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Class.randJson()),
-    "libraries":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Library.randJson()),
-    "variables":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Variable.randJson()),
-    "isWebUi": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
 }
@@ -1204,12 +1011,21 @@ class Library {
 
 // custom <class Library>
 
+  List<Class> get allClasses {
+    List<Class> result = new List.from(classes);
+    parts.forEach((part) => result.addAll(part.classes));
+    return result;
+  }
+
   set parent(p) {
     _name = _id.snake;
     parts.forEach((part) => part.parent = this);
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
     classes.forEach((c) => c.parent = this);
+    if(allClasses.any((c) => c.jsonSupport)) {
+      imports.add('"package:ebisu/ebisu_utils.dart" as EBISU_UTILS');
+    }
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
     }
@@ -1272,55 +1088,6 @@ class Library {
   String get rootPath => _parent.rootPath;
 
 // end <class Library>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "includeCustom": EBISU_UTILS.toJson(includeCustom),
-    "imports": EBISU_UTILS.toJson(imports),
-    "parts": EBISU_UTILS.toJson(parts),
-    "variables": EBISU_UTILS.toJson(variables),
-    "classes": EBISU_UTILS.toJson(classes),
-    "enums": EBISU_UTILS.toJson(enums),
-    "name": EBISU_UTILS.toJson(name),
-    "includeLogger": EBISU_UTILS.toJson(includeLogger),
-    "isTest": EBISU_UTILS.toJson(isTest),
-    "includeMain": EBISU_UTILS.toJson(includeMain),
-    "path": EBISU_UTILS.toJson(path),
-    "libMain": EBISU_UTILS.toJson(libMain),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "imports":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "parts":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Part.randJson()),
-    "variables":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Variable.randJson()),
-    "classes":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Class.randJson()),
-    "enums":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Enum.randJson()),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeLogger": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isTest": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "includeMain": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "path": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "libMain": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;
@@ -1371,39 +1138,6 @@ class Part {
   bool isClassJsonable(String className) => _parent.isClassJsonable(className);
 
 // end <class Part>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "includeCustom": EBISU_UTILS.toJson(includeCustom),
-    "classes": EBISU_UTILS.toJson(classes),
-    "enums": EBISU_UTILS.toJson(enums),
-    "name": EBISU_UTILS.toJson(name),
-    "filePath": EBISU_UTILS.toJson(filePath),
-    "variables": EBISU_UTILS.toJson(variables),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "classes":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Class.randJson()),
-    "enums":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Enum.randJson()),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "filePath": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "variables":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Variable.randJson()),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;
@@ -1444,12 +1178,12 @@ class Class {
   Map<String,Ctor> get ctors => _ctors;
   /// If true, class is abstract
   bool isAbstract = false;
-  /// If true, generate toJson
-  bool toJsonSupport = false;
-  /// If true creates library functions to construct forwarding to ctors
-  bool ctorSansNew = false;
   /// If true, generate toJson/fromJson on all members that are not jsonTransient
   bool jsonSupport = false;
+  /// If true, generate randJson function
+  bool hasRandJson = false;
+  /// If true creates library functions to construct forwarding to ctors
+  bool ctorSansNew = false;
   /// Name of the class - sans any access prefix (i.e. no '_')
   String get name => _name;
   /// Name of the class, including access prefix
@@ -1476,11 +1210,6 @@ class Class {
   set parent(p) {
     _name = id.capCamel;
     _className = isPublic? _name : "_$_name";
-
-    if(jsonSupport) {
-      p.imports.add('"package:ebisu/ebisu_utils.dart" as EBISU_UTILS');
-      toJsonSupport = true;
-    }
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
@@ -1561,66 +1290,6 @@ class Class {
   bool isClassJsonable(String className) => _parent.isClassJsonable(className);
 
 // end <class Class>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "isPublic": EBISU_UTILS.toJson(isPublic),
-    "mixins": EBISU_UTILS.toJson(mixins),
-    "extend": EBISU_UTILS.toJson(extend),
-    "implement": EBISU_UTILS.toJson(implement),
-    "includeCustom": EBISU_UTILS.toJson(includeCustom),
-    "defaultMemberAccess": EBISU_UTILS.toJson(defaultMemberAccess),
-    "members": EBISU_UTILS.toJson(members),
-    "ctorCustoms": EBISU_UTILS.toJson(ctorCustoms),
-    "ctorConst": EBISU_UTILS.toJson(ctorConst),
-    "ctors": EBISU_UTILS.toJson(ctors),
-    "isAbstract": EBISU_UTILS.toJson(isAbstract),
-    "toJsonSupport": EBISU_UTILS.toJson(toJsonSupport),
-    "ctorSansNew": EBISU_UTILS.toJson(ctorSansNew),
-    "jsonSupport": EBISU_UTILS.toJson(jsonSupport),
-    "name": EBISU_UTILS.toJson(name),
-    "className": EBISU_UTILS.toJson(className),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "mixins":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "extend": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "implement":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "includeCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "defaultMemberAccess": EBISU_UTILS.randJson(_randomJsonGenerator, Access.randJson),
-    "members":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Member.randJson()),
-    "ctorCustoms":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorConst":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctors":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => Ctor.randJson(),
-        "ctors"),
-    "isAbstract": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "toJsonSupport": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "ctorSansNew": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "jsonSupport": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "className": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   Map<String,Ctor> _ctors = {};
@@ -1730,6 +1399,8 @@ ${chomp(cb, true)}
       decl
         ..add('$method${result.removeAt(0)}')
         ..addAll(result);
+    } else {
+      decl.add(method);
     }
 
     return '''
@@ -1738,37 +1409,6 @@ ${formatFill(decl)})${body}
   }
 
 // end <class Ctor>
-
-  Map toJson() {
-    return {
-    "className": EBISU_UTILS.toJson(className),
-    "name": EBISU_UTILS.toJson(name),
-    "members": EBISU_UTILS.toJson(members),
-    "optMembers": EBISU_UTILS.toJson(optMembers),
-    "namedMembers": EBISU_UTILS.toJson(namedMembers),
-    "hasCustom": EBISU_UTILS.toJson(hasCustom),
-    "isConst": EBISU_UTILS.toJson(isConst),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "className": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "members":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Member.randJson()),
-    "optMembers":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Member.randJson()),
-    "namedMembers":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => Member.randJson()),
-    "hasCustom": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    };
-  }
-
 }
 
 /// Metadata associated with a member of a Dart class
@@ -1868,53 +1508,6 @@ class Member {
   }
 
 // end <class Member>
-
-  Map toJson() {
-    return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "type": EBISU_UTILS.toJson(type),
-    "access": EBISU_UTILS.toJson(access),
-    "classInit": EBISU_UTILS.toJson(classInit),
-    "ctorInit": EBISU_UTILS.toJson(ctorInit),
-    "ctors": EBISU_UTILS.toJson(ctors),
-    "ctorsOpt": EBISU_UTILS.toJson(ctorsOpt),
-    "ctorsNamed": EBISU_UTILS.toJson(ctorsNamed),
-    "isFinal": EBISU_UTILS.toJson(isFinal),
-    "isConst": EBISU_UTILS.toJson(isConst),
-    "isStatic": EBISU_UTILS.toJson(isStatic),
-    "jsonTransient": EBISU_UTILS.toJson(jsonTransient),
-    "name": EBISU_UTILS.toJson(name),
-    "varName": EBISU_UTILS.toJson(varName),
-    };
-  }
-
-  static Map randJson() {
-    return {
-    "id": EBISU_UTILS.randJson(_randomJsonGenerator, Id.randJson),
-    "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "type": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "access": EBISU_UTILS.randJson(_randomJsonGenerator, Access.randJson),
-    "classInit": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
-    "ctorInit": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "ctors":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorsOpt":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "ctorsNamed":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, String)),
-    "isFinal": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "isStatic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "jsonTransient": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
-    "name": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "varName": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    };
-  }
-
   final Id _id;
   dynamic _parent;
   String _name;

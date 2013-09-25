@@ -22,7 +22,7 @@ ${indentBlock(chomp(member.publicCode))}
 
 ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #< } >
-#< if(_.toJsonSupport) { >
+#< if(_.jsonSupport) { >
 
   Map toJson() {
     return {
@@ -36,45 +36,6 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #<   } >
     };
   }
-
-  static Map randJson() {
-    return {
-#<   for(Member member in _.members.where((m) => !m.jsonTransient)) { >
-#<     if(isMapType(member.type)) { >
-#<       String valType = jsonMapValueType(member.type);  >
-#<       if(isJsonableType(valType)) { >
-    "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
-        "${member.name}"),
-#<       } else { >
-    "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => ${valType}.randJson(),
-        "${member.name}"),
-#<       } >
-#<     } else if(isListType(member.type)) { >
-#<       String valType = jsonListValueType(member.type);  >
-#<       if(isJsonableType(valType)) { >
-    "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
-#<       } else { >
-    "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => ${valType}.randJson()),
-#<       }  >
-#<     } else if(isJsonableType(member.type)) { >
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}),
-#<     } else { >
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}.randJson),
-#<     } >
-#<   } >
-    };
-  }
-
-#<   } >
-#< if(_.jsonSupport) { >
 
   static ${_.name} fromJson(String json) {
     Map jsonMap = convert.JSON.decode(json);
@@ -126,6 +87,44 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 #<     } >
 #<   } >
   }
+#< } >
+#< if(_.hasRandJson) { >
+  static Map randJson() {
+    return {
+#<   for(Member member in _.members.where((m) => !m.jsonTransient)) { >
+#<     if(isMapType(member.type)) { >
+#<       String valType = jsonMapValueType(member.type);  >
+#<       if(isJsonableType(valType)) { >
+    "${member.name}":
+       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
+        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
+        "${member.name}"),
+#<       } else { >
+    "${member.name}":
+       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
+        () => ${valType}.randJson(),
+        "${member.name}"),
+#<       } >
+#<     } else if(isListType(member.type)) { >
+#<       String valType = jsonListValueType(member.type);  >
+#<       if(isJsonableType(valType)) { >
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
+#<       } else { >
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => ${valType}.randJson()),
+#<       }  >
+#<     } else if(isJsonableType(member.type)) { >
+    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}),
+#<     } else { >
+    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}.randJson),
+#<     } >
+#<   } >
+    };
+  }
+
 #< } >
 #< for(var member in _.members) { >
 #<   if(member.hasPrivateCode) { >

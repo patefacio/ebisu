@@ -345,6 +345,7 @@ At some point when true enums are provided this may be revisited.
           ..classInit = 'false',
         ],
         class_('pub_dependency')
+        ..jsonSupport = true
         ..doc = 'A dependency of the system'
         ..members = [
           member('name')
@@ -363,6 +364,7 @@ At some point when true enums are provided this may be revisited.
           ..access = IA,
         ],
         class_('pub_spec')
+        ..jsonSupport = true
         ..doc = 'Information for the pubspec of the system'
         ..members = [
           id_member('pub spec'),
@@ -641,16 +643,16 @@ If not set, id of system is used.
           ..doc = "If true, class is abstract"
           ..type = 'bool'
           ..classInit = 'false',
-          member('to_json_support')
-          ..doc = "If true, generate toJson"
+          member('json_support')
+          ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('has_rand_json')
+          ..doc = "If true, generate randJson function"
           ..type = 'bool'
           ..classInit = 'false',
           member('ctor_sans_new')
           ..doc = "If true creates library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('json_support')
-          ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
           ..type = 'bool'
           ..classInit = 'false',
           member('name')
@@ -993,11 +995,13 @@ regenerating.
       ebisu_utils,
     ];
 
+  /*
   ebisu_dart_meta.parts.forEach((part) {
     part.classes.forEach((c) {
-      c.toJsonSupport = true;
+      c.jsonSupport = true;
     });
   });
+  */
 
   ebisu.generate();
 }

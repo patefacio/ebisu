@@ -45,7 +45,7 @@ ${indentBlock(chomp(member.publicCode))}
 ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 ''');
  } 
- if(_.toJsonSupport) { 
+ if(_.jsonSupport) { 
   _buf.add('''
 
   Map toJson() {
@@ -68,61 +68,6 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   _buf.add('''
     };
   }
-
-  static Map randJson() {
-    return {
-''');
-   for(Member member in _.members.where((m) => !m.jsonTransient)) { 
-     if(isMapType(member.type)) { 
-       String valType = jsonMapValueType(member.type);  
-       if(isJsonableType(valType)) { 
-  _buf.add('''
-    "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
-        "${member.name}"),
-''');
-       } else { 
-  _buf.add('''
-    "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => ${valType}.randJson(),
-        "${member.name}"),
-''');
-       } 
-     } else if(isListType(member.type)) { 
-       String valType = jsonListValueType(member.type);  
-       if(isJsonableType(valType)) { 
-  _buf.add('''
-    "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
-''');
-       } else { 
-  _buf.add('''
-    "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => ${valType}.randJson()),
-''');
-       }  
-     } else if(isJsonableType(member.type)) { 
-  _buf.add('''
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}),
-''');
-     } else { 
-  _buf.add('''
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}.randJson),
-''');
-     } 
-   } 
-  _buf.add('''
-    };
-  }
-
-''');
-   } 
- if(_.jsonSupport) { 
-  _buf.add('''
 
   static ${_.name} fromJson(String json) {
     Map jsonMap = convert.JSON.decode(json);
@@ -190,6 +135,60 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
    } 
   _buf.add('''
   }
+''');
+ } 
+ if(_.hasRandJson) { 
+  _buf.add('''
+  static Map randJson() {
+    return {
+''');
+   for(Member member in _.members.where((m) => !m.jsonTransient)) { 
+     if(isMapType(member.type)) { 
+       String valType = jsonMapValueType(member.type);  
+       if(isJsonableType(valType)) { 
+  _buf.add('''
+    "${member.name}":
+       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
+        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
+        "${member.name}"),
+''');
+       } else { 
+  _buf.add('''
+    "${member.name}":
+       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
+        () => ${valType}.randJson(),
+        "${member.name}"),
+''');
+       } 
+     } else if(isListType(member.type)) { 
+       String valType = jsonListValueType(member.type);  
+       if(isJsonableType(valType)) { 
+  _buf.add('''
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
+''');
+       } else { 
+  _buf.add('''
+    "${member.name}":
+       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+        () => ${valType}.randJson()),
+''');
+       }  
+     } else if(isJsonableType(member.type)) { 
+  _buf.add('''
+    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}),
+''');
+     } else { 
+  _buf.add('''
+    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}.randJson),
+''');
+     } 
+   } 
+  _buf.add('''
+    };
+  }
+
 ''');
  } 
  for(var member in _.members) { 

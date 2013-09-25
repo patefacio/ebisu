@@ -68,7 +68,7 @@ ${customBlock("main")}
 ''');
  } else if(_.libMain != null) { 
   _buf.add('''
-${libMain}
+${_.libMain}
 ''');
  } 
   return _buf.join();
