@@ -1,5 +1,6 @@
 library test_basic_class;
 
+import 'dart:async';
 import 'dart:io';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
@@ -22,6 +23,7 @@ main() {
   // Logger.root.onRecord.listen((LogRecord r) =>
   //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
+  // First - nothing up the sleeve - remove any preexisting generated code
   destroyTempData();
 
   var author = 'Ignatius J. Reilly';
@@ -171,19 +173,28 @@ main() {
         expect(exists(joinAll([tempPath, 'test', 'runner.dart'])), true));
   });
 
-  var runCode = (code) {
-    print("Running $code");
-    
-  };
 
-  group('code_usage', () {
-    test('basic_usage', () {
-      runCode('''
-import 'scratch_remove_me/lib/test_basic_class.dart';
+  group('subprocesses', () {
+    List allDartFilesComplete = [];
 
-''');
+    [ 'expect_test_basic_class.dart' ].forEach((dartFile) {
+      Future subprocess =
+        Process
+        .run(Platform.executable, [ '--checked', dartFile ])
+        .then((ProcessResult processResult) {
+          test('$dartFile succeeded', () {
+            print("Results of running dart subprocess $dartFile");
+            print(processResult.stdout);
+            expect(processResult.exitCode, 0);
+          });
+        });
+
+      allDartFilesComplete.add(subprocess);
+
     });
+
   });
+
 
 // end <main>
 

@@ -873,7 +873,7 @@ library/templates, a message like the following will be output:
       ..includeMain = false
       ..includeLogger = true,
       library('test_basic_class')
-      ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart', 'package:path/path.dart', 'package:yaml/yaml.dart', 'io', ]
+      ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart', 'package:path/path.dart', 'package:yaml/yaml.dart', 'io', 'async', ]
       ..includeLogger = true,
       library('expect_test_basic_class')
       ..imports = [ 'scratch_remove_me/lib/test_basic_class.dart' ]
