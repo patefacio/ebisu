@@ -15,22 +15,17 @@ import 'setup.dart';
 final _logger = new Logger("test_basic_class");
 
 // custom <library test_basic_class>
-// end <library test_basic_class>
 
-main() { 
-// custom <main>
+var author = 'Ignatius J. Reilly';
+var pubDoc = 'Test pubspec';
+var pubVersion = '1.1.1';
+var pubHomepage = 'http://confederacy_of_dunces.com';
+var license = 'This is free stuff as in beer';
 
-  // Logger.root.onRecord.listen((LogRecord r) =>
-  //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
+void generateTestLibraries() {
 
   // First - nothing up the sleeve - remove any preexisting generated code
   destroyTempData();
-
-  var author = 'Ignatius J. Reilly';
-  var pubDoc = 'Test pubspec';
-  var pubVersion = '1.1.1';
-  var pubHomepage = 'http://confederacy_of_dunces.com';
-  var license = 'This is free stuff as in beer';
 
   var testSystem = tempSystem('test_basic_class')
     ..license = license
@@ -42,7 +37,7 @@ main() {
     ..pubSpec.addDependency(pubdep('quiver'))
     ..pubSpec.addDevDependency(pubdep('unittest'))
     ..libraries = [
-      library('test_basic_class')
+      library('basic_class')
       ..imports = [
         'io',
         'async',
@@ -116,11 +111,46 @@ main() {
           ..type = 'ClassJson'
           ..classInit = 'new ClassJson()',
         ]
+      ],
+      library('various_ctors')
+      ..classes = [
+        class_('various_ctors')
+        ..members = [
+          member('one')..classInit = 1.00001
+          ..ctors = [''],
+          member('two')..classInit = 'two'
+          ..ctorsOpt = [''],
+          member('three')..classInit = 3
+          ..ctors = ['fromThreeAndFour']
+          ..ctorsOpt = [''],
+          member('four')
+          ..classInit = 4
+          ..ctorInit = '90'
+          ..ctorsNamed = ['fromThreeAndFour'],
+          member('five')
+          ..classInit = 2
+          ..ctorInit = '5'
+          ..ctorsOpt = ['fromFive'],
+        ]
       ]
     ];
 
   testSystem.generate();
 
+}
+
+
+
+// end <library test_basic_class>
+
+main() { 
+// custom <main>
+
+  // Logger.root.onRecord.listen((LogRecord r) =>
+  //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
+
+  generateTestLibraries();
+  
   var libPath = joinAll([tempPath, 'lib']);
   bool exists(String filePath) => new File(filePath).existsSync();
 
@@ -128,7 +158,7 @@ main() {
 
     group('library contents', () {
       var contents = 
-        new File(join(libPath, 'test_basic_class.dart')).readAsStringSync();
+        new File(join(libPath, 'basic_class.dart')).readAsStringSync();
       test("import recognizes 'io'", 
           () => expect(contents.indexOf("import 'dart:io';") >=0, true));
       test("import recognizes 'async'", 
@@ -177,7 +207,10 @@ main() {
   group('subprocesses', () {
     List allDartFilesComplete = [];
 
-    [ 'expect_basic_class.dart' ].forEach((dartFile) {
+    [ 
+      'expect_basic_class.dart',
+      'expect_various_ctors.dart',
+    ].forEach((dartFile) {
       Future subprocess =
         Process
         .run(Platform.executable, [ '--checked', dartFile ])

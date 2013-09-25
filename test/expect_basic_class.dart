@@ -2,7 +2,7 @@ library expect_basic_class;
 
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
-import 'scratch_remove_me/lib/test_basic_class.dart';
+import 'scratch_remove_me/lib/basic_class.dart';
 // custom <additional imports>
 // end <additional imports>
 
@@ -20,7 +20,7 @@ main() {
   var classJson = new ClassJson();
   var classJsonOuter = new ClassJsonOuter();
 
-  group('members typed correctly', () {
+  group('members typed/initialized correctly', () {
     group('class no init', () {
 
       test('mString is null', () =>

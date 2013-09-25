@@ -876,7 +876,10 @@ library/templates, a message like the following will be output:
       ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart', 'package:path/path.dart', 'package:yaml/yaml.dart', 'io', 'async', ]
       ..includeLogger = true,
       library('expect_basic_class')
-      ..imports = [ 'scratch_remove_me/lib/test_basic_class.dart' ]
+      ..imports = [ 'scratch_remove_me/lib/basic_class.dart' ]
+      ..includeLogger = true,
+      library('expect_various_ctors')
+      ..imports = [ 'scratch_remove_me/lib/various_ctors.dart' ]
       ..includeLogger = true,
     ]
     ..todos = [
