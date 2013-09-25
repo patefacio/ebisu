@@ -17,8 +17,6 @@ void main() {
   addTask('analyze_test', 
       createAnalyzerTask([
         "test/test_basic_class.dart"
-        "test/test_member_access.dart"
-        "test/test_multipart_library.dart"
       ]));
 
   addTask('test', createUnitTestTask(runner.testCore));

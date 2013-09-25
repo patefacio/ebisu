@@ -177,7 +177,7 @@ main() {
   group('subprocesses', () {
     List allDartFilesComplete = [];
 
-    [ 'expect_test_basic_class.dart' ].forEach((dartFile) {
+    [ 'expect_basic_class.dart' ].forEach((dartFile) {
       Future subprocess =
         Process
         .run(Platform.executable, [ '--checked', dartFile ])

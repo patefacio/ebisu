@@ -875,14 +875,8 @@ library/templates, a message like the following will be output:
       library('test_basic_class')
       ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart', 'package:path/path.dart', 'package:yaml/yaml.dart', 'io', 'async', ]
       ..includeLogger = true,
-      library('expect_test_basic_class')
+      library('expect_basic_class')
       ..imports = [ 'scratch_remove_me/lib/test_basic_class.dart' ]
-      ..includeLogger = true,
-      library('test_member_access')
-      ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart',]
-      ..includeLogger = true,
-      library('test_multipart_library')
-      ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart',]
       ..includeLogger = true,
     ]
     ..todos = [
