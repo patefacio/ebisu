@@ -48,10 +48,10 @@ library ebisu_dart_meta;
 import 'dart:convert' as convert;
 import 'dart:io';
 import 'package:ebisu/ebisu.dart';
-import 'package:ebisu/ebisu_utils.dart' as EBISU_UTILS;
+import 'package:ebisu/ebisu_utils.dart' as ebisu_utils;
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
-import 'templates/dart_meta.dart' as META;
+import 'templates/dart_meta.dart' as meta;
 // custom <additional imports>
 // end <additional imports>
 

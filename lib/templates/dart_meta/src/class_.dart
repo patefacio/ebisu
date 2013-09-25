@@ -53,7 +53,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
 ''');
    for(Member member in _.members.where((m) => !m.jsonTransient)) { 
   _buf.add('''
-    "${member.name}": EBISU_UTILS.toJson(${member.hasGetter? member.name : member.varName}),
+    "${member.name}": ebisu_utils.toJson(${member.hasGetter? member.name : member.varName}),
 ''');
    } 
    if(null != _.extend) { 
@@ -148,14 +148,14 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
        if(isJsonableType(valType)) { 
   _buf.add('''
     "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType}),
+       ebisu_utils.randJsonMap(_randomJsonGenerator,
+        () => ebisu_utils.randJson(_randomJsonGenerator, ${valType}),
         "${member.name}"),
 ''');
        } else { 
   _buf.add('''
     "${member.name}":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
+       ebisu_utils.randJsonMap(_randomJsonGenerator,
         () => ${valType}.randJson(),
         "${member.name}"),
 ''');
@@ -165,23 +165,23 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
        if(isJsonableType(valType)) { 
   _buf.add('''
     "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
-        () => EBISU_UTILS.randJson(_randomJsonGenerator, ${valType})),
+       ebisu_utils.randJson(_randomJsonGenerator, [],
+        () => ebisu_utils.randJson(_randomJsonGenerator, ${valType})),
 ''');
        } else { 
   _buf.add('''
     "${member.name}":
-       EBISU_UTILS.randJson(_randomJsonGenerator, [],
+       ebisu_utils.randJson(_randomJsonGenerator, [],
         () => ${valType}.randJson()),
 ''');
        }  
      } else if(isJsonableType(member.type)) { 
   _buf.add('''
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}),
+    "${member.name}": ebisu_utils.randJson(_randomJsonGenerator, ${member.type}),
 ''');
      } else { 
   _buf.add('''
-    "${member.name}": EBISU_UTILS.randJson(_randomJsonGenerator, ${member.type}.randJson),
+    "${member.name}": ebisu_utils.randJson(_randomJsonGenerator, ${member.type}.randJson),
 ''');
      } 
    } 

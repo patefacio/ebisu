@@ -36,9 +36,11 @@ class ${_.enumName} {
     return this.value;
   }
 
+#<   if(_.hasRandJson) { >
   static int randJson() {
    return _randomJsonGenerator.nextInt(${_.values.length});
   }
+#<   } >
 
   static ${_.enumName} fromJson(int v) {
     switch(v) {

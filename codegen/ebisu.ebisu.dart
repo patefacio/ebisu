@@ -222,8 +222,8 @@ classes with JSON support.
       'io', '"dart:convert" as convert', 
       '"package:ebisu/ebisu.dart"', 
       '"package:id/id.dart"', 
-      '"package:ebisu/ebisu_utils.dart" as EBISU_UTILS', 
-      '"templates/dart_meta.dart" as META',
+      '"package:ebisu/ebisu_utils.dart" as ebisu_utils', 
+      '"templates/dart_meta.dart" as meta',
     ]
     ..variables = [
       variable('non_jsonable_types')
@@ -329,6 +329,10 @@ At some point when true enums are provided this may be revisited.
           ..doc = "If true, generate toJson/fromJson on wrapper class"
           ..type = 'bool'
           ..classInit = 'false',
+          member('has_rand_json')
+          ..doc = "If true, generate randJson"
+          ..type = 'bool'
+          ..classInit = 'false',
           member('name')
           ..doc = "Name of the enum class generated sans access prefix"
           ..access = Access.RO,
@@ -349,6 +353,7 @@ At some point when true enums are provided this may be revisited.
         ..doc = 'A dependency of the system'
         ..members = [
           member('name')
+          ..ctors = ['']
           ..doc = 'Name of dependency',
           member('version')
           ..doc = 'Required version for this dependency'
@@ -367,7 +372,8 @@ At some point when true enums are provided this may be revisited.
         ..jsonSupport = true
         ..doc = 'Information for the pubspec of the system'
         ..members = [
-          id_member('pub spec'),
+          // In general id is final - but here we want json
+          id_member('pub spec')..isFinal = false,
           doc_member('pub spec'),
           parent_member('pub spec'),
           member('version')

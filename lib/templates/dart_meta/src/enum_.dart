@@ -62,9 +62,15 @@ class ${_.enumName} {
     return this.value;
   }
 
+''');
+   if(_.hasRandJson) { 
+  _buf.add('''
   static int randJson() {
    return _randomJsonGenerator.nextInt(${_.values.length});
   }
+''');
+   } 
+  _buf.add('''
 
   static ${_.enumName} fromJson(int v) {
     switch(v) {

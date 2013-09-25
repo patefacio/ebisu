@@ -36,9 +36,6 @@ class Access {
     return this.value;
   }
 
-  static int randJson() {
-   return _randomJsonGenerator.nextInt(3);
-  }
 
   static Access fromJson(int v) {
     switch(v) {
@@ -87,9 +84,6 @@ class PubDepType {
     return this.value;
   }
 
-  static int randJson() {
-   return _randomJsonGenerator.nextInt(3);
-  }
 
   static PubDepType fromJson(int v) {
     switch(v) {
@@ -167,7 +161,7 @@ class Variable {
   }
 
   String define() {
-    return META.variable(this);
+    return meta.variable(this);
   }
 
 // end <class Variable>
@@ -198,6 +192,8 @@ class Enum {
   List<Id> values = [];
   /// If true, generate toJson/fromJson on wrapper class
   bool jsonSupport = false;
+  /// If true, generate randJson
+  bool hasRandJson = false;
   /// Name of the enum class generated sans access prefix
   String get name => _name;
   /// Name of the enum class generated with access prefix
@@ -216,7 +212,7 @@ class Enum {
   }
 
   String define() {
-    return META.enum_(this);
+    return meta.enum_(this);
   }
 
   String valueAsString(Id value) => isSnakeString?
@@ -231,6 +227,12 @@ class Enum {
 
 /// A dependency of the system
 class PubDependency {
+
+  PubDependency(this.name);
+
+
+  PubDependency._json();
+
   /// Name of dependency
   String name;
   /// Required version for this dependency
@@ -250,15 +252,14 @@ class PubDependency {
         switch(match.group(1)) {
           case 'git:': {
             _type = PubDepType.GIT;
-            break;
           }
+            break;
           case 'http:': {
             _type = PubDepType.HOSTED;
-            break;
           }
+            break;
           default: {
             _type = PubDepType.PATH;
-            break;
           }
         }
       } else {
@@ -319,28 +320,26 @@ class PubDependency {
     return result;
   }
 
-  PubDependency(String _name) : name = _name { }
-
 // end <class PubDependency>
 
   Map toJson() {
     return {
-    "name": EBISU_UTILS.toJson(name),
-    "version": EBISU_UTILS.toJson(version),
-    "path": EBISU_UTILS.toJson(path),
-    "gitRef": EBISU_UTILS.toJson(gitRef),
+    "name": ebisu_utils.toJson(name),
+    "version": ebisu_utils.toJson(version),
+    "path": ebisu_utils.toJson(path),
+    "gitRef": ebisu_utils.toJson(gitRef),
     };
   }
 
   static PubDependency fromJson(String json) {
     Map jsonMap = convert.JSON.decode(json);
-    PubDependency result = new PubDependency();
+    PubDependency result = new PubDependency._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
 
   static PubDependency fromJsonMap(Map jsonMap) {
-    PubDependency result = new PubDependency();
+    PubDependency result = new PubDependency._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
@@ -425,14 +424,14 @@ class PubSpec {
 
   Map toJson() {
     return {
-    "id": EBISU_UTILS.toJson(id),
-    "doc": EBISU_UTILS.toJson(doc),
-    "version": EBISU_UTILS.toJson(version),
-    "name": EBISU_UTILS.toJson(name),
-    "author": EBISU_UTILS.toJson(author),
-    "homepage": EBISU_UTILS.toJson(homepage),
-    "dependencies": EBISU_UTILS.toJson(dependencies),
-    "devDependencies": EBISU_UTILS.toJson(devDependencies),
+    "id": ebisu_utils.toJson(id),
+    "doc": ebisu_utils.toJson(doc),
+    "version": ebisu_utils.toJson(version),
+    "name": ebisu_utils.toJson(name),
+    "author": ebisu_utils.toJson(author),
+    "homepage": ebisu_utils.toJson(homepage),
+    "dependencies": ebisu_utils.toJson(dependencies),
+    "devDependencies": ebisu_utils.toJson(devDependencies),
     };
   }
 
@@ -469,7 +468,7 @@ class PubSpec {
       devDependencies.add(PubDependency.fromJsonMap(v));
     });
   }
-  final Id _id;
+  Id _id;
   dynamic _parent;
 }
 
@@ -646,7 +645,7 @@ Only "version" and "path" overrides are supported.
     if(pubSpec != null && generatePubSpec) {
       overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
-      scriptMergeWithFile(META.pubspec(pubSpec), pubSpecPath);
+      scriptMergeWithFile(meta.pubspec(pubSpec), pubSpecPath);
     }
 
     if(license != null) {
@@ -874,7 +873,7 @@ class Script {
   void generate() {
     String scriptName = _id.snake;
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
-    mergeWithFile(META.script(this), scriptPath);
+    mergeWithFile(meta.script(this), scriptPath);
   }
 
   Iterable get requiredArgs =>
@@ -922,7 +921,7 @@ class App {
     String appHtmlPath = "${_parent.rootPath}/web/${_id.snake}.html";
     String appCssPath = "${_parent.rootPath}/web/${_id.snake}.css";
     String appBuildPath = "${_parent.rootPath}/build.dart";
-    mergeWithFile(META.app(this), appPath);
+    mergeWithFile(meta.app(this), appPath);
     htmlMergeWithFile('''<!DOCTYPE html>
 
 <html>
@@ -1024,7 +1023,7 @@ class Library {
     enums.forEach((e) => e.parent = this);
     classes.forEach((c) => c.parent = this);
     if(allClasses.any((c) => c.jsonSupport)) {
-      imports.add('"package:ebisu/ebisu_utils.dart" as EBISU_UTILS');
+      imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
     }
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
@@ -1046,7 +1045,7 @@ class Library {
           "${_parent.rootPath}/test/${id.snake}.dart" :
           "${_parent.rootPath}/lib/${id.snake}.dart");
 
-    mergeWithFile(META.library(this), libStubPath);
+    mergeWithFile(meta.library(this), libStubPath);
     parts.forEach((part) => part.generate());
   }
 
@@ -1132,7 +1131,7 @@ class Part {
       _parent.isTest?
       "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
       "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
-    mergeWithFile(META.part(this), _filePath);
+    mergeWithFile(meta.part(this), _filePath);
   }
 
   bool isClassJsonable(String className) => _parent.isClassJsonable(className);
@@ -1280,7 +1279,7 @@ class Class {
 
   String define() {
     if(parent == null) parent = library('stub');
-    return META.class_(this);
+    return meta.class_(this);
   }
 
   dynamic noSuchMethod(Invocation msg) {
@@ -1324,7 +1323,7 @@ class Ctor {
   String get ctorSansNew {
     var classId = idFromString(className);
     var id = (name == 'default' || name == '')? classId : 
-    new Id('${classId.snake}_${IdFromEither(name)}');
+    new Id('${classId.snake}_${idFromString(name)}');
 
     List<String> parms = [];
     List<String> args = [];
