@@ -99,13 +99,13 @@ dynamic randJson(Random generator, var obj, [ final dynamic type ]) {
   } else if(obj is Function) {
     return obj();
   } else {
+    if(obj == null) return null;
     switch(obj) {
       case num: return generator.nextInt(_maxRandInt);
       case double: return generator.nextInt(_maxRandInt) * generator.nextDouble();
       case int: return generator.nextInt(_maxRandInt);
       case String: return randString(generator);
-      case bool: return 0==(nextInt()%2);
-      case null: return null;
+      case bool: return 0==(generator.nextInt(_maxRandInt)%2);
       case DateTime: 
         return new DateTime(1900+generator.nextInt(150), 
             generator.nextInt(12)+1, 

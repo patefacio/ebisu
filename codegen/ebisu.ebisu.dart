@@ -885,6 +885,7 @@ library/templates, a message like the following will be output:
         'package:ebisu/ebisu_dart_meta.dart', 
         'package:path/path.dart',
         'io',
+        'utils.dart',
       ]
       ..variables = [
         variable('scratch_remove_me_folder')
