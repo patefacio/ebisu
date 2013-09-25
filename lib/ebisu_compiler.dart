@@ -26,7 +26,7 @@ import 'package:path/path.dart' as path;
 // custom <additional imports>
 // end <additional imports>
 
-part "src/ebisu_compiler/compiler.dart";
+part 'src/ebisu_compiler/compiler.dart';
 
 final _logger = new Logger("ebisu_compiler");
 

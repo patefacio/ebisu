@@ -254,5 +254,10 @@ List<String> cleanImports(List<String> dirtyImports) {
   return result;
 }
 
+String smartQuote(String s) =>
+  ((s.indexOf("'") == -1) &&
+      (s.indexOf('"') == -1))?
+  "'$s'" : s;
+
 // end <part ebisu>
 

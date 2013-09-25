@@ -18,7 +18,7 @@ ${_.isFinal? 'final ':''}${_.type} ${_.varName};
 ''');
  } else { 
   _buf.add('''
-${_.isFinal? 'final ':''}${_.type} ${_.varName} = ${_.init};
+${_.isFinal? 'final ':''}${_.type} ${_.varName} = ${_.type=='String'? smartQuote(_.init) : _.init};
 ''');
  } 
   return _buf.join();

@@ -55,7 +55,7 @@ import 'templates/dart_meta.dart' as META;
 // custom <additional imports>
 // end <additional imports>
 
-part "src/ebisu_dart_meta/dart_meta.dart";
+part 'src/ebisu_dart_meta/dart_meta.dart';
 
 final _logger = new Logger("ebisu_dart_meta");
 

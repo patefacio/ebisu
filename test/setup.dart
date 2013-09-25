@@ -11,7 +11,7 @@ import 'package:unittest/unittest.dart';
 
 final _logger = new Logger("setup");
 
-dynamic _scratchRemoveMeFolder;
+String _scratchRemoveMeFolder;
 
 // custom <library setup>
 

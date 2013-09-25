@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:unittest/unittest.dart';
 import 'package:yaml/yaml.dart';
 import 'setup.dart';
+import 'utils.dart';
 // custom <additional imports>
 // end <additional imports>
 
@@ -116,11 +117,14 @@ void generateTestLibraries() {
       ..classes = [
         class_('various_ctors')
         ..members = [
-          member('one')..classInit = 1.00001
+          member('one')
+          ..classInit = 1.00001
           ..ctors = [''],
-          member('two')..classInit = 'two'
+          member('two')
+          ..classInit = 'two'
           ..ctorsOpt = [''],
-          member('three')..classInit = 3
+          member('three')
+          ..classInit = 3
           ..ctors = ['fromThreeAndFour']
           ..ctorsOpt = [''],
           member('four')
@@ -132,6 +136,36 @@ void generateTestLibraries() {
           ..ctorInit = '5'
           ..ctorsOpt = ['fromFive'],
         ]
+      ],
+      library('two_parts')
+      ..variables = [
+        variable('l_v_1_public')
+        ..init = 4,
+        variable('l_v_1_private')
+        ..isPublic = false
+        ..init = 'foo'
+      ]
+      ..parts = [
+        part('p_1')
+        ..variables = [
+          variable('p_1_v_1')
+          ..init = 3,
+          variable('p_1_v_2')
+          ..init = 4
+        ]
+        ..classes = [
+          class_('p_1_c_1'),
+          class_('p_1_c_2'),
+        ],
+        part('p_2')
+        ..variables = [
+          variable('p_2_v_1')
+          ..init = 'goo',
+        ]
+        ..classes = [
+          class_('p_2_c_1'),
+          class_('p_2_c_2'),
+        ],
       ]
     ];
 
@@ -205,12 +239,22 @@ main() {
 
 
   group('subprocesses', () {
+
     List allDartFilesComplete = [];
 
+    String testPath = join(packageRootPath, 'test');
+    
+    //////////////////////////////////////////////////////////////////////
+    // Invoke tests on generated code
+    //////////////////////////////////////////////////////////////////////
     [ 
+
       'expect_basic_class.dart',
       'expect_various_ctors.dart',
+      'expect_multi_parts.dart',
+
     ].forEach((dartFile) {
+      dartFile = join(testPath, dartFile);
       Future subprocess =
         Process
         .run(Platform.executable, [ '--checked', dartFile ])
@@ -218,6 +262,13 @@ main() {
           test('$dartFile succeeded', () {
             print("Results of running dart subprocess $dartFile");
             print(processResult.stdout);
+            if(processResult.stderr.length > 0) {
+              print('STDERR| ' + 
+                  processResult.stderr
+                  .split('\n')
+                  .join('\nSTDERR| '));
+            }
+            
             expect(processResult.exitCode, 0);
           });
         });
@@ -225,6 +276,11 @@ main() {
       allDartFilesComplete.add(subprocess);
 
     });
+
+    var allDone = expectAsync0(() => print("All Done"));
+
+    Future.wait(allDartFilesComplete)
+      ..then((_) => allDone());
 
   });
 

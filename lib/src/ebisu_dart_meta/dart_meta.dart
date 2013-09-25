@@ -116,10 +116,28 @@ class Variable {
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
   /// Type for the variable
-  String type = "dynamic";
-  /// Text used to initialize the variable
-  /// (e.g. 'DateTime(1929, 10, 29)' for <DateTime crashDate = DateTime(1929, 10, 29)>
-  String init;
+  String type;
+  /// Data used to initialize the variable
+  /// If init is a String and type is not specified, [type] is a String
+  ///
+  /// member('foo')..init = 'goo' => String foo = "goo";
+  ///
+  /// If init is a String and type is specified, then:
+  ///
+  /// member('foo')..type = 'int'..init = 3
+  ///   String foo = 3;
+  /// member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' => 
+  ///   DateTime foo = new DateTime(1929, 10, 29);
+  ///
+  /// If init is not specified, it will be inferred from init if possible:
+  ///
+  /// member('foo')..init = 'goo'
+  ///   String foo = "goo";
+  /// member('foo')..init = 3
+  ///   String foo = 3;
+  /// member('foo')..init = [1,2,3]
+  ///   Map foo = [1,2,3];
+  dynamic init;
   /// True if the variable is final
   bool isFinal = false;
   /// True if the variable is const
@@ -136,6 +154,15 @@ class Variable {
   void set parent(p) {
     _name = id.camel;
     _varName = isPublic? _name : "_${_name}";
+    if(type == null) {
+      if((init != null) && (init is! String)) {
+        type = '${init.runtimeType}';
+        if(type == 'LinkedHashMap') type = 'Map';
+      } else {
+        type = 'String';
+      }
+    }
+
     _parent = p;
   }
 
@@ -166,7 +193,7 @@ class Variable {
     "doc": EBISU_UTILS.randJson(_randomJsonGenerator, String),
     "isPublic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "type": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "init": EBISU_UTILS.randJson(_randomJsonGenerator, String),
+    "init": EBISU_UTILS.randJson(_randomJsonGenerator, dynamic.randJson),
     "isFinal": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isConst": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
     "isStatic": EBISU_UTILS.randJson(_randomJsonGenerator, bool),
@@ -269,7 +296,7 @@ class PubDependency {
   /// Name of dependency
   String name;
   /// Required version for this dependency
-  String version = "any";
+  String version = 'any';
   /// Path to package, infers package type for git (git:...), hosted (http:...), path
   String path;
   /// Git reference
@@ -392,7 +419,7 @@ class PubSpec {
   /// Reference to parent of this pub spec
   dynamic get parent => _parent;
   /// Version for this package
-  String version = "0.0.1";
+  String version = '0.0.1';
   /// Name of the project described in spec.
   /// If not set, id of system is used.
   String name;
@@ -1756,7 +1783,7 @@ class Member {
   /// Reference to parent of this class member
   dynamic get parent => _parent;
   /// Type of the member
-  String type = "String";
+  String type = 'String';
   /// Access level supported for this member
   Access access;
   /// If provided the member will be initialized with value.
@@ -1820,7 +1847,7 @@ class Member {
     (classInit == null)? 
     "${finalDecl}${type} ${varName};" :
     ((type == 'String')?
-        "${finalDecl}${type} ${varName} = \"${classInit}\";" :
+        "${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
         "${finalDecl}${type} ${varName} = ${classInit};");
 
   String get publicCode {

@@ -266,12 +266,32 @@ classes with JSON support.
           public_member('variable'),
           member('type')
           ..doc = 'Type for the variable'
-          ..type = 'String'
-          ..classInit = 'dynamic',
+          ..type = 'String',
           member('init')
-          ..doc = '''Text used to initialize the variable
-(e.g. 'DateTime(1929, 10, 29)' for <DateTime crashDate = DateTime(1929, 10, 29)>
-''',
+          ..doc = '''
+Data used to initialize the variable
+If init is a String and type is not specified, [type] is a String
+
+member('foo')..init = 'goo' => String foo = "goo";
+
+If init is a String and type is specified, then:
+
+member('foo')..type = 'int'..init = 3
+  String foo = 3;
+member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' => 
+  DateTime foo = new DateTime(1929, 10, 29);
+
+If init is not specified, it will be inferred from init if possible:
+
+member('foo')..init = 'goo'
+  String foo = "goo";
+member('foo')..init = 3
+  String foo = 3;
+member('foo')..init = [1,2,3]
+  Map foo = [1,2,3];
+
+'''
+          ..type = 'dynamic',
           member('is_final')
           ..doc = 'True if the variable is final'
           ..type = 'bool'
@@ -873,14 +893,21 @@ library/templates, a message like the following will be output:
       ..includeMain = false
       ..includeLogger = true,
       library('test_basic_class')
-      ..imports = ['package:ebisu/ebisu_dart_meta.dart', 'setup.dart', 'package:path/path.dart', 'package:yaml/yaml.dart', 'io', 'async', ]
+      ..imports = [
+        'package:ebisu/ebisu_dart_meta.dart', 
+        'setup.dart', 
+        'utils.dart',
+        'package:path/path.dart', 
+        'package:yaml/yaml.dart', 
+        'io', 
+        'async', ]
       ..includeLogger = true,
       library('expect_basic_class')
-      ..imports = [ 'scratch_remove_me/lib/basic_class.dart' ]
-      ..includeLogger = true,
+      ..imports = [ 'scratch_remove_me/lib/basic_class.dart' ],
       library('expect_various_ctors')
-      ..imports = [ 'scratch_remove_me/lib/various_ctors.dart' ]
-      ..includeLogger = true,
+      ..imports = [ 'scratch_remove_me/lib/various_ctors.dart' ],
+      library('expect_multi_parts')
+      ..imports = [ 'scratch_remove_me/lib/two_parts.dart' ],
     ]
     ..todos = [
       'Add examples'
@@ -934,6 +961,7 @@ regenerating.
   Platform.environment['EBISU_PUB_VERSIONS'] :
   "\${Platform.environment['HOME']}/.ebisu_pub_versions.json"''',
         variable('license_map')
+        ..type = 'Map<String,String>'
         ..init = '''
 {
    'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>'

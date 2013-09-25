@@ -4,5 +4,5 @@ ${rightTrim(docComment(_.doc))}
 #< if(_.init == null) { >
 ${_.isFinal? 'final ':''}${_.type} ${_.varName};
 #< } else { >
-${_.isFinal? 'final ':''}${_.type} ${_.varName} = ${_.init};
+${_.isFinal? 'final ':''}${_.type} ${_.varName} = ${_.type=='String'? smartQuote(_.init) : _.init};
 #< } >

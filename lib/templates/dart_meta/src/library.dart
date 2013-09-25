@@ -26,7 +26,7 @@ ${customBlock("additional imports")}
 ''');
  for(var part in _.parts) { 
   _buf.add('''
-part "src/${_.name}/${part.name}.dart";
+part 'src/${_.name}/${part.name}.dart';
 ''');
  } 
   _buf.add('''
@@ -68,7 +68,7 @@ ${customBlock("main")}
 ''');
  } else if(_.libMain != null) { 
   _buf.add('''
-${_.libMain}
+${libMain}
 ''');
  } 
   return _buf.join();
