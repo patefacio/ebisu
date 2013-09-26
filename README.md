@@ -3,6 +3,9 @@
 
 A library supporting code generation of Dart pub packages and many constituent assets.
 <!--- custom <introduction> --->
+
+[![Build Status](https://drone.io/github.com/patefacio/ebisu/status.png)](https://drone.io/github.com/patefacio/ebisu/latest)
+
 <!--- end <introduction> --->
 
 
