@@ -1,6 +1,6 @@
 import 'package:unittest/unittest.dart';
 import 'package:unittest/vm_config.dart';
-import 'test_basic_class.dart' as test_basic_class;
+import 'test_code_generation.dart' as test_code_generation;
 
 void testCore(Configuration config) {
   unittestConfiguration = config;
@@ -8,6 +8,6 @@ void testCore(Configuration config) {
 }
 
 main() {
-  test_basic_class.main();
+  test_code_generation.main();
 }
 

@@ -230,9 +230,6 @@ class PubDependency {
 
   PubDependency(this.name);
 
-
-  PubDependency._json();
-
   /// Name of dependency
   String name;
   /// Required version for this dependency
@@ -321,35 +318,6 @@ class PubDependency {
   }
 
 // end <class PubDependency>
-
-  Map toJson() {
-    return {
-    "name": ebisu_utils.toJson(name),
-    "version": ebisu_utils.toJson(version),
-    "path": ebisu_utils.toJson(path),
-    "gitRef": ebisu_utils.toJson(gitRef),
-    };
-  }
-
-  static PubDependency fromJson(String json) {
-    Map jsonMap = convert.JSON.decode(json);
-    PubDependency result = new PubDependency._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  static PubDependency fromJsonMap(Map jsonMap) {
-    PubDependency result = new PubDependency._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  void _fromJsonMapImpl(Map jsonMap) {
-    name = jsonMap["name"];
-    version = jsonMap["version"];
-    path = jsonMap["path"];
-    gitRef = jsonMap["gitRef"];
-  }
   /// Type for the pub dependency
   PubDepType _type;
 }
@@ -358,9 +326,6 @@ class PubDependency {
 class PubSpec {
 
   PubSpec(this._id);
-
-
-  PubSpec._json();
 
   /// Id for this pub spec
   Id get id => _id;
@@ -421,53 +386,6 @@ class PubSpec {
     
 
 // end <class PubSpec>
-
-  Map toJson() {
-    return {
-    "id": ebisu_utils.toJson(id),
-    "doc": ebisu_utils.toJson(doc),
-    "version": ebisu_utils.toJson(version),
-    "name": ebisu_utils.toJson(name),
-    "author": ebisu_utils.toJson(author),
-    "homepage": ebisu_utils.toJson(homepage),
-    "dependencies": ebisu_utils.toJson(dependencies),
-    "devDependencies": ebisu_utils.toJson(devDependencies),
-    };
-  }
-
-  static PubSpec fromJson(String json) {
-    Map jsonMap = convert.JSON.decode(json);
-    PubSpec result = new PubSpec._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  static PubSpec fromJsonMap(Map jsonMap) {
-    PubSpec result = new PubSpec._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  void _fromJsonMapImpl(Map jsonMap) {
-    _id = (jsonMap["id"] is Map)?
-      Id.fromJsonMap(jsonMap["id"]) :
-      Id.fromJson(jsonMap["id"]);
-    doc = jsonMap["doc"];
-    version = jsonMap["version"];
-    name = jsonMap["name"];
-    author = jsonMap["author"];
-    homepage = jsonMap["homepage"];
-    // dependencies list of PubDependency
-    dependencies = new List<PubDependency>();
-    jsonMap["dependencies"].forEach((v) {
-      dependencies.add(PubDependency.fromJsonMap(v));
-    });
-    // devDependencies list of PubDependency
-    devDependencies = new List<PubDependency>();
-    jsonMap["devDependencies"].forEach((v) {
-      devDependencies.add(PubDependency.fromJsonMap(v));
-    });
-  }
   Id _id;
   dynamic _parent;
 }
@@ -498,7 +416,12 @@ class System {
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
   bool generatePubSpec = true;
-  /// If found in licenseMap, value is used, else license is used
+  /// A string indicating the license.
+  /// A map of common licenses is looked up and if found a link
+  /// to that license is used. The current keys of the map are:
+  /// [ 'boost', 'mit', 'apache-2.0', 'bsd-2', 'bsd-3', 'mozilla-2.0' ]
+  /// Otherwise the text is assumed to be the
+  /// text to include in the license file.
   String license;
   /// If true standard outline for readme provided
   bool includeReadme = false;
@@ -578,7 +501,7 @@ class System {
       deps.forEach((dep) {
         var override = overrides[dep.name];
         if(override != null) {
-          _logger.info("Overriding: ${dep.name} (${dep.toJson()}) with ${override}");
+          _logger.info("Overriding: (((\n${dep.yamlEntry}\n))) with ${override}");
           var version = override['version'];
           if(version != null) {
             dep.version = version;

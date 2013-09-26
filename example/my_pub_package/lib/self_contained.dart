@@ -1,5 +1,6 @@
 library self_contained;
 
+import 'package:ebisu/ebisu_utils.dart' as ebisu_utils;
 // custom <additional imports>
 // end <additional imports>
 
@@ -15,20 +16,11 @@ class Address {
 
   Map toJson() {
     return {
-    "zip": EBISU_UTILS.toJson(zip),
-    "street": EBISU_UTILS.toJson(street),
-    "streetNumber": EBISU_UTILS.toJson(streetNumber),
+    "zip": ebisu_utils.toJson(zip),
+    "street": ebisu_utils.toJson(street),
+    "streetNumber": ebisu_utils.toJson(streetNumber),
     };
   }
-
-  static Map randJson() {
-    return {
-    "zip": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "street": EBISU_UTILS.randJson(_randomJsonGenerator, String),
-    "streetNumber": EBISU_UTILS.randJson(_randomJsonGenerator, int),
-    };
-  }
-
 
   static Address fromJson(String json) {
     Map jsonMap = convert.JSON.decode(json);
@@ -58,19 +50,9 @@ class AddressBook {
 
   Map toJson() {
     return {
-    "book": EBISU_UTILS.toJson(book),
+    "book": ebisu_utils.toJson(book),
     };
   }
-
-  static Map randJson() {
-    return {
-    "book":
-       EBISU_UTILS.randJsonMap(_randomJsonGenerator,
-        () => Address.randJson(),
-        "book"),
-    };
-  }
-
 
   static AddressBook fromJson(String json) {
     Map jsonMap = convert.JSON.decode(json);

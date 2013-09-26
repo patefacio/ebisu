@@ -22,6 +22,14 @@ Simple example pub package composed of:
 - Hop support
 '''
     ..rootPath = topDir
+    ..includeHop = true
+    ..todos = [ 'Add some real code' ]
+    ..license = 'boost'
+    ..pubSpec.homepage = 'http://foo.com'
+    ..pubSpec.doc = 'Just a toy, never see the light of day'
+    ..testLibraries = [
+      library('test_it')
+    ]
     ..libraries = [
       library('self_contained')
       ..classes = [

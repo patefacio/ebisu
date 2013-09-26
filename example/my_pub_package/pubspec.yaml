@@ -1,11 +1,16 @@
 name: my_pub_package
 version: 0.0.1
 author: Daniel Davidson <dbdavidson@yahoo.com>
+homepage: http://foo.com
+description: >
+  Just a toy, never see the light of day
 dependencies:
 # custom <my_pub_package dependencies>
 # end <my_pub_package dependencies>
 
 dev_dependencies:
+  hop: ">=0.24.4"
+
 # custom <my_pub_package dev dependencies>
 # end <my_pub_package dev dependencies>
 

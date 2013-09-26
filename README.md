@@ -53,15 +53,20 @@ contents, the layout of a class, ...etc)
 For a small taste:
 
         class_('schema_node')
+        ..doc = 'Represents one node in the schema diagram'
         ..members = [
           member('schema')
+          ..doc = 'Referenced schema this node portrays'
           ..type = 'Schema',
           member('links')
+          ..doc = 'List of links (resulting in graph edge) from this node to another'
           ..type = 'List<String>'
         ]
 
 That declaration snippet will define a class called _SchemNode_ with two members
-_schema_ of type _Schema_ and _links_ of type _List_.
+_schema_ of type _Schema_ and _links_ of type _List_. The _doc_ attribute is a
+common way of providing descriptions for { _classes_, _members_, _variables_,
+_pubSpec_ } and appear as document comments.
 
 There are areas where the code generation gets a bit opinionated. For example,
 members are either public or private and the naming convention is enforced - so
@@ -129,6 +134,99 @@ library/templates, a message like the following will be output:
 
 
 <!--- custom <body> --->
+
+### Json Support
+
+One of the benefits of code generation is it allows for easy addition
+of boilerplate code. One such example is json serialization
+support. Of course, there already exists a _serialization_ library,
+which may be a good solotion. However, that does have dependencies on
+mirrors and is a rather heavy weight solution.
+
+So, adding _jsonSupport = true_ in the following ebisu declaration:
+
+        class_('point')
+        ..jsonSupport = true
+        ..members = [
+          member('x')..classInit = 0.0,
+          member('y')..classInit = 0.0,      
+        ],
+
+
+will generate these additional methods for the _Point_ class:
+
+      Map toJson() {
+        return {
+        "x": ebisu_utils.toJson(x),
+        "y": ebisu_utils.toJson(y),
+        };
+      }
+    
+      static Point fromJson(String json) {
+        Map jsonMap = convert.JSON.decode(json);
+        Point result = new Point();
+        result._fromJsonMapImpl(jsonMap);
+        return result;
+      }
+    
+      static Point fromJsonMap(Map jsonMap) {
+        Point result = new Point();
+        result._fromJsonMapImpl(jsonMap);
+        return result;
+      }
+    
+      void _fromJsonMapImpl(Map jsonMap) {
+        x = jsonMap["x"];
+        y = jsonMap["y"];
+      }
+
+### Special Environment Variables
+
+The following environment variables have special meaning:
+
+    | variable           | meaning                                               |
+    |--------------------+-------------------------------------------------------|
+    | EBISU_AUTHOR       | If set, generated pubspecs will use this for author   |
+    | EBISU_HOMEPAGE     | If set, generated pubspecs will use this for homepage |
+    | EBISU_PUB_VERSIONS | Specifies a config file for overriding versions       |
+
+
+The _EBISU\_PUB\_VERSIONS_ is a way to leverage the code generation
+support which already generates pubspecs to overcome one of the
+current shortcomings of _pub_. Sometimes it is desirable to set a
+specific package to a local path for development. As the web of
+dependencies grows the difficulty of keeping it straight also
+grows. In order to set a package to a local path, that path must be
+set to the same source in all pubspecs encountered in the transitive
+closure. If it happens to be a package you are working on, it would be
+nice to be able to change the pubspec entry in one place, regenerate,
+and have all pubspecs updated to point to the same place.
+
+The format of this file is a json instance with a "versions" key
+outlining the versions to override. Each property in the _versions_
+object must be the name of a package to override, and the value must
+be an object with an entry that is either a "_path_" or "_version_"
+specification. An example override file is:
+
+    {
+      "versions" : {
+        "id" : { "path" : "/Users/dbdavidson/dev/open_source/id" },
+        "ebisu" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu" },
+        "ebisu_web_ui" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu_web_ui" },
+        "json_schema" : { "version" : ">=0.0.2" },
+        "hop" : { "version" : ">=0.24.4" },
+        "logging" : { "version" : ">=0.7.1" },
+        "args" : { "version": ">=0.7.1" },
+        "unittest" : { "version": ">=0.7.1" },
+        "path" : { "version" : ">=0.7.1" }
+      }
+    }
+
+If this file exists as _~/.ebisu\_pub\_versions.json_ or in a file
+referenced by environment variable _EBISU\_PUB\_VERSIONS_ then those
+overrides will take effect and any generated puspecs will have those
+versions if present.
+
 <!--- end <body> --->
 
 
@@ -138,6 +236,38 @@ library/templates, a message like the following will be output:
 
 ## A Toy Example
 
+### my\_pub\_package
+
+In the _example_ folder of this project there is a folder called _my\_pub\_package_ which shows one way to generate code. A typical approach is:
+
+- Select a snake case name for the package (e.g. _my\_pub\_package_)
+- Create a folder of that name where you want that package to exist
+- Create a folder in there called _codegen_
+- Create a dart script to generate the code you want. A reasonable convention for naming the file is *package\_name*.ebisu.dart. So the ebisu script for this example is: [my\_pub\_package.ebisu.dart](https://github.com/patefacio/ebisu/blob/master/example/my_pub_package/codegen/my_pub_package.ebisu.dart)
+- Run that file to generate the package code and other assets
+
+After code generation, _pub publish -n_ looks like the following:
+
+    |-- LICENSE
+    |-- README.md
+    |-- codegen
+    |   '-- my_pub_package.ebisu.dart
+    |-- lib
+    |   |-- multi_part.dart
+    |   |-- self_contained.dart
+    |   '-- src
+    |       '-- multi_part
+    |           |-- first_part.dart
+    |           '-- second_part.dart
+    |-- pubspec.yaml
+    |-- test
+    |   |-- runner.dart
+    |   |-- test_it.dart
+    |   '-- utils.dart
+    '-- tool
+        '-- hop_runner.dart
+
+All files can be edited - *take care to only change code in custom blocks*. Regernating the code after editing within custom blocks will have no effect. Regenerating after modifying the _my\_pub\_package.ebisu.dart_ should cause the desired updates.
 
 
 ## A Real Example (Json Schema)

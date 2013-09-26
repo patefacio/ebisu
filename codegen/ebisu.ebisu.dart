@@ -13,7 +13,7 @@ void main() {
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
   // Logger.root.onRecord.listen((LogRecord r) =>
-  //   print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
   Options options = new Options();
   String here = path.absolute(options.script);
@@ -349,7 +349,6 @@ At some point when true enums are provided this may be revisited.
           ..classInit = 'false',
         ],
         class_('pub_dependency')
-        ..jsonSupport = true
         ..doc = 'A dependency of the system'
         ..members = [
           member('name')
@@ -369,7 +368,6 @@ At some point when true enums are provided this may be revisited.
           ..access = IA,
         ],
         class_('pub_spec')
-        ..jsonSupport = true
         ..doc = 'Information for the pubspec of the system'
         ..members = [
           // In general id is final - but here we want json
@@ -438,7 +436,14 @@ If not set, id of system is used.
           ..type = 'bool'
           ..classInit = 'true',
           member('license')
-          ..doc = 'If found in licenseMap, value is used, else license is used',
+          ..doc = '''
+A string indicating the license.
+A map of common licenses is looked up and if found a link
+to that license is used. The current keys of the map are:
+[ 'boost', 'mit', 'apache-2.0', 'bsd-2', 'bsd-3', 'mozilla-2.0' ]
+Otherwise the text is assumed to be the
+text to include in the license file.
+''',
           member('include_readme')
           ..doc = 'If true standard outline for readme provided'
           ..type = 'bool'
@@ -816,15 +821,20 @@ contents, the layout of a class, ...etc)
 For a small taste:
 
         class_('schema_node')
+        ..doc = 'Represents one node in the schema diagram'
         ..members = [
           member('schema')
+          ..doc = 'Referenced schema this node portrays'
           ..type = 'Schema',
           member('links')
+          ..doc = 'List of links (resulting in graph edge) from this node to another'
           ..type = 'List<String>'
         ]
 
 That declaration snippet will define a class called _SchemNode_ with two members
-_schema_ of type _Schema_ and _links_ of type _List_.
+_schema_ of type _Schema_ and _links_ of type _List_. The _doc_ attribute is a
+common way of providing descriptions for { _classes_, _members_, _variables_,
+_pubSpec_ } and appear as document comments.
 
 There are areas where the code generation gets a bit opinionated. For example,
 members are either public or private and the naming convention is enforced - so
@@ -901,7 +911,7 @@ library/templates, a message like the following will be output:
       ]
       ..includeMain = false
       ..includeLogger = true,
-      library('test_basic_class')
+      library('test_code_generation')
       ..imports = [
         'package:ebisu/ebisu_dart_meta.dart', 
         'setup.dart', 
@@ -973,7 +983,14 @@ regenerating.
         ..type = 'Map<String,String>'
         ..init = '''
 {
-   'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>'
+
+  'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
+  'mit' : 'License: <a href="http://opensource.org/licenses/MIT">MIT License</a>',
+  'apache-2.0' : 'License: <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>',
+  'bsd-3' : 'License: <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause "Revised"</a>',
+  'bsd-2' : 'License: <a href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>',
+  'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
+
 }'''
 
       ]
