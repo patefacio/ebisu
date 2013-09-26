@@ -931,12 +931,14 @@ library/templates, a message like the following will be output:
     ..todos = [
       'Add examples'
     ]
+    ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
 '''
+        ..homepage = 'https://github.com/patefacio/ebisu'
         ..dependencies = [
           pubdep('path'),
           pubdep('id'),
