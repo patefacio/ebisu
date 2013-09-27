@@ -910,6 +910,10 @@ library/templates, a message like the following will be output:
       ]
       ..includeMain = false
       ..includeLogger = true,
+      library('test_functions')
+      ..imports = [
+        'package:ebisu/ebisu.dart',
+      ],
       library('test_code_generation')
       ..imports = [
         'package:ebisu/ebisu_dart_meta.dart', 
@@ -921,17 +925,17 @@ library/templates, a message like the following will be output:
         'async', ]
       ..includeLogger = true,
       library('expect_basic_class')
-      ..imports = [ 
+      ..imports = [
         'scratch_remove_me/lib/basic_class.dart',
         'package:unittest/unittest.dart',
       ],
       library('expect_various_ctors')
-      ..imports = [ 
+      ..imports = [
         'scratch_remove_me/lib/various_ctors.dart',
         'package:unittest/unittest.dart',
       ],
       library('expect_multi_parts')
-      ..imports = [ 
+      ..imports = [
         'scratch_remove_me/lib/two_parts.dart',
         'package:unittest/unittest.dart'
       ],

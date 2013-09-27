@@ -46,12 +46,13 @@ String indentBlock(String block, [String indent = '  ']) {
       () => new RegExp('\n$indent\$'));
   var leadingDead = _deadSpacePatternMap.putIfAbsent(indent, 
       () => new RegExp('^$indent\n'));
-  return '$indent${block.split("\n").join("\n$indent")}'
+  return '$indent${block.split('\n').join('\n$indent')}'
     .replaceAll('\n$indent\n', '\n\n')
     .replaceAll(trailingDead, '\n')
     .replaceAll(leadingDead, '\n');
 }
 
+/// Given list of lines, appends a suffix to all lines but the last.
 List<String> prepJoin(List<String> lines, [ String suffix = ',' ]) {
   for(int i=0; i<lines.length-1; i++) {
     lines[i] += suffix;
@@ -59,8 +60,9 @@ List<String> prepJoin(List<String> lines, [ String suffix = ',' ]) {
   return lines;
 }
 
+/// Join the entries with spaces by default taking care break at maxLenth
 String formatFill(List<String> entries, 
-    [ String indent = '  ', String separator = ' ', int maxLength = 80 ]) {
+    { String indent : '  ', String sep : ' ', int maxLength : 80 }) {
   if(entries.length == 0) return '';
   List<String> result = [];
   String current = '${entries.first}';
@@ -71,7 +73,7 @@ String formatFill(List<String> entries,
       result.add(current);
       current = '$indent$entry';
     } else {
-      current += '$separator$entry';
+      current += '$sep$entry';
     }
   }
   if(current.length > 0) {
@@ -196,9 +198,9 @@ bool mergeWithFile(String generated, String destFilePath,
 
     RegExp block = 
       new RegExp(
-          "\\n?[^\\S\\n]*?${beginProtect}"             // Look for begin
-          "\\s+<(.*?)>(?:.|\\n)*?"                     // Eat - non-greedy
-          "${endProtect}\\s+<\\1>",                    // Require matching end
+          '\\n?[^\\S\\n]*?${beginProtect}'             // Look for begin
+          '\\s+<(.*?)>(?:.|\\n)*?'                     // Eat - non-greedy
+          '${endProtect}\\s+<\\1>',                    // Require matching end
           multiLine: true);
 
     block.allMatches(currentText).forEach((m) 
@@ -208,7 +210,7 @@ bool mergeWithFile(String generated, String destFilePath,
 
     captures.forEach((k,v) {
       if(!empties.containsKey(k)) {
-        print("Warning: protect block <$k> removed");
+        print('Warning: protect block <$k> removed');
       } else {
         generated = generated.replaceFirst(empties[k], captures[k]);
       }
@@ -216,17 +218,17 @@ bool mergeWithFile(String generated, String destFilePath,
 
     //if(false && generated == currentText) {
     if(generated == currentText) {
-      print("No change: $destFilePath");
+      print('No change: $destFilePath');
       return false;
     } else {
       inFile.writeAsStringSync(generated);
-      print("Wrote: $destFilePath");
+      print('Wrote: $destFilePath');
     }
   } else {
     new Directory(path.dirname(destFilePath))
       ..createSync(recursive: true);
     inFile.writeAsStringSync(generated);
-    print("Created $destFilePath");
+    print('Created $destFilePath');
   }
   return true;
 }
@@ -248,6 +250,21 @@ String smartQuote(String s) =>
   ((s.indexOf("'") == -1) &&
       (s.indexOf('"') == -1))?
   "'$s'" : s;
+
+var _normalizeRe = new RegExp(r'\s+');
+var _blockCommentRe = new RegExp(r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/', multiLine:true);
+var _lineCommentRe = new RegExp(r'//.*');
+
+decomment(String s) =>
+  s.replaceAll(_blockCommentRe, '').replaceAll(_lineCommentRe, '');
+
+bool codeEquivalent(String s1, String s2, { bool stripComments : false }) {
+  if(stripComments) {
+    s1 = decomment(s1);
+    s2 = decomment(s2);
+  }
+  return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
+}
 
 // end <part ebisu>
 

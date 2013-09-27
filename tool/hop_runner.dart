@@ -14,6 +14,7 @@ void main() {
   addTask('docs', createDartDocTask(_getLibs));
   addTask('analyze_test', 
       createAnalyzerTask([
+        "test/test_functions.dart"
         "test/test_code_generation.dart"
       ]));
 
