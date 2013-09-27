@@ -375,7 +375,7 @@ At some point when true enums are provided this may be revisited.
           parent_member('pub spec'),
           member('version')
           ..doc = 'Version for this package'
-          ..classInit = '0.0.1',
+          ..classInit = '0.0.2',
           member('name')
           ..doc = '''
 Name of the project described in spec.
