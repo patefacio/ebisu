@@ -334,7 +334,7 @@ class PubSpec {
   /// Reference to parent of this pub spec
   dynamic get parent => _parent;
   /// Version for this package
-  String version = '0.0.2';
+  String version = '0.0.1';
   /// Name of the project described in spec.
   /// If not set, id of system is used.
   String name;
