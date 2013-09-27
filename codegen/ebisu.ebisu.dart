@@ -222,7 +222,6 @@ classes with JSON support.
       'io', '"dart:convert" as convert', 
       '"package:ebisu/ebisu.dart"', 
       '"package:id/id.dart"', 
-      '"package:ebisu/ebisu_utils.dart" as ebisu_utils', 
       '"templates/dart_meta.dart" as meta',
     ]
     ..variables = [
@@ -922,11 +921,20 @@ library/templates, a message like the following will be output:
         'async', ]
       ..includeLogger = true,
       library('expect_basic_class')
-      ..imports = [ 'scratch_remove_me/lib/basic_class.dart' ],
+      ..imports = [ 
+        'scratch_remove_me/lib/basic_class.dart',
+        'package:unittest/unittest.dart',
+      ],
       library('expect_various_ctors')
-      ..imports = [ 'scratch_remove_me/lib/various_ctors.dart' ],
+      ..imports = [ 
+        'scratch_remove_me/lib/various_ctors.dart',
+        'package:unittest/unittest.dart',
+      ],
       library('expect_multi_parts')
-      ..imports = [ 'scratch_remove_me/lib/two_parts.dart' ],
+      ..imports = [ 
+        'scratch_remove_me/lib/two_parts.dart',
+        'package:unittest/unittest.dart'
+      ],
     ]
     ..todos = [
       'Add examples'

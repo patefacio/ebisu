@@ -14,6 +14,7 @@ main() {
   var classWithInit = new ClassWithInit();
   var classWithInferredType = new ClassWithInferredType();
   var classReadOnly = new ClassReadOnly();
+  var classInaccessible = new ClassInaccessible();
   var classJson = new ClassJson();
   var classJsonOuter = new ClassJsonOuter();
 
@@ -90,7 +91,7 @@ main() {
       test('mInt is int', () =>
           expect(classWithInferredType.mInt is int, true));
       test('mDouble is double', () =>
-          expect(classWithInferredType.mDouble is double, true));
+          expect(classWithInferredType.mDouble, 1.0));
       test('mBool is bool', () =>
           expect(classWithInferredType.mBool is bool, true));
       test('mListInt is List', () =>

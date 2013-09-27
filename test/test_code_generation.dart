@@ -68,7 +68,7 @@ void generateTestLibraries() {
         ..members = [
           member('m_string')..classInit = 'foo',
           member('m_int')..classInit = 0,
-          member('m_double')..classInit = 0.0,
+          member('m_double')..classInit = 1.0,
           member('m_bool')..classInit = false,
           member('m_list')..classInit = [],
           member('m_map')..classInit = {},

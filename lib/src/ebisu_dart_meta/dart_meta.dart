@@ -446,9 +446,9 @@ class System {
       testLibraries.forEach((library) {
         if(library.id.snake.startsWith('test_')) {
           library.includeMain = true;
+          library.imports.add('package:unittest/unittest.dart');
         }
         library.isTest = true;
-        library.imports.add('package:unittest/unittest.dart');
       });
 
       allLibraries = new List.from(libraries)..addAll(testLibraries);
@@ -634,14 +634,12 @@ library hop_runner;
 import 'dart:async';
 import 'dart:io';
 import 'package:hop/hop.dart';
-import "package:path/path.dart" as PATH;
 import 'package:hop/hop_tasks.dart';
-import '../test/utils.dart';
 import '../test/runner.dart' as runner;
 
 void main() {
 
-  Directory.current = packageRootPath;
+  Directory.current = runner.rootPath;
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   addTask('docs', createDartDocTask(_getLibs));
@@ -685,12 +683,14 @@ main() => print(packageRootPath);
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithFile('''
+import 'utils.dart';
 import 'package:unittest/unittest.dart';
-import 'package:unittest/vm_config.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
   .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
   .join('\n')}
+
+get rootPath => packageRootPath;
 
 void testCore(Configuration config) {
   unittestConfiguration = config;
