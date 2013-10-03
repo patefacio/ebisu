@@ -1421,7 +1421,7 @@ class Member {
         (classInit != null) &&
         (classInit is! String)) {
       type = '${classInit.runtimeType}';
-      if(type == 'LinkedHashMap') type = 'Map';
+      if(type.contains('LinkedHashMap')) type = 'Map';
     }
     if(access == null) access = Access.RW;
     _varName = isPublic? _name : "_$_name";
