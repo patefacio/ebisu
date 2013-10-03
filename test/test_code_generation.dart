@@ -44,6 +44,11 @@ void generateTestLibraries() {
         'async',
         'package:path/path.dart',
       ]
+      ..enums = [
+        enum_('color')
+        ..jsonSupport = true
+        ..values = [ id('red'), id('green'), id('blue') ]
+      ]
       ..classes = [
         class_('class_no_init')
         ..members = [
@@ -93,6 +98,9 @@ void generateTestLibraries() {
           member('m_list')..classInit = [1,2,3],
           member('m_map')..classInit = {1:2},
         ],
+        class_('simple_json')
+        ..jsonSupport = true
+        ..members = [ member('m_string')..classInit = 'whoop' ],
         class_('class_json')
         ..defaultMemberAccess = RO
         ..jsonSupport = true
@@ -103,6 +111,10 @@ void generateTestLibraries() {
           member('m_bool')..classInit = false,
           member('m_list')..classInit = [1,2,3],
           member('m_map')..classInit = {1:2},
+          member('m_enum')..type = 'Color'..classInit = 'Color.GREEN',
+          member('m_color_map')..type = 'Map<Color,String>'..classInit = '{ Color.GREEN: "olive" }',
+          member('m_color_color_map')..type = 'Map<Color,Color>'..classInit = '{ Color.GREEN: Color.RED }',
+          member('m_string_simple_map')..type = 'Map<String,SimpleJson>'..classInit = '{ "foo" : new SimpleJson() }',
         ],
         class_('class_json_outer')
         ..defaultMemberAccess = RO

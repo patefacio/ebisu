@@ -18,32 +18,22 @@ class Access {
 
   String toString() {
     switch(this) {
-      case IA: return "IA";
-      case RO: return "RO";
-      case RW: return "RW";
+      case IA: return "Ia";
+      case RO: return "Ro";
+      case RW: return "Rw";
     }
   }
 
   static Access fromString(String s) {
     switch(s) {
-      case "IA": return IA;
-      case "RO": return RO;
-      case "RW": return RW;
+      case "Ia": return IA;
+      case "Ro": return RO;
+      case "Rw": return RW;
     }
   }
 
-  int toJson() {
-    return this.value;
-  }
-
-
-  static Access fromJson(int v) {
-    switch(v) {
-      case 0: return IA;
-      case 1: return RO;
-      case 2: return RW;
-    }
-  }
+  String toJson() => toString();
+  static Access fromJson(String v) => fromString(v);
 
 
 }
@@ -66,32 +56,22 @@ class PubDepType {
 
   String toString() {
     switch(this) {
-      case PATH: return "PATH";
-      case GIT: return "GIT";
-      case HOSTED: return "HOSTED";
+      case PATH: return "Path";
+      case GIT: return "Git";
+      case HOSTED: return "Hosted";
     }
   }
 
   static PubDepType fromString(String s) {
     switch(s) {
-      case "PATH": return PATH;
-      case "GIT": return GIT;
-      case "HOSTED": return HOSTED;
+      case "Path": return PATH;
+      case "Git": return GIT;
+      case "Hosted": return HOSTED;
     }
   }
 
-  int toJson() {
-    return this.value;
-  }
-
-
-  static PubDepType fromJson(int v) {
-    switch(v) {
-      case 0: return PATH;
-      case 1: return GIT;
-      case 2: return HOSTED;
-    }
-  }
+  String toJson() => toString();
+  static PubDepType fromJson(String v) => fromString(v);
 
 
 }
@@ -216,7 +196,7 @@ class Enum {
   }
 
   String valueAsString(Id value) => isSnakeString?
-    value.snake : value.shout;
+    value.snake : value.capCamel;
 
 // end <class Enum>
   final Id _id;
@@ -485,11 +465,6 @@ class System {
       _finalized = true;
     }
   }
-
-  bool isClassJsonable(String className) =>
-      !_nonJsonableTypes.contains(className) &&
-      !className.startsWith('Map<') && 
-      !className.startsWith('List<');
 
   void overridePubs() {
     var overrideFile = new File(ebisuPubVersions);
@@ -972,8 +947,6 @@ class Library {
     parts.forEach((part) => part.generate());
   }
 
-  bool isClassJsonable(String className) => _parent.isClassJsonable(className);
-
   static final _standardImports = new Set.from([
     'async', 'chrome', 'collection', 'core', 'crypto',
     'html', 'indexed_db', 'io', 'isolate', 'json', 'math',
@@ -1057,7 +1030,6 @@ class Part {
     mergeWithFile(meta.part(this), _filePath);
   }
 
-  bool isClassJsonable(String className) => _parent.isClassJsonable(className);
 
 // end <class Part>
   final Id _id;
@@ -1200,6 +1172,67 @@ class Class {
     }
   }
 
+  static String _mapCheck(String type, String value) => '''
+($value is Map)?
+  ${type}.fromJsonMap($value) :
+  ${type}.fromJson($value)''';
+
+  static String _fromJsonData(String type, String source) {
+    if(isClassJsonable(type)) {
+      return _mapCheck(type, source);
+    } else if(type == 'DateTime') {
+      return 'DateTime.parse($source)';
+    }
+    return source;
+  }
+
+  String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
+    List results = [];
+    var lhs = '${member.varName}';
+    var key = '"${member.name}"';
+    var value = '$source[$key]';
+    String rhs;
+    if(isClassJsonable(member.type)) {
+      results.add('$lhs = ${_mapCheck(member.type, value)};');
+    } else {
+      if(isMapType(member.type)) {
+        results.add('''
+
+// ${member.name} is ${member.type}
+$lhs = {};
+$value.forEach((k,v) {
+  $lhs[${_fromJsonData(generalMapKeyType(member.type), 'k')}] = ${_fromJsonData(jsonMapValueType(member.type), 'v')};
+});''');
+      } else if(isListType(member.type)) {
+        results.add('''
+
+// ${member.name} is ${member.type}
+$lhs = [];
+$value.forEach((v) {
+  $lhs.add(${_fromJsonData(jsonListValueType(member.type), 'v')});
+});''');
+      } else {
+        results.add('$lhs = $value;');
+      }
+    }
+    return results.join('\n');
+  }
+
+  String fromJsonMapImpl() {
+    List result = [ 'void _fromJsonMapImpl(Map jsonMap) {' ];
+
+    result
+      .add(
+        indentBlock(
+          members
+          .where((m) => !m.jsonTransient)
+          .map((m) => _fromJsonMapMember(m))
+          .join('\n'))
+           );
+    result.add('}');
+    return result.join('\n');
+  }
+
   String define() {
     if(parent == null) parent = library('stub');
     return meta.class_(this);
@@ -1208,8 +1241,6 @@ class Class {
   dynamic noSuchMethod(Invocation msg) {
     throw new ArgumentError("Class does not support ${msg.memberName}");
   }
-
-  bool isClassJsonable(String className) => _parent.isClassJsonable(className);
 
 // end <class Class>
   final Id _id;
@@ -1460,8 +1491,9 @@ ScriptArg scriptArg(String _id) => new ScriptArg(id(_id));
 final RegExp _jsonableTypeRe = new RegExp(r"\b(?:int|double|num|String|bool|DateTime)\b");
 final RegExp _mapTypeRe = new RegExp(r"Map\b");
 final RegExp _listTypeRe = new RegExp(r"List\b");
-final RegExp _jsonMapTypeRe = new RegExp(r"Map<\s*String,\s*(.*?)\s*>");
+final RegExp _jsonMapTypeRe = new RegExp(r"Map<\s*.*\s*,\s*(.*?)\s*>");
 final RegExp _jsonListTypeRe = new RegExp(r"List<\s*(.*?)\s*>");
+final RegExp _generalMapKeyTypeRe = new RegExp(r"Map<\s*([^,]+),.+\s*>");
 
 bool isJsonableType(String t) =>_jsonableTypeRe.firstMatch(t) != null;
 bool isMapType(String t) => _mapTypeRe.firstMatch(t) != null;
@@ -1473,6 +1505,13 @@ String jsonMapValueType(String t) {
     return m.group(1);
   }
   return 'dynamic';
+}
+String generalMapKeyType(String t) {
+  Match m = _generalMapKeyTypeRe.firstMatch(t);
+  if(m != null) {
+    return m.group(1);
+  }
+  return 'String';
 }
 String jsonListValueType(String t) {
   Match m = _jsonListTypeRe.firstMatch(t);

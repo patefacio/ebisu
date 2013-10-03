@@ -82,59 +82,8 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
     return result;
   }
 
-  void _fromJsonMapImpl(Map jsonMap) {
-''');
-   for(Member m in _.members.where((m) => !m.jsonTransient)) { 
-     if(_.isClassJsonable(m.type)) { 
-  _buf.add('''
-    ${m.varName} = (jsonMap["${m.name}"] is Map)?
-      ${m.type}.fromJsonMap(jsonMap["${m.name}"]) :
-      ${m.type}.fromJson(jsonMap["${m.name}"]);
-''');
-     } else if(isMapType(m.type)) { 
-       String valType = jsonMapValueType(m.type);  
-       if(valType == 'dynamic') { 
-  _buf.add('''
-    ${m.varName} = jsonMap["${m.name}"];
-''');
-       } else if(valType != null) { 
-  _buf.add('''
-    // ${m.name} map of <String, ${valType}>
-    ${m.name} = { };
-    jsonMap["${m.name}"].forEach((k,v) {
-      ${m.varName}[k] = ${valType}.fromJsonMap(v);
-    });
-''');
-       } 
-     } else if(isListType(m.type)) { 
-       String valType = jsonListValueType(m.type);  
-       if(valType == 'dynamic') { 
-  _buf.add('''
-    ${m.varName} = jsonMap["${m.name}"];
-''');
-       } else if(valType != null) { 
-  _buf.add('''
-    // ${m.name} list of ${valType}
-    ${m.varName} = new ${m.type}();
-    jsonMap["${m.name}"].forEach((v) {
-      ${m.varName}.add(${valType}.fromJsonMap(v));
-    });
-''');
-       } 
-     } else { 
-       if(m.type == 'DateTime') { 
-  _buf.add('''
-    ${m.varName} = DateTime.parse(jsonMap["${m.name}"]);
-''');
-       } else { 
-  _buf.add('''
-    ${m.varName} = jsonMap["${m.name}"];
-''');
-       } 
-     } 
-   } 
-  _buf.add('''
-  }
+${indentBlock(_.fromJsonMapImpl())}
+
 ''');
  } 
  if(_.hasRandJson) { 
@@ -145,20 +94,39 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
    for(Member member in _.members.where((m) => !m.jsonTransient)) { 
      if(isMapType(member.type)) { 
        String valType = jsonMapValueType(member.type);  
-       if(isJsonableType(valType)) { 
+       String keyType = generalMapKeyType(member.type); 
+       if(keyType == 'String') { 
+         if(isJsonableType(valType)) { 
   _buf.add('''
     "${member.name}":
        ebisu_utils.randJsonMap(_randomJsonGenerator,
         () => ebisu_utils.randJson(_randomJsonGenerator, ${valType}),
         "${member.name}"),
 ''');
-       } else { 
+         } else { 
   _buf.add('''
     "${member.name}":
        ebisu_utils.randJsonMap(_randomJsonGenerator,
         () => ${valType}.randJson(),
         "${member.name}"),
 ''');
+         } 
+       } else { 
+         if(isJsonableType(valType)) { 
+  _buf.add('''
+    "${member.name}":
+       ebisu_utils.randGeneralMap(() => ${keyType}.randJson().toString(),
+        _randomJsonGenerator,
+        () => ebisu_utils.randJson(_randomJsonGenerator, ${valType})),
+''');
+         } else { 
+  _buf.add('''
+    "${member.name}":
+       ebisu_utils.randGeneralMap(() => ${keyType}.randJson().toString(),
+        _randomJsonGenerator,
+        () => ${valType}.randJson()),
+''');
+         } 
        } 
      } else if(isListType(member.type)) { 
        String valType = jsonListValueType(member.type);  

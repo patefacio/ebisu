@@ -38,7 +38,7 @@ dynamic toJson(final dynamic obj) {
   } else {
     if(obj is Map) {
       Map result = {};
-      obj.forEach((k,v) => result[k] = toJson(v));
+      obj.forEach((k,v) => result[k.toString()] = toJson(v));
       return result;
     } else if(obj is List) {
       List result = [];
@@ -71,13 +71,26 @@ String randString([Random generator, int maxLen = 10 ]) {
 /// Creates a Map<String, dynamic> of random length capped at _maxLen_ where
 /// keys are random strings, optionally prefixed with _tag_ and values are built
 /// from the supplied _valueBuilder_.
-dynamic randJsonMap([Random generator, dynamic valueBuilder, String tag = '', int maxLen = 10]) {
+dynamic randJsonMap([Random generator, 
+    dynamic valueBuilder, String tag = '', int maxLen = 10]) {
   Map result = {};
   if(generator == null) generator = _randGenerator;
   int numEntries = generator.nextInt(maxLen)+1;
   for(var i=0; i<numEntries; i++) {
     String key = (tag.length>0? "${tag} <${randString(generator)}>" : 
         randString(generator));
+    result[key] = valueBuilder();
+  }
+  return result;
+}
+
+dynamic randGeneralMap(keyGenerator(), [Random generator, 
+    dynamic valueBuilder, int maxLen = 10]) {
+  Map result = {};
+  if(generator == null) generator = _randGenerator;
+  int numEntries = generator.nextInt(maxLen)+1;
+  for(var i=0; i<numEntries; i++) {
+    String key = keyGenerator();
     result[key] = valueBuilder();
   }
   return result;
@@ -121,8 +134,8 @@ String prettyJsonMap(dynamic item, [String indent = "", bool showCount = false])
   List<String> result = new List<String>();
   if(item is Map) {
     result.add('{\n');
-    List<String> guts = new List<String>();
-    List<String> keys = new List<String>.from(item.keys);
+    var guts = new List<String>();
+    var keys = new List<dynamic>.from(item.keys);
     keys.sort();
     int count = 0;
     keys.forEach((k) {

@@ -64,5 +64,11 @@ List<String> _nonJsonableTypes = [
 ];
 
 // custom <library ebisu_dart_meta>
+
+bool isClassJsonable(String className) =>
+  !_nonJsonableTypes.contains(className) &&
+  !className.startsWith('Map<') && 
+  !className.startsWith('List<');
+
 // end <library ebisu_dart_meta>
 

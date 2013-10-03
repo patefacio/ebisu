@@ -58,34 +58,17 @@ class ${_.enumName} {
 ''');
  if(_.jsonSupport) { 
   _buf.add('''
-  int toJson() {
-    return this.value;
-  }
+  String toJson() => toString();
+  static ${_.enumName} fromJson(String v) => fromString(v);
 
 ''');
    if(_.hasRandJson) { 
   _buf.add('''
-  static int randJson() {
-   return _randomJsonGenerator.nextInt(${_.values.length});
+  static String randJson() {
+   return values[_randomJsonGenerator.nextInt(${_.values.length})].toString();
   }
 ''');
    } 
-  _buf.add('''
-
-  static ${_.enumName} fromJson(int v) {
-    switch(v) {
-''');
- i = 0; 
- for(var value in _.values) { 
-  _buf.add('''
-      case ${i++}: return ${value.shout};
-''');
- } 
-  _buf.add('''
-    }
-  }
-
-''');
  } 
  if(_.hasCustom) { 
   _buf.add('''

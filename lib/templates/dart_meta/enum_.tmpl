@@ -32,25 +32,14 @@ class ${_.enumName} {
   }
 
 #< if(_.jsonSupport) { >
-  int toJson() {
-    return this.value;
-  }
+  String toJson() => toString();
+  static ${_.enumName} fromJson(String v) => fromString(v);
 
 #<   if(_.hasRandJson) { >
-  static int randJson() {
-   return _randomJsonGenerator.nextInt(${_.values.length});
+  static String randJson() {
+   return values[_randomJsonGenerator.nextInt(${_.values.length})].toString();
   }
 #<   } >
-
-  static ${_.enumName} fromJson(int v) {
-    switch(v) {
-#< i = 0; >
-#< for(var value in _.values) { >
-      case ${i++}: return ${value.shout};
-#< } >
-    }
-  }
-
 #< } >
 #< if(_.hasCustom) { >
 
