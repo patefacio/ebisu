@@ -58,8 +58,8 @@ class ${_.enumName} {
 ''');
  if(_.jsonSupport) { 
   _buf.add('''
-  String toJson() => toString();
-  static ${_.enumName} fromJson(String v) => fromString(v);
+  int toJson() => value;
+  static ${_.enumName} fromJson(int v) => values[v];
 
 ''');
    if(_.hasRandJson) { 

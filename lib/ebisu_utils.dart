@@ -10,6 +10,27 @@ import 'package:logging/logging.dart';
 
 final _logger = new Logger("ebisu_utils");
 
+class Date {
+
+  Date.fromDateTime(this._dateTime);
+
+  DateTime get dateTime => _dateTime;
+
+  // custom <class Date>
+
+  String toString() => _dateTime.toString().substring(0,10);
+  String toJson() => toString();
+  static Date fromJson(String dt) => 
+    new Date.fromDateTime(DateTime.parse(dt));
+
+  Date(int year, int month, int day) : 
+    _dateTime = new DateTime(year, month, day) {
+  }
+
+  // end <class Date>
+  DateTime _dateTime;
+}
+
 // custom <library ebisu_utils>
 
 bool _toJsonRequired(final object) {

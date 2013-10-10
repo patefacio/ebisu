@@ -32,8 +32,8 @@ class Access {
     }
   }
 
-  String toJson() => toString();
-  static Access fromJson(String v) => fromString(v);
+  int toJson() => value;
+  static Access fromJson(int v) => values[v];
 
 
 }
@@ -70,8 +70,8 @@ class PubDepType {
     }
   }
 
-  String toJson() => toString();
-  static PubDepType fromJson(String v) => fromString(v);
+  int toJson() => value;
+  static PubDepType fromJson(int v) => values[v];
 
 
 }
