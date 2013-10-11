@@ -922,6 +922,7 @@ class Library {
     classes.forEach((c) => c.parent = this);
     if(allClasses.any((c) => c.jsonSupport)) {
       imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
+      imports.add('"dart:convert" as convert');
     }
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
@@ -1186,6 +1187,11 @@ class Class {
     return source;
   }
 
+  static String _stringCheck(String type, String source) => '''
+($source is String)?
+  $source :
+  $type.fromString($source)''';
+
   String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
     List results = [];
     var lhs = '${member.varName}';
@@ -1201,7 +1207,9 @@ class Class {
 // ${member.name} is ${member.type}
 $lhs = {};
 $value.forEach((k,v) {
-  $lhs[${_fromJsonData(generalMapKeyType(member.type), 'k')}] = ${_fromJsonData(jsonMapValueType(member.type), 'v')};
+  $lhs[
+  ${indentBlock(_stringCheck(generalMapKeyType(member.type), 'k'))}
+  ] = ${_fromJsonData(jsonMapValueType(member.type), 'v')};
 });''');
       } else if(isListType(member.type)) {
         results.add('''

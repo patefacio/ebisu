@@ -138,7 +138,7 @@ main() {
         expect(() => classInaccessible.mList, throws);
         expect(() => classInaccessible.mList = [], throws);
       });
-      test('mListInt is Map', () {
+      test('mMap is Map', () {
         expect(() => classInaccessible.mMap, throws);
         expect(() => classInaccessible.mMap = {}, throws);
       });

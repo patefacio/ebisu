@@ -70,7 +70,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   }
 
   static ${_.name} fromJson(String json) {
-    if(json == null) return json;
+    if(json == null) return null;
     Map jsonMap = convert.JSON.decode(json);
     ${_.name} result = new ${_.jsonCtor}();
     result._fromJsonMapImpl(jsonMap);
@@ -78,7 +78,7 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
   }
 
   static ${_.name} fromJsonMap(Map jsonMap) {
-    if(json == null) return jsonMap;
+    if(jsonMap == null) return null;
     ${_.name} result = new ${_.jsonCtor}();
     result._fromJsonMapImpl(jsonMap);
     return result;
