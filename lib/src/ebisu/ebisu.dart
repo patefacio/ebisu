@@ -38,18 +38,11 @@ String docComment(String text, [String indent = ' ']) {
   return "///$indent$guts";
 }
 
-Map _deadSpacePatternMap = {};
-
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
-  var trailingDead = _deadSpacePatternMap.putIfAbsent(indent, 
-      () => new RegExp('\n$indent\$'));
-  var leadingDead = _deadSpacePatternMap.putIfAbsent(indent, 
-      () => new RegExp('^$indent\n'));
-  return '$indent${block.split('\n').join('\n$indent')}'
-    .replaceAll('\n$indent\n', '\n\n')
-    .replaceAll(trailingDead, '\n')
-    .replaceAll(leadingDead, '\n');
+  return block.split('\n')
+    .map((p) => "$indent$p".replaceAll(_allWhiteSpace, ''))
+    .join('\n');
 }
 
 /// Given list of lines, appends a suffix to all lines but the last.
@@ -59,6 +52,10 @@ List<String> prepJoin(List<String> lines, [ String suffix = ',' ]) {
   }
   return lines;
 }
+
+/// Given list of lines, joins with sep on all including the last
+String joinIncludeEnd(List<String> lines, [ String sep = ';\n' ]) =>
+  (lines.length > 0) ? (lines.join(sep) + sep) : '';
 
 /// Join the entries with spaces by default taking care break at maxLenth
 String formatFill(List<String> entries, 
@@ -165,6 +162,7 @@ final RegExp _trailingNewline = new RegExp(r'\n$');
 final RegExp _trailingNewlines = new RegExp(r'\n*$');
 final RegExp _leadingWhiteSpace = new RegExp(r'^\s+');
 final RegExp _trailingWhiteSpace = new RegExp(r'\s+$');
+final RegExp _allWhiteSpace = new RegExp(r'^\s+$');
 
 /// Removes trailing any `\n` from `s`
 String chomp(String s, [bool multiple = false ]) {
