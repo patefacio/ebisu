@@ -1,5 +1,5 @@
 name: ebisu
-version: 0.0.3
+version: 0.0.4
 author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: https://github.com/patefacio/ebisu
 description: >
@@ -7,9 +7,9 @@ description: >
   other languages like D) using a fairly declarative aproach.
 
 dependencies:
-  path: ">=0.7.1"
+  path: ">=0.9.0 < 0.10.0"
 
-  id: ">=0.0.3"
+  id: ">=0.0.5"
 
   logging: ">=0.7.1"
 
@@ -18,11 +18,11 @@ dependencies:
 # end <ebisu dependencies>
 
 dev_dependencies:
-  unittest: ">=0.7.1"
+  unittest: ">=0.9.0 < 0.10.0"
 
-  yaml: "any"
+  yaml: ">=0.9.0 < 0.10.0"
 
-  hop: ">=0.24.4"
+  hop: ">=0.27.0"
 
 # custom <ebisu dev dependencies>
 # end <ebisu dev dependencies>
