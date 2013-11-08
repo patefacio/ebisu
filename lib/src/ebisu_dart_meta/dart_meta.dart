@@ -612,7 +612,7 @@ import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
 import '../test/runner.dart' as runner;
 
-void main() {
+void main(List<String> args) {
 
   Directory.current = runner.rootPath;
 
@@ -621,7 +621,7 @@ void main() {
 ${analyzeTests}
   addTask('test', createUnitTestTask(runner.testCore));
 
-  runHop();
+  runHop(args);
 }
 
 Future<List<String>> _getLibs() {
@@ -642,7 +642,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 String get packageRootPath {
-  var parts = path.split(path.absolute(new Options().script));
+  var parts = path.split(path.absolute(Platform.script.path));
   int found = parts.lastIndexOf('${id.snake}');
   if(found >= 0) {
     return path.joinAll(parts.getRange(0, found+1));
@@ -859,7 +859,7 @@ import 'dart:io';
 import 'package:polymer/component_build.dart';
 
 main() {
-  build(new Options().arguments, ['web/${_id.snake}.html']);
+  build(Platform.arguments, ['web/${_id.snake}.html']);
 }
 ''', appBuildPath);
 
