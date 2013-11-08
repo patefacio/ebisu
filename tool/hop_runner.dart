@@ -6,7 +6,7 @@ import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
 import '../test/runner.dart' as runner;
 
-void main() {
+void main(List<String> args) {
 
   Directory.current = runner.rootPath;
 
@@ -14,13 +14,13 @@ void main() {
   addTask('docs', createDartDocTask(_getLibs));
   addTask('analyze_test', 
       createAnalyzerTask([
-        "test/test_functions.dart"
+        "test/test_functions.dart",
         "test/test_code_generation.dart"
       ]));
 
   addTask('test', createUnitTestTask(runner.testCore));
 
-  runHop();
+  runHop(args);
 }
 
 Future<List<String>> _getLibs() {

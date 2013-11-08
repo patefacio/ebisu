@@ -599,7 +599,7 @@ ${testLibraries
   .where((tl) => tl.id.snake.startsWith('test_'))
   .map((tl) => '$i"test/${tl.name}.dart"')
   .toList()
-  .join('\n')}
+  .join(',\n')}
       ]));
 ''';
 
