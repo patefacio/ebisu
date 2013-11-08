@@ -1,5 +1,5 @@
 import "dart:io";
-import "package:path/path.dart" as path;
+import "package:pathos/path.dart" as path;
 import "package:ebisu/ebisu.dart";
 import "package:id/id.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
@@ -15,10 +15,10 @@ void main() {
   // Logger.root.onRecord.listen((LogRecord r) =>
   //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
-  Options options = new Options();
-  String here = path.absolute(options.script);
-  bool noCompile = options.arguments.contains('--no_compile');
-  bool compileOnly = options.arguments.contains('--compile_only');
+  var arguments = Platform.executableArguments;
+  String here = path.absolute(Platform.script.path);
+  bool noCompile = arguments.contains('--no_compile');
+  bool compileOnly = arguments.contains('--compile_only');
   _topDir = path.dirname(path.dirname(here));
   String templateFolderPath = 
     path.join(_topDir, 'lib', 'templates', 'dart_meta');
@@ -35,8 +35,8 @@ void main() {
         // Files were updated, since Dart does not have eval, call again to same
         // script using updated templates
         print("$filesUpdated files updated...rerunning");
-        List<String> args = [ options.script, '--no_compile' ]
-          ..addAll(options.arguments);
+        List<String> args = [ Platform.script, '--no_compile' ]
+          ..addAll(arguments);
         print("Args are " + args.toString());
         Process.run('run_dart.dart', args).then((ProcessResult results) {
           print(results.stdout);
@@ -955,7 +955,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.3'
+        ..version = '0.0.4'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
