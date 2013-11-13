@@ -25,6 +25,8 @@ dev_dependencies:
   hop: ">=0.27.0"
 
 # custom <ebisu dev dependencies>
+
+environment:
+  sdk: ">=0.8.10+6 <2.0.0"
+
 # end <ebisu dev dependencies>
-
-
