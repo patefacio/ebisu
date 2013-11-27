@@ -39,6 +39,11 @@ ${indentBlock(chomp(member.publicCode))}
 ''');
    } 
  } 
+ if(null != _.topInjection) { 
+  _buf.add('''
+${indentBlock(_.topInjection)}
+''');
+ } 
  if(_.includeCustom) { 
   _buf.add('''
 
@@ -167,6 +172,11 @@ ${indentBlock(_.fromJsonMapImpl())}
 ${indentBlock(chomp(member.privateCode))}
 ''');
    } 
+ } 
+ if(null != _.bottomInjection) { 
+  _buf.add('''
+${indentBlock(_.bottomInjection)}
+''');
  } 
   _buf.add('''
 }

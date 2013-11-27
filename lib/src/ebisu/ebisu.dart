@@ -26,8 +26,7 @@ Iterable asContexts(Iterable items) {
 
 /// Return a new string with [text] wrapped in `/*...*/` comment block
 String blockComment(String text, [String indent = '   ']) {
-  String guts = text.split('\n').join("\n$indent");
-  return "/**\n$indent$guts\n*/";
+  return "/**\n${indentBlock(text, indent)}\n*/";
 }
 
 /// Return a new string with [text] wrapped in `///` doc comment block
@@ -58,7 +57,7 @@ String joinIncludeEnd(List<String> lines, [ String sep = ';\n' ]) =>
   (lines.length > 0) ? (lines.join(sep) + sep) : '';
 
 /// Join the entries with spaces by default taking care break at maxLenth
-String formatFill(List<String> entries, 
+String formatFill(List<String> entries,
     { String indent : '  ', String sep : ' ', int maxLength : 80 }) {
   if(entries.length == 0) return '';
   List<String> result = [];
@@ -79,16 +78,16 @@ String formatFill(List<String> entries,
   return result.join('\n');
 }
 
-const String _customBegin = r'//\s*custom';
-const String _customEnd = r'//\s*end';
-const String _customBlockText = '''
+const String customBegin = r'//\s*custom';
+const String customEnd = r'//\s*end';
+const String customBlockText = '''
 // ${'custom'} <TAG>
 // ${'end'} <TAG>
 ''';
 
-/// Returns an empty _customBlock_ with the [tag] as identifier.  The
-/// _customBlock_ is a block of code that can be stored in a C, Dart, D,
-/// etc. code file allowing _custom_ (i.e. user hand written) text to be
+/// Returns an empty customBlock_ with the [tag] as identifier.  The
+/// customBlock_ is a block of code that can be stored in a C, Dart, D,
+/// etc. code file allowing custom_ (i.e. user hand written) text to be
 /// protected during the (re)generation of that code file.
 ///
 /// For example, the call to `customBlock('main')` would return:
@@ -99,63 +98,63 @@ const String _customBlockText = '''
 /// thus allowing lines of text to be written between the lines containing `//
 /// custom <main>` and `// end <main>`
 String customBlock(String tag) {
-  return _customBlockText.replaceAll('TAG', tag);
+  return customBlockText.replaceAll('TAG', tag);
 }
 
-const String _htmlCustomBegin = r'<!--\s*custom';
-const String _htmlCustomEnd = r'<!--\s*end';
-const String _htmlCustomBlockText = '''
+const String htmlCustomBegin = r'<!--\s*custom';
+const String htmlCustomEnd = r'<!--\s*end';
+const String htmlCustomBlockText = '''
 <!-- custom <TAG> -->
 <!-- end <TAG> -->
 ''';
 String htmlCustomBlock(String tag) {
-  return _htmlCustomBlockText.replaceAll('TAG', tag);
+  return htmlCustomBlockText.replaceAll('TAG', tag);
 }
 
 bool htmlMergeWithFile(String generated, String destFilePath) {
-  return mergeWithFile(generated, destFilePath, _htmlCustomBegin, _htmlCustomEnd);
+  return mergeWithFile(generated, destFilePath, htmlCustomBegin, htmlCustomEnd);
 }
 
-const String _panDocCustomBegin = r'<!---\s*custom';
-const String _panDocCustomEnd = r'<!---\s*end';
-const String _panDocCustomBlockText = '''
+const String panDocCustomBegin = r'<!---\s*custom';
+const String panDocCustomEnd = r'<!---\s*end';
+const String panDocCustomBlockText = '''
 <!--- custom <TAG> --->
 <!--- end <TAG> --->
 ''';
 String panDocCustomBlock(String tag) {
-  return _panDocCustomBlockText.replaceAll('TAG', tag);
+  return panDocCustomBlockText.replaceAll('TAG', tag);
 }
 
 bool panDocMergeWithFile(String generated, String destFilePath) {
-  return mergeWithFile(generated, destFilePath, _panDocCustomBegin, _panDocCustomEnd);
+  return mergeWithFile(generated, destFilePath, panDocCustomBegin, panDocCustomEnd);
 }
 
-const String _cssCustomBegin = r'/\*\s*custom';
-const String _cssCustomEnd = r'/\*\s*end';
-const String _cssCustomBlockText = '''
+const String cssCustomBegin = r'/\*\s*custom';
+const String cssCustomEnd = r'/\*\s*end';
+const String cssCustomBlockText = '''
 /* custom <TAG> */
 /* end <TAG> */
 ''';
 String cssCustomBlock(String tag) {
-  return _cssCustomBlockText.replaceAll('TAG', tag);
+  return cssCustomBlockText.replaceAll('TAG', tag);
 }
 
 bool cssMergeWithFile(String generated, String destFilePath) {
-  return mergeWithFile(generated, destFilePath, _cssCustomBegin, _cssCustomEnd);
+  return mergeWithFile(generated, destFilePath, cssCustomBegin, cssCustomEnd);
 }
 
-const String _scriptCustomBegin = r'#\s*custom';
-const String _scriptCustomEnd = r'#\s*end';
-const String _scriptCustomBlockText = '''
+const String scriptCustomBegin = r'#\s*custom';
+const String scriptCustomEnd = r'#\s*end';
+const String scriptCustomBlockText = '''
 # custom <TAG>
 # end <TAG>
 ''';
 String scriptCustomBlock(String tag) {
-  return _scriptCustomBlockText.replaceAll('TAG', tag);
+  return scriptCustomBlockText.replaceAll('TAG', tag);
 }
 
 bool scriptMergeWithFile(String generated, String destFilePath) {
-  return mergeWithFile(generated, destFilePath, _scriptCustomBegin, _scriptCustomEnd);
+  return mergeWithFile(generated, destFilePath, scriptCustomBegin, scriptCustomEnd);
 }
 
 final RegExp _trailingNewline = new RegExp(r'\n$');
@@ -175,46 +174,20 @@ String chomp(String s, [bool multiple = false ]) {
 String leftTrim(String s) => s.replaceFirst(_leadingWhiteSpace, '');
 String rightTrim(String s) => s.replaceFirst(_trailingWhiteSpace, '');
 
-/// Merge the contents of some generated text into the [destFilePath].  If there
-/// are no protect blocks in the contents of [destFilePath] it is effectively a
-/// write of the genereated text. Otherwise it is a merge that protects the
-/// protect blocks. Returns true if a write was necessary, false otherwise
-/// leaving the file unmodified if not.
-bool mergeWithFile(String generated, String destFilePath,
-    [ String beginProtect, String endProtect ]) {
+const List _defaultProtectionPair = const [ customBegin, customEnd ];
+const List _defaultProtections = const [_defaultProtectionPair];
 
-  if(beginProtect==null) beginProtect = _customBegin;
-  if(endProtect==null) endProtect = _customEnd;
+bool mergeBlocksWithFile(String generated, String destFilePath,
+    [ List protections = _defaultProtections ]) {
 
   File inFile = new File(destFilePath);
-
   if(inFile.existsSync()) {
     String currentText = inFile.readAsStringSync();
-
-    Map<String, String> captures = {};
-    Map<String, String> empties = {};
-
-    RegExp block = 
-      new RegExp(
-          '\\n?[^\\S\\n]*?${beginProtect}'             // Look for begin
-          '\\s+<(.*?)>(?:.|\\n)*?'                     // Eat - non-greedy
-          '${endProtect}\\s+<\\1>',                    // Require matching end
-          multiLine: true);
-
-    block.allMatches(currentText).forEach((m) 
-        { captures[m.group(1)] = m.group(0); });
-    block.allMatches(generated).forEach((m) 
-        { empties[m.group(1)] = m.group(0); });
-
-    captures.forEach((k,v) {
-      if(!empties.containsKey(k)) {
-        print('Warning: protect block <$k> removed');
-      } else {
-        generated = generated.replaceFirst(empties[k], captures[k]);
-      }
+    protections.forEach((pair) {
+      generated = mergeWithContents(generated, currentText,
+        pair[0], pair[1]);
     });
 
-    //if(false && generated == currentText) {
     if(generated == currentText) {
       print('No change: $destFilePath');
       return false;
@@ -222,13 +195,47 @@ bool mergeWithFile(String generated, String destFilePath,
       inFile.writeAsStringSync(generated);
       print('Wrote: $destFilePath');
     }
+
   } else {
     new Directory(path.dirname(destFilePath))
       ..createSync(recursive: true);
     inFile.writeAsStringSync(generated);
     print('Created $destFilePath');
   }
-  return true;
+}
+
+bool mergeWithFile(String generated, String destFilePath,
+    [ String beginProtect = customBegin,
+      String endProtect = customEnd ]) {
+  return mergeBlocksWithFile(generated, destFilePath,
+      [[ beginProtect, endProtect ]]);
+}
+
+String mergeWithContents(String generated, String currentText,
+    String beginProtect, String endProtect) {
+  Map<String, String> captures = {};
+  Map<String, String> empties = {};
+
+  RegExp block =
+    new RegExp(
+      '\\n?[^\\S\\n]*?${beginProtect}'             // Look for begin
+      '\\s+<(.*?)>(?:.|\\n)*?'                     // Eat - non-greedy
+      '${endProtect}\\s+<\\1>',                    // Require matching end
+      multiLine: true);
+
+  block.allMatches(currentText).forEach((m)
+      { captures[m.group(1)] = m.group(0); });
+  block.allMatches(generated).forEach((m)
+      { empties[m.group(1)] = m.group(0); });
+
+  captures.forEach((k,v) {
+    if(!empties.containsKey(k)) {
+      print('Warning: protect block <$k> removed');
+    } else {
+      generated = generated.replaceFirst(empties[k], captures[k]);
+    }
+  });
+  return generated;
 }
 
 List<String> cleanImports(List<String> dirtyImports) {
@@ -265,4 +272,3 @@ bool codeEquivalent(String s1, String s2, { bool stripComments : false }) {
 }
 
 // end <part ebisu>
-

@@ -29,7 +29,7 @@ ${i}
 ArgParser _parser;
 
 //! The comment and usage associated with this script
-void _usage() { 
+void _usage() {
   print(\'\'\'
 ${_.doc}
 \'\'\');
@@ -38,19 +38,19 @@ ${_.doc}
 
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
-Map _parseArgs() { 
+Map _parseArgs() {
   ArgResults argResults;
   Map result = { };
   List remaining = [];
 
   _parser = new ArgParser();
-  try { 
+  try {
     /// Fill in expectations of the parser
 ''');
  for(var scriptArg in _.args) { 
    if(scriptArg.isFlag) { 
   _buf.add('''
-    _parser.addFlag('${scriptArg.name}', 
+    _parser.addFlag('${scriptArg.name}',
       help: \'\'\'
 ${scriptArg.doc}
 \'\'\',
@@ -59,7 +59,7 @@ ${scriptArg.doc}
 ''');
    } else if(scriptArg.position == null) { 
   _buf.add('''
-    _parser.addOption('${scriptArg.name}', 
+    _parser.addOption('${scriptArg.name}',
 ''');
      if(scriptArg.doc != null) { 
   _buf.add('''
@@ -81,7 +81,7 @@ ${scriptArg.doc}
     /// Parse the command line options (excluding the script)
     var arguments = new Options().arguments;
     argResults = _parser.parse(arguments);
-    argResults.options.forEach((opt) { 
+    argResults.options.forEach((opt) {
       result[opt] = argResults[opt];
     });
 ''');
@@ -94,7 +94,7 @@ ${scriptArg.doc}
  for(var scriptArg in _.args) { 
    if(scriptArg.position != null) { 
   _buf.add('''
-    if(${scriptArg.position} >= remaining.length) { 
+    if(${scriptArg.position} >= remaining.length) {
       throw new ArgumentError("Positional argument ${scriptArg.name} (position ${scriptArg.position}) not avaiable - not enough args");
     }
     result['${scriptArg.name}'] = remaining.removeAt(${scriptArg.position});
@@ -102,10 +102,10 @@ ${scriptArg.doc}
    }  
  } 
   _buf.add('''
-    
+
     return { 'options': result, 'rest': remaining };
 
-  } catch(e) { 
+  } catch(e) {
     _usage();
     throw e;
   }
@@ -113,7 +113,7 @@ ${scriptArg.doc}
 
 final _logger = new Logger("${_.id}");
 
-main() { 
+main() {
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.INFO;
@@ -125,7 +125,7 @@ main() {
  var required = _.requiredArgs.toList();              
  if(required.length > 0) {                            
   _buf.add('''
-  try { 
+  try {
 ''');
    _.requiredArgs.forEach((arg) {                     
   _buf.add('''
@@ -135,7 +135,7 @@ main() {
 ''');
    }); 
   _buf.add('''
-  } on ArgumentError catch(e) { 
+  } on ArgumentError catch(e) {
     print(e);
     _usage();
   }
@@ -146,7 +146,6 @@ ${indentBlock(customBlock("${_.id} main"))}
 }
 
 ${customBlock("${_.id} global")}
-
 ''');
   return _buf.join();
 }

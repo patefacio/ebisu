@@ -12,7 +12,7 @@ void main(List<String> args) {
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   addTask('docs', createDartDocTask(_getLibs));
-  addTask('analyze_test', 
+  addTask('analyze_test',
       createAnalyzerTask([
         "test/test_functions.dart",
         "test/test_code_generation.dart"

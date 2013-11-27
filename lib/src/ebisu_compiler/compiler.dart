@@ -119,7 +119,7 @@ TemplateFile templateFile(String inputPath,
 }
 
 
-/// A class to process a folder full of templates, 
+/// A class to process a folder full of templates,
 /// all of which get compiled into a single dart library
 class TemplateFolder {
 
@@ -212,4 +212,3 @@ import "package:ebisu/ebisu_dart_meta.dart";
 }
 // custom <part compiler>
 // end <part compiler>
-

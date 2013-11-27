@@ -8,8 +8,7 @@ import 'package:unittest/unittest.dart';
 
 // custom <library test_functions>
 // end <library test_functions>
-
-main() { 
+main() {
 // custom <main>
 
   test('chomp removes one trailing newline', () =>

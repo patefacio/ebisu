@@ -19,7 +19,7 @@ large.
 
 A second purpose is for large scale data driven development efforts that are
 highly structured/standardized. This library can be used to bootstrap their
-development. 
+development.
 
 Example:
 
@@ -122,7 +122,7 @@ file and matches up all protection blocks with those existing in the target file
 on disk. It first does the merge of generated and custom text in memory and then
 compares that to the full contents on disk. If there is no change in the
 contents of the file, a message like the following will be output:
-    
+
     No change: .../library/foo.dart
 
 If the regeneration results in a change, due to new *code assets* having been

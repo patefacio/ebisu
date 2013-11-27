@@ -1,5 +1,5 @@
 import "dart:io";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 import "package:ebisu/ebisu.dart";
 import "package:id/id.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
@@ -20,7 +20,7 @@ void main() {
   bool noCompile = arguments.contains('--no_compile');
   bool compileOnly = arguments.contains('--compile_only');
   _topDir = path.dirname(path.dirname(here));
-  String templateFolderPath = 
+  String templateFolderPath =
     path.join(_topDir, 'lib', 'templates', 'dart_meta');
   if(! (new Directory(templateFolderPath).existsSync())) {
     throw new StateError(
@@ -114,7 +114,7 @@ are simple:
           ..access = Access.RO
         ],
         class_('template_folder')
-        ..doc = '''A class to process a folder full of templates, 
+        ..doc = '''A class to process a folder full of templates,
 all of which get compiled into a single dart library'''
         ..members = [
           member('input_path')
@@ -228,16 +228,16 @@ classes with JSON support.
 
 '''
     ..imports = [
-      'io', '"dart:convert" as convert', 
-      '"package:ebisu/ebisu.dart"', 
-      '"package:id/id.dart"', 
+      'io', '"dart:convert" as convert',
+      '"package:ebisu/ebisu.dart"',
+      '"package:id/id.dart"',
       '"templates/dart_meta.dart" as meta',
     ]
     ..variables = [
       variable('non_jsonable_types')
       ..isPublic = false
       ..type = 'List<String>'
-      ..init = '''[ 
+      ..init = '''[
   'String', 'int', 'double', 'bool', 'num',
   'Map', 'List', 'DateTime', 'dynamic',
 ]'''
@@ -286,7 +286,7 @@ If init is a String and type is specified, then:
 
 member('foo')..type = 'int'..init = 3
   String foo = 3;
-member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' => 
+member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' =>
   DateTime foo = new DateTime(1929, 10, 29);
 
 If init is not specified, it will be inferred from init if possible:
@@ -582,6 +582,7 @@ text to include in the license file.
           member('is_test')
           ..doc = 'If true this library is a test library to appear in test folder'
           ..type = 'bool'
+          ..access = Access.RO
           ..classInit = 'false',
           member('include_main')
           ..doc = 'If true a main is included in the library file'
@@ -680,6 +681,10 @@ text to include in the license file.
           member('class_name')
           ..doc = "Name of the class, including access prefix"
           ..access = Access.RO,
+          member('top_injection')
+          ..doc = 'Additional code included in the class near the top',
+          member('bottom_injection')
+          ..doc = 'Additional code included in the class near the bottom',
         ],
         class_('ctor')
         ..doc = 'Metadata associated with a constructor'
@@ -768,6 +773,10 @@ text in generated ctor initializers''',
           ..doc = 'True if the member should not be serialized if the parent class has jsonSupport'
           ..type = 'bool'
           ..classInit = 'false',
+          member('is_observable')
+          ..doc = 'If true annotated with observable'
+          ..type = 'bool'
+          ..classInit = 'false',
           member('name')
           ..doc = "Name of variable for the member, excluding access prefix (i.e. no '_')"
           ..access = Access.RO,
@@ -792,7 +801,7 @@ large.
 
 A second purpose is for large scale data driven development efforts that are
 highly structured/standardized. This library can be used to bootstrap their
-development. 
+development.
 
 Example:
 
@@ -895,7 +904,7 @@ file and matches up all protection blocks with those existing in the target file
 on disk. It first does the merge of generated and custom text in memory and then
 compares that to the full contents on disk. If there is no change in the
 contents of the file, a message like the following will be output:
-    
+
     No change: .../library/foo.dart
 
 If the regeneration results in a change, due to new *code assets* having been
@@ -908,7 +917,7 @@ library/templates, a message like the following will be output:
     ..testLibraries = [
       library('setup')
       ..imports = [
-        'package:ebisu/ebisu_dart_meta.dart', 
+        'package:ebisu/ebisu_dart_meta.dart',
         'package:path/path.dart',
         'io',
         'utils.dart',
@@ -925,12 +934,12 @@ library/templates, a message like the following will be output:
       ],
       library('test_code_generation')
       ..imports = [
-        'package:ebisu/ebisu_dart_meta.dart', 
-        'setup.dart', 
+        'package:ebisu/ebisu_dart_meta.dart',
+        'setup.dart',
         'utils.dart',
-        'package:path/path.dart', 
-        'package:yaml/yaml.dart', 
-        'io', 
+        'package:path/path.dart',
+        'package:yaml/yaml.dart',
+        'io',
         'async', ]
       ..includeLogger = true,
       library('expect_basic_class')
@@ -955,7 +964,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.4'
+        ..version = '0.0.6'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -993,7 +1002,7 @@ File containing default pub versions. Dart code generation at times
 generates code that requires packages. For example, generated
 test cases require unittest, generated code can require logging,
 hop support requries hop. Since the pubspec yaml is generated
-the idea here is to pull the versions of these packages out of 
+the idea here is to pull the versions of these packages out of
 the code and into a config file. Then to upgrade multiple packages
 with multiple pubspecs would entail updating the config file and
 regenerating.

@@ -18,6 +18,9 @@ ${indentBlock(_.ctors[ctorName].ctorText)}
 ${indentBlock(chomp(member.publicCode))}
 #<   } >
 #< } >
+#< if(null != _.topInjection) { >
+${indentBlock(_.topInjection)}
+#< } >
 #< if(_.includeCustom) { >
 
 ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
@@ -112,6 +115,9 @@ ${indentBlock(_.fromJsonMapImpl())}
 #<   if(member.hasPrivateCode) { >
 ${indentBlock(chomp(member.privateCode))}
 #<   } >
+#< } >
+#< if(null != _.bottomInjection) { >
+${indentBlock(_.bottomInjection)}
 #< } >
 }
 #< if(_.ctorSansNew) {  >

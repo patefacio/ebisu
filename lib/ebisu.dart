@@ -24,7 +24,7 @@ final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
 /// generates code that requires packages. For example, generated
 /// test cases require unittest, generated code can require logging,
 /// hop support requries hop. Since the pubspec yaml is generated
-/// the idea here is to pull the versions of these packages out of 
+/// the idea here is to pull the versions of these packages out of
 /// the code and into a config file. Then to upgrade multiple packages
 /// with multiple pubspecs would entail updating the config file and
 /// regenerating.
@@ -46,4 +46,3 @@ Map<String,String> licenseMap = {
 
 // custom <library ebisu>
 // end <library ebisu>
-

@@ -29,7 +29,8 @@ ${customBlock("part ${_.name}")}
  } 
  for(var v in _.variables) { 
   _buf.add('''
-${v.define()}
+
+${chomp(v.define())}
 ''');
  } 
   return _buf.join();

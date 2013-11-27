@@ -58,7 +58,7 @@ part 'src/ebisu_dart_meta/dart_meta.dart';
 
 final _logger = new Logger("ebisu_dart_meta");
 
-List<String> _nonJsonableTypes = [ 
+List<String> _nonJsonableTypes = [
   'String', 'int', 'double', 'bool', 'num',
   'Map', 'List', 'DateTime', 'dynamic',
 ];
@@ -71,4 +71,3 @@ bool isClassJsonable(String className) =>
   !className.startsWith('List<');
 
 // end <library ebisu_dart_meta>
-

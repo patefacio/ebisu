@@ -38,4 +38,3 @@ final RegExp commentRe = new RegExp("^\\s*#");
 
 // custom <library ebisu_compiler>
 // end <library ebisu_compiler>
-

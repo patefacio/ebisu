@@ -11,5 +11,6 @@ ${chomp(c.define())}
 ${customBlock("part ${_.name}")}
 #< } >
 #< for(var v in _.variables) { >
-${v.define()}
+
+${chomp(v.define())}
 #< } >

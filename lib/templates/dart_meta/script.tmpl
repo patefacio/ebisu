@@ -11,7 +11,7 @@ ${i}
 ArgParser _parser;
 
 //! The comment and usage associated with this script
-void _usage() { 
+void _usage() {
   print(\'\'\'
 ${_.doc}
 \'\'\');
@@ -20,24 +20,24 @@ ${_.doc}
 
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
-Map _parseArgs() { 
+Map _parseArgs() {
   ArgResults argResults;
   Map result = { };
   List remaining = [];
 
   _parser = new ArgParser();
-  try { 
+  try {
     /// Fill in expectations of the parser
 #< for(var scriptArg in _.args) { >
 #<   if(scriptArg.isFlag) { >
-    _parser.addFlag('${scriptArg.name}', 
+    _parser.addFlag('${scriptArg.name}',
       help: \'\'\'
 ${scriptArg.doc}
 \'\'\',
       defaultsTo: ${scriptArg.defaultsTo}
     );
 #<   } else if(scriptArg.position == null) { >
-    _parser.addOption('${scriptArg.name}', 
+    _parser.addOption('${scriptArg.name}',
 #<     if(scriptArg.doc != null) { >
       help: \'\'\'
 ${scriptArg.doc}
@@ -53,7 +53,7 @@ ${scriptArg.doc}
     /// Parse the command line options (excluding the script)
     var arguments = new Options().arguments;
     argResults = _parser.parse(arguments);
-    argResults.options.forEach((opt) { 
+    argResults.options.forEach((opt) {
       result[opt] = argResults[opt];
     });
 #< if(_.args.where((sa) => sa.position != null).toList().length > 0) { >
@@ -62,16 +62,16 @@ ${scriptArg.doc}
 #< } >
 #< for(var scriptArg in _.args) { >
 #<   if(scriptArg.position != null) { >
-    if(${scriptArg.position} >= remaining.length) { 
+    if(${scriptArg.position} >= remaining.length) {
       throw new ArgumentError("Positional argument ${scriptArg.name} (position ${scriptArg.position}) not avaiable - not enough args");
     }
     result['${scriptArg.name}'] = remaining.removeAt(${scriptArg.position});
 #<   }  >
 #< } >
-    
+
     return { 'options': result, 'rest': remaining };
 
-  } catch(e) { 
+  } catch(e) {
     _usage();
     throw e;
   }
@@ -79,7 +79,7 @@ ${scriptArg.doc}
 
 final _logger = new Logger("${_.id}");
 
-main() { 
+main() {
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.INFO;
@@ -89,13 +89,13 @@ main() {
 
 #< var required = _.requiredArgs.toList();              >
 #< if(required.length > 0) {                            >
-  try { 
+  try {
 #<   _.requiredArgs.forEach((arg) {                     >
     if(options["${arg.name}"] == null)
       throw new ArgumentError("option: ${arg.name} is required");
 
 #<   }); >
-  } on ArgumentError catch(e) { 
+  } on ArgumentError catch(e) {
     print(e);
     _usage();
   }
@@ -104,4 +104,3 @@ ${indentBlock(customBlock("${_.id} main"))}
 }
 
 ${customBlock("${_.id} global")}
-

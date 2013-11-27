@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+import 'package:unittest/unittest.dart';
 import 'utils.dart';
 // custom <additional imports>
 // end <additional imports>
@@ -35,4 +36,8 @@ void destroyTempData() {
 }
 
 // end <library setup>
+main() {
+// custom <main>
+// end <main>
 
+}

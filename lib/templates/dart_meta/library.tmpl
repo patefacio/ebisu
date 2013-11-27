@@ -27,10 +27,10 @@ ${chomp(c.define())}
 ${v.define()}
 #< } >
 #< if(_.includeCustom) { >
-${customBlock("library ${_.name}")}
+${chomp(customBlock("library ${_.name}"))}
 #< } >
 #< if(_.includeMain) { >
-main() { 
+main() {
 ${customBlock("main")}
 }
 #< } else if(_.libMain != null) { >

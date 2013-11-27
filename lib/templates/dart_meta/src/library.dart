@@ -57,12 +57,12 @@ ${v.define()}
  } 
  if(_.includeCustom) { 
   _buf.add('''
-${customBlock("library ${_.name}")}
+${chomp(customBlock("library ${_.name}"))}
 ''');
  } 
  if(_.includeMain) { 
   _buf.add('''
-main() { 
+main() {
 ${customBlock("main")}
 }
 ''');

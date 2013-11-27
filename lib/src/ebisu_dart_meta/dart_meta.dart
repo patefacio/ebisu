@@ -100,7 +100,7 @@ class Variable {
   ///
   /// member('foo')..type = 'int'..init = 3
   ///   String foo = 3;
-  /// member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' => 
+  /// member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' =>
   ///   DateTime foo = new DateTime(1929, 10, 29);
   ///
   /// If init is not specified, it will be inferred from init if possible:
@@ -243,7 +243,7 @@ class PubDependency {
         _type = PubDepType.HOSTED;
       }
     }
-      
+
     return _type;
   }
 
@@ -271,15 +271,15 @@ class PubDependency {
     if(path != null) {
       if(isHosted) {
         result += '''
-      hosted: 
+      hosted:
         name: $name
         url: $path
-      version: '$version' 
+      version: '$version'
 ''';
       } else if(isGit) {
         if(gitRef != null) {
           result += '''
-      git: 
+      git:
         url: ${path}
         ref: ${gitRef}
 ''';
@@ -363,7 +363,7 @@ class PubSpec {
   bool depNotFound(String name) =>
     !devDependencies.any((d) => d.name == name) &&
     !dependencies.any((d) => d.name == name);
-    
+
 
 // end <class PubSpec>
   Id _id;
@@ -424,10 +424,6 @@ class System {
     if(!_finalized) {
 
       testLibraries.forEach((library) {
-        if(library.id.snake.startsWith('test_')) {
-          library.includeMain = true;
-          library.imports.add('package:unittest/unittest.dart');
-        }
         library.isTest = true;
       });
 
@@ -491,7 +487,7 @@ class System {
               dep._type = PubDepType.PATH;
               _logger.info("Yaml: ${dep.yamlEntry}");
             } else {
-              throw 
+              throw
                 new FormatException('''
 Entry ($override) in ${ebisuPubVersions} invalid.
 Only "version" and "path" overrides are supported.
@@ -501,12 +497,12 @@ Only "version" and "path" overrides are supported.
         }
       });
     } else {
-      _logger.info("NOT Found version overrides: ${ebisuPubVersions}");        
+      _logger.info("NOT Found version overrides: ${ebisuPubVersions}");
     }
   }
 
   /// Generate the code
-  void generate() {
+  void generate( { generateHop : true, generateRunner : true } ) {
 
     if(rootPath == null) rootPath = '.';
 
@@ -563,9 +559,9 @@ ${scriptCustomBlock('additional')}
           gitIgnorePath);
     }
 
-    if(includeReadme || todos.length > 0 || 
+    if(includeReadme || todos.length > 0 ||
        introduction != null || purpose != null) {
-      String readmePath = "${rootPath}/README.md";  
+      String readmePath = "${rootPath}/README.md";
       panDocMergeWithFile('''
 # ${id.title}
 
@@ -585,15 +581,15 @@ ${panDocCustomBlock('examples')}
 
 ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
-''', 
-          readmePath);      
+''',
+          readmePath);
     }
 
-    if(includeHop) {
+    if(generateHop && includeHop) {
       String hopRunnerPath = "${rootPath}/tool/hop_runner.dart";
       String i = '        ';
       String analyzeTests = testLibraries.length == 0? '' : '''
-  addTask('analyze_test', 
+  addTask('analyze_test',
       createAnalyzerTask([
 ${testLibraries
   .where((tl) => tl.id.snake.startsWith('test_'))
@@ -631,30 +627,7 @@ Future<List<String>> _getLibs() {
       .toList();
 }
 ''',
-                    hopRunnerPath);
-    }
-
-    if(includeHop || testLibraries.length > 0) {
-
-      String testUtilsPath = "${rootPath}/test/utils.dart";
-      mergeWithFile('''
-import 'dart:io';
-import 'package:path/path.dart' as path;
-
-String get packageRootPath {
-  var parts = path.split(path.absolute(Platform.script.path));
-  int found = parts.lastIndexOf('${id.snake}');
-  if(found >= 0) {
-    return path.joinAll(parts.getRange(0, found+1));
-  }
-  throw new 
-    StateError("Current directory must be within package '${id.snake}'");
-}
-
-main() => print(packageRootPath);
-
-''',
-          testUtilsPath);
+          hopRunnerPath);
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithFile('''
@@ -681,7 +654,29 @@ ${testLibraries
 
 ''',
           testRunnerPath);
+    }
 
+    if((generateHop && includeHop) || testLibraries.length > 0) {
+
+      String testUtilsPath = "${rootPath}/test/utils.dart";
+      mergeWithFile('''
+import 'dart:io';
+import 'package:path/path.dart' as path;
+
+String get packageRootPath {
+  var parts = path.split(path.absolute(Platform.script.path));
+  int found = parts.lastIndexOf('${id.snake}');
+  if(found >= 0) {
+    return path.joinAll(parts.getRange(0, found+1));
+  }
+  throw new
+    StateError("Current directory must be within package '${id.snake}'");
+}
+
+main() => print(packageRootPath);
+
+''',
+          testUtilsPath);
     }
   }
 
@@ -898,7 +893,7 @@ class Library {
   /// If true includes logging support and a _logger
   bool includeLogger = false;
   /// If true this library is a test library to appear in test folder
-  bool isTest = false;
+  bool get isTest => _isTest;
   /// If true a main is included in the library file
   bool includeMain = false;
   /// Set desired if generating just a lib and not a package
@@ -912,6 +907,14 @@ class Library {
     List<Class> result = new List.from(classes);
     parts.forEach((part) => result.addAll(part.classes));
     return result;
+  }
+
+  set isTest(bool t) {
+    if(t) {
+      _isTest = true;
+      includeMain = true;
+      imports.add('package:unittest/unittest.dart');
+    }
   }
 
   set parent(p) {
@@ -938,9 +941,9 @@ class Library {
       parent = system('ignored');
     }
 
-    String libStubPath = 
-      (path != null)? "${path}/${id.snake}.dart" :
-      (isTest? 
+    String libStubPath =
+      path != null ? "${path}/${id.snake}.dart}" :
+      (isTest?
           "${_parent.rootPath}/test/${id.snake}.dart" :
           "${_parent.rootPath}/lib/${id.snake}.dart");
 
@@ -987,6 +990,7 @@ class Library {
   final Id _id;
   dynamic _parent;
   String _name;
+  bool _isTest = false;
 }
 
 /// Defines a dart part - as in 'part of' source file
@@ -1024,11 +1028,11 @@ class Part {
   }
 
   void generate() {
-    _filePath = 
+    _filePath =
       _parent.isTest?
       "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
       "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
-    mergeWithFile(meta.part(this), _filePath);
+    mergeWithFile(chomp(meta.part(this)), _filePath);
   }
 
 
@@ -1083,6 +1087,10 @@ class Class {
   String get name => _name;
   /// Name of the class, including access prefix
   String get className => _className;
+  /// Additional code included in the class near the top
+  String topInjection;
+  /// Additional code included in the class near the bottom
+  String bottomInjection;
 
 // custom <class Class>
 
@@ -1279,12 +1287,12 @@ class Ctor {
 
   Ctor(){}
 
-  String get qualifiedName => (name == 'default' || name == '')? 
+  String get qualifiedName => (name == 'default' || name == '')?
     className : '${className}.${name}';
 
   String get ctorSansNew {
     var classId = idFromString(className);
-    var id = (name == 'default' || name == '')? classId : 
+    var id = (name == 'default' || name == '')? classId :
     new Id('${classId.snake}_${idFromString(name)}');
 
     List<String> parms = [];
@@ -1330,7 +1338,7 @@ ${className} ${id.camel}(${leftTrim(chomp(indentBlock(parmText, '  ')))}) {
       if(result.length > 0) result[result.length-1] += ',';
       result.add('[');
       List<String> optional = [];
-      optMembers.forEach((m) => 
+      optMembers.forEach((m) =>
           optional.add('this.${m.varName}' +
               ((m.ctorInit == null)? '' : ' = ${m.ctorInit}')));
       result.addAll(prepJoin(optional));
@@ -1340,14 +1348,14 @@ ${className} ${id.camel}(${leftTrim(chomp(indentBlock(parmText, '  ')))}) {
       if(result.length > 0) result[result.length-1] += ',';
       result.add('{');
       List<String> named = [];
-      namedMembers.forEach((m) => 
+      namedMembers.forEach((m) =>
         named.add('this.${m.varName}' +
             ((m.ctorInit == null)? '':' : ${m.ctorInit}')));
       result.addAll(prepJoin(named));
-      result.add('}');      
+      result.add('}');
     }
 
-    String cb = hasCustom? 
+    String cb = hasCustom?
     indentBlock(rightTrim(customBlock('${qualifiedName}'))): '';
     String constTag = isConst? 'const ' : '';
     String body = (isConst || !hasCustom)? ';' : ''' {
@@ -1414,6 +1422,8 @@ class Member {
   bool isStatic = false;
   /// True if the member should not be serialized if the parent class has jsonSupport
   bool jsonTransient = false;
+  /// If true annotated with observable
+  bool isObservable = false;
   /// Name of variable for the member, excluding access prefix (i.e. no '_')
   String get name => _name;
   /// Name of variable for the member - varies depending on public/private
@@ -1425,7 +1435,7 @@ class Member {
 
   set parent(p) {
     _name = id.camel;
-    if(type == 'String' && 
+    if(type == 'String' &&
         (classInit != null) &&
         (classInit is! String)) {
       type = '${classInit.runtimeType}';
@@ -1444,12 +1454,14 @@ class Member {
 
   String get finalDecl => isFinal? 'final ' : '';
 
+  String get observableDecl => isObservable? '@observable ' : '';
+
   String get decl =>
-    (classInit == null)? 
-    "${finalDecl}${type} ${varName};" :
+    (classInit == null)?
+    "${observableDecl}${finalDecl}${type} ${varName};" :
     ((type == 'String')?
-        "${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
-        "${finalDecl}${type} ${varName} = ${classInit};");
+        "${observableDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
+        "${observableDecl}${finalDecl}${type} ${varName} = ${classInit};");
 
   String get publicCode {
     var result = [];
@@ -1529,10 +1541,11 @@ String jsonListValueType(String t) {
   return 'dynamic';
 }
 
+Library testLibrary(String s) => library(s)..isTest = true;
 String importUri(String s) => Library.importUri(s);
 String importStatement(String s) => Library.importStatement(s);
 
 // end <part dart_meta>
 
-RegExp _pubTypeRe = new RegExp(r"(git:|http:|[./.])");
 
+RegExp _pubTypeRe = new RegExp(r"(git:|http:|[./.])");

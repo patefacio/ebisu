@@ -7,7 +7,7 @@ String get packageRootPath {
   if(found >= 0) {
     return path.joinAll(parts.getRange(0, found+1));
   }
-  throw new 
+  throw new
     StateError("Current directory must be within package 'ebisu'");
 }
 

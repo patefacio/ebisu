@@ -1,5 +1,5 @@
 import "dart:io";
-import "package:pathos/path.dart" as path;
+import "package:path/path.dart" as path;
 import "package:ebisu/ebisu.dart";
 import "package:ebisu/ebisu_id.dart";
 import "package:ebisu/ebisu_compiler.dart";
@@ -10,7 +10,7 @@ main() {
   bool noCompile = options.arguments.contains('--no_compile');
   bool compileOnly = options.arguments.contains('--compile_only');
   String topDir = path.dirname(path.dirname(here));
-  String templateFolderPath = 
+  String templateFolderPath =
     path.join(topDir, 'lib', 'templates', 'dart_meta');
   if(! (new Directory(templateFolderPath).existsSync())) {
     throw new StateError(

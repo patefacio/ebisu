@@ -188,8 +188,7 @@ void generateTestLibraries() {
 
 
 // end <library test_code_generation>
-
-main() { 
+main() {
 // custom <main>
 
   // Logger.root.onRecord.listen((LogRecord r) =>

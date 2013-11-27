@@ -8,9 +8,11 @@ import 'scratch_remove_me/lib/various_ctors.dart';
 
 // custom <library expect_various_ctors>
 
+// end <library expect_various_ctors>
 main() {
+// custom <main>
 
-  test('should generate ctor with first member required initialized', 
+  test('should generate ctor with first member required initialized',
       () => expect(new VariousCtors(7.5).one, 7.5));
   test('should generate default ctor with second and third optional',
       () {
@@ -32,7 +34,7 @@ main() {
     expect(new VariousCtors.fromThreeAndFour(-1, four : -2).four, -2);
   });
 
+
+// end <main>
+
 }
-
-// end <library expect_various_ctors>
-

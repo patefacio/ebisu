@@ -8,8 +8,10 @@ import 'scratch_remove_me/lib/basic_class.dart';
 
 // custom <library expect_basic_class>
 
+// end <library expect_basic_class>
 main() {
-  
+// custom <main>
+
   var classNoInit = new ClassNoInit();
   var classWithInit = new ClassWithInit();
   var classWithInferredType = new ClassWithInferredType();
@@ -60,16 +62,16 @@ main() {
       test('mListInt can not assign String', () =>
           expect(() => classNoInit.mListInt = 'foo', throws));
       test('mListInt can assign empty list', () =>
-          expect((classNoInit.mListInt = []).toString() == 
+          expect((classNoInit.mListInt = []).toString() ==
               [].toString(), true));
       test('mListInt can assign [1,2,3]', () =>
-          expect((classNoInit.mListInt = [1,2,3]).toString() == 
+          expect((classNoInit.mListInt = [1,2,3]).toString() ==
               [1,2,3].toString(), true));
 
       //////////////////////////////////////////////////////////////////////
       // Following would be nice, but List<int> in checked mode does not
       // flag assignment from List<String>
-      // 
+      //
       //      test('mListInt can not assign ["foo"]', () =>
       //          expect(() => classNoInit.mListInt = ["foo"], throws));
     });
@@ -171,7 +173,7 @@ main() {
     });
 
   });
+
+// end <main>
+
 }
-
-// end <library expect_basic_class>
-
