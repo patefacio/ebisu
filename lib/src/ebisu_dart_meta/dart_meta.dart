@@ -942,7 +942,7 @@ class Library {
     }
 
     String libStubPath =
-      path != null ? "${path}/${id.snake}.dart}" :
+      path != null ? "${path}/${id.snake}.dart" :
       (isTest?
           "${_parent.rootPath}/test/${id.snake}.dart" :
           "${_parent.rootPath}/lib/${id.snake}.dart");
