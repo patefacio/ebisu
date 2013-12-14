@@ -927,6 +927,9 @@ class Library {
       imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
       imports.add('"dart:convert" as convert');
     }
+    if(allClasses.any((c) => c.requiresEqualityHelpers == true)) {
+      imports.add('package:collection_helpers/equality.dart');
+    }
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
     }
@@ -935,11 +938,14 @@ class Library {
     _parent = p;
   }
 
-  void generate() {
-
+  ensureParent() {
     if(_parent == null) {
       parent = system('ignored');
     }
+  }
+
+  void generate() {
+    ensureParent();
 
     String libStubPath =
       path != null ? "${path}/${id.snake}.dart" :
@@ -1081,6 +1087,14 @@ class Class {
   bool jsonSupport = false;
   /// If true, generate randJson function
   bool hasRandJson = false;
+  /// If true, generate operator== using all members
+  bool opEquals = false;
+  /// If true, implements comparable
+  bool comparable = false;
+  /// If true adds '..ctors[''] to all members (i.e. ensures generation of default ctor with all members present)
+  bool courtesyCtor = false;
+  /// If true adds empty default ctor
+  bool defaultCtor = false;
   /// If true creates library functions to construct forwarding to ctors
   bool ctorSansNew = false;
   /// Name of the class - sans any access prefix (i.e. no '_')
@@ -1102,6 +1116,9 @@ class Class {
     return members.where((member) => !member.isPublic).toList();
   }
 
+  bool get requiresEqualityHelpers =>
+    opEquals && members.any((m) => m.isMapOrList);
+
   String get jsonCtor {
     if(_ctors.containsKey('_json')) {
       return "${_className}._json";
@@ -1110,9 +1127,58 @@ class Class {
     }
   }
 
+  static String memberCompare(m) {
+    if(m.type.startsWith('List')) {
+      return '    const ListEquality().equals(${m.varName}, other.${m.varName})';
+    } else if(m.type.startsWith('Map')) {
+      return '    const MapEquality().equals(${m.varName}, other.${m.varName})';
+    } else {
+      return '    ${m.varName} == other.${m.varName}';
+    }
+  }
+
+  String get opEqualsMethod => '''
+bool operator==(other) =>
+  identical(this, other) ||
+  ${members.map((m) => memberCompare(m))
+    .join(' &&\n')};
+''';
+
+  String get comparableMethod {
+    var comparableMembers = members;
+    if(comparableMembers.length == 1) {
+      return '''
+int compareTo($_className other) =>
+  ${comparableMembers[0].varName}.compareTo(other.${comparableMembers[0].varName});
+''';
+    }
+    var terms = [];
+    members.forEach((m) {
+      terms.add('((result = ${m.varName}.compareTo(other.${m.varName})) == 0)');
+    });
+    return '''
+int compareTo($_className other) {
+  int result = 0;
+  ${terms.join(' &&\n  ')};
+  return result;
+}
+''';
+  }
+
   set parent(p) {
     _name = id.capCamel;
     _className = isPublic? _name : "_$_name";
+
+    if(defaultCtor)
+      _ctors.putIfAbsent('', () => new Ctor()
+          ..name = ''
+          ..className = _className);
+
+    if(comparable)
+      implement.add('Comparable<$_className>');
+
+    if(courtesyCtor)
+      members.forEach((m) => m.ctors.add(''));
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
@@ -1123,7 +1189,18 @@ class Class {
 
       m.parent = this;
 
+      makeCtorName(ctorName) {
+        if(ctorName == '') return '';
+        bool isPrivate = ctorName.startsWith('_');
+        if(isPrivate) {
+          return '_${idFromString(ctorName.substring(1)).camel}';
+        } else {
+          return idFromString(ctorName).camel;
+        }
+      }
+
       m.ctors.forEach((ctorName) {
+        ctorName = makeCtorName(ctorName);
         Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
@@ -1132,6 +1209,7 @@ class Class {
           ..members.add(m);
       });
       m.ctorsOpt.forEach((ctorName) {
+        ctorName = makeCtorName(ctorName);
         Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
@@ -1140,6 +1218,7 @@ class Class {
           ..optMembers.add(m);
       });
       m.ctorsNamed.forEach((ctorName) {
+        ctorName = makeCtorName(ctorName);
         Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
@@ -1150,7 +1229,7 @@ class Class {
     });
 
     // To deserialize a default ctor is needed
-    if(jsonSupport && _ctors.length > 0) {
+    if(jsonSupport && !defaultCtor) {
       _ctors.putIfAbsent('_json', () => new Ctor())
         ..name = '_json'
         ..className = _name;
@@ -1292,8 +1371,12 @@ class Ctor {
 
   String get ctorSansNew {
     var classId = idFromString(className);
-    var id = (name == 'default' || name == '')? classId :
-    new Id('${classId.snake}_${idFromString(name)}');
+    var id =
+    (name == 'default' || name == '')?
+    classId :
+    ((name == '_json')?
+        idFromString('${classId.snake}_json') :
+        new Id('${classId.snake}_${idFromString(name).snake}'));
 
     List<String> parms = [];
     List<String> args = [];
@@ -1317,13 +1400,16 @@ class Ctor {
     }
     String parmText = parms.join(',\n');
     String argText = args.join(',\n');
+    bool hasParms = parms.length > 0;
+    bool allowAllOptional = optMembers.length == 0 && namedMembers.length == 0;
 
+    var lb = hasParms && allowAllOptional ? '[' : '';
+    var rb = hasParms && allowAllOptional ? ']' : '';
     return '''
 
 /// Create a ${className} sans new, for more declarative construction
-${className} ${id.camel}(${leftTrim(chomp(indentBlock(parmText, '  ')))}) {
-  return new ${qualifiedName}(${leftTrim(chomp(indentBlock(argText, '    ')))});
-}
+${className} ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
+  new ${qualifiedName}(${leftTrim(chomp(indentBlock(argText, '    ')))});
 ''';
   }
 
@@ -1432,6 +1518,10 @@ class Member {
 // custom <class Member>
 
   bool get isPublic => access == Access.RW;
+
+  bool get isMap => isMapType(type);
+  bool get isList => isListType(type);
+  bool get isMapOrList => isMap || isList;
 
   set parent(p) {
     _name = id.camel;

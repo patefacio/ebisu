@@ -99,10 +99,19 @@ void generateTestLibraries() {
           member('m_map')..classInit = {1:2},
         ],
         class_('simple_json')
+        ..defaultCtor = true
         ..jsonSupport = true
         ..members = [ member('m_string')..classInit = 'whoop' ],
+        class_('courtesy_ctor')
+        ..defaultCtor = true
+        ..courtesyCtor = true
+        ..members = [
+          member('m_string')..classInit = 'whoop',
+          member('m_secret')..classInit = 42,
+        ],
         class_('class_json')
         ..defaultMemberAccess = RO
+        ..defaultCtor = true
         ..jsonSupport = true
         ..members = [
           member('m_string')..classInit = 'foo',
@@ -118,6 +127,7 @@ void generateTestLibraries() {
         ],
         class_('class_json_outer')
         ..defaultMemberAccess = RO
+        ..defaultCtor = true
         ..jsonSupport = true
         ..members = [
           member('m_nested')
@@ -195,33 +205,33 @@ main() {
   //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
 
   generateTestLibraries();
-  
+
   var libPath = joinAll([tempPath, 'lib']);
   bool exists(String filePath) => new File(filePath).existsSync();
 
   group('test_code_generation', () {
 
     group('library contents', () {
-      var contents = 
+      var contents =
         new File(join(libPath, 'basic_class.dart')).readAsStringSync();
-      test("import recognizes 'io'", 
+      test("import recognizes 'io'",
           () => expect(contents.indexOf("import 'dart:io';") >=0, true));
-      test("import recognizes 'async'", 
+      test("import recognizes 'async'",
           () => expect(contents.indexOf("import 'dart:async';") >=0, true));
-      test("import imports 'path'", 
+      test("import imports 'path'",
           () => expect(
             contents.indexOf("import 'package:path/path.dart';") >=0, true));
-      test("library defines ClassNoInit", 
+      test("library defines ClassNoInit",
           () => expect(contents.indexOf("class ClassNoInit") >=0, true));
-      test("library defines ClassWithInit", 
+      test("library defines ClassWithInit",
           () => expect(contents.indexOf("class ClassWithInit") >=0, true));
-    });        
+    });
 
     group('license contents', () {
       var contents = new File(join(tempPath, 'LICENSE')).readAsStringSync();
       test('license contents', () => expect(contents, license));
     });
-    
+
     group('pubspec contents', () {
       var contents = new File(join(tempPath, 'pubspec.yaml')).readAsStringSync();
       var yaml = loadYaml(contents);
@@ -229,13 +239,13 @@ main() {
       test('pubspec author', () => expect(yaml['author'], author));
       test('pubspec version', () => expect(yaml['version'], pubVersion));
       test('pubspec doc', () => expect(yaml['description'].trim(), pubDoc));
-      test('pubspec hop', () => 
+      test('pubspec hop', () =>
           expect(yaml['dev_dependencies']['hop'] != null, true));
-      test('pubspec homepage', 
+      test('pubspec homepage',
           () => expect(yaml['homepage'].trim(), pubHomepage));
-      test('pubspec dep quiver', 
+      test('pubspec dep quiver',
           () => expect(yaml['dependencies']['quiver'] != null, true));
-      test('pubspec user supplied dev dep unittest', 
+      test('pubspec user supplied dev dep unittest',
           () => expect(yaml['dev_dependencies']['unittest'] != null, true));
     });
     test('.gitignore exists', () =>
@@ -254,11 +264,11 @@ main() {
     List allDartFilesComplete = [];
 
     String testPath = join(packageRootPath, 'test');
-    
+
     //////////////////////////////////////////////////////////////////////
     // Invoke tests on generated code
     //////////////////////////////////////////////////////////////////////
-    [ 
+    [
 
       'expect_basic_class.dart',
       'expect_various_ctors.dart',
@@ -274,12 +284,12 @@ main() {
             print("Results of running dart subprocess $dartFile");
             print(processResult.stdout);
             if(processResult.stderr.length > 0) {
-              print('STDERR| ' + 
+              print('STDERR| ' +
                   processResult.stderr
                   .split('\n')
                   .join('\nSTDERR| '));
             }
-            
+
             expect(processResult.exitCode, 0);
           });
       });

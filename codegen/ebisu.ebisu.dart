@@ -137,15 +137,6 @@ all of which get compiled into a single dart library'''
   Library ebisu_utils = library('ebisu_utils')
     ..imports = [ 'math', "'dart:convert' as convert" ]
     ..includeLogger = true
-    ..classes = [
-      class_('date')
-      ..members = [
-        member('date_time')
-        ..access = RO
-        ..type = 'DateTime'
-        ..ctors = ['fromDateTime']
-      ]
-    ]
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
   // The following are commonly used members of the meta data classes
@@ -669,6 +660,22 @@ text to include in the license file.
           ..classInit = 'false',
           member('has_rand_json')
           ..doc = "If true, generate randJson function"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('op_equals')
+          ..doc = "If true, generate operator== using all members"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('comparable')
+          ..doc = "If true, implements comparable"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('courtesy_ctor')
+          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of default ctor with all members present)"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('default_ctor')
+          ..doc = "If true adds empty default ctor"
           ..type = 'bool'
           ..classInit = 'false',
           member('ctor_sans_new')

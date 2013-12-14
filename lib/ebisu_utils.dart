@@ -10,27 +10,6 @@ import 'package:logging/logging.dart';
 
 final _logger = new Logger("ebisu_utils");
 
-class Date {
-
-  Date.fromDateTime(this._dateTime);
-
-  DateTime get dateTime => _dateTime;
-
-  // custom <class Date>
-
-  String toString() => _dateTime.toString().substring(0,10);
-  String toJson() => toString();
-  static Date fromJson(String dt) => 
-    new Date.fromDateTime(DateTime.parse(dt));
-
-  Date(int year, int month, int day) : 
-    _dateTime = new DateTime(year, month, day) {
-  }
-
-  // end <class Date>
-  DateTime _dateTime;
-}
-
 // custom <library ebisu_utils>
 
 bool _toJsonRequired(final object) {
@@ -92,20 +71,20 @@ String randString([Random generator, int maxLen = 10 ]) {
 /// Creates a Map<String, dynamic> of random length capped at _maxLen_ where
 /// keys are random strings, optionally prefixed with _tag_ and values are built
 /// from the supplied _valueBuilder_.
-dynamic randJsonMap([Random generator, 
+dynamic randJsonMap([Random generator,
     dynamic valueBuilder, String tag = '', int maxLen = 10]) {
   Map result = {};
   if(generator == null) generator = _randGenerator;
   int numEntries = generator.nextInt(maxLen)+1;
   for(var i=0; i<numEntries; i++) {
-    String key = (tag.length>0? "${tag} <${randString(generator)}>" : 
+    String key = (tag.length>0? "${tag} <${randString(generator)}>" :
         randString(generator));
     result[key] = valueBuilder();
   }
   return result;
 }
 
-dynamic randGeneralMap(keyGenerator(), [Random generator, 
+dynamic randGeneralMap(keyGenerator(), [Random generator,
     dynamic valueBuilder, int maxLen = 10]) {
   Map result = {};
   if(generator == null) generator = _randGenerator;
@@ -140,11 +119,11 @@ dynamic randJson(Random generator, var obj, [ final dynamic type ]) {
       case int: return generator.nextInt(_maxRandInt);
       case String: return randString(generator);
       case bool: return 0==(generator.nextInt(_maxRandInt)%2);
-      case DateTime: 
-        return new DateTime(1900+generator.nextInt(150), 
-            generator.nextInt(12)+1, 
+      case DateTime:
+        return new DateTime(1900+generator.nextInt(150),
+            generator.nextInt(12)+1,
             generator.nextInt(31)+1).toString();
-      default: { 
+      default: {
         return obj.randJson();
       }
     }
@@ -180,7 +159,7 @@ String prettyJsonMap(dynamic item, [String indent = "", bool showCount = false])
       Map map;
       try {
         map = item.toJson();
-      } catch(e) {        
+      } catch(e) {
         print("ERROR: Caught ${e} on ${item}");
         throw e;
       }
@@ -191,7 +170,7 @@ String prettyJsonMap(dynamic item, [String indent = "", bool showCount = false])
       result.add(convert.JSON.encode(item));
     }
   }
-  return result.join('');  
+  return result.join('');
 }
 
 // end <library ebisu_utils>

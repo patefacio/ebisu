@@ -32,6 +32,16 @@ ${abstractTag}class ${_.className}${_.implementsClause}{
 ${indentBlock(_.ctors[ctorName].ctorText)}
 ''');
  }); 
+ if(_.opEquals) { 
+  _buf.add('''
+${indentBlock(_.opEqualsMethod)}
+''');
+ } 
+ if(_.comparable) { 
+  _buf.add('''
+${indentBlock(_.comparableMethod)}
+''');
+ } 
  for(var member in _.members) { 
    if(member.hasPublicCode) { 
   _buf.add('''

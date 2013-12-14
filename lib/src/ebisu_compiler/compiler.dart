@@ -46,7 +46,7 @@ class TemplateFile {
       if(outputModtime.isBefore(inputModtime)) {
         compileImpl();
         return true;
-      } 
+      }
     } else {
       compileImpl();
       return true;
@@ -112,11 +112,10 @@ TemplateFile templateFile(String inputPath,
     {
       String outputPath,
       String partOf
-    }) {
-  return new TemplateFile(inputPath,
+    }) =>
+  new TemplateFile(inputPath,
       outputPath:outputPath,
       partOf:partOf);
-}
 
 
 /// A class to process a folder full of templates,
