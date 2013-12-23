@@ -17,4 +17,3 @@ class C12 {
 }
 // custom <part first_part>
 // end <part first_part>
-

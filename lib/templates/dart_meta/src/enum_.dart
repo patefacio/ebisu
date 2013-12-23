@@ -13,7 +13,7 @@ ${docComment(_.doc)}
 ''');
  } 
   _buf.add('''
-class ${_.enumName} {
+class ${_.enumName} implements Comparable<${_.enumName}> {
 ''');
  int i = 0; 
  for(var value in _.values) { 
@@ -31,6 +31,8 @@ class ${_.enumName} {
 
   const ${_.enumName}._(this.value);
 
+  int compareTo(${_.enumName} other) => value.compareTo(other.value);
+
   String toString() {
     switch(this) {
 ''');
@@ -44,6 +46,7 @@ class ${_.enumName} {
   }
 
   static ${_.enumName} fromString(String s) {
+    if(s == null) return null;
     switch(s) {
 ''');
  for(var value in _.values) { 
@@ -52,6 +55,7 @@ class ${_.enumName} {
 ''');
  } 
   _buf.add('''
+      default: return null;
     }
   }
 
@@ -59,7 +63,9 @@ class ${_.enumName} {
  if(_.jsonSupport) { 
   _buf.add('''
   int toJson() => value;
-  static ${_.enumName} fromJson(int v) => values[v];
+  static ${_.enumName} fromJson(int v) {
+    return v==null? null : values[v];
+  }
 
 ''');
    if(_.hasRandJson) { 
@@ -80,5 +86,15 @@ ${rightTrim(indentBlock(customBlock("enum ${_.name}")))}
 
 }
 ''');
+ if(_.libraryScopedValues) { 
+  _buf.add('''
+
+''');
+ for(var value in _.values) { 
+  _buf.add('''
+const ${value.shout} = ${_.enumName}.${value.shout};
+''');
+ } 
+ } 
   return _buf.join();
 }

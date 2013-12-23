@@ -46,7 +46,15 @@ ${pbdep.yamlEntry}
  } 
   _buf.add('''
 ${scriptCustomBlock('${_.name} dev dependencies')}
-
+transformers:
+''');
+ for(PubTransformer transformer in _.pubTransformers) {               
+  _buf.add('''
+${transformer.yamlEntry}
+''');
+ } 
+  _buf.add('''
+${scriptCustomBlock('${_.name} transformers')}
 ''');
   return _buf.join();
 }

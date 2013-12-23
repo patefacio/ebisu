@@ -84,18 +84,14 @@ ${rightTrim(indentBlock(customBlock("class ${_.name}")))}
     };
   }
 
-  static ${_.name} fromJson(String json) {
+  static ${_.name} fromJson(Object json) {
     if(json == null) return null;
-    Map jsonMap = convert.JSON.decode(json);
+    if(json is String) {
+      json = convert.JSON.decode(json);
+    }
+    assert(json is Map);
     ${_.name} result = new ${_.jsonCtor}();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  static ${_.name} fromJsonMap(Map jsonMap) {
-    if(jsonMap == null) return null;
-    ${_.name} result = new ${_.jsonCtor}();
-    result._fromJsonMapImpl(jsonMap);
+    result._fromJsonMapImpl(json);
     return result;
   }
 

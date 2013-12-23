@@ -6,20 +6,20 @@ import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
 import '../test/runner.dart' as runner;
 
-void main() {
+void main(List<String> args) {
 
   Directory.current = runner.rootPath;
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   addTask('docs', createDartDocTask(_getLibs));
-  addTask('analyze_test', 
+  addTask('analyze_test',
       createAnalyzerTask([
         "test/test_it.dart"
       ]));
 
   addTask('test', createUnitTestTask(runner.testCore));
 
-  runHop();
+  runHop(args);
 }
 
 Future<List<String>> _getLibs() {

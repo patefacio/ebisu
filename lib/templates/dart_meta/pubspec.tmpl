@@ -20,4 +20,8 @@ dev_dependencies:
 ${pbdep.yamlEntry}
 #< } >
 ${scriptCustomBlock('${_.name} dev dependencies')}
-
+transformers:
+#< for(PubTransformer transformer in _.pubTransformers) {               >
+${transformer.yamlEntry}
+#< } >
+${scriptCustomBlock('${_.name} transformers')}

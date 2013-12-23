@@ -17,4 +17,3 @@ class C22 {
 }
 // custom <part second_part>
 // end <part second_part>
-

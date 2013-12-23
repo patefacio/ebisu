@@ -100,7 +100,7 @@ String ${_functionName}([dynamic _]) {
     closeString();
     output.add('''  return _buf.join();\n}''');
     File outFile = new File(outputPath);
-    outFile.writeAsStringSync(output.join('\n'));
+    outFile.writeAsStringSync(output.join('\n'), flush:true);
   }
 
 // end <class TemplateFile>
@@ -108,7 +108,8 @@ String ${_functionName}([dynamic _]) {
 }
 
 /// Create a TemplateFile sans new, for more declarative construction
-TemplateFile templateFile(String inputPath,
+TemplateFile
+templateFile(String inputPath,
     {
       String outputPath,
       String partOf

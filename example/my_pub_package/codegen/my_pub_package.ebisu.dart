@@ -4,15 +4,18 @@ import "package:ebisu/ebisu_dart_meta.dart";
 import "package:logging/logging.dart";
 
 String _topDir;
+bool _loggingEnabled = false;
 
 void main() {
 
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
-  // Logger.root.onRecord.listen((LogRecord r) =>
-  //     print("${r.loggerName} [${r.level}]:\t${r.message}"));
-
-  var here = path.absolute(new Options().script);
+  if(_loggingEnabled) {
+    Logger.root.onRecord.listen((LogRecord r) =>
+        print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  }
+  
+  String here = path.absolute(Platform.script.path);
   var topDir = path.dirname(path.dirname(here));
   System myPubPackage = system('my_pub_package')
     .. doc = '''

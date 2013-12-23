@@ -1,7 +1,7 @@
 #< if(_.doc != null) { >
 ${docComment(_.doc)}
 #< } >
-class ${_.enumName} {
+class ${_.enumName} implements Comparable<${_.enumName}> {
 #< int i = 0; >
 #< for(var value in _.values) { >
   static const ${value.shout} = const ${_.enumName}._(${i++});
@@ -15,6 +15,8 @@ class ${_.enumName} {
 
   const ${_.enumName}._(this.value);
 
+  int compareTo(${_.enumName} other) => value.compareTo(other.value);
+
   String toString() {
     switch(this) {
 #< for(var value in _.values) { >
@@ -24,16 +26,20 @@ class ${_.enumName} {
   }
 
   static ${_.enumName} fromString(String s) {
+    if(s == null) return null;
     switch(s) {
 #< for(var value in _.values) { >
       case "${_.valueAsString(value)}": return ${value.shout};
 #< } >
+      default: return null;
     }
   }
 
 #< if(_.jsonSupport) { >
   int toJson() => value;
-  static ${_.enumName} fromJson(int v) => values[v];
+  static ${_.enumName} fromJson(int v) {
+    return v==null? null : values[v];
+  }
 
 #<   if(_.hasRandJson) { >
   static String randJson() {
@@ -47,3 +53,9 @@ ${rightTrim(indentBlock(customBlock("enum ${_.name}")))}
 #< } >
 
 }
+#< if(_.libraryScopedValues) { >
+
+#< for(var value in _.values) { >
+const ${value.shout} = ${_.enumName}.${value.shout};
+#< } >
+#< } >

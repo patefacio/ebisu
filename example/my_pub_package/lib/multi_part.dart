@@ -10,4 +10,3 @@ List<String> globalVar1 = ["foo", "bar", "goo"];
 
 // custom <library multi_part>
 // end <library multi_part>
-

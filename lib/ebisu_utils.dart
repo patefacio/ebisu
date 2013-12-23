@@ -50,7 +50,6 @@ dynamic toJson(final dynamic obj) {
       return obj;
     }
   }
-  return _toJsonRequired(obj) ? obj.toJson() : obj;
 }
 
 final _sourceChars = r'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*+;,';

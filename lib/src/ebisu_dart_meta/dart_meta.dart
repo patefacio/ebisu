@@ -1,7 +1,7 @@
 part of ebisu_dart_meta;
 
 /// Access for member variable - ia - inaccessible, ro - read/only, rw read/write
-class Access {
+class Access implements Comparable<Access> {
   static const IA = const Access._(0);
   static const RO = const Access._(1);
   static const RW = const Access._(2);
@@ -16,6 +16,8 @@ class Access {
 
   const Access._(this.value);
 
+  int compareTo(Access other) => value.compareTo(other.value);
+
   String toString() {
     switch(this) {
       case IA: return "Ia";
@@ -25,21 +27,25 @@ class Access {
   }
 
   static Access fromString(String s) {
+    if(s == null) return null;
     switch(s) {
       case "Ia": return IA;
       case "Ro": return RO;
       case "Rw": return RW;
+      default: return null;
     }
   }
 
   int toJson() => value;
-  static Access fromJson(int v) => values[v];
+  static Access fromJson(int v) {
+    return v==null? null : values[v];
+  }
 
 
 }
 
 /// Dependency type of a PubDependency 
-class PubDepType {
+class PubDepType implements Comparable<PubDepType> {
   static const PATH = const PubDepType._(0);
   static const GIT = const PubDepType._(1);
   static const HOSTED = const PubDepType._(2);
@@ -54,6 +60,8 @@ class PubDepType {
 
   const PubDepType._(this.value);
 
+  int compareTo(PubDepType other) => value.compareTo(other.value);
+
   String toString() {
     switch(this) {
       case PATH: return "Path";
@@ -63,15 +71,19 @@ class PubDepType {
   }
 
   static PubDepType fromString(String s) {
+    if(s == null) return null;
     switch(s) {
       case "Path": return PATH;
       case "Git": return GIT;
       case "Hosted": return HOSTED;
+      default: return null;
     }
   }
 
   int toJson() => value;
-  static PubDepType fromJson(int v) => values[v];
+  static PubDepType fromJson(int v) {
+    return v==null? null : values[v];
+  }
 
 
 }
@@ -180,6 +192,8 @@ class Enum {
   String get enumName => _enumName;
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
+  /// If true scopes the enum values to library by assigning to var outside class
+  bool libraryScopedValues = false;
   /// If true string value for each entry is snake case (default is shout)
   bool isSnakeString = false;
 
@@ -302,6 +316,23 @@ class PubDependency {
   PubDepType _type;
 }
 
+/// Entry in the transformer sections
+class PubTransformer {
+
+  PubTransformer(this.name);
+
+  /// Name of transformer
+  String name;
+
+  // custom <class PubTransformer>
+
+  String get yamlEntry {
+    throw "NOT IMPLEMENTED YET";
+  }
+
+  // end <class PubTransformer>
+}
+
 /// Information for the pubspec of the system
 class PubSpec {
 
@@ -324,6 +355,7 @@ class PubSpec {
   String homepage;
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];
+  List<PubTransformer> pubTransformers = [];
 
 // custom <class PubSpec>
 
@@ -554,6 +586,7 @@ Only "version" and "path" overrides are supported.
       scriptMergeWithFile('''
 *.~*~
 packages
+build
 ${scriptCustomBlock('additional')}
 ''',
           gitIgnorePath);
@@ -1137,11 +1170,29 @@ class Class {
     }
   }
 
+  String get overrideHashCode {
+    var parts = ['''{
+  int result = 17;
+  final int prime = 23;'''];
+    members.forEach((m) {
+      if(m.isList) {
+        parts.add('  result = result*prime + const ListEquality<${m.type}>().hash(${m.varName});');
+      } else if(m.isMap) {
+        parts.add('  result = result*prime + const MapEquality().hash(${m.varName});');
+      } else {
+        parts.add('  result = result*prime + ${m.varName}.hashCode;');
+      }
+    });
+    return (parts..addAll(['  return result;', '}'])).join('\n');
+  }
+
   String get opEqualsMethod => '''
 bool operator==(other) =>
   identical(this, other) ||
   ${members.map((m) => memberCompare(m))
     .join(' &&\n')};
+
+int get hashCode ${overrideHashCode}
 ''';
 
   String get comparableMethod {
@@ -1260,24 +1311,17 @@ int compareTo($_className other) {
     }
   }
 
-  static String _mapCheck(String type, String value) => '''
-($value is Map)?
-  ${type}.fromJsonMap($value) :
-  ${type}.fromJson($value)''';
-
   static String _fromJsonData(String type, String source) {
     if(isClassJsonable(type)) {
-      return _mapCheck(type, source);
+      return '${type}.fromJson($source)';
     } else if(type == 'DateTime') {
       return 'DateTime.parse($source)';
     }
     return source;
   }
 
-  static String _stringCheck(String type, String source) => '''
-($source is String)?
-  $source :
-  $type.fromString($source)''';
+  static String _stringCheck(String type, String source) => type == 'String'? 
+  source : '$type.fromString($source)';
 
   String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
     List results = [];
@@ -1286,7 +1330,7 @@ int compareTo($_className other) {
     var value = '$source[$key]';
     String rhs;
     if(isClassJsonable(member.type)) {
-      results.add('$lhs = ${_mapCheck(member.type, value)};');
+      results.add('$lhs = ${member.type}.fromJson($value);');
     } else {
       if(isMapType(member.type)) {
         results.add('''
@@ -1388,13 +1432,17 @@ class Ctor {
     }
     if(optMembers.length > 0) {
       List<String> optional = [];
-      optMembers.forEach((m) => optional.add('    ${m.type} ${m.varName}'));
+      optMembers.forEach((m) =>
+          optional.add('    ${m.type} ${m.varName}' +
+              ((m.ctorInit == null)? '' : ' = ${m.ctorInit}')));
       parms.add("  [\n${optional.join(',\n')}\n  ]");
       args.add(optMembers.map((m) => '  ${m.varName}').join(',\n'));
     }
     if(namedMembers.length > 0) {
       List<String> named = [];
-      namedMembers.forEach((m) => named.add('    ${m.type} ${m.varName}'));
+      namedMembers.forEach((m) =>
+          named.add('    ${m.type} ${m.varName}' +
+                    ((m.ctorInit == null)? '':' : ${m.ctorInit}')));
       parms.add("  {\n${named.join(',\n')}\n  }");
       args.add(namedMembers.map((m) => '  ${m.varName}:${m.varName}').join(',\n'));
     }
@@ -1408,7 +1456,8 @@ class Ctor {
     return '''
 
 /// Create a ${className} sans new, for more declarative construction
-${className} ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
+${className}
+${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
   new ${qualifiedName}(${leftTrim(chomp(indentBlock(argText, '    ')))});
 ''';
   }

@@ -1,5 +1,6 @@
 library self_contained;
 
+import 'dart:convert' as convert;
 import 'package:ebisu/ebisu_utils.dart' as ebisu_utils;
 // custom <additional imports>
 // end <additional imports>
@@ -7,6 +8,9 @@ import 'package:ebisu/ebisu_utils.dart' as ebisu_utils;
 
 /// An address composed of zip, street and street number
 class Address {
+
+  Address._json();
+
   String zip;
   String street;
   int streetNumber;
@@ -23,14 +27,16 @@ class Address {
   }
 
   static Address fromJson(String json) {
+    if(json == null) return null;
     Map jsonMap = convert.JSON.decode(json);
-    Address result = new Address();
+    Address result = new Address._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
 
   static Address fromJsonMap(Map jsonMap) {
-    Address result = new Address();
+    if(jsonMap == null) return null;
+    Address result = new Address._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
@@ -40,9 +46,13 @@ class Address {
     street = jsonMap["street"];
     streetNumber = jsonMap["streetNumber"];
   }
+
 }
 
 class AddressBook {
+
+  AddressBook._json();
+
   Map<String,Address> book = {};
 
   // custom <class AddressBook>
@@ -55,27 +65,34 @@ class AddressBook {
   }
 
   static AddressBook fromJson(String json) {
+    if(json == null) return null;
     Map jsonMap = convert.JSON.decode(json);
-    AddressBook result = new AddressBook();
+    AddressBook result = new AddressBook._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
 
   static AddressBook fromJsonMap(Map jsonMap) {
-    AddressBook result = new AddressBook();
+    if(jsonMap == null) return null;
+    AddressBook result = new AddressBook._json();
     result._fromJsonMapImpl(jsonMap);
     return result;
   }
 
   void _fromJsonMapImpl(Map jsonMap) {
-    // book map of <String, Address>
-    book = { };
+
+    // book is Map<String,Address>
+    book = {};
     jsonMap["book"].forEach((k,v) {
-      book[k] = Address.fromJsonMap(v);
+      book[
+        k
+      ] = (v is Map)?
+      Address.fromJsonMap(v) :
+      Address.fromJson(v);
     });
   }
+
 }
 
 // custom <library self_contained>
 // end <library self_contained>
-

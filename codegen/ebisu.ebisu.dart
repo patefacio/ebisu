@@ -1,7 +1,5 @@
 import "dart:io";
 import "package:path/path.dart" as path;
-import "package:ebisu/ebisu.dart";
-import "package:id/id.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
 import "package:ebisu/ebisu_compiler.dart";
 import "package:logging/logging.dart";
@@ -12,8 +10,10 @@ void main() {
 
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
-  // Logger.root.onRecord.listen((LogRecord r) =>
-  //    print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  if(false) {
+    Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  }
 
   var arguments = Platform.executableArguments;
   String here = path.absolute(Platform.script.path);
@@ -35,10 +35,10 @@ void main() {
         // Files were updated, since Dart does not have eval, call again to same
         // script using updated templates
         print("$filesUpdated files updated...rerunning");
-        List<String> args = [ Platform.script, '--no_compile' ]
+        List<String> args = [ Platform.script.path, '--no_compile' ]
           ..addAll(arguments);
         print("Args are " + args.toString());
-        Process.run('run_dart.dart', args).then((ProcessResult results) {
+        Process.run('run_dart.d', args).then((ProcessResult results) {
           print(results.stdout);
           print(results.stderr);
         });
@@ -342,6 +342,10 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'If true includes custom block for additional user supplied ctor code'
           ..type = 'bool'
           ..classInit = 'false',
+          member('library_scoped_values')
+          ..doc = 'If true scopes the enum values to library by assigning to var outside class'
+          ..type = 'bool'
+          ..classInit = 'false',
           member('is_snake_string')
           ..doc = 'If true string value for each entry is snake case (default is shout)'
           ..type = 'bool'
@@ -365,6 +369,13 @@ At some point when true enums are provided this may be revisited.
           ..jsonTransient = true
           ..type = 'PubDepType'
           ..access = IA,
+        ],
+        class_('pub_transformer')
+        ..doc = 'Entry in the transformer sections'
+        ..members = [
+          member('name')
+          ..ctors = ['']
+          ..doc = 'Name of transformer'
         ],
         class_('pub_spec')
         ..doc = 'Information for the pubspec of the system'
@@ -390,6 +401,9 @@ If not set, id of system is used.
           ..classInit = '[]',
           member('dev_dependencies')
           ..type = 'List<PubDependency>'
+          ..classInit = '[]',
+          member('pub_transformers')
+          ..type = 'List<PubTransformer>'
           ..classInit = '[]',
         ],
         class_('system')

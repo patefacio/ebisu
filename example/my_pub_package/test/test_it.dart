@@ -7,8 +7,7 @@ import 'package:unittest/unittest.dart';
 
 // custom <library test_it>
 // end <library test_it>
-
-main() { 
+main() {
 // custom <main>
 // end <main>
 
