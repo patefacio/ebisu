@@ -6,11 +6,13 @@ import "package:logging/logging.dart";
 
 String _topDir;
 
+bool _enableLogging = false;
+
 void main() {
 
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
-  if(false) {
+  if(_enableLogging) {
     Logger.root.onRecord.listen((LogRecord r) =>
       print("${r.loggerName} [${r.level}]:\t${r.message}"));
   }
@@ -988,7 +990,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.8'
+        ..version = '0.0.9'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
