@@ -1,4 +1,4 @@
-library test_functions;
+library ebisu.test_functions;
 
 import 'package:ebisu/ebisu.dart';
 import 'package:unittest/unittest.dart';

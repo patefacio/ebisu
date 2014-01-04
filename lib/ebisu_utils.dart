@@ -1,5 +1,5 @@
 /// Support code to be used by libraries generated with ebisu. Example (toJson)
-library ebisu_utils;
+library ebisu.ebisu_utils;
 
 import 'dart:convert' as convert;
 import 'dart:math';
@@ -11,6 +11,7 @@ import 'package:logging/logging.dart';
 final _logger = new Logger("ebisu_utils");
 
 // custom <library ebisu_utils>
+
 
 bool _toJsonRequired(final object) {
   if (object is num) {

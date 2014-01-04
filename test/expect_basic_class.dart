@@ -1,4 +1,4 @@
-library expect_basic_class;
+library ebisu.expect_basic_class;
 
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/basic_class.dart';
@@ -7,7 +7,6 @@ import 'scratch_remove_me/lib/basic_class.dart';
 
 
 // custom <library expect_basic_class>
-
 // end <library expect_basic_class>
 main() {
 // custom <main>
@@ -150,7 +149,7 @@ main() {
       test('round trip', () {
         var asJson = classJson.toJson();
         expect(asJson is Map, true);
-        var avatar = ClassJson.fromJsonMap(asJson);
+        var avatar = ClassJson.fromJson(asJson);
         expect(avatar is ClassJson, true);
         expect(avatar.mString == 'foo', true);
         expect(avatar.mInt == 3, true);
@@ -163,7 +162,7 @@ main() {
       test('round trip', () {
         var asJson = classJsonOuter.toJson();
         expect(asJson is Map, true);
-        var avatar = ClassJsonOuter.fromJsonMap(asJson);
+        var avatar = ClassJsonOuter.fromJson(asJson);
         expect(avatar is ClassJsonOuter, true);
         expect(avatar.mNested.mString == 'foo', true);
         expect(avatar.mNested.mInt == 3, true);

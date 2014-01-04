@@ -1,4 +1,4 @@
-library setup;
+library ebisu.setup;
 
 import 'dart:io';
 import 'package:ebisu/ebisu_dart_meta.dart';
@@ -18,7 +18,7 @@ String _scratchRemoveMeFolder;
 
 String get tempPath {
   if(_scratchRemoveMeFolder == null) {
-    _scratchRemoveMeFolder = 
+    _scratchRemoveMeFolder =
       joinAll([packageRootPath, 'test', 'scratch_remove_me']);
   }
 

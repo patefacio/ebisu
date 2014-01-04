@@ -1,4 +1,4 @@
-library test_code_generation;
+library ebisu.test_code_generation;
 
 import 'dart:async';
 import 'dart:io';
@@ -194,8 +194,6 @@ void generateTestLibraries() {
   testSystem.generate();
 
 }
-
-
 
 // end <library test_code_generation>
 main() {

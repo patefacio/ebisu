@@ -1,4 +1,4 @@
-part of ebisu;
+part of ebisu.ebisu;
 
 /// Convenience wrapper for a map - passed into templates as variable '_'
 class Context {

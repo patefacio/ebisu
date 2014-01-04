@@ -43,7 +43,7 @@
 /// classes with JSON support.
 ///
 /// 
-library ebisu_dart_meta;
+library ebisu.ebisu_dart_meta;
 
 import 'dart:convert' as convert;
 import 'dart:io';
@@ -67,7 +67,7 @@ List<String> _nonJsonableTypes = [
 
 bool isClassJsonable(String className) =>
   !_nonJsonableTypes.contains(className) &&
-  !className.startsWith('Map<') && 
+  !className.startsWith('Map<') &&
   !className.startsWith('List<');
 
 // end <library ebisu_dart_meta>

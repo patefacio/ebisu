@@ -1,4 +1,4 @@
-part of ebisu_dart_meta;
+part of ebisu.ebisu_dart_meta;
 
 /// Access for member variable - ia - inaccessible, ro - read/only, rw read/write
 class Access implements Comparable<Access> {
@@ -13,6 +13,8 @@ class Access implements Comparable<Access> {
   ];
 
   final int value;
+
+  int get hashCode => value;
 
   const Access._(this.value);
 
@@ -57,6 +59,8 @@ class PubDepType implements Comparable<PubDepType> {
   ];
 
   final int value;
+
+  int get hashCode => value;
 
   const PubDepType._(this.value);
 
@@ -921,8 +925,10 @@ class Library {
   List<Class> classes = [];
   /// Enums defined in this library
   List<Enum> enums = [];
-  /// Name of the library - for use in naming the library file, the 'library' and 'part of' statements
+  /// Name of the library file
   String get name => _name;
+  /// Qualified name of the library used inside library and library parts - qualified to reduce collisions
+  String get qualifiedName => _qualifiedName;
   /// If true includes logging support and a _logger
   bool includeLogger = false;
   /// If true this library is a test library to appear in test folder
@@ -950,8 +956,19 @@ class Library {
     }
   }
 
+  String _makeQualifiedName(parent) {
+    String result = _id.snake;
+    while(parent != null) {
+      result = '${parent.id.snake}.$result';
+      if(parent is System) break;
+      parent = parent.parent;
+    }
+    return result;
+  }
+
   set parent(p) {
     _name = _id.snake;
+    _qualifiedName = _makeQualifiedName(p);
     parts.forEach((part) => part.parent = this);
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
@@ -1029,6 +1046,7 @@ class Library {
   final Id _id;
   dynamic _parent;
   String _name;
+  String _qualifiedName;
   bool _isTest = false;
 }
 
@@ -1176,7 +1194,7 @@ class Class {
   final int prime = 23;'''];
     members.forEach((m) {
       if(m.isList) {
-        parts.add('  result = result*prime + const ListEquality<${m.type}>().hash(${m.varName});');
+        parts.add('  result = result*prime + const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName});');
       } else if(m.isMap) {
         parts.add('  result = result*prime + const MapEquality().hash(${m.varName});');
       } else {
@@ -1219,6 +1237,7 @@ int compareTo($_className other) {
   set parent(p) {
     _name = id.capCamel;
     _className = isPublic? _name : "_$_name";
+    _ctors.clear();
 
     if(defaultCtor)
       _ctors.putIfAbsent('', () => new Ctor()
@@ -1320,7 +1339,7 @@ int compareTo($_className other) {
     return source;
   }
 
-  static String _stringCheck(String type, String source) => type == 'String'? 
+  static String _stringCheck(String type, String source) => type == 'String'?
   source : '$type.fromString($source)';
 
   String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
@@ -1408,7 +1427,7 @@ class Ctor {
 
 // custom <class Ctor>
 
-  Ctor(){}
+  Ctor();
 
   String get qualifiedName => (name == 'default' || name == '')?
     className : '${className}.${name}';

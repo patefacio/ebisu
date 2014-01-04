@@ -1,4 +1,4 @@
-library expect_various_ctors;
+library ebisu.expect_various_ctors;
 
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/various_ctors.dart';
@@ -7,7 +7,6 @@ import 'scratch_remove_me/lib/various_ctors.dart';
 
 
 // custom <library expect_various_ctors>
-
 // end <library expect_various_ctors>
 main() {
 // custom <main>

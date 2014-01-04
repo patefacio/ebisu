@@ -1,7 +1,7 @@
 #< if(_.doc != null) { >
 ${docComment(_.doc)}
 #< } >
-library ${_.name};
+library ${_.qualifiedName};
 
 #< for(var i in _.imports) { >
 ${i}

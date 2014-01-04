@@ -8,7 +8,7 @@ String part([dynamic _]) {
 
 
   _buf.add('''
-part of ${_.parent.name};
+part of ${_.parent.qualifiedName};
 ''');
  for(var e in _.enums) { 
   _buf.add('''

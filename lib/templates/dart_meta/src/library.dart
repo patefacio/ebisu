@@ -13,7 +13,7 @@ ${docComment(_.doc)}
 ''');
  } 
   _buf.add('''
-library ${_.name};
+library ${_.qualifiedName};
 
 ''');
  for(var i in _.imports) { 

@@ -1,5 +1,5 @@
 /// Primary library for client usage of ebisu
-library ebisu;
+library ebisu.ebisu;
 
 import 'dart:io';
 import 'package:logging/logging.dart';

@@ -1,4 +1,4 @@
-part of ebisu_compiler;
+part of ebisu.ebisu_compiler;
 
 /// A file with ".tmpl" extension containing mixed dart code and text that can be "realized" by the template engine
 class TemplateFile {

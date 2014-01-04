@@ -578,7 +578,10 @@ text to include in the license file.
           ..type = 'List<Enum>'
           ..classInit = '[]',
           member('name')
-          ..doc = "Name of the library - for use in naming the library file, the 'library' and 'part of' statements"
+          ..doc = "Name of the library file"
+          ..access = Access.RO,
+          member('qualified_name')
+          ..doc = "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
           ..access = Access.RO,
           member('include_logger')
           ..doc = 'If true includes logging support and a _logger'

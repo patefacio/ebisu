@@ -1,4 +1,4 @@
-library expect_multi_parts;
+library ebisu.expect_multi_parts;
 
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/two_parts.dart';
@@ -7,7 +7,6 @@ import 'scratch_remove_me/lib/two_parts.dart';
 
 
 // custom <library expect_multi_parts>
-
 // end <library expect_multi_parts>
 main() {
 // custom <main>

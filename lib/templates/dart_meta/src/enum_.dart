@@ -29,6 +29,8 @@ class ${_.enumName} implements Comparable<${_.enumName}> {
 
   final int value;
 
+  int get hashCode => value;
+
   const ${_.enumName}._(this.value);
 
   int compareTo(${_.enumName} other) => value.compareTo(other.value);

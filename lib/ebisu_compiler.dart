@@ -16,7 +16,7 @@
 ///
 ///
 /// 
-library ebisu_compiler;
+library ebisu.ebisu_compiler;
 
 import 'dart:io';
 import 'package:ebisu/ebisu.dart';
