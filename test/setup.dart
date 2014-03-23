@@ -1,4 +1,4 @@
-library ebisu.setup;
+library ebisu.test.setup;
 
 import 'dart:io';
 import 'package:ebisu/ebisu_dart_meta.dart';
@@ -9,11 +9,9 @@ import 'utils.dart';
 // custom <additional imports>
 // end <additional imports>
 
-
-final _logger = new Logger("setup");
+final _logger = new Logger('setup');
 
 String _scratchRemoveMeFolder;
-
 // custom <library setup>
 
 String get tempPath {

@@ -1,10 +1,9 @@
-library ebisu.expect_basic_class;
+library ebisu.test.expect_basic_class;
 
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/basic_class.dart';
 // custom <additional imports>
 // end <additional imports>
-
 
 // custom <library expect_basic_class>
 // end <library expect_basic_class>

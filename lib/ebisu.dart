@@ -9,17 +9,14 @@ import 'package:path/path.dart' as path;
 
 part 'src/ebisu/ebisu.dart';
 
-final _logger = new Logger("ebisu");
+final _logger = new Logger('ebisu');
 
 /// Path to this package - for use until this becomes a pub package
 final String ebisuPath = Platform.environment['EBISU_PATH'];
-
 /// Author of the generated code
 final String ebisuAuthor = Platform.environment['EBISU_AUTHOR'];
-
 /// Hompage for pubspec
 final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
-
 /// File containing default pub versions. Dart code generation at times
 /// generates code that requires packages. For example, generated
 /// test cases require unittest, generated code can require logging,
@@ -32,7 +29,6 @@ final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
 final String ebisuPubVersions = (Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
   Platform.environment['EBISU_PUB_VERSIONS'] :
   "${Platform.environment['HOME']}/.ebisu_pub_versions.json";
-
 Map<String,String> licenseMap = {
 
   'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
@@ -43,6 +39,5 @@ Map<String,String> licenseMap = {
   'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
 
 };
-
 // custom <library ebisu>
 // end <library ebisu>

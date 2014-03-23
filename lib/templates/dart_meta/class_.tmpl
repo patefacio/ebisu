@@ -19,6 +19,9 @@ ${indentBlock(_.opEqualsMethod)}
 #< if(_.comparable) { >
 ${indentBlock(_.comparableMethod)}
 #< } >
+#< if(_.copyable) { >
+${indentBlock(_.copyMethod)}
+#< } >
 #< for(var member in _.members) { >
 #<   if(member.hasPublicCode) { >
 ${indentBlock(chomp(member.publicCode))}
@@ -124,7 +127,7 @@ ${indentBlock(_.bottomInjection)}
 }
 #< if(_.ctorSansNew) {  >
 #<   if(_.ctors.length>0) { >
-#<     _.ctors.forEach((ctorName, ctor) { >
+#<     _.publicCtors.forEach((ctor) { >
 ${ctor.ctorSansNew}
 #<     }); >
 #<   } else { >

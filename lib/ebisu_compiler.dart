@@ -28,13 +28,11 @@ import 'package:path/path.dart' as path;
 
 part 'src/ebisu_compiler/compiler.dart';
 
-final _logger = new Logger("ebisu_compiler");
+final _logger = new Logger('ebisu_compiler');
 
 /// Regex to match a single line if dart code (i.e. in looks like #< ... >)
 final RegExp codeRe = new RegExp("^#<(.*)>\\s*");
-
 /// Regex to match the comment portion of a comment line (i.e. in looks like #<# ... >)
 final RegExp commentRe = new RegExp("^\\s*#");
-
 // custom <library ebisu_compiler>
 // end <library ebisu_compiler>

@@ -1,10 +1,9 @@
-library ebisu.test_functions;
+library ebisu.test.test_functions;
 
 import 'package:ebisu/ebisu.dart';
 import 'package:unittest/unittest.dart';
 // custom <additional imports>
 // end <additional imports>
-
 
 // custom <library test_functions>
 // end <library test_functions>

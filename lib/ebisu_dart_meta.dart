@@ -52,17 +52,17 @@ import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'templates/dart_meta.dart' as meta;
 // custom <additional imports>
+import 'package:path/path.dart';
 // end <additional imports>
 
 part 'src/ebisu_dart_meta/dart_meta.dart';
 
-final _logger = new Logger("ebisu_dart_meta");
+final _logger = new Logger('ebisu_dart_meta');
 
 List<String> _nonJsonableTypes = [
   'String', 'int', 'double', 'bool', 'num',
   'Map', 'List', 'DateTime', 'dynamic',
 ];
-
 // custom <library ebisu_dart_meta>
 
 bool isClassJsonable(String className) =>

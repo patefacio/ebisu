@@ -7,8 +7,7 @@ import 'package:logging/logging.dart';
 // custom <additional imports>
 // end <additional imports>
 
-
-final _logger = new Logger("ebisu_utils");
+final _logger = new Logger('ebisu_utils');
 
 // custom <library ebisu_utils>
 

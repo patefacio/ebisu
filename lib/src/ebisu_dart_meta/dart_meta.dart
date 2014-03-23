@@ -5,11 +5,13 @@ class Access implements Comparable<Access> {
   static const IA = const Access._(0);
   static const RO = const Access._(1);
   static const RW = const Access._(2);
+  static const WO = const Access._(3);
 
   static get values => [
     IA,
     RO,
-    RW
+    RW,
+    WO
   ];
 
   final int value;
@@ -18,6 +20,8 @@ class Access implements Comparable<Access> {
 
   const Access._(this.value);
 
+  copy() => this;
+
   int compareTo(Access other) => value.compareTo(other.value);
 
   String toString() {
@@ -25,6 +29,7 @@ class Access implements Comparable<Access> {
       case IA: return "Ia";
       case RO: return "Ro";
       case RW: return "Rw";
+      case WO: return "Wo";
     }
   }
 
@@ -34,6 +39,7 @@ class Access implements Comparable<Access> {
       case "Ia": return IA;
       case "Ro": return RO;
       case "Rw": return RW;
+      case "Wo": return WO;
       default: return null;
     }
   }
@@ -43,10 +49,9 @@ class Access implements Comparable<Access> {
     return v==null? null : values[v];
   }
 
-
 }
 
-/// Dependency type of a PubDependency 
+/// Dependency type of a PubDependency
 class PubDepType implements Comparable<PubDepType> {
   static const PATH = const PubDepType._(0);
   static const GIT = const PubDepType._(1);
@@ -63,6 +68,8 @@ class PubDepType implements Comparable<PubDepType> {
   int get hashCode => value;
 
   const PubDepType._(this.value);
+
+  copy() => this;
 
   int compareTo(PubDepType other) => value.compareTo(other.value);
 
@@ -88,7 +95,6 @@ class PubDepType implements Comparable<PubDepType> {
   static PubDepType fromJson(int v) {
     return v==null? null : values[v];
   }
-
 
 }
 
@@ -156,9 +162,23 @@ class Variable {
     _parent = p;
   }
 
-  String define() {
-    return meta.variable(this);
-  }
+  String define() => _content;
+
+  get _content =>
+    [
+      _docComment,
+      _init
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _docComment => (doc != null)? rightTrim(docComment(doc)) : '';
+  get _const => isConst? 'const ' : '';
+  get _final => isFinal? 'final ' : '';
+  get _uninitialized => '$type $varName;';
+  get _initialized => '$type $varName = $_initVal;';
+  get _initVal => type == 'String'? smartQuote(init) : init;
+  get _init => '$_const$_final${init == null? _uninitialized : _initialized}';
 
 // end <class Variable>
   final Id _id;
@@ -166,6 +186,39 @@ class Variable {
   String _name;
   String _varName;
 }
+
+/// Define the id and value for an enum value
+class EnumValue {
+
+  EnumValue(this._id, this.value);
+
+  /// Id for this enum_value
+  Id get id => _id;
+  /// User specified value for enum value
+  var value;
+  /// Documentation for this enum_value
+  String doc;
+
+  // custom <class EnumValue>
+
+  get snake => _id.snake;
+  get capCamel => _id.capCamel;
+  get emacs => _id.emacs;
+  get shout => _id.shout;
+
+  toString() => 'EV($_id => $value)';
+
+  // end <class EnumValue>
+  final Id _id;
+}
+
+/// Create a EnumValue sans new, for more declarative construction
+EnumValue
+enumValue([Id _id,
+  var value]) =>
+  new EnumValue(_id,
+      value);
+
 
 /// Defines an enum - to be generated idiomatically as a class
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
@@ -185,7 +238,7 @@ class Enum {
   /// Reference to parent of this enum
   dynamic get parent => _parent;
   /// List of id's naming the values
-  List<Id> values = [];
+  List<dynamic> values = [];
   /// If true, generate toJson/fromJson on wrapper class
   bool jsonSupport = false;
   /// If true, generate randJson
@@ -206,15 +259,104 @@ class Enum {
   set parent(p) {
     _name = _id.capCamel;
     _enumName = isPublic? _name : "_$_name";
+    for(int i=0; i<values.length; i++) {
+      if(values[i] is Id) {
+        values[i] = new EnumValue(values[i], i);
+      }
+    }
     _parent = p;
   }
 
-  String define() {
-    return meta.enum_(this);
-  }
+  String define() => _content;
 
-  String valueAsString(Id value) => isSnakeString?
+  String valueAsString(value) => isSnakeString?
     value.snake : value.capCamel;
+
+  get _content =>
+    [
+      _docComment,
+      _enumClassBegin,
+      _toString,
+      _fromString,
+      _toJson,
+      _fromJson,
+      _randJson,
+      _custom,
+      _enumClassEnd,
+      _libraryScopedValues,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _docComment => doc != null? docComment(doc) : '';
+  get _enumEntries => values.map((v) =>
+      'static const ${v.shout} = const $enumName._(${v.value});')
+    .join('\n');
+  get _enumValues => values.map((v) => v.shout).join(',\n  ');
+  get _enumClassBegin => '''
+class $enumName implements Comparable<$enumName> {
+${indentBlock(_enumEntries)}
+
+  static get values => [
+  ${indentBlock(_enumValues)}
+  ];
+
+  final int value;
+
+  int get hashCode => value;
+
+  const $enumName._(this.value);
+
+  copy() => this;
+
+  int compareTo($enumName other) => value.compareTo(other.value);
+''';
+
+  get _toString => '''
+  String toString() {
+    switch(this) {
+${
+indentBlock(
+  values.map((v) =>
+    'case ${v.shout}: return "${valueAsString(v)}";').join('\n'), '      ')
+}
+    }
+  }
+''';
+
+  get _fromString => '''
+  static $enumName fromString(String s) {
+    if(s == null) return null;
+    switch(s) {
+${
+indentBlock(
+  values.map((v) =>
+    'case "${valueAsString(v)}": return ${v.shout};').join('\n'), '      ')
+}
+      default: return null;
+    }
+  }
+''';
+
+  get _toJson => jsonSupport? '''
+  int toJson() => value;''' : '';
+
+  get _fromJson => jsonSupport? '''
+  static $enumName fromJson(int v) {
+    return v==null? null : values[v];
+  }
+''':'';
+
+  get _randJson => hasRandJson? '''
+  static String randJson() {
+   return values[_randomJsonGenerator.nextInt(${values.length})].toString();
+  }
+''' : '';
+  get _custom => hasCustom? rightTrim(indentBlock(customBlock("enum $name"))) : '';
+  get _enumClassEnd => '}\n';
+  get _libraryScopedValues => libraryScopedValues? '''
+${values.map((v) => 'const ${v.shout} = ${enumName}.${v.shout};').join('\n')}
+''' : '';
 
 // end <class Enum>
   final Id _id;
@@ -400,6 +542,42 @@ class PubSpec {
     !devDependencies.any((d) => d.name == name) &&
     !dependencies.any((d) => d.name == name);
 
+  get _content =>
+    [
+      _name,
+      _version,
+      _author,
+      _homepage,
+      _description,
+      _dependencies,
+      _devDependencies,
+      _transformers,
+      _custom,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _name => 'name: $name';
+  get _version => 'version: $version';
+  get _author => author != null? 'author: $author':'';
+  get _homepage => homepage != null? 'homepage: $homepage':'';
+  get _description => doc != null? 'description: >\n${indentBlock(doc)}':'';
+
+  get _dependencies => '''
+dependencies:
+${dependencies.map((d) => d.yamlEntry).join()}
+${scriptCustomBlock('$name dependencies')}''';
+
+  get _devDependencies => '''
+dev_dependencies:
+${devDependencies.map((d) => d.yamlEntry).join()}
+${scriptCustomBlock('$name dev dependencies')}''';
+
+  get _transformers => '''
+transformers:
+${pubTransformers.map((t) => t.yamlEntry).join()}''';
+
+  get _custom => scriptCustomBlock('$name transformers');
 
 // end <class PubSpec>
   Id _id;
@@ -575,7 +753,7 @@ Only "version" and "path" overrides are supported.
     if(pubSpec != null && generatePubSpec) {
       overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
-      scriptMergeWithFile(meta.pubspec(pubSpec), pubSpecPath);
+      scriptMergeWithFile('${pubSpec._content}\n', pubSpecPath);
     }
 
     if(license != null) {
@@ -803,11 +981,138 @@ class Script {
   void generate() {
     String scriptName = _id.snake;
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
-    mergeWithFile(meta.script(this), scriptPath);
+    mergeWithFile('${_content}\n', scriptPath);
   }
 
   Iterable get requiredArgs =>
     args.where((arg) => arg.isRequired);
+
+  get _content =>
+    [
+      _scriptTag,
+      _docComment,
+      _imports,
+      _argParser,
+      _usage,
+      reduceVerticalWhitespace(_parseArgs),
+      _loggerInit,
+      _main,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _scriptTag => '#!/usr/bin/env dart';
+  get _docComment => doc != null? '${docComment(doc)}\n' : '';
+  get _imports => '${imports.join('\n')}\n';
+  get _argParser => '''
+//! The parser for this script
+ArgParser _parser;
+''';
+  get _usage => '''
+//! The comment and usage associated with this script
+void _usage() {
+  print(\'\'\'
+$doc
+\'\'\');
+  print(_parser.getUsage());
+}
+''';
+  get _parseArgs => '''
+//! Method to parse command line options.
+//! The result is a map containing all options, including positional options
+Map _parseArgs() {
+  ArgResults argResults;
+  Map result = { };
+  List remaining = [];
+
+  _parser = new ArgParser();
+  try {
+    /// Fill in expectations of the parser
+$_addFlags
+$_addOptions
+    /// Parse the command line options (excluding the script)
+    var arguments = new Options().arguments;
+    argResults = _parser.parse(arguments);
+    argResults.options.forEach((opt) {
+      result[opt] = argResults[opt];
+    });
+$_pullPositionals
+$_positionals
+
+    return { 'options': result, 'rest': remaining };
+
+  } catch(e) {
+    _usage();
+    throw e;
+  }
+}
+''';
+
+  get _addFlags => args
+    .where((arg) => arg.isFlag)
+    .map((arg) => '''
+    _parser.addFlag('${arg.name}',
+      help: \'\'\'
+${arg.doc}
+\'\'\',
+      defaultsTo: ${arg.defaultsTo}
+    );''').join('\n') + '\n';
+
+  get _addOptions => args
+    .where((arg) => !arg.isFlag && arg.position == null)
+    .map((arg) => '''
+    _parser.addOption('${arg.name}',
+      help: ${arg.doc == null? "''" : "\'\'\'\n${arg.doc}\n\'\'\'"},
+      defaultsTo: ${arg.defaultsTo == null? null : '${arg.defaultsTo}'},
+      allowMultiple: ${arg.isMultiple},
+      abbr: ${arg.abbr == null? null : "'${arg.abbr}'"},
+      allowed: ${arg.allowed.length>0? arg.allowed.map((a) => "'$a'").toList() : null}
+    );''').join('\n') + '\n';
+
+  get _pullPositionals => args
+    .where((sa) => sa.position != null).length > 0 ? '''
+    // Pull out positional args as they were named
+    remaining = new List.from(argResults.rest);''' : '';
+
+  get _positionals => args
+    .where((sa) => sa.position != null)
+    .map((sa) => '''
+    if(${sa.position} >= remaining.length) {
+      throw new
+        ArgumentError('Positional argument ${sa.name} (position ${sa.position}) not available - not enough args');
+    }
+    result['${sa.name}'] = remaining.removeAt(${sa.position});
+''').join('\n');
+
+  get _loggerInit => "final _logger = new Logger('$id');\n";
+  get _main => '''
+main() {
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
+  Logger.root.level = Level.INFO;
+  Map argResults = _parseArgs();
+  Map options = argResults['options'];
+  List positionals = argResults['rest'];
+${_requiredArgs}
+${indentBlock(customBlock("$id main"))}
+}
+
+${customBlock("$id global")}''';
+
+  get _requiredArgs => requiredArgs.length>0?
+    '''
+try {
+$_processArgs
+} on ArgumentError catch(e) {
+  print(e);
+  _usage();
+}
+''':'';
+
+  get _processArgs => requiredArgs.map((arg) => '''
+    if(options["${arg.name}"] == null)
+      throw new ArgumentError("option: ${arg.name} is required");
+''');
 
 // end <class Script>
   final Id _id;
@@ -851,7 +1156,7 @@ class App {
     String appHtmlPath = "${_parent.rootPath}/web/${_id.snake}.html";
     String appCssPath = "${_parent.rootPath}/web/${_id.snake}.css";
     String appBuildPath = "${_parent.rootPath}/build.dart";
-    mergeWithFile(meta.app(this), appPath);
+    mergeWithFile(_content, appPath);
     htmlMergeWithFile('''<!DOCTYPE html>
 
 <html>
@@ -897,6 +1202,14 @@ main() {
 
   }
 
+  get _content => '''
+import 'package:mdv/mdv.dart' as mdv;
+
+void main() {
+  mdv.initialize();
+}
+''';
+
 // end <class App>
   final Id _id;
   dynamic _parent;
@@ -939,6 +1252,10 @@ class Library {
   String path;
   /// If set the main function
   String libMain;
+  /// Default access for members
+  Access defaultMemberAccess = Access.RW;
+  /// If true classes will get library functions to construct forwarding to ctors
+  bool ctorSansNew = false;
 
 // custom <class Library>
 
@@ -956,19 +1273,37 @@ class Library {
     }
   }
 
-  String _makeQualifiedName(parent) {
-    String result = _id.snake;
+  String get _additionalPathParts {
+    String rootPath = _parent.rootPath == null ? path : _parent.rootPath;
+    List relPath = split(relative(dirname(libStubPath), from:rootPath));
+    if(relPath.length > 0 && (relPath.first == '.' || relPath.first == 'lib')) {
+      relPath.removeAt(0);
+    }
+    return relPath.join('.');
+  }
+
+  String get _packageName {
+    var parent = _parent;
     while(parent != null) {
-      result = '${parent.id.snake}.$result';
       if(parent is System) break;
       parent = parent.parent;
     }
+    return parent == null? '' : parent.id.snake;
+  }
+
+  String _makeQualifiedName() {
+    var pathParts = _additionalPathParts;
+    var pkgName = _packageName;
+    String result = _id.snake;
+    if(pathParts.length > 0) result = '$pathParts.$result';
+    if(pkgName.length > 0) result = '$pkgName.$result';
     return result;
   }
 
   set parent(p) {
+    _parent = p;
     _name = _id.snake;
-    _qualifiedName = _makeQualifiedName(p);
+    _qualifiedName = _makeQualifiedName();
     parts.forEach((part) => part.parent = this);
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
@@ -978,14 +1313,13 @@ class Library {
       imports.add('"dart:convert" as convert');
     }
     if(allClasses.any((c) => c.requiresEqualityHelpers == true)) {
-      imports.add('package:collection_helpers/equality.dart');
+      imports.add('package:collection/equality.dart');
     }
     if(includeLogger) {
       imports.add("package:logging/logging.dart");
     }
     imports = cleanImports(
       imports.map((i) => importStatement(i)).toList());
-    _parent = p;
   }
 
   ensureParent() {
@@ -994,18 +1328,51 @@ class Library {
     }
   }
 
+  String get libStubPath =>
+  path != null ? "${path}/${id.snake}.dart" :
+  (isTest?
+   "${_parent.rootPath}/test/${id.snake}.dart" :
+   "${_parent.rootPath}/lib/${id.snake}.dart");
+
   void generate() {
     ensureParent();
-
-    String libStubPath =
-      path != null ? "${path}/${id.snake}.dart" :
-      (isTest?
-          "${_parent.rootPath}/test/${id.snake}.dart" :
-          "${_parent.rootPath}/lib/${id.snake}.dart");
-
-    mergeWithFile(meta.library(this), libStubPath);
+    mergeWithFile('${_content}\n', libStubPath);
     parts.forEach((part) => part.generate());
   }
+
+  get _content =>
+    [
+      _docComment,
+      _libraryStatement,
+      _imports,
+      _additionalImports,
+      _parts,
+      _loggerInit,
+      _enums,
+      _classes,
+      _variables,
+      _libraryCustom,
+      _libraryMain,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _docComment => doc != null? docComment(doc) : '';
+  get _libraryStatement => 'library $qualifiedName;\n';
+  get _imports => imports.join('\n');
+  get _additionalImports => customBlock('additional imports');
+  get _parts =>
+    parts.length>0? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('') :'';
+  get _loggerInit => includeLogger? "final _logger = new Logger('$name');\n":'';
+  get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
+  get _classes => classes.map((c) => '${chomp(c.define())}\n').join('');
+  get _variables => variables.map((v) => chomp(v.define())).join('\n');
+  get _libraryCustom => includeCustom? chomp(customBlock('library $name')) : '';
+  get _libraryMain => includeMain? '''
+main() {
+${customBlock('main')}
+}''' :
+    (libMain != null)? libMain : '';
 
   static final _standardImports = new Set.from([
     'async', 'chrome', 'collection', 'core', 'crypto',
@@ -1042,6 +1409,8 @@ class Library {
 
   String get rootPath => _parent.rootPath;
 
+  get _defaultAccess => defaultMemberAccess;
+
 // end <class Library>
   final Id _id;
   dynamic _parent;
@@ -1073,15 +1442,22 @@ class Part {
   String get filePath => _filePath;
   /// List of global variables in this part
   List<Variable> variables = [];
+  /// Default access for members
+  set defaultMemberAccess(Access defaultMemberAccess) => _defaultMemberAccess = defaultMemberAccess;
+  /// If true classes will get library functions to construct forwarding to ctors
+  set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
 
 // custom <class Part>
 
+  get defaultMemberAccess => _defaultMemberAccess == null ?
+    _parent.defaultMemberAccess : _defaultMemberAccess;
+
   set parent(p) {
+    _parent = p;
     _name = _id.snake;
     variables.forEach((v) => v.parent = this);
     classes.forEach((dc) => dc.parent = this);
     enums.forEach((e) => e.parent = this);
-    _parent = p;
   }
 
   void generate() {
@@ -1089,15 +1465,36 @@ class Part {
       _parent.isTest?
       "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
       "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
-    mergeWithFile(chomp(meta.part(this)), _filePath);
+    mergeWithFile('${chomp(_content)}\n', _filePath);
   }
 
+  bool get ctorSansNew => _ctorSansNew == null?
+  _parent.ctorSansNew : _ctorSansNew;
+
+  get _content =>
+    [
+      _part,
+      _enums,
+      _classes,
+      _custom,
+      _variables,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _part => 'part of ${parent.qualifiedName};\n';
+  get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
+  get _classes => classes.map((c) => '${chomp(c.define())}').join('\n\n');
+  get _custom => includeCustom? customBlock('part $name') : '';
+  get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
 // end <class Part>
   final Id _id;
   dynamic _parent;
   String _name;
   String _filePath;
+  Access _defaultMemberAccess;
+  bool _ctorSansNew;
 }
 
 /// Metadata associated with a Dart class
@@ -1123,7 +1520,7 @@ class Class {
   /// If true a custom section will be included for Dart class
   bool includeCustom = true;
   /// Default access for members
-  Access defaultMemberAccess = Access.RW;
+  set defaultMemberAccess(Access defaultMemberAccess) => _defaultMemberAccess = defaultMemberAccess;
   /// List of members of this class
   List<Member> members = [];
   /// List of ctors requiring custom block
@@ -1142,12 +1539,16 @@ class Class {
   bool opEquals = false;
   /// If true, implements comparable
   bool comparable = false;
-  /// If true adds '..ctors[''] to all members (i.e. ensures generation of default ctor with all members present)
+  /// If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)
   bool courtesyCtor = false;
+  /// If true adds sets all members to final
+  bool allMembersFinal = false;
   /// If true adds empty default ctor
   bool defaultCtor = false;
   /// If true creates library functions to construct forwarding to ctors
-  bool ctorSansNew = false;
+  set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
+  /// If true includes a copy function
+  bool copyable = false;
   /// Name of the class - sans any access prefix (i.e. no '_')
   String get name => _name;
   /// Name of the class, including access prefix
@@ -1159,32 +1560,45 @@ class Class {
 
 // custom <class Class>
 
-  List<Member> get publicMembers {
-    return members.where((member) => member.isPublic).toList();
-  }
+  bool get ctorSansNew => _ctorSansNew == null?
+  _parent.ctorSansNew : _ctorSansNew;
 
-  List<Member> get privateMembers {
-    return members.where((member) => !member.isPublic).toList();
-  }
+  List<Member> get publicMembers =>
+    members.where((member) => member.isPublic).toList();
+
+  List<Member> get privateMembers =>
+    members.where((member) => !member.isPublic).toList();
+
+  List<Member> get nonStaticMembers =>
+    members.where((member) => !member.isStatic).toList();
+
+  List<Ctor> get publicCtors =>
+    ctors
+    .keys
+    .where((String name) => name.length == 0 || name[0] != '_')
+    .map((String name) => ctors[name])
+    .toList();
 
   bool get requiresEqualityHelpers =>
     opEquals && members.any((m) => m.isMapOrList);
 
   String get jsonCtor {
-    if(_ctors.containsKey('_json')) {
-      return "${_className}._json";
+    if(_ctors.containsKey('_default')) {
+      return "${_className}._default";
     } else {
       return _className;
     }
   }
 
   static String memberCompare(m) {
+    final myName = m.varName == 'other'? 'this.other' : m.varName;
+    final otherName = 'other.${m.varName}';
     if(m.type.startsWith('List')) {
-      return '    const ListEquality().equals(${m.varName}, other.${m.varName})';
+      return '    const ListEquality().equals($myName, $otherName)';
     } else if(m.type.startsWith('Map')) {
-      return '    const MapEquality().equals(${m.varName}, other.${m.varName})';
+      return '    const MapEquality().equals($myName, $otherName)';
     } else {
-      return '    ${m.varName} == other.${m.varName}';
+      return '    $myName == $otherName';
     }
   }
 
@@ -1192,7 +1606,7 @@ class Class {
     var parts = ['''{
   int result = 17;
   final int prime = 23;'''];
-    members.forEach((m) {
+    nonStaticMembers.forEach((m) {
       if(m.isList) {
         parts.add('  result = result*prime + const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName});');
       } else if(m.isMap) {
@@ -1205,13 +1619,42 @@ class Class {
   }
 
   String get opEqualsMethod => '''
-bool operator==(other) =>
+bool operator==($_className other) =>
   identical(this, other) ||
-  ${members.map((m) => memberCompare(m))
+  ${nonStaticMembers.map((m) => memberCompare(m))
     .join(' &&\n')};
 
 int get hashCode ${overrideHashCode}
 ''';
+
+  static final _simpleCopies = new Set.from(['int', 'double', 'num', 'bool',
+      'String', 'DateTime', 'Date' ]);
+
+  static _assignCopy(String type, String varname) {
+    if(_simpleCopies.contains(type)) return varname;
+    if(isMapType(type)) {
+      return 'valueApply($varname, (v) => ${_assignCopy(jsonMapValueType(type), "v")})';
+    }
+    if(isListType(type)) {
+      final elementType = jsonListValueType(type);
+      if(_simpleCopies.contains(elementType)) {
+        return 'new List.from($varname)';
+      } else {
+        return 'new List.from(${varname}.map((e) => ${_assignCopy(elementType, "e")}))';
+      }
+    }
+    return '${varname} == null? null : ${varname}.copy()';
+  }
+
+  String get copyMethod {
+    var terms = [];
+    members.forEach((m) {
+      final rhs = _assignCopy(m.type, m.varName);
+      terms.add('\n  ..${m.varName} = $rhs');
+    });
+    var ctorName = defaultCtor? _className : '${_className}._default';
+    return 'copy() => new ${ctorName}()${terms.join()};\n';
+  }
 
   String get comparableMethod {
     var comparableMembers = members;
@@ -1234,28 +1677,46 @@ int compareTo($_className other) {
 ''';
   }
 
+
+  get defaultMemberAccess => _defaultMemberAccess == null ?
+    (_parent == null? null : _parent.defaultMemberAccess) : _defaultMemberAccess;
+
+  setDefaultMemberAccess(Member m) {
+    if(m.access == null) m.access = defaultMemberAccess;
+  }
+
   set parent(p) {
+    _parent = p;
     _name = id.capCamel;
     _className = isPublic? _name : "_$_name";
     _ctors.clear();
+
+    if(defaultCtor && courtesyCtor) {
+      throw new
+        ArgumentError('$_name can not have defaultCtor and courtesyCtor both set to true');
+    }
 
     if(defaultCtor)
       _ctors.putIfAbsent('', () => new Ctor()
           ..name = ''
           ..className = _className);
 
+    if(allMembersFinal)
+      members.forEach((m) => m.isFinal = true);
+
     if(comparable)
       implement.add('Comparable<$_className>');
 
     if(courtesyCtor)
-      members.forEach((m) => m.ctors.add(''));
+      members.forEach(
+        (m) {
+          if(!m.ctors.contains('')) m.ctors.add('');
+        });
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
 
-      if(m.access == null && defaultMemberAccess != null) {
-        m.access = defaultMemberAccess;
-      }
+      setDefaultMemberAccess(m);
 
       m.parent = this;
 
@@ -1298,15 +1759,15 @@ int compareTo($_className other) {
       });
     });
 
-    // To deserialize a default ctor is needed
-    if(jsonSupport && !defaultCtor) {
-      _ctors.putIfAbsent('_json', () => new Ctor())
-        ..name = '_json'
+    // To deserialize or copy a default ctor is needed
+    if(_hasPrivateDefaultCtor) {
+      _ctors.putIfAbsent('_default', () => new Ctor())
+        ..name = '_default'
         ..className = _name;
     }
-
-    _parent = p;
   }
+
+  bool get _hasPrivateDefaultCtor => (copyable || jsonSupport) && !defaultCtor;
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
@@ -1393,6 +1854,7 @@ $value.forEach((v) {
 
   String define() {
     if(parent == null) parent = library('stub');
+    //print(_content);
     return meta.class_(this);
   }
 
@@ -1400,10 +1862,49 @@ $value.forEach((v) {
     throw new ArgumentError("Class does not support ${msg.memberName}");
   }
 
+  get _content =>
+    [
+      _docComment,
+      _classOpener,
+      _orderedCtors,
+      _opEquals,
+      _comparable,
+      _copyable,
+      _memberPublicCode,
+      _topInjection,
+      _includeCustom,
+      _classCloser,
+    ]
+    .where((line) => line != '')
+    .join('\n');
+
+  get _docComment => doc != null? docComment(doc) : '';
+  get _abstractTag => isAbstract? 'abstract ':'';
+  get _classOpener => '$_classWithExtends${implementsClause}{';
+  get _classWithExtends => mixins.length>0?
+    ('${abstractTag}class $className extends $extend with ${mixins.join(',')}') :
+    (extend != null? 'class $className extends $extend' : 'class $className');
+  get _orderedCtors => orderedCtors
+    .map((c) => indentBlock(ctors[c].ctorText)).join('\n');
+  get _opEquals => opEquals? indentBlock(opEqualsMethod):'';
+  get _comparable => comparable? indentBlock(comparableMethod):'';
+  get _copyable => copyable? indentBlock(copyMethod):'';
+  get _memberPublicCode => members
+    .where((m) => m.hasPublicCode)
+    .map((m) => indentBlock(chomp(m.publicCode)))
+    .join('\n');
+  get _topInjection => topInjection!=null? indentBlock(topInjection):'';
+  get _includeCustom => includeCustom?
+    rightTrim(indentBlock(customBlock('class $name'))) : '';
+
+  get _classCloser => '}';
+
 // end <class Class>
   final Id _id;
   dynamic _parent;
+  Access _defaultMemberAccess;
   Map<String,Ctor> _ctors = {};
+  bool _ctorSansNew;
   String _name;
   String _className;
 }
@@ -1437,8 +1938,8 @@ class Ctor {
     var id =
     (name == 'default' || name == '')?
     classId :
-    ((name == '_json')?
-        idFromString('${classId.snake}_json') :
+    ((name == '_default')?
+        idFromString('${classId.snake}_default') :
         new Id('${classId.snake}_${idFromString(name).snake}'));
 
     List<String> parms = [];
@@ -1605,27 +2106,31 @@ class Member {
   }
 
   bool get hasGetter => !isPublic && access == RO;
-  bool get hasSetter => !isPublic && access == RW;
+  bool get hasSetter => !isPublic && access == WO;
 
   bool get hasPublicCode => isPublic || hasGetter || hasSetter;
   bool get hasPrivateCode => !isPublic;
 
   String get finalDecl => isFinal? 'final ' : '';
-
   String get observableDecl => isObservable? '@observable ' : '';
+  String get staticDecl => isStatic? 'static ' : '';
 
   String get decl =>
     (classInit == null)?
-    "${observableDecl}${finalDecl}${type} ${varName};" :
+    "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};" :
     ((type == 'String')?
-        "${observableDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
-        "${observableDecl}${finalDecl}${type} ${varName} = ${classInit};");
+        "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
+        "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
 
   String get publicCode {
+    //print("$name has public code");
     var result = [];
     if(doc != null) result.add('${docComment(rightTrim(doc))}');
     if(hasGetter) {
       result.add('$type get $name => $varName;');
+    }
+    if(hasSetter) {
+      result.add('set $name($type $name) => $varName = $name;');
     }
     if(isPublic) result.add(decl);
     return result.join('\n');
@@ -1649,6 +2154,7 @@ class Member {
 get IA => Access.IA;
 get RO => Access.RO;
 get RW => Access.RW;
+get WO => Access.WO;
 
 Id id(String _id) => new Id(_id);
 Enum enum_(String _id) => new Enum(id(_id));
@@ -1704,6 +2210,5 @@ String importUri(String s) => Library.importUri(s);
 String importStatement(String s) => Library.importStatement(s);
 
 // end <part dart_meta>
-
 
 RegExp _pubTypeRe = new RegExp(r"(git:|http:|[./.])");

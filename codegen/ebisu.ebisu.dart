@@ -249,10 +249,10 @@ classes with JSON support.
         ..jsonSupport = true
         ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
         ..values = [
-          id('ia'), id('ro'), id('rw')
+          id('ia'), id('ro'), id('rw'), id('wo'),
         ],
         enum_('pub_dep_type')
-        ..doc = 'Dependency type of a PubDependency '
+        ..doc = 'Dependency type of a PubDependency'
         ..jsonSupport = true
         ..values = [
           id('path'), id('git'), id('hosted')
@@ -312,6 +312,17 @@ member('foo')..init = [1,2,3]
           ..doc = 'Name of variable - varies depending on public/private'
           ..access = Access.RO,
         ],
+        class_('enum_value')
+        ..doc = 'Define the id and value for an enum value'
+        ..ctorSansNew = true
+        ..members = [
+          id_member('enum_value'),
+          member('value')
+          ..doc = 'User specified value for enum value'
+          ..type = 'var'
+          ..ctors = [''],
+          doc_member('enum_value'),
+        ],
         class_('enum')
         ..doc = '''Defines an enum - to be generated idiomatically as a class
 See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
@@ -324,7 +335,7 @@ At some point when true enums are provided this may be revisited.
           parent_member('enum'),
           member('values')
           ..doc = "List of id's naming the values"
-          ..type = 'List<Id>'
+          ..type = 'List<dynamic>'
           ..classInit = '[]',
           member('json_support')
           ..doc = "If true, generate toJson/fromJson on wrapper class"
@@ -601,8 +612,16 @@ text to include in the license file.
           member('path')
           ..doc = 'Set desired if generating just a lib and not a package',
           member('lib_main')
-          ..doc = 'If set the main function'
-        ],
+          ..doc = 'If set the main function',
+          member('default_member_access')
+          ..doc = 'Default access for members'
+          ..classInit = 'Access.RW'
+          ..type = 'Access',
+          member('ctor_sans_new')
+          ..doc = "If true classes will get library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..classInit = false
+          ],
         class_('part')
         ..doc = "Defines a dart part - as in 'part of' source file"
         ..members = [
@@ -628,6 +647,14 @@ text to include in the license file.
           ..doc = 'List of global variables in this part'
           ..type = 'List<Variable>'
           ..classInit = '[]',
+          member('default_member_access')
+          ..doc = 'Default access for members'
+          ..access = WO
+          ..type = 'Access',
+          member('ctor_sans_new')
+          ..doc = "If true classes will get library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..access = WO
         ],
         class_('class')
         ..doc = 'Metadata associated with a Dart class'
@@ -650,7 +677,7 @@ text to include in the license file.
           custom_member('Dart class'),
           member('default_member_access')
           ..doc = 'Default access for members'
-          ..classInit = 'Access.RW'
+          ..access = WO
           ..type = 'Access',
           member('members')
           ..doc = 'List of members of this class'
@@ -690,7 +717,11 @@ text to include in the license file.
           ..type = 'bool'
           ..classInit = 'false',
           member('courtesy_ctor')
-          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of default ctor with all members present)"
+          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('all_members_final')
+          ..doc = "If true adds sets all members to final"
           ..type = 'bool'
           ..classInit = 'false',
           member('default_ctor')
@@ -699,6 +730,10 @@ text to include in the license file.
           ..classInit = 'false',
           member('ctor_sans_new')
           ..doc = "If true creates library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..access = WO,
+          member('copyable')
+          ..doc = "If true includes a copy function"
           ..type = 'bool'
           ..classInit = 'false',
           member('name')

@@ -42,6 +42,11 @@ ${indentBlock(_.opEqualsMethod)}
 ${indentBlock(_.comparableMethod)}
 ''');
  } 
+ if(_.copyable) { 
+  _buf.add('''
+${indentBlock(_.copyMethod)}
+''');
+ } 
  for(var member in _.members) { 
    if(member.hasPublicCode) { 
   _buf.add('''
@@ -189,7 +194,7 @@ ${indentBlock(_.bottomInjection)}
 ''');
  if(_.ctorSansNew) {  
    if(_.ctors.length>0) { 
-     _.ctors.forEach((ctorName, ctor) { 
+     _.publicCtors.forEach((ctor) { 
   _buf.add('''
 ${ctor.ctorSansNew}
 ''');

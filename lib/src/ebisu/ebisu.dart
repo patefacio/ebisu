@@ -162,6 +162,7 @@ final RegExp _trailingNewlines = new RegExp(r'\n*$');
 final RegExp _leadingWhiteSpace = new RegExp(r'^\s+');
 final RegExp _trailingWhiteSpace = new RegExp(r'\s+$');
 final RegExp _allWhiteSpace = new RegExp(r'^\s+$');
+final RegExp _multipleNewlines = new RegExp(r'\n\n+');
 
 /// Removes trailing any `\n` from `s`
 String chomp(String s, [bool multiple = false ]) {
@@ -173,6 +174,9 @@ String chomp(String s, [bool multiple = false ]) {
 /// Removes left side white space
 String leftTrim(String s) => s.replaceFirst(_leadingWhiteSpace, '');
 String rightTrim(String s) => s.replaceFirst(_trailingWhiteSpace, '');
+
+String reduceVerticalWhitespace(String s) =>
+  s.replaceAll(_multipleNewlines, '\n\n');
 
 const List _defaultProtectionPair = const [ customBegin, customEnd ];
 const List _defaultProtections = const [_defaultProtectionPair];

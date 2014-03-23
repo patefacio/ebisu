@@ -1,4 +1,4 @@
-library ebisu.test_code_generation;
+library ebisu.test.test_code_generation;
 
 import 'dart:async';
 import 'dart:io';
@@ -12,8 +12,7 @@ import 'utils.dart';
 // custom <additional imports>
 // end <additional imports>
 
-
-final _logger = new Logger("test_code_generation");
+final _logger = new Logger('test_code_generation');
 
 // custom <library test_code_generation>
 
@@ -103,7 +102,6 @@ void generateTestLibraries() {
         ..jsonSupport = true
         ..members = [ member('m_string')..classInit = 'whoop' ],
         class_('courtesy_ctor')
-        ..defaultCtor = true
         ..courtesyCtor = true
         ..members = [
           member('m_string')..classInit = 'whoop',
