@@ -1,7 +1,6 @@
 import "dart:io";
 import "package:path/path.dart" as path;
 import "package:ebisu/ebisu_dart_meta.dart";
-import "package:ebisu/ebisu_compiler.dart";
 import "package:logging/logging.dart";
 
 String _topDir;
@@ -19,122 +18,11 @@ void main() {
 
   var arguments = Platform.executableArguments;
   String here = path.absolute(Platform.script.path);
-  bool noCompile = arguments.contains('--no_compile');
-  bool compileOnly = arguments.contains('--compile_only');
   _topDir = path.dirname(path.dirname(here));
-  String templateFolderPath =
-    path.join(_topDir, 'lib', 'templates', 'dart_meta');
-  if(! (new Directory(templateFolderPath).existsSync())) {
-    throw new StateError(
-        "Could not find ebisu templates in $templateFolderPath");
-  }
-
-  if(!noCompile) {
-    TemplateFolder templateFolder = new TemplateFolder(templateFolderPath);
-    int filesUpdated = templateFolder.compile();
-    if(filesUpdated>0) {
-      if(!noCompile && !compileOnly) {
-        // Files were updated, since Dart does not have eval, call again to same
-        // script using updated templates
-        print("$filesUpdated files updated...rerunning");
-        List<String> args = [ Platform.script.path, '--no_compile' ]
-          ..addAll(arguments);
-        print("Args are " + args.toString());
-        Process.run('run_dart.d', args).then((ProcessResult results) {
-          print(results.stdout);
-          print(results.stderr);
-        });
-      }
-    } else {
-      if(!compileOnly)
-        generate();
-    }
-  } else {
-    generate();
-  }
+  generate();
 }
 
 generate() {
-
-  Library ebisu_compiler = library('ebisu_compiler');
-  ebisu_compiler..doc = '''
-
-Supports generating dart code from template files.  A choice had to be made
-about a templating system. Originally dart had a library to support templates
-but it was later abandoned in preference for a new approach (_Web UI_) that does
-much more than just templating as it is a very web specific solution. Mustache
-is another good option, but for code generation the arguments for separating
-templates and logic fall apart (the coders are the ones writing the templates to
-make their life of coding easier). Rather than try to incorporate one in NIH/DIY
-fashion a very simple template engine is provided here. The rules for templating
-are simple:
-
-- Template file is line based (each line is a comment, code or template text)
-- _#<# dart comment here >_
-- _#< dart code here >_
-- All template text is wrapped in tripple quotes.
-
-
-'''
-    ..includeLogger = true
-    ..imports = [
-      'io',
-      '"package:ebisu/ebisu.dart"',
-      '"package:ebisu/ebisu_dart_meta.dart"',
-      '"package:path/path.dart" as path',
-    ]
-    ..variables = [
-      variable('code_re')
-      ..doc = 'Regex to match a single line if dart code (i.e. in looks like #< ... >)'
-      ..type = 'RegExp'
-      ..isFinal = true
-      ..init = r'new RegExp("^#<(.*)>\\s*")',
-      variable('comment_re')
-      ..doc = 'Regex to match the comment portion of a comment line (i.e. in looks like #<# ... >)'
-      ..type = 'RegExp'
-      ..isFinal = true
-      ..init = r'new RegExp("^\\s*#")',
-    ]
-    ..parts = [
-      part('compiler')
-      ..classes = [
-        class_('template_file')
-        ..doc = 'A file with ".tmpl" extension containing mixed dart code and text that can be "realized" by the template engine'
-        ..ctorSansNew = true
-        ..members = [
-          member('input_path')
-          ..doc = 'Path to file containting template code'
-          ..ctors = [ '' ],
-          member('output_path')
-          ..doc = 'Path to write the supporting dart file for the template'
-          ..ctorsNamed = [ '' ],
-          member('part_of')
-          ..doc = 'Name of library this "part" is a part of'
-          ..ctorsNamed = [ '' ],
-          member('function_name')
-          ..doc = 'Each file is given a corresponding top level function for running the template'
-          ..access = Access.RO
-        ],
-        class_('template_folder')
-        ..doc = '''A class to process a folder full of templates,
-all of which get compiled into a single dart library'''
-        ..members = [
-          member('input_path')
-          ..doc = 'Path to folder of templates'
-          ..ctors = [ 'default' ],
-          member('output_path')
-          ..ctorsOpt = [ 'default' ]
-          ..doc = 'Path to write the supporting dart files for the template folder',
-          member('lib_name')
-          ..ctorsOpt = [ 'default' ]
-          ..doc = 'Name of dart library to be generated',
-          member('imports')
-          ..doc = 'List of imports required by the generated dart library'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-        ]
-      ]
-    ];
 
   Library ebisu_utils = library('ebisu_utils')
     ..imports = [ 'math', "'dart:convert' as convert" ]
@@ -224,7 +112,6 @@ classes with JSON support.
       'io', '"dart:convert" as convert',
       '"package:ebisu/ebisu.dart"',
       '"package:id/id.dart"',
-      '"templates/dart_meta.dart" as meta',
     ]
     ..variables = [
       variable('non_jsonable_types')
@@ -237,133 +124,8 @@ classes with JSON support.
     ]
     ..includeLogger = true
     ..parts = [
-      part('dart_meta')
-      ..variables = [
-        variable('pub_type_re')
-        ..type = 'RegExp'
-        ..isPublic = false
-        ..init = 'new RegExp(r"(git:|http:|[\./.])")'
-      ]
-      ..enums = [
-        enum_('access')
-        ..jsonSupport = true
-        ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
-        ..values = [
-          id('ia'), id('ro'), id('rw'), id('wo'),
-        ],
-        enum_('pub_dep_type')
-        ..doc = 'Dependency type of a PubDependency'
-        ..jsonSupport = true
-        ..values = [
-          id('path'), id('git'), id('hosted')
-        ],
-      ]
+      part('pub')
       ..classes = [
-        class_('variable')
-        ..members = [
-          id_member('variable'),
-          doc_member('variable'),
-          parent_member('variable'),
-          public_member('variable'),
-          member('type')
-          ..doc = 'Type for the variable'
-          ..type = 'String',
-          member('init')
-          ..doc = '''
-Data used to initialize the variable
-If init is a String and type is not specified, [type] is a String
-
-member('foo')..init = 'goo' => String foo = "goo";
-
-If init is a String and type is specified, then:
-
-member('foo')..type = 'int'..init = 3
-  String foo = 3;
-member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' =>
-  DateTime foo = new DateTime(1929, 10, 29);
-
-If init is not specified, it will be inferred from init if possible:
-
-member('foo')..init = 'goo'
-  String foo = "goo";
-member('foo')..init = 3
-  String foo = 3;
-member('foo')..init = [1,2,3]
-  Map foo = [1,2,3];
-
-'''
-          ..type = 'dynamic',
-          member('is_final')
-          ..doc = 'True if the variable is final'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_const')
-          ..doc = 'True if the variable is const'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_static')
-          ..doc = 'True if the variable is static'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('name')
-          ..doc = "Name of the enum class generated sans access prefix"
-          ..access = Access.RO,
-          member('var_name')
-          ..doc = 'Name of variable - varies depending on public/private'
-          ..access = Access.RO,
-        ],
-        class_('enum_value')
-        ..doc = 'Define the id and value for an enum value'
-        ..ctorSansNew = true
-        ..members = [
-          id_member('enum_value'),
-          member('value')
-          ..doc = 'User specified value for enum value'
-          ..type = 'var'
-          ..ctors = [''],
-          doc_member('enum_value'),
-        ],
-        class_('enum')
-        ..doc = '''Defines an enum - to be generated idiomatically as a class
-See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
-At some point when true enums are provided this may be revisited.
-'''
-        ..members = [
-          id_member('enum'),
-          doc_member('enum'),
-          public_member('enum'),
-          parent_member('enum'),
-          member('values')
-          ..doc = "List of id's naming the values"
-          ..type = 'List<dynamic>'
-          ..classInit = '[]',
-          member('json_support')
-          ..doc = "If true, generate toJson/fromJson on wrapper class"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('has_rand_json')
-          ..doc = "If true, generate randJson"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('name')
-          ..doc = "Name of the enum class generated sans access prefix"
-          ..access = Access.RO,
-          member('enum_name')
-          ..doc = "Name of the enum class generated with access prefix"
-          ..access = Access.RO,
-          member('has_custom')
-          ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('library_scoped_values')
-          ..doc = 'If true scopes the enum values to library by assigning to var outside class'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_snake_string')
-          ..doc = 'If true string value for each entry is snake case (default is shout)'
-          ..type = 'bool'
-          ..classInit = 'false',
-        ],
         class_('pub_dependency')
         ..doc = 'A dependency of the system'
         ..members = [
@@ -419,6 +181,431 @@ If not set, id of system is used.
           ..type = 'List<PubTransformer>'
           ..classInit = '[]',
         ],
+      ],
+      part('enum')
+      ..classes = [
+        class_('enum_value')
+        ..doc = 'Define the id and value for an enum value'
+        ..ctorSansNew = true
+        ..members = [
+          id_member('enum_value'),
+          member('value')
+          ..doc = 'User specified value for enum value'
+          ..type = 'var'
+          ..ctors = [''],
+          doc_member('enum_value'),
+        ],
+        class_('enum')
+        ..doc = '''Defines an enum - to be generated idiomatically as a class
+See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
+At some point when true enums are provided this may be revisited.
+'''
+        ..members = [
+          id_member('enum'),
+          doc_member('enum'),
+          public_member('enum'),
+          parent_member('enum'),
+          member('values')
+          ..doc = "List of id's naming the values"
+          ..type = 'List<dynamic>'
+          ..classInit = '[]',
+          member('json_support')
+          ..doc = "If true, generate toJson/fromJson on wrapper class"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('has_rand_json')
+          ..doc = "If true, generate randJson"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('name')
+          ..doc = "Name of the enum class generated sans access prefix"
+          ..access = Access.RO,
+          member('enum_name')
+          ..doc = "Name of the enum class generated with access prefix"
+          ..access = Access.RO,
+          member('has_custom')
+          ..doc = 'If true includes custom block for additional user supplied ctor code'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('library_scoped_values')
+          ..doc = 'If true scopes the enum values to library by assigning to var outside class'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_snake_string')
+          ..doc = 'If true string value for each entry is snake case (default is shout)'
+          ..type = 'bool'
+          ..classInit = 'false',
+        ],
+      ],
+      part('variable')
+      ..classes = [
+        class_('variable')
+        ..members = [
+          id_member('variable'),
+          doc_member('variable'),
+          parent_member('variable'),
+          public_member('variable'),
+          member('type')
+          ..doc = 'Type for the variable'
+          ..type = 'String',
+          member('init')
+          ..doc = '''
+Data used to initialize the variable
+If init is a String and type is not specified, [type] is a String
+
+member('foo')..init = 'goo' => String foo = "goo";
+
+If init is a String and type is specified, then:
+
+member('foo')..type = 'int'..init = 3
+  String foo = 3;
+member('foo')..type = 'DateTime'..init = 'new DateTime(1929, 10, 29)' =>
+  DateTime foo = new DateTime(1929, 10, 29);
+
+If init is not specified, it will be inferred from init if possible:
+
+member('foo')..init = 'goo'
+  String foo = "goo";
+member('foo')..init = 3
+  String foo = 3;
+member('foo')..init = [1,2,3]
+  Map foo = [1,2,3];
+
+'''
+          ..type = 'dynamic',
+          member('is_final')
+          ..doc = 'True if the variable is final'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_const')
+          ..doc = 'True if the variable is const'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_static')
+          ..doc = 'True if the variable is static'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('name')
+          ..doc = "Name of the enum class generated sans access prefix"
+          ..access = Access.RO,
+          member('var_name')
+          ..doc = 'Name of variable - varies depending on public/private'
+          ..access = Access.RO,
+        ],
+      ],
+      part('class')
+      ..classes = [
+        class_('ctor')
+        ..doc = 'Metadata associated with a constructor'
+        ..members = [
+          member('class_name')
+          ..doc = "Name of the class of this ctor.",
+          member('name')
+          ..doc = "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
+          member('members')
+          ..doc = 'List of members initialized in this ctor'
+          ..type = 'List<Member>'
+          ..classInit = '[]',
+          member('opt_members')
+          ..doc = 'List of optional members initialized in this ctor (i.e. those in [])'
+          ..type = 'List<Member>'
+          ..classInit = '[]',
+          member('named_members')
+          ..doc = 'List of optional members initialized in this ctor (i.e. those in {})'
+          ..type = 'List<Member>'
+          ..classInit = '[]',
+          member('has_custom')
+          ..doc = 'If true includes custom block for additional user supplied ctor code'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_const')
+          ..doc = 'True if the variable is const'
+          ..type = 'bool'
+          ..classInit = 'false',
+        ],
+        class_('member')
+        ..doc = 'Metadata associated with a member of a Dart class'
+        ..members = [
+          id_member('class member'),
+          doc_member('class member'),
+          parent_member('class member'),
+          member('type')
+          ..doc = 'Type of the member'
+          ..type = 'String'
+          ..classInit = 'String',
+          member('access')
+          ..doc = 'Access level supported for this member'
+          ..type = 'Access',
+          member('class_init')
+          ..type = 'dynamic'
+          ..doc = '''
+If provided the member will be initialized with value.
+The type of the member can be inferred from the type
+of this value.  Member type is defaulted to String. If
+the type of classInit is a String and type of the
+member is String, the text will be quoted if it is not
+already. If the type of classInit is other than string
+and the type of member is String (which is default)
+the type of member will be set to
+classInit.runtimeType.
+
+''',
+          member('ctor_init')
+          ..doc = '''
+If provided the member will be initialized to this
+text in generated ctor initializers''',
+          member('ctors')
+          ..doc = "List of ctor names to include this member in"
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('ctors_opt')
+          ..doc = "List of ctor names to include this member in as optional parameter"
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('ctors_named')
+          ..doc = "List of ctor names to include this member in as named optional parameter"
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('is_final')
+          ..doc = 'True if the member is final'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_const')
+          ..doc = 'True if the member is const'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_static')
+          ..doc = 'True if the member is static'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('json_transient')
+          ..doc = 'True if the member should not be serialized if the parent class has jsonSupport'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_observable')
+          ..doc = 'If true annotated with observable'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('name')
+          ..doc = "Name of variable for the member, excluding access prefix (i.e. no '_')"
+          ..access = Access.RO,
+          member('var_name')
+          ..doc = 'Name of variable for the member - varies depending on public/private'
+          ..access = Access.RO,
+        ],
+        class_('class')
+        ..doc = 'Metadata associated with a Dart class'
+        ..members = [
+          id_member('Dart class'),
+          doc_member('Dart class'),
+          parent_member('Dart class'),
+          public_member('Dart class'),
+          member('mixins')
+          ..doc = 'List of mixins'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('extend')
+          ..doc = 'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
+          ..type = 'String',
+          member('implement')
+          ..doc = 'Any implements (NOTE implement not implements)'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          custom_member('Dart class'),
+          member('default_member_access')
+          ..doc = 'Default access for members'
+          ..access = WO
+          ..type = 'Access',
+          member('members')
+          ..doc = 'List of members of this class'
+          ..type = 'List<Member>'
+          ..classInit = '[]',
+          member('ctor_customs')
+          ..doc = 'List of ctors requiring custom block'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('ctor_const')
+          ..doc = 'List of ctors that should be const'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('ctors')
+          ..doc = 'List of ctors of this class'
+          ..type = 'Map<String,Ctor>'
+          ..classInit = '{}'
+          ..access = Access.RO,
+          member('is_abstract')
+          ..doc = "If true, class is abstract"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('json_support')
+          ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('has_rand_json')
+          ..doc = "If true, generate randJson function"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('op_equals')
+          ..doc = "If true, generate operator== using all members"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('comparable')
+          ..doc = "If true, implements comparable"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('courtesy_ctor')
+          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('all_members_final')
+          ..doc = "If true adds sets all members to final"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('default_ctor')
+          ..doc = "If true adds empty default ctor"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('ctor_sans_new')
+          ..doc = "If true creates library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..access = WO,
+          member('copyable')
+          ..doc = "If true includes a copy function"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('name')
+          ..doc = "Name of the class - sans any access prefix (i.e. no '_')"
+          ..access = Access.RO,
+          member('class_name')
+          ..doc = "Name of the class, including access prefix"
+          ..access = Access.RO,
+          member('top_injection')
+          ..doc = 'Additional code included in the class near the top',
+          member('bottom_injection')
+          ..doc = 'Additional code included in the class near the bottom',
+        ],
+      ],
+      part('library')
+      ..classes = [
+        class_('library')
+        ..doc = "Defines a dart library - a collection of parts"
+        ..members = [
+          id_member('library'),
+          doc_member('library'),
+          parent_member('library'),
+          custom_member('library'),
+          member('imports')
+          ..doc = 'List of imports to be included by this library'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('parts')
+          ..doc = 'List of parts in this library'
+          ..type = 'List<Part>'
+          ..classInit = '[]',
+          member('variables')
+          ..doc = 'List of global variables for this library'
+          ..type = 'List<Variable>'
+          ..classInit = '[]',
+          member('classes')
+          ..doc = 'Classes defined in this library'
+          ..type = 'List<Class>'
+          ..classInit = '[]',
+          member('enums')
+          ..doc = 'Enums defined in this library'
+          ..type = 'List<Enum>'
+          ..classInit = '[]',
+          member('name')
+          ..doc = "Name of the library file"
+          ..access = Access.RO,
+          member('qualified_name')
+          ..doc = "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
+          ..access = Access.RO,
+          member('include_logger')
+          ..doc = 'If true includes logging support and a _logger'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_test')
+          ..doc = 'If true this library is a test library to appear in test folder'
+          ..type = 'bool'
+          ..access = Access.RO
+          ..classInit = 'false',
+          member('include_main')
+          ..doc = 'If true a main is included in the library file'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('path')
+          ..doc = 'Set desired if generating just a lib and not a package',
+          member('lib_main')
+          ..doc = 'If set the main function',
+          member('default_member_access')
+          ..doc = 'Default access for members'
+          ..classInit = 'Access.RW'
+          ..type = 'Access',
+          member('ctor_sans_new')
+          ..doc = "If true classes will get library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..classInit = false
+        ],
+      ],
+      part('part')
+      ..classes = [
+        class_('part')
+        ..doc = "Defines a dart part - as in 'part of' source file"
+        ..members = [
+          id_member('part'),
+          doc_member('part'),
+          parent_member('part'),
+          custom_member('app'),
+          member('classes')
+          ..doc = 'Classes defined in this part of the library'
+          ..type = 'List<Class>'
+          ..classInit = '[]',
+          member('enums')
+          ..doc = 'Enums defined in this part of the library'
+          ..type = 'List<Enum>'
+          ..classInit = '[]',
+          member('name')
+          ..doc = "Name of the part - for use in naming the part file"
+          ..access = Access.RO,
+          member('file_path')
+          ..doc = "Path to the generated part dart file"
+          ..access = Access.RO,
+          member('variables')
+          ..doc = 'List of global variables in this part'
+          ..type = 'List<Variable>'
+          ..classInit = '[]',
+          member('default_member_access')
+          ..doc = 'Default access for members'
+          ..access = WO
+          ..type = 'Access',
+          member('ctor_sans_new')
+          ..doc = "If true classes will get library functions to construct forwarding to ctors"
+          ..type = 'bool'
+          ..access = WO
+        ],
+      ],
+      part('dart_meta')
+      ..variables = [
+        variable('pub_type_re')
+        ..type = 'RegExp'
+        ..isPublic = false
+        ..init = 'new RegExp(r"(git:|http:|[\./.])")'
+      ]
+      ..enums = [
+        enum_('access')
+        ..jsonSupport = true
+        ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
+        ..values = [
+          id('ia'), id('ro'), id('rw'), id('wo'),
+        ],
+        enum_('pub_dep_type')
+        ..doc = 'Dependency type of a PubDependency'
+        ..jsonSupport = true
+        ..values = [
+          id('path'), id('git'), id('hosted')
+        ],
+      ]
+      ..classes = [
         class_('system')
         ..doc = 'Defines a dart system (collection of libraries and apps)'
         ..members = [
@@ -563,288 +750,6 @@ text to include in the license file.
           ..type = 'bool'
           ..classInit = 'false',
         ],
-        class_('library')
-        ..doc = "Defines a dart library - a collection of parts"
-        ..members = [
-          id_member('library'),
-          doc_member('library'),
-          parent_member('library'),
-          custom_member('library'),
-          member('imports')
-          ..doc = 'List of imports to be included by this library'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('parts')
-          ..doc = 'List of parts in this library'
-          ..type = 'List<Part>'
-          ..classInit = '[]',
-          member('variables')
-          ..doc = 'List of global variables for this library'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('classes')
-          ..doc = 'Classes defined in this library'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('enums')
-          ..doc = 'Enums defined in this library'
-          ..type = 'List<Enum>'
-          ..classInit = '[]',
-          member('name')
-          ..doc = "Name of the library file"
-          ..access = Access.RO,
-          member('qualified_name')
-          ..doc = "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
-          ..access = Access.RO,
-          member('include_logger')
-          ..doc = 'If true includes logging support and a _logger'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_test')
-          ..doc = 'If true this library is a test library to appear in test folder'
-          ..type = 'bool'
-          ..access = Access.RO
-          ..classInit = 'false',
-          member('include_main')
-          ..doc = 'If true a main is included in the library file'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('path')
-          ..doc = 'Set desired if generating just a lib and not a package',
-          member('lib_main')
-          ..doc = 'If set the main function',
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..classInit = 'Access.RW'
-          ..type = 'Access',
-          member('ctor_sans_new')
-          ..doc = "If true classes will get library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..classInit = false
-          ],
-        class_('part')
-        ..doc = "Defines a dart part - as in 'part of' source file"
-        ..members = [
-          id_member('part'),
-          doc_member('part'),
-          parent_member('part'),
-          custom_member('app'),
-          member('classes')
-          ..doc = 'Classes defined in this part of the library'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('enums')
-          ..doc = 'Enums defined in this part of the library'
-          ..type = 'List<Enum>'
-          ..classInit = '[]',
-          member('name')
-          ..doc = "Name of the part - for use in naming the part file"
-          ..access = Access.RO,
-          member('file_path')
-          ..doc = "Path to the generated part dart file"
-          ..access = Access.RO,
-          member('variables')
-          ..doc = 'List of global variables in this part'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..access = WO
-          ..type = 'Access',
-          member('ctor_sans_new')
-          ..doc = "If true classes will get library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..access = WO
-        ],
-        class_('class')
-        ..doc = 'Metadata associated with a Dart class'
-        ..members = [
-          id_member('Dart class'),
-          doc_member('Dart class'),
-          parent_member('Dart class'),
-          public_member('Dart class'),
-          member('mixins')
-          ..doc = 'List of mixins'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('extend')
-          ..doc = 'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
-          ..type = 'String',
-          member('implement')
-          ..doc = 'Any implements (NOTE implement not implements)'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          custom_member('Dart class'),
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..access = WO
-          ..type = 'Access',
-          member('members')
-          ..doc = 'List of members of this class'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('ctor_customs')
-          ..doc = 'List of ctors requiring custom block'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctor_const')
-          ..doc = 'List of ctors that should be const'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors')
-          ..doc = 'List of ctors of this class'
-          ..type = 'Map<String,Ctor>'
-          ..classInit = '{}'
-          ..access = Access.RO,
-          member('is_abstract')
-          ..doc = "If true, class is abstract"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('json_support')
-          ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('has_rand_json')
-          ..doc = "If true, generate randJson function"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('op_equals')
-          ..doc = "If true, generate operator== using all members"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('comparable')
-          ..doc = "If true, implements comparable"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('courtesy_ctor')
-          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('all_members_final')
-          ..doc = "If true adds sets all members to final"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('default_ctor')
-          ..doc = "If true adds empty default ctor"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('ctor_sans_new')
-          ..doc = "If true creates library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..access = WO,
-          member('copyable')
-          ..doc = "If true includes a copy function"
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('name')
-          ..doc = "Name of the class - sans any access prefix (i.e. no '_')"
-          ..access = Access.RO,
-          member('class_name')
-          ..doc = "Name of the class, including access prefix"
-          ..access = Access.RO,
-          member('top_injection')
-          ..doc = 'Additional code included in the class near the top',
-          member('bottom_injection')
-          ..doc = 'Additional code included in the class near the bottom',
-        ],
-        class_('ctor')
-        ..doc = 'Metadata associated with a constructor'
-        ..members = [
-          member('class_name')
-          ..doc = "Name of the class of this ctor.",
-          member('name')
-          ..doc = "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
-          member('members')
-          ..doc = 'List of members initialized in this ctor'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('opt_members')
-          ..doc = 'List of optional members initialized in this ctor (i.e. those in [])'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('named_members')
-          ..doc = 'List of optional members initialized in this ctor (i.e. those in {})'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('has_custom')
-          ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_const')
-          ..doc = 'True if the variable is const'
-          ..type = 'bool'
-          ..classInit = 'false',
-        ],
-        class_('member')
-        ..doc = 'Metadata associated with a member of a Dart class'
-        ..members = [
-          id_member('class member'),
-          doc_member('class member'),
-          parent_member('class member'),
-          member('type')
-          ..doc = 'Type of the member'
-          ..type = 'String'
-          ..classInit = 'String',
-          member('access')
-          ..doc = 'Access level supported for this member'
-          ..type = 'Access',
-          member('class_init')
-          ..type = 'dynamic'
-          ..doc = '''
-If provided the member will be initialized with value.
-The type of the member can be inferred from the type
-of this value.  Member type is defaulted to String. If
-the type of classInit is a String and type of the
-member is String, the text will be quoted if it is not
-already. If the type of classInit is other than string
-and the type of member is String (which is default)
-the type of member will be set to
-classInit.runtimeType.
-
-''',
-          member('ctor_init')
-          ..doc = '''
-If provided the member will be initialized to this
-text in generated ctor initializers''',
-          member('ctors')
-          ..doc = "List of ctor names to include this member in"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors_opt')
-          ..doc = "List of ctor names to include this member in as optional parameter"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors_named')
-          ..doc = "List of ctor names to include this member in as named optional parameter"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('is_final')
-          ..doc = 'True if the member is final'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_const')
-          ..doc = 'True if the member is const'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_static')
-          ..doc = 'True if the member is static'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('json_transient')
-          ..doc = 'True if the member should not be serialized if the parent class has jsonSupport'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_observable')
-          ..doc = 'If true annotated with observable'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('name')
-          ..doc = "Name of variable for the member, excluding access prefix (i.e. no '_')"
-          ..access = Access.RO,
-          member('var_name')
-          ..doc = 'Name of variable for the member - varies depending on public/private'
-          ..access = Access.RO,
-        ]
       ]
     ];
 
@@ -1093,21 +998,8 @@ regenerating.
         '"package:path/path.dart" as path'
       ]
       ..parts = [
-        part('ebisu')
-        ..classes = [
-          class_('context')
-          ..doc = "Convenience wrapper for a map - passed into templates as variable '_'"
-          ..members = [
-            member('data')
-            ..ctors = ['']
-            ..isFinal = true
-            ..doc = "Data being wrapped"
-            ..type = 'Map'
-            ..access = Access.RO
-          ]
-        ]
+        part('ebisu'),
       ],
-      ebisu_compiler,
       ebisu_dart_meta,
       ebisu_utils,
     ];

@@ -50,11 +50,16 @@ import 'dart:io';
 import 'package:ebisu/ebisu.dart';
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
-import 'templates/dart_meta.dart' as meta;
 // custom <additional imports>
 import 'package:path/path.dart';
 // end <additional imports>
 
+part 'src/ebisu_dart_meta/pub.dart';
+part 'src/ebisu_dart_meta/enum.dart';
+part 'src/ebisu_dart_meta/variable.dart';
+part 'src/ebisu_dart_meta/class.dart';
+part 'src/ebisu_dart_meta/library.dart';
+part 'src/ebisu_dart_meta/part.dart';
 part 'src/ebisu_dart_meta/dart_meta.dart';
 
 final _logger = new Logger('ebisu_dart_meta');

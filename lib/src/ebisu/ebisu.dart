@@ -1,22 +1,5 @@
 part of ebisu.ebisu;
 
-/// Convenience wrapper for a map - passed into templates as variable '_'
-class Context {
-
-  Context(this._data);
-
-  /// Data being wrapped
-  Map get data => _data;
-
-// custom <class Context>
-
-  dynamic operator[](dynamic index) {
-    return _data[index];
-  }
-
-// end <class Context>
-  final Map _data;
-}
 // custom <part ebisu>
 
 /// Return an [Iterable] of [items] with each [item] wrapped by a Context.
