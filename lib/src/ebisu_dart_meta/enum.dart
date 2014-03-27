@@ -134,6 +134,7 @@ indentBlock(
     'case ${v.shout}: return "${valueAsString(v)}";').join('\n'), '      ')
 }
     }
+    return null;
   }
 ''';
 

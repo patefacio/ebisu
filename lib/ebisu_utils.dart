@@ -172,4 +172,14 @@ String prettyJsonMap(dynamic item, [String indent = "", bool showCount = false])
   return result.join('');
 }
 
+typedef Object FromJsonConstructor(Object jsonData);
+constructMapFromJsonData(Map map, FromJsonConstructor ctor, [FromJsonConstructor keyCtor]) =>
+  map == null? null :
+  map.keys.fold({}, (newMap, key) =>
+      newMap..[keyCtor == null? key : keyCtor(key)] = ctor(map[key]));
+
+constructListFromJsonData(Map list, FromJsonConstructor ctor) =>
+  list == null? null :
+  list.fold([], (newList, key) => newList..add(ctor(key)));
+
 // end <library ebisu_utils>

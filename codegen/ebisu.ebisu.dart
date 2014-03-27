@@ -124,6 +124,162 @@ classes with JSON support.
     ]
     ..includeLogger = true
     ..parts = [
+      part('test')
+      ..classes = [
+        class_('test')
+        ..doc = 'A test generated in a standard format',
+      ],
+      part('system')
+      ..classes = [
+        class_('system')
+        ..doc = 'Defines a dart system (collection of libraries and apps)'
+        ..members = [
+          non_final_id_member('system'),
+          doc_member('system'),
+          member('root_path')
+          ..doc = 'Path to which code is generated',
+          member('scripts')
+          ..doc = 'Scripts in the system'
+          ..type = 'List<Script>'
+          ..classInit = '[]',
+          member('app')
+          ..doc = 'App for this package'
+          ..type = 'App',
+          member('test_libraries')
+          ..doc = 'List of test libraries of this app'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
+          member('libraries')
+          ..doc = 'Libraries in the system'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
+          member('all_libraries')
+          ..doc = 'Regular and test libraries'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
+          member('pub_spec')
+          ..doc = 'Information for the pubspec'
+          ..type = 'PubSpec',
+          member('jsonable_classes')
+          ..doc = 'Map of all classes that have jsonSupport'
+          ..type = 'Map<String,Class>'
+          ..classInit = '{}',
+          member('finalized')
+          ..doc = 'Set to true on finalize'
+          ..access = Access.RO
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('generate_pub_spec')
+          ..doc = 'If true generate a pubspec.xml file'
+          ..type = 'bool'
+          ..classInit = 'true',
+          member('license')
+          ..doc = '''
+A string indicating the license.
+A map of common licenses is looked up and if found a link
+to that license is used. The current keys of the map are:
+[ 'boost', 'mit', 'apache-2.0', 'bsd-2', 'bsd-3', 'mozilla-2.0' ]
+Otherwise the text is assumed to be the
+text to include in the license file.
+''',
+          member('include_readme')
+          ..doc = 'If true standard outline for readme provided'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('introduction')
+          ..doc = 'A brief introduction for this system, included in README.md',
+          member('purpose')
+          ..doc = 'Purpose for this system, included in README.md',
+          member('todos')
+          ..doc = 'List of todos included in the readme - If any present includeReadme assumed true'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('include_hop')
+          ..doc = 'If true generates tool folder with hop_runner'
+          ..type = 'bool'
+          ..classInit = 'false',
+        ],
+      ],
+      part('app')
+      ..classes = [
+        class_('app')
+        ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
+        ..members = [
+          id_member('app'),
+          doc_member('app'),
+          parent_member('app'),
+          custom_member('app'),
+          member('classes')
+          ..doc = 'Classes defined in this app'
+          ..type = 'List<Class>'
+          ..classInit = '[]',
+          member('libraries')
+          ..doc = 'List of libraries of this app'
+          ..type = 'List<Library>'
+          ..classInit = '[]',
+          member('variables')
+          ..doc = 'List of global variables for this library'
+          ..type = 'List<Variable>'
+          ..classInit = '[]',
+          member('is_web_ui')
+          ..doc = 'If true this is a web ui app'
+          ..type = 'bool'
+          ..classInit = 'false',
+        ],
+      ],
+      part('script')
+      ..classes = [
+        class_('script_arg')
+        ..doc = 'An agrument to a script'
+        ..members = [
+          id_member('script argument'),
+          doc_member('script argument'),
+          parent_member('script argument'),
+          member('name')
+          ..doc = 'Name of the the arg (emacs naming convention)'
+          ..access = Access.RO,
+          member('is_required')
+          ..doc = 'If true the argument is required'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_flag')
+          ..doc = 'If true this argument is a boolean flag (i.e. no option is required)'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('is_multiple')
+          ..doc = 'If true the argument may be specified mutiple times'
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('defaults_to')
+          ..doc = 'Used to initialize the value in case not set'
+          ..type = 'dynamic',
+          member('allowed')
+          ..doc = 'A list of allowed values to choose from'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('position')
+          ..doc = 'If not null - holds the position of a positional (i.e. unnamed) argument'
+          ..type = 'int',
+          member('abbr')
+          ..doc = 'An abbreviation (single character)'
+        ],
+        class_('script')
+        ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
+        ..members = [
+          id_member('script'),
+          doc_member('script'),
+          parent_member('script'),
+          custom_member('script'),
+          member('imports')
+          ..doc = 'List of imports to be included by this script'
+          ..type = 'List<String>'
+          ..classInit = '[]',
+          member('args')
+          ..doc = 'Arguments for this script'
+          ..type = 'List<ScriptArg>'
+          ..classInit = '[]',
+        ],
+      ],
       part('pub')
       ..classes = [
         class_('pub_dependency')
@@ -483,6 +639,10 @@ text in generated ctor initializers''',
           ..doc = 'Additional code included in the class near the top',
           member('bottom_injection')
           ..doc = 'Additional code included in the class near the bottom',
+          member('builder')
+          ..doc = r"If true includes a ${className}Builder class"
+          ..type = 'bool'
+          ..classInit = 'false',
         ],
       ],
       part('library')
@@ -606,150 +766,6 @@ text in generated ctor initializers''',
         ],
       ]
       ..classes = [
-        class_('system')
-        ..doc = 'Defines a dart system (collection of libraries and apps)'
-        ..members = [
-          non_final_id_member('system'),
-          doc_member('system'),
-          member('root_path')
-          ..doc = 'Path to which code is generated',
-          member('scripts')
-          ..doc = 'Scripts in the system'
-          ..type = 'List<Script>'
-          ..classInit = '[]',
-          member('app')
-          ..doc = 'App for this package'
-          ..type = 'App',
-          member('test_libraries')
-          ..doc = 'List of test libraries of this app'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('libraries')
-          ..doc = 'Libraries in the system'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('all_libraries')
-          ..doc = 'Regular and test libraries'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('pub_spec')
-          ..doc = 'Information for the pubspec'
-          ..type = 'PubSpec',
-          member('jsonable_classes')
-          ..doc = 'Map of all classes that have jsonSupport'
-          ..type = 'Map<String,Class>'
-          ..classInit = '{}',
-          member('finalized')
-          ..doc = 'Set to true on finalize'
-          ..access = Access.RO
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('generate_pub_spec')
-          ..doc = 'If true generate a pubspec.xml file'
-          ..type = 'bool'
-          ..classInit = 'true',
-          member('license')
-          ..doc = '''
-A string indicating the license.
-A map of common licenses is looked up and if found a link
-to that license is used. The current keys of the map are:
-[ 'boost', 'mit', 'apache-2.0', 'bsd-2', 'bsd-3', 'mozilla-2.0' ]
-Otherwise the text is assumed to be the
-text to include in the license file.
-''',
-          member('include_readme')
-          ..doc = 'If true standard outline for readme provided'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('introduction')
-          ..doc = 'A brief introduction for this system, included in README.md',
-          member('purpose')
-          ..doc = 'Purpose for this system, included in README.md',
-          member('todos')
-          ..doc = 'List of todos included in the readme - If any present includeReadme assumed true'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('include_hop')
-          ..doc = 'If true generates tool folder with hop_runner'
-          ..type = 'bool'
-          ..classInit = 'false',
-        ],
-        class_('test')
-        ..doc = 'A test generated in a standard format',
-        class_('script_arg')
-        ..doc = 'An agrument to a script'
-        ..members = [
-          id_member('script argument'),
-          doc_member('script argument'),
-          parent_member('script argument'),
-          member('name')
-          ..doc = 'Name of the the arg (emacs naming convention)'
-          ..access = Access.RO,
-          member('is_required')
-          ..doc = 'If true the argument is required'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_flag')
-          ..doc = 'If true this argument is a boolean flag (i.e. no option is required)'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('is_multiple')
-          ..doc = 'If true the argument may be specified mutiple times'
-          ..type = 'bool'
-          ..classInit = 'false',
-          member('defaults_to')
-          ..doc = 'Used to initialize the value in case not set'
-          ..type = 'dynamic',
-          member('allowed')
-          ..doc = 'A list of allowed values to choose from'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('position')
-          ..doc = 'If not null - holds the position of a positional (i.e. unnamed) argument'
-          ..type = 'int',
-          member('abbr')
-          ..doc = 'An abbreviation (single character)'
-        ],
-        class_('script')
-        ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
-        ..members = [
-          id_member('script'),
-          doc_member('script'),
-          parent_member('script'),
-          custom_member('script'),
-          member('imports')
-          ..doc = 'List of imports to be included by this script'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('args')
-          ..doc = 'Arguments for this script'
-          ..type = 'List<ScriptArg>'
-          ..classInit = '[]',
-        ],
-        class_('app')
-        ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
-        ..members = [
-          id_member('app'),
-          doc_member('app'),
-          parent_member('app'),
-          custom_member('app'),
-          member('classes')
-          ..doc = 'Classes defined in this app'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('libraries')
-          ..doc = 'List of libraries of this app'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('variables')
-          ..doc = 'List of global variables for this library'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('is_web_ui')
-          ..doc = 'If true this is a web ui app'
-          ..type = 'bool'
-          ..classInit = 'false',
-        ],
       ]
     ];
 

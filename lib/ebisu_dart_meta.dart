@@ -54,6 +54,10 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 // end <additional imports>
 
+part 'src/ebisu_dart_meta/test.dart';
+part 'src/ebisu_dart_meta/system.dart';
+part 'src/ebisu_dart_meta/app.dart';
+part 'src/ebisu_dart_meta/script.dart';
 part 'src/ebisu_dart_meta/pub.dart';
 part 'src/ebisu_dart_meta/enum.dart';
 part 'src/ebisu_dart_meta/variable.dart';
