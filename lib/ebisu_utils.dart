@@ -178,7 +178,7 @@ constructMapFromJsonData(Map map, FromJsonConstructor ctor, [FromJsonConstructor
   map.keys.fold({}, (newMap, key) =>
       newMap..[keyCtor == null? key : keyCtor(key)] = ctor(map[key]));
 
-constructListFromJsonData(Map list, FromJsonConstructor ctor) =>
+constructListFromJsonData(List list, FromJsonConstructor ctor) =>
   list == null? null :
   list.fold([], (newList, key) => newList..add(ctor(key)));
 

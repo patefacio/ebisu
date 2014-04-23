@@ -146,6 +146,11 @@ Only "version" and "path" overrides are supported.
           ;
       }
     }
+
+    pubSpec
+      ..addDevDependency(new PubDependency('unittest')..version = '>=0.9.0 < 0.10.0', true)
+      ..addDevDependency(new PubDependency('browser'), true);
+
     finalize();
     scripts.forEach((script) => script.generate());
     if(app != null) {
@@ -155,6 +160,9 @@ Only "version" and "path" overrides are supported.
     if(includeHop) {
       if(pubSpec.depNotFound('hop')) {
         pubSpec.addDevDependency(new PubDependency('hop'));
+      }
+      if(pubSpec.depNotFound('hop_docgen')) {
+        pubSpec.addDevDependency(new PubDependency('hop_docgen'));
       }
     }
 
@@ -238,14 +246,16 @@ import 'dart:async';
 import 'dart:io';
 import 'package:hop/hop.dart';
 import 'package:hop/hop_tasks.dart';
+import 'package:hop_docgen/hop_docgen.dart';
+import 'package:path/path.dart' as path;
 import '../test/runner.dart' as runner;
 
 void main(List<String> args) {
 
-  Directory.current = runner.rootPath;
+  Directory.current = path.dirname(path.dirname(Platform.script.path));
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
-  addTask('docs', createDartDocTask(_getLibs));
+  //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
 ${analyzeTests}
   addTask('test', createUnitTestTask(runner.testCore));
 
@@ -263,14 +273,11 @@ Future<List<String>> _getLibs() {
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithFile('''
-import 'utils.dart';
 import 'package:unittest/unittest.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
   .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
   .join('\n')}
-
-get rootPath => packageRootPath;
 
 void testCore(Configuration config) {
   unittestConfiguration = config;
@@ -288,27 +295,30 @@ ${testLibraries
           testRunnerPath);
     }
 
-    if((generateHop && includeHop) || testLibraries.length > 0) {
-
-      String testUtilsPath = "${rootPath}/test/utils.dart";
+    if(testLibraries.length > 0) {
       mergeWithFile('''
-import 'dart:io';
-import 'package:path/path.dart' as path;
+import 'package:unittest/html_enhanced_config.dart';
+import 'runner.dart' as runner;
 
-String get packageRootPath {
-  var parts = path.split(path.absolute(Platform.script.path));
-  int found = parts.lastIndexOf('${id.snake}');
-  if(found >= 0) {
-    return path.joinAll(parts.getRange(0, found+1));
-  }
-  throw new
-    StateError("Current directory must be within package '${id.snake}'");
+main() {
+  useHtmlEnhancedConfiguration();
+  runner.main();
 }
-
-main() => print(packageRootPath);
-
 ''',
-          testUtilsPath);
+          '${rootPath}/test/html_runner.dart');
+
+      mergeWithFile('''
+<html>
+<head>
+  <title>Test Runner</title>
+  <script type="application/dart" src="html_runner.dart"></script>
+  <script src="packages/browser/dart.js"></script>
+</head>
+<body>
+</body>
+</html>
+''',
+          '${rootPath}/test/index.html');
     }
   }
 

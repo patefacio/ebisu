@@ -8,7 +8,6 @@ import 'package:path/path.dart';
 import 'package:unittest/unittest.dart';
 import 'package:yaml/yaml.dart';
 import 'setup.dart';
-import 'utils.dart';
 // custom <additional imports>
 // end <additional imports>
 
@@ -248,8 +247,6 @@ main() {
         expect(exists(join(tempPath, '.gitignore')), true));
     test('tool/hop_runner.dart exists', () =>
         expect(exists(joinAll([tempPath, 'tool', 'hop_runner.dart'])), true));
-    test('test/utils.dart exists', () =>
-        expect(exists(joinAll([tempPath, 'test', 'utils.dart'])), true));
     test('test/runner.dart exists', () =>
         expect(exists(joinAll([tempPath, 'test', 'runner.dart'])), true));
   });
@@ -259,6 +256,7 @@ main() {
 
     List allDartFilesComplete = [];
 
+    String packageRootPath = dirname(dirname(absolute(Platform.script.path)));
     String testPath = join(packageRootPath, 'test');
 
     //////////////////////////////////////////////////////////////////////

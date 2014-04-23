@@ -902,7 +902,6 @@ library/templates, a message like the following will be output:
         'package:ebisu/ebisu_dart_meta.dart',
         'package:path/path.dart',
         'io',
-        'utils.dart',
       ]
       ..variables = [
         variable('scratch_remove_me_folder')
@@ -918,7 +917,6 @@ library/templates, a message like the following will be output:
       ..imports = [
         'package:ebisu/ebisu_dart_meta.dart',
         'setup.dart',
-        'utils.dart',
         'package:path/path.dart',
         'package:yaml/yaml.dart',
         'io',
@@ -946,7 +944,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.9'
+        ..version = '0.0.10'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

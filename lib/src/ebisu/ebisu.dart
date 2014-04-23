@@ -2,11 +2,6 @@ part of ebisu.ebisu;
 
 // custom <part ebisu>
 
-/// Return an [Iterable] of [items] with each [item] wrapped by a Context.
-Iterable asContexts(Iterable items) {
-  return items.toList().map((i) => new Context(i));
-}
-
 /// Return a new string with [text] wrapped in `/*...*/` comment block
 String blockComment(String text, [String indent = '   ']) {
   return "/**\n${indentBlock(text, indent)}\n*/";

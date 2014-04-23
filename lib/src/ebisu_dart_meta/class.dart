@@ -348,38 +348,45 @@ return new ${_className}()
     final myName = m.varName == 'other'? 'this.other' : m.varName;
     final otherName = 'other.${m.varName}';
     if(m.type.startsWith('List')) {
-      return '    const ListEquality().equals($myName, $otherName)';
+      return '  const ListEquality().equals($myName, $otherName)';
     } else if(m.type.startsWith('Map')) {
-      return '    const MapEquality().equals($myName, $otherName)';
+      return '  const MapEquality().equals($myName, $otherName)';
     } else {
-      return '    $myName == $otherName';
+      return '  $myName == $otherName';
     }
   }
 
   String get overrideHashCode {
-    var parts = ['''{
-  int result = 17;
-  final int prime = 23;'''];
-    nonStaticMembers.forEach((m) {
-      if(m.isList) {
-        parts.add('''
-  if(${m.varName} != null)
-    result = result*prime + const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName});''');
-      } else if(m.isMap) {
-        parts.add('''
-  if(${m.varName} != null)
-    result = result*prime + const MapEquality().hash(${m.varName});''');
-      } else {
-        parts.add('  result = result*prime + ${m.varName}.hashCode;');
-      }
-    });
-    return (parts..addAll(['  return result;', '}'])).join('\n');
+    var parts = [ ];
+    parts.addAll(
+      nonStaticMembers.map((Member m) {
+        if(m.isList) {
+          return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName})';
+        } else if(m.isMap) {
+          return 'const MapEquality().hash(${m.varName})';
+        } else {
+          return '${m.varName}';
+        }
+      }));
+
+    int numMembers = nonStaticMembers.length;
+    if(numMembers == 1) {
+      return '=> ${parts.first}.hashCode;';
+    } else if(numMembers == 2) {
+      return '=> hash2(${parts.join(r", ")});';
+    } else if(numMembers == 3) {
+      return '=>\n  hash3(${parts.join(r", ")});';
+    } else if(numMembers == 4) {
+      return '=> hash4(${parts.join(",\n  ")});';
+    } else {
+      return '=> hashObjects([\n  ${parts.join(",\n  ")}]);';
+    }
   }
 
   String get opEqualsMethod => '''
 bool operator==($_className other) =>
   identical(this, other) ||
-  ${nonStaticMembers.map((m) => memberCompare(m))
+${nonStaticMembers.map((m) => memberCompare(m))
     .join(' &&\n')};
 
 int get hashCode ${overrideHashCode}
@@ -429,6 +436,10 @@ ${
 
   String get comparableMethod {
     var comparableMembers = members;
+    if(comparableMembers
+        .any((m) => isListType(m.type) || isMapType(m.type))) {
+      throw new ArgumentError('$name can not have compareTo with list or map members');
+    }
     if(comparableMembers.length == 1) {
       return '''
 int compareTo($_className other) =>

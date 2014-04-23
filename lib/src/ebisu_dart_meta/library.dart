@@ -93,6 +93,10 @@ class Library {
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
     classes.forEach((c) => c.parent = this);
+
+    if(allClasses.any((c) => c.opEquals)) {
+      imports.add('package:quiver/core.dart');
+    }
     if(allClasses.any((c) => c.jsonSupport)) {
       imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
       imports.add('"dart:convert" as convert');

@@ -153,19 +153,21 @@ class PubSpec {
     _parent = p;
   }
 
-  void addDependency(PubDependency dep) {
+  void addDependency(PubDependency dep, [ bool ignoreIfPresent = false ]) {
     if(depNotFound(dep.name)) {
       dependencies.add(dep);
     } else {
-      throw new ArgumentError("${dep.name} is already a dependency of ${_id}");
+      if(!ignoreIfPresent)
+        throw new ArgumentError("${dep.name} is already a dependency of ${_id}");
     }
   }
 
-  void addDevDependency(PubDependency dep) {
+  void addDevDependency(PubDependency dep, [ bool ignoreIfPresent = false ]) {
     if(depNotFound(dep.name)) {
       devDependencies.add(dep);
     } else {
-      throw new ArgumentError("${dep.name} is already a dev dependency of ${_id}");
+      if(!ignoreIfPresent)
+        throw new ArgumentError("${dep.name} is already a dev dependency of ${_id}");
     }
   }
 
