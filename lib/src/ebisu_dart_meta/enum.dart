@@ -32,11 +32,10 @@ enumValue([Id _id,
   new EnumValue(_id,
       value);
 
-
 /// Defines an enum - to be generated idiomatically as a class
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 /// At some point when true enums are provided this may be revisited.
-/// 
+///
 class Enum {
 
   Enum(this._id);

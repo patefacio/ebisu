@@ -69,7 +69,12 @@ class System {
       // Track all classes and enums with json support so the template side can
       // do proper inserts of code. There are classes and enums in the library
       // as well as classes and enums in each part to consider.
-      allLibraries.forEach((library) {
+      bool benchmarksIncluded = false;
+      allLibraries.forEach((Library library) {
+
+        if(library.benchmarks.length > 0)
+          benchmarksIncluded = true;
+
         library.classes.forEach((dclass) {
           if(dclass.jsonSupport) {
             jsonableClasses[dclass.name] = dclass;
@@ -89,6 +94,11 @@ class System {
           });
         });
       });
+
+      if(benchmarksIncluded) {
+        pubSpec.addDependency(new PubDependency('benchmark_harness'));
+      }
+
       _finalized = true;
     }
   }
@@ -98,12 +108,12 @@ class System {
     if(overrideFile.existsSync()) {
       var overrideJson = convert.JSON.decode(overrideFile.readAsStringSync());
       var overrides = overrideJson['versions'];
-      _logger.info("Found version overides: ${overrideJson}");
+      _logger.fine("Found version overides: ${overrideJson}");
       var deps = new List.from(pubSpec.dependencies)..addAll(pubSpec.devDependencies);
       deps.forEach((dep) {
         var override = overrides[dep.name];
         if(override != null) {
-          _logger.info("Overriding: (((\n${dep.yamlEntry}\n))) with ${override}");
+          _logger.fine("Overriding: (((\n${dep.yamlEntry}\n))) with ${override}");
           var version = override['version'];
           if(version != null) {
             dep.version = version;
@@ -116,7 +126,7 @@ class System {
               dep.version = null;
               dep.gitRef = null;
               dep._type = PubDepType.PATH;
-              _logger.info("Yaml: ${dep.yamlEntry}");
+              _logger.fine("Yaml: ${dep.yamlEntry}");
             } else {
               throw
                 new FormatException('''
@@ -274,6 +284,7 @@ Future<List<String>> _getLibs() {
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithFile('''
 import 'package:unittest/unittest.dart';
+import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
   .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
@@ -285,6 +296,11 @@ void testCore(Configuration config) {
 }
 
 main() {
+  Logger.root.level = Level.OFF;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('\${rec.level.name}: \${rec.time}: \${rec.message}');
+  });
+
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
   .map((t) => "  ${t.id.snake}.main();")

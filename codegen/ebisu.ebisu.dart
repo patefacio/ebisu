@@ -227,6 +227,23 @@ text to include in the license file.
           ..classInit = 'false',
         ],
       ],
+      part('benchmark')
+      ..classes = [
+        class_('benchmark')
+        ..members = [
+          id_member('benchmark'),
+          doc_member('benchmark'),
+          member('parent')
+          ..doc = "Reference to System parent of this benchmark"
+          ..type = 'System'
+          ..jsonTransient = true
+          ..access = Access.RO,
+          member('classes')
+          ..doc = 'Additional classes in the benchmark library'
+          ..type = 'List<Class>'
+          ..classInit = '[]',
+        ]
+      ],
       part('script')
       ..classes = [
         class_('script_arg')
@@ -302,11 +319,20 @@ text to include in the license file.
           ..access = IA,
         ],
         class_('pub_transformer')
+        ..isAbstract = true
         ..doc = 'Entry in the transformer sections'
         ..members = [
           member('name')
           ..ctors = ['']
           ..doc = 'Name of transformer'
+        ],
+        class_('polymer_transformer')
+        ..extend = 'PubTransformer'
+        ..doc = 'A polymer transformer entry'
+        ..members = [
+          member('entry_points')
+          ..type = 'List<String>'
+          ..doc = 'List of entry points'
         ],
         class_('pub_spec')
         ..doc = 'Information for the pubspec of the system'
@@ -478,13 +504,21 @@ member('foo')..init = [1,2,3]
           ..doc = 'True if the variable is const'
           ..type = 'bool'
           ..classInit = 'false',
+          member('calls_init')
+          ..doc = 'If true implementation is `=> _init()`'
+          ..type = 'bool'
+          ..classInit = 'false',
         ],
         class_('member')
         ..doc = 'Metadata associated with a member of a Dart class'
         ..members = [
           id_member('class member'),
           doc_member('class member'),
-          parent_member('class member'),
+          member('parent')
+          ..doc = "Reference to Class parent of this member"
+          ..type = 'Class'
+          ..jsonTransient = true
+          ..access = Access.RO,
           member('type')
           ..doc = 'Type of the member'
           ..type = 'String'
@@ -542,6 +576,10 @@ text in generated ctor initializers''',
           ..doc = 'If true annotated with observable'
           ..type = 'bool'
           ..classInit = 'false',
+          member('is_in_comparable')
+          ..doc = 'If true and member is in class that is comparable, it will be included in compareTo method'
+          ..type = 'bool'
+          ..classInit = 'true',
           member('name')
           ..doc = "Name of variable for the member, excluding access prefix (i.e. no '_')"
           ..access = Access.RO,
@@ -609,6 +647,10 @@ text in generated ctor initializers''',
           ..doc = "If true, implements comparable"
           ..type = 'bool'
           ..classInit = 'false',
+          member('polymorphic_comparable')
+          ..doc = "If true, implements comparable with runtimeType check followed by rest"
+          ..type = 'bool'
+          ..classInit = 'false',
           member('courtesy_ctor')
           ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
           ..type = 'bool'
@@ -619,6 +661,10 @@ text in generated ctor initializers''',
           ..classInit = 'false',
           member('default_ctor')
           ..doc = "If true adds empty default ctor"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('immutable')
+          ..doc = "If true sets allMembersFinal and defaultCtor to true"
           ..type = 'bool'
           ..classInit = 'false',
           member('ctor_sans_new')
@@ -641,6 +687,18 @@ text in generated ctor initializers''',
           ..doc = 'Additional code included in the class near the bottom',
           member('builder')
           ..doc = r"If true includes a ${className}Builder class"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('json_to_string')
+          ..doc = "If true includes a toString() => ebisu_utils.prettyJsonMap(toJson())"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('cache_hash')
+          ..doc = "If true adds transient hash code and caches the has on first call"
+          ..type = 'bool'
+          ..classInit = 'false',
+          member('ctor_calls_init')
+          ..doc = 'If true courtesyCtor is `=> _init()`'
           ..type = 'bool'
           ..classInit = 'false',
         ],
@@ -669,6 +727,10 @@ text in generated ctor initializers''',
           member('classes')
           ..doc = 'Classes defined in this library'
           ..type = 'List<Class>'
+          ..classInit = '[]',
+          member('benchmarks')
+          ..doc = 'Named benchmarks associated with this library'
+          ..type = 'List<Benchmark>'
           ..classInit = '[]',
           member('enums')
           ..doc = 'Enums defined in this library'

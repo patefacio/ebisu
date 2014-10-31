@@ -11,13 +11,14 @@ String blockComment(String text, [String indent = '   ']) {
 String docComment(String text, [String indent = ' ']) {
   String guts = text.split('\n')
     .join("\n///$indent")
-    .replaceAll('///$indent\n', '///\n');
+    .replaceAll(_commentLineTrailingWhite, '///\n')
+    .replaceAll(_commentFinalTrailingWhite, '///');
   return "///$indent$guts";
 }
 
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
-  return block.split('\n')
+  return block == null? null : block.split('\n')
     .map((p) => "$indent$p".replaceAll(_allWhiteSpace, ''))
     .join('\n');
 }
@@ -141,6 +142,8 @@ final RegExp _leadingWhiteSpace = new RegExp(r'^\s+');
 final RegExp _trailingWhiteSpace = new RegExp(r'\s+$');
 final RegExp _allWhiteSpace = new RegExp(r'^\s+$');
 final RegExp _multipleNewlines = new RegExp(r'\n\n+');
+final RegExp _commentLineTrailingWhite = new RegExp(r'///\s+\n');
+final RegExp _commentFinalTrailingWhite = new RegExp(r'///\s+$');
 
 /// Removes trailing any `\n` from `s`
 String chomp(String s, [bool multiple = false ]) {

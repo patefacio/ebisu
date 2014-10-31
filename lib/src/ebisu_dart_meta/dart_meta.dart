@@ -122,17 +122,23 @@ PubSpec pubspec(String _id) => new PubSpec(id(_id));
 PubDependency pubdep(String name)=> new PubDependency(name);
 Script script(String _id) => new Script(id(_id));
 ScriptArg scriptArg(String _id) => new ScriptArg(id(_id));
+Benchmark benchmark(String _id) => new Benchmark(id(_id));
 
 final RegExp _jsonableTypeRe = new RegExp(r"\b(?:int|double|num|String|bool|DateTime)\b");
 final RegExp _mapTypeRe = new RegExp(r"Map\b");
 final RegExp _listTypeRe = new RegExp(r"List\b");
+final RegExp _setTypeRe = new RegExp(r"\bSet\b");
+final RegExp _splayTreeSetTypeRe = new RegExp(r"\bSplayTreeSet\b");
 final RegExp _jsonMapTypeRe = new RegExp(r"Map<\s*.*\s*,\s*(.*?)\s*>");
 final RegExp _jsonListTypeRe = new RegExp(r"List<\s*(.*?)\s*>");
+final RegExp _templateParameterTypeRe = new RegExp(r"\w+<\s*(.*?)\s*>");
 final RegExp _generalMapKeyTypeRe = new RegExp(r"Map<\s*([^,]+),.+\s*>");
 
 bool isJsonableType(String t) =>_jsonableTypeRe.firstMatch(t) != null;
 bool isMapType(String t) => _mapTypeRe.firstMatch(t) != null;
 bool isListType(String t) => _listTypeRe.firstMatch(t) != null;
+bool isSetType(String t) => _setTypeRe.firstMatch(t) != null;
+bool isSplayTreeSetType(String t) => _splayTreeSetTypeRe.firstMatch(t) != null;
 
 String jsonMapValueType(String t) {
   Match m = _jsonMapTypeRe.firstMatch(t);
@@ -150,6 +156,13 @@ String generalMapKeyType(String t) {
 }
 String jsonListValueType(String t) {
   Match m = _jsonListTypeRe.firstMatch(t);
+  if(m != null) {
+    return m.group(1);
+  }
+  return 'dynamic';
+}
+String templateParameterType(String t) {
+  Match m = _templateParameterTypeRe.firstMatch(t);
   if(m != null) {
     return m.group(1);
   }

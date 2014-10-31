@@ -182,4 +182,22 @@ constructListFromJsonData(List list, FromJsonConstructor ctor) =>
   list == null? null :
   list.fold([], (newList, key) => newList..add(ctor(key)));
 
+
+/** TODO: Following not used, but consider them for cleaning up bulky copy functions
+
+checkedCopy(Object obj) => obj == null? null : obj.copy();
+
+deepCopyList(List list) =>
+  list == null? null :
+  new List.from(list.map((elm) => checkedCopy(elm)));
+
+deepCopySet(Set set) =>
+  set == null? null :
+  new Set.from(set.map((elm) => checkedCopy(elm)));
+
+deepCopySplayTreeSet(SplayTreeSet set) =>
+  set == null? null :
+  new SplayTreeSet().addAll(set);
+*/
+
 // end <library ebisu_utils>

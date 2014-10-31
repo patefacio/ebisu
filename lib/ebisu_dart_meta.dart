@@ -42,7 +42,7 @@
 /// ability take a simple Altova UML model in XMI format and convert it to Dart
 /// classes with JSON support.
 ///
-/// 
+///
 library ebisu.ebisu_dart_meta;
 
 import 'dart:convert' as convert;
@@ -57,6 +57,7 @@ import 'package:path/path.dart';
 part 'src/ebisu_dart_meta/test.dart';
 part 'src/ebisu_dart_meta/system.dart';
 part 'src/ebisu_dart_meta/app.dart';
+part 'src/ebisu_dart_meta/benchmark.dart';
 part 'src/ebisu_dart_meta/script.dart';
 part 'src/ebisu_dart_meta/pub.dart';
 part 'src/ebisu_dart_meta/enum.dart';

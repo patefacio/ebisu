@@ -21,6 +21,8 @@ class Library {
   List<Variable> variables = [];
   /// Classes defined in this library
   List<Class> classes = [];
+  /// Named benchmarks associated with this library
+  List<Benchmark> benchmarks = [];
   /// Enums defined in this library
   List<Enum> enums = [];
   /// Name of the library file
@@ -88,11 +90,12 @@ class Library {
   set parent(p) {
     _parent = p;
     _name = _id.snake;
-    _qualifiedName = _makeQualifiedName();
+    _qualifiedName = _qualifiedName == null? _makeQualifiedName() : _qualifiedName;
     parts.forEach((part) => part.parent = this);
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
     classes.forEach((c) => c.parent = this);
+    benchmarks.forEach((b) => b.parent = this.parent);
 
     if(allClasses.any((c) => c.opEquals)) {
       imports.add('package:quiver/core.dart');
@@ -127,6 +130,7 @@ class Library {
     ensureParent();
     mergeWithFile('${_content}\n', libStubPath);
     parts.forEach((part) => part.generate());
+    benchmarks.forEach((benchmark) => benchmark.generate());
   }
 
   get _content =>
@@ -154,7 +158,7 @@ class Library {
     parts.length>0? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('') :'';
   get _loggerInit => includeLogger? "final _logger = new Logger('$name');\n":'';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
-  get _classes => classes.map((c) => '${chomp(c.define())}\n').join('');
+  get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
   get _libraryCustom => includeCustom? chomp(customBlock('library $name')) : '';
   get _libraryMain => includeMain? '''

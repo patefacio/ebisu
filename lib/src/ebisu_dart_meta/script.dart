@@ -114,7 +114,7 @@ $doc
   get _parseArgs => '''
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
-Map _parseArgs() {
+Map _parseArgs(List<String> args) {
   ArgResults argResults;
   Map result = { };
   List remaining = [];
@@ -125,8 +125,7 @@ Map _parseArgs() {
 $_addFlags
 $_addOptions
     /// Parse the command line options (excluding the script)
-    var arguments = new Options().arguments;
-    argResults = _parser.parse(arguments);
+    argResults = _parser.parse(args);
     argResults.options.forEach((opt) {
       result[opt] = argResults[opt];
     });
@@ -180,11 +179,11 @@ ${arg.doc}
 
   get _loggerInit => "final _logger = new Logger('$id');\n";
   get _main => '''
-main() {
+main(List<String> args) {
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.INFO;
-  Map argResults = _parseArgs();
+  Map argResults = _parseArgs(args);
   Map options = argResults['options'];
   List positionals = argResults['rest'];
 ${_requiredArgs}
@@ -193,20 +192,20 @@ ${indentBlock(customBlock("$id main"))}
 
 ${customBlock("$id global")}''';
 
-  get _requiredArgs => requiredArgs.length>0?
-    '''
+  get _requiredArgs => indentBlock(requiredArgs.length>0? '''
 try {
+
 $_processArgs
 } on ArgumentError catch(e) {
   print(e);
   _usage();
 }
-''':'';
+''':'');
 
   get _processArgs => requiredArgs.map((arg) => '''
-    if(options["${arg.name}"] == null)
-      throw new ArgumentError("option: ${arg.name} is required");
-''');
+  if(options["${arg.name}"] == null)
+    throw new ArgumentError("option: ${arg.name} is required");
+''').join('');
 
   // end <class Script>
   final Id _id;

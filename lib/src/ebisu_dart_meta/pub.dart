@@ -99,7 +99,7 @@ class PubDependency {
 }
 
 /// Entry in the transformer sections
-class PubTransformer {
+abstract class PubTransformer {
 
   PubTransformer(this.name);
 
@@ -108,9 +108,36 @@ class PubTransformer {
 
   // custom <class PubTransformer>
 
-  String get yamlEntry => throw "NOT IMPLEMENTED YET";
+  String get yamlEntry;
 
   // end <class PubTransformer>
+}
+
+/// A polymer transformer entry
+class PolymerTransformer extends PubTransformer {
+
+  /// List of entry points
+  List<String> entryPoints;
+
+  // custom <class PolymerTransformer>
+
+  PolymerTransformer(this.entryPoints) : super('polymer');
+
+  String get yamlEntry {
+    final entryPointList =
+    entryPoints
+    .map((String entryPoint) => '- $entryPoint')
+    .join('\n        ');
+
+    return '''
+  - polymer:
+      entry_points:
+        $entryPointList
+''';
+  }
+
+
+  // end <class PolymerTransformer>
 }
 
 /// Information for the pubspec of the system
@@ -152,6 +179,9 @@ class PubSpec {
       name = _id.snake;
     _parent = p;
   }
+
+  void addTransformer(PubTransformer transformer) =>
+    pubTransformers.add(transformer);
 
   void addDependency(PubDependency dep, [ bool ignoreIfPresent = false ]) {
     if(depNotFound(dep.name)) {
