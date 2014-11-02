@@ -267,7 +267,6 @@ void main(List<String> args) {
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
 ${analyzeTests}
-  addTask('test', createUnitTestTask(runner.testCore));
 
   runHop(args);
 }
