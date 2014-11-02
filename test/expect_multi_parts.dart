@@ -20,7 +20,7 @@ main() {
       () => expect(p2V1, 'goo'));
 
   test('multi-parts class P1C1 found',
-      () => expect(new P1C1() is int, true));
+      () => expect(new P1C1() is P1C1, true));
   test('multi-parts class P1C2 found',
       () => expect(new P1C2() is P1C2, true));
   test('multi-parts class P2C1 found',
