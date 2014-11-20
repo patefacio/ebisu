@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart library - a collection of parts
 class Library {
-
   Library(this._id);
 
   /// Id for this library
@@ -43,7 +42,6 @@ class Library {
   Access defaultMemberAccess = Access.RW;
   /// If true classes will get library functions to construct forwarding to ctors
   bool ctorSansNew = false;
-
   // custom <class Library>
 
   List<Class> get allClasses {

@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart *web* application. For non-web console app, use Script
 class App {
-
   App(this._id);
 
   /// Id for this app
@@ -21,7 +20,6 @@ class App {
   List<Variable> variables = [];
   /// If true this is a web ui app
   bool isWebUi = false;
-
   // custom <class App>
 
   set parent(p) {

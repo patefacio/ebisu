@@ -1,7 +1,6 @@
 part of ebisu.ebisu_dart_meta;
 
 class Variable {
-
   Variable(this._id);
 
   /// Id for this variable
@@ -46,7 +45,6 @@ class Variable {
   String get name => _name;
   /// Name of variable - varies depending on public/private
   String get varName => _varName;
-
   // custom <class Variable>
 
   void set parent(p) {

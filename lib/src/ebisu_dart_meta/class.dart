@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Metadata associated with a constructor
 class Ctor {
-
   /// Name of the class of this ctor.
   String className;
   /// Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()
@@ -19,7 +18,6 @@ class Ctor {
   bool isConst = false;
   /// If true implementation is `=> _init()`
   bool callsInit = false;
-
   // custom <class Ctor>
 
   Ctor();
@@ -130,7 +128,6 @@ ${formatFill(decl)})${body}
 
 /// Metadata associated with a member of a Dart class
 class Member {
-
   Member(this._id);
 
   /// Id for this class member
@@ -178,7 +175,6 @@ class Member {
   String get name => _name;
   /// Name of variable for the member - varies depending on public/private
   String get varName => _varName;
-
   // custom <class Member>
 
   bool get isPublic => access == Access.RW;
@@ -251,7 +247,6 @@ class Member {
 
 /// Metadata associated with a Dart class
 class Class {
-
   Class(this._id);
 
   /// Id for this Dart class
@@ -321,7 +316,6 @@ class Class {
   bool cacheHash = false;
   /// If true courtesyCtor is `=> _init()`
   bool ctorCallsInit = false;
-
   // custom <class Class>
 
 
@@ -651,7 +645,7 @@ int compareTo($otherType other) {
 
   String get implementsClause {
     if(implement.length>0) {
-      return ' implements ${implement.join(',\n    ')} ';
+      return '\n  implements ${implement.join(',\n    ')} ';
     } else {
       return ' ';
     }
@@ -726,6 +720,7 @@ ${
 
   String define() {
     if(parent == null) parent = library('stub');
+    if(jsonToString) jsonSupport = true;
     return _content;
   }
 
@@ -761,10 +756,11 @@ ${
 
   get _docComment => doc != null? docComment(doc) : '';
   get _abstractTag => isAbstract? 'abstract ':'';
-  get _classOpener => '$_classWithExtends${implementsClause}{\n';
+  get _classOpener => '$_classWithExtends${implementsClause}{';
   get _extendClass => (mixins.length > 0 && extend == null)? 'Object' : extend;
   get _classWithExtends => mixins.length>0?
-    ('${_abstractTag}class $className extends $_extendClass with ${mixins.join(',')}') :
+    ('''
+${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}''') :
     (extend != null?
         '${_abstractTag}class $className extends $extend' :
         '${_abstractTag}class $className');
@@ -779,7 +775,7 @@ ${
     .join('\n');
   get _topInjection => topInjection!=null? indentBlock(topInjection):'';
   get _includeCustom => includeCustom?
-    "\n${rightTrim(indentBlock(customBlock('class $name')))}" : '';
+    "${rightTrim(indentBlock(customBlock('class $name')))}" : '';
 
   get _jsonMembers => members
     .where((m) => !m.jsonTransient)
@@ -792,7 +788,7 @@ ${
 
   get _jsonToString => jsonToString? '''
 
-  toString() => ebisu_utils.prettyJsonMap(toJson());
+  toString() => '(\${runtimeType}) => \${ebisu_utils.prettyJsonMap(toJson())}';
 ''' : '';
 
   get _jsonSerialization => jsonSupport? '''

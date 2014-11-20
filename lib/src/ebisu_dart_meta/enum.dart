@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Define the id and value for an enum value
 class EnumValue {
-
   EnumValue(this._id, this.value);
 
   /// Id for this enum_value
@@ -11,7 +10,6 @@ class EnumValue {
   var value;
   /// Documentation for this enum_value
   String doc;
-
   // custom <class EnumValue>
 
   get snake => _id.snake;
@@ -37,7 +35,6 @@ enumValue([Id _id,
 /// At some point when true enums are provided this may be revisited.
 ///
 class Enum {
-
   Enum(this._id);
 
   /// Id for this enum
@@ -65,7 +62,6 @@ class Enum {
   bool libraryScopedValues = false;
   /// If true string value for each entry is snake case (default is shout)
   bool isSnakeString = false;
-
   // custom <class Enum>
 
   set parent(p) {

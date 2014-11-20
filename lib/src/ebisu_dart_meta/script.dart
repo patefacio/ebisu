@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// An agrument to a script
 class ScriptArg {
-
   ScriptArg(this._id);
 
   /// Id for this script argument
@@ -27,7 +26,6 @@ class ScriptArg {
   int position;
   /// An abbreviation (single character)
   String abbr;
-
   // custom <class ScriptArg>
 
   set parent(p) {
@@ -43,7 +41,6 @@ class ScriptArg {
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
 class Script {
-
   Script(this._id);
 
   /// Id for this script
@@ -58,7 +55,6 @@ class Script {
   List<String> imports = [];
   /// Arguments for this script
   List<ScriptArg> args = [];
-
   // custom <class Script>
 
 

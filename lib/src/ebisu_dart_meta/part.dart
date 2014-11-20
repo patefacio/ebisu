@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart part - as in 'part of' source file
 class Part {
-
   Part(this._id);
 
   /// Id for this part
@@ -27,7 +26,6 @@ class Part {
   set defaultMemberAccess(Access defaultMemberAccess) => _defaultMemberAccess = defaultMemberAccess;
   /// If true classes will get library functions to construct forwarding to ctors
   set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
-
   // custom <class Part>
 
   get defaultMemberAccess => _defaultMemberAccess == null ?

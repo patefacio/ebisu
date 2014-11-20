@@ -1,7 +1,6 @@
 part of ebisu.ebisu_dart_meta;
 
 class Benchmark {
-
   Benchmark(this._id);
 
   /// Id for this benchmark
@@ -12,7 +11,6 @@ class Benchmark {
   System get parent => _parent;
   /// Additional classes in the benchmark library
   List<Class> classes = [];
-
   // custom <class Benchmark>
 
   set parent(p) {

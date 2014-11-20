@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// A dependency of the system
 class PubDependency {
-
   PubDependency(this.name);
 
   /// Name of dependency
@@ -13,7 +12,6 @@ class PubDependency {
   String path;
   /// Git reference
   String gitRef;
-
   // custom <class PubDependency>
 
 
@@ -100,12 +98,10 @@ class PubDependency {
 
 /// Entry in the transformer sections
 abstract class PubTransformer {
-
   PubTransformer(this.name);
 
   /// Name of transformer
   String name;
-
   // custom <class PubTransformer>
 
   String get yamlEntry;
@@ -115,10 +111,8 @@ abstract class PubTransformer {
 
 /// A polymer transformer entry
 class PolymerTransformer extends PubTransformer {
-
   /// List of entry points
   List<String> entryPoints;
-
   // custom <class PolymerTransformer>
 
   PolymerTransformer(this.entryPoints) : super('polymer');
@@ -142,7 +136,6 @@ class PolymerTransformer extends PubTransformer {
 
 /// Information for the pubspec of the system
 class PubSpec {
-
   PubSpec(this._id);
 
   /// Id for this pub spec
@@ -163,7 +156,6 @@ class PubSpec {
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];
   List<PubTransformer> pubTransformers = [];
-
   // custom <class PubSpec>
 
   set parent(p) {
