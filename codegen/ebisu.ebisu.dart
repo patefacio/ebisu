@@ -634,6 +634,7 @@ text in generated ctor initializers''',
           member('json_support')
           ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
           ..type = 'bool'
+          ..access = WO
           ..classInit = 'false',
           member('has_rand_json')
           ..doc = "If true, generate randJson function"

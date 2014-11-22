@@ -279,7 +279,7 @@ class Class {
   /// If true, class is abstract
   bool isAbstract = false;
   /// If true, generate toJson/fromJson on all members that are not jsonTransient
-  bool jsonSupport = false;
+  set jsonSupport(bool jsonSupport) => _jsonSupport = jsonSupport;
   /// If true, generate randJson function
   bool hasRandJson = false;
   /// If true, generate operator== using all members
@@ -321,6 +321,8 @@ class Class {
 
   bool get ctorSansNew => _ctorSansNew == null?
   _parent.ctorSansNew : _ctorSansNew;
+
+  bool get jsonSupport => _jsonSupport || jsonToString;
 
   List<Member> get publicMembers =>
     members.where((member) => member.isPublic).toList();
@@ -720,7 +722,6 @@ ${
 
   String define() {
     if(parent == null) parent = library('stub');
-    if(jsonToString) jsonSupport = true;
     return _content;
   }
 
@@ -862,6 +863,7 @@ ${className}Builder._copyImpl(${className} _) :
   dynamic _parent;
   Access _defaultMemberAccess;
   Map<String,Ctor> _ctors = {};
+  bool _jsonSupport = false;
   bool _ctorSansNew;
   String _name;
   String _className;
