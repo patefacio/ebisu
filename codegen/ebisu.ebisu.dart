@@ -245,6 +245,13 @@ text to include in the license file.
         ]
       ],
       part('script')
+      ..enums = [
+        enum_('arg_type')
+        ..doc = 'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
+        ..values = [
+          id('string'), id('int'), id('long'), id('choice'), id('double'), id('bool')
+        ]
+      ]
       ..classes = [
         class_('script_arg')
         ..doc = 'An agrument to a script'
@@ -269,7 +276,8 @@ text to include in the license file.
           ..classInit = 'false',
           member('defaults_to')
           ..doc = 'Used to initialize the value in case not set'
-          ..type = 'dynamic',
+          ..type = 'dynamic'
+          ..access = RO,
           member('allowed')
           ..doc = 'A list of allowed values to choose from'
           ..type = 'List<String>'
@@ -278,7 +286,8 @@ text to include in the license file.
           ..doc = 'If not null - holds the position of a positional (i.e. unnamed) argument'
           ..type = 'int',
           member('abbr')
-          ..doc = 'An abbreviation (single character)'
+          ..doc = 'An abbreviation (single character)',
+          member('type')..type = 'ArgType',
         ],
         class_('script')
         ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
@@ -476,6 +485,13 @@ member('foo')..init = [1,2,3]
         ],
       ],
       part('class')
+      ..enums = [
+        enum_('json_key_format')
+        ..doc = 'When serializing json, how to name the keys'
+        ..values = [
+          id('cap_camel'), id('snake'),
+        ],
+      ]
       ..classes = [
         class_('ctor')
         ..doc = 'Metadata associated with a constructor'
@@ -702,6 +718,9 @@ text in generated ctor initializers''',
           ..doc = 'If true courtesyCtor is `=> _init()`'
           ..type = 'bool'
           ..classInit = 'false',
+          member('json_key_format')
+          ..doc = 'When serializing json, how to format the keys'
+          ..type = 'JsonKeyFormat',
         ],
       ],
       part('library')

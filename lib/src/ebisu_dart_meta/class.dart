@@ -1,5 +1,44 @@
 part of ebisu.ebisu_dart_meta;
 
+/// When serializing json, how to name the keys
+class JsonKeyFormat implements Comparable<JsonKeyFormat> {
+  static const CAP_CAMEL = const JsonKeyFormat._(0);
+  static const SNAKE = const JsonKeyFormat._(1);
+
+  static get values => [
+    CAP_CAMEL,
+    SNAKE
+  ];
+
+  final int value;
+
+  int get hashCode => value;
+
+  const JsonKeyFormat._(this.value);
+
+  copy() => this;
+
+  int compareTo(JsonKeyFormat other) => value.compareTo(other.value);
+
+  String toString() {
+    switch(this) {
+      case CAP_CAMEL: return "CapCamel";
+      case SNAKE: return "Snake";
+    }
+    return null;
+  }
+
+  static JsonKeyFormat fromString(String s) {
+    if(s == null) return null;
+    switch(s) {
+      case "CapCamel": return CAP_CAMEL;
+      case "Snake": return SNAKE;
+      default: return null;
+    }
+  }
+
+}
+
 /// Metadata associated with a constructor
 class Ctor {
   /// Name of the class of this ctor.
@@ -316,13 +355,15 @@ class Class {
   bool cacheHash = false;
   /// If true courtesyCtor is `=> _init()`
   bool ctorCallsInit = false;
+  /// When serializing json, how to format the keys
+  JsonKeyFormat jsonKeyFormat;
   // custom <class Class>
 
 
   bool get ctorSansNew => _ctorSansNew == null?
   _parent.ctorSansNew : _ctorSansNew;
 
-  bool get jsonSupport => _jsonSupport || jsonToString;
+  bool get jsonSupport => _jsonSupport || jsonToString || jsonKeyFormat != null;
 
   List<Member> get publicMembers =>
     members.where((member) => member.isPublic).toList();
@@ -668,7 +709,7 @@ int compareTo($otherType other) {
   String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
     String result;
     var lhs = '${member.varName}';
-    var key = '"${member.name}"';
+    var key = '"${_formattedMember(member)}"';
     var value = '$source[$key]';
     String rhs;
     if(isClassJsonable(member.type)) {
@@ -778,9 +819,15 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
   get _includeCustom => includeCustom?
     "${rightTrim(indentBlock(customBlock('class $name')))}" : '';
 
+  _formattedMember(Member m) =>
+    jsonKeyFormat == snake? m.id.snake :
+    jsonKeyFormat == capCamel? m.id.capCamel :
+    m.id.capCamel;
+
   get _jsonMembers => members
     .where((m) => !m.jsonTransient)
-    .map((m) => '"${m.name}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
+    .map((m) =>
+        '"${_formattedMember(m)}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
     .join('\n');
 
   get _jsonExtend =>
@@ -869,4 +916,8 @@ ${className}Builder._copyImpl(${className} _) :
   String _className;
 }
 // custom <part class>
+
+final snake = JsonKeyFormat.SNAKE;
+final capCamel = JsonKeyFormat.CAP_CAMEL;
+
 // end <part class>
