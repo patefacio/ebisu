@@ -2,10 +2,12 @@ part of ebisu.ebisu_dart_meta;
 
 /// When serializing json, how to name the keys
 class JsonKeyFormat implements Comparable<JsonKeyFormat> {
-  static const CAP_CAMEL = const JsonKeyFormat._(0);
-  static const SNAKE = const JsonKeyFormat._(1);
+  static const CAMEL = const JsonKeyFormat._(0);
+  static const CAP_CAMEL = const JsonKeyFormat._(1);
+  static const SNAKE = const JsonKeyFormat._(2);
 
   static get values => [
+    CAMEL,
     CAP_CAMEL,
     SNAKE
   ];
@@ -22,6 +24,7 @@ class JsonKeyFormat implements Comparable<JsonKeyFormat> {
 
   String toString() {
     switch(this) {
+      case CAMEL: return "Camel";
       case CAP_CAMEL: return "CapCamel";
       case SNAKE: return "Snake";
     }
@@ -31,6 +34,7 @@ class JsonKeyFormat implements Comparable<JsonKeyFormat> {
   static JsonKeyFormat fromString(String s) {
     if(s == null) return null;
     switch(s) {
+      case "Camel": return CAMEL;
       case "CapCamel": return CAP_CAMEL;
       case "Snake": return SNAKE;
       default: return null;
@@ -822,7 +826,8 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
   _formattedMember(Member m) =>
     jsonKeyFormat == snake? m.id.snake :
     jsonKeyFormat == capCamel? m.id.capCamel :
-    m.id.capCamel;
+    jsonKeyFormat == camel? m.id.camel :
+    m.id.camel;
 
   get _jsonMembers => members
     .where((m) => !m.jsonTransient)
@@ -919,5 +924,6 @@ ${className}Builder._copyImpl(${className} _) :
 
 final snake = JsonKeyFormat.SNAKE;
 final capCamel = JsonKeyFormat.CAP_CAMEL;
+final camel = JsonKeyFormat.CAMEL;
 
 // end <part class>

@@ -489,7 +489,7 @@ member('foo')..init = [1,2,3]
         enum_('json_key_format')
         ..doc = 'When serializing json, how to name the keys'
         ..values = [
-          id('cap_camel'), id('snake'),
+          id('camel'), id('cap_camel'), id('snake'),
         ],
       ]
       ..classes = [

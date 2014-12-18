@@ -162,8 +162,11 @@ String reduceVerticalWhitespace(String s) =>
 const List _defaultProtectionPair = const [ customBegin, customEnd ];
 const List _defaultProtections = const [_defaultProtectionPair];
 
+typedef String PostProcessor(String);
+
 bool mergeBlocksWithFile(String generated, String destFilePath,
-    [ List protections = _defaultProtections ]) {
+    [ List protections = _defaultProtections,
+      PostProcessor postProcessor ]) {
 
   File inFile = new File(destFilePath);
   if(inFile.existsSync()) {
@@ -172,6 +175,10 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
       generated = mergeWithContents(generated, currentText,
         pair[0], pair[1]);
     });
+
+    if(postProcessor != null) {
+      generated = postProcessor(generated);
+    }
 
     if(generated == currentText) {
       print('No change: $destFilePath');
@@ -190,10 +197,13 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
 }
 
 bool mergeWithFile(String generated, String destFilePath,
-    [ String beginProtect = customBegin,
-      String endProtect = customEnd ]) {
+    [
+      String beginProtect = customBegin,
+      String endProtect = customEnd,
+      PostProcessor postProcessor
+    ]) {
   return mergeBlocksWithFile(generated, destFilePath,
-      [[ beginProtect, endProtect ]]);
+      [[ beginProtect, endProtect ]], postProcessor);
 }
 
 String mergeWithContents(String generated, String currentText,
