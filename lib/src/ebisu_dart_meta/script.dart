@@ -139,6 +139,8 @@ class Script {
       imports.map((i) => importStatement(i)).toList());
   }
 
+  get nonPositionalArgs => args.where((a) => a.position == null);
+  
   void generate() {
     String scriptName = _id.snake;
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
@@ -213,7 +215,7 @@ $_addOptions
       exit(0);
     }
 ${
-indentBlock(args.map((arg) => _coerceArg(arg)).join('\n'), '    ')
+indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
 }
 $_pullPositionals
 $_positionals
