@@ -1034,7 +1034,6 @@ other languages like D) using a fairly declarative aproach.
         ..homepage = 'https://github.com/patefacio/ebisu'
         ..dependencies = [
           pubdep('path'),
-          pubdep('id'),
         ]
         ..devDependencies = [
           pubdep('unittest'),
