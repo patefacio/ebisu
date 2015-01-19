@@ -44,7 +44,7 @@ class Part {
       _parent.isTest?
       "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
       "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
-    mergeWithFile('${chomp(_content)}\n', _filePath);
+    mergeWithDartFile('${chomp(_content)}\n', _filePath);
   }
 
   bool get ctorSansNew => _ctorSansNew == null?

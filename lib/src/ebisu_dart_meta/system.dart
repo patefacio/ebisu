@@ -257,7 +257,7 @@ ${testLibraries
       ]));
 ''';
 
-      mergeWithFile('''
+      mergeWithDartFile('''
 library hop_runner;
 
 import 'dart:async';
@@ -289,7 +289,7 @@ Future<List<String>> _getLibs() {
           hopRunnerPath);
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
-      mergeWithFile('''
+      mergeWithDartFile('''
 import 'package:unittest/unittest.dart';
 import 'package:logging/logging.dart';
 ${testLibraries
@@ -319,7 +319,7 @@ ${testLibraries
     }
 
     if(testLibraries.length > 0) {
-      mergeWithFile('''
+      mergeWithDartFile('''
 import 'package:unittest/html_enhanced_config.dart';
 import 'runner.dart' as runner;
 

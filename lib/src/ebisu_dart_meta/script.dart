@@ -144,7 +144,7 @@ class Script {
   void generate() {
     String scriptName = _id.snake;
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
-    mergeWithFile('${_content}\n', scriptPath);
+    mergeWithDartFile('${_content}\n', scriptPath);
   }
 
   Iterable get requiredArgs =>

@@ -35,7 +35,7 @@ class App {
     String appHtmlPath = "${_parent.rootPath}/web/${_id.snake}.html";
     String appCssPath = "${_parent.rootPath}/web/${_id.snake}.css";
     String appBuildPath = "${_parent.rootPath}/build.dart";
-    mergeWithFile(_content, appPath);
+    mergeWithDartFile(_content, appPath);
     htmlMergeWithFile('''<!DOCTYPE html>
 
 <html>
@@ -70,7 +70,7 @@ h1, p {
 ${cssCustomBlock(id.toString())}
 ''', appCssPath);
 
-    mergeWithFile('''
+    mergeWithDartFile('''
 import 'dart:io';
 import 'package:polymer/component_build.dart';
 

@@ -126,7 +126,7 @@ class Library {
 
   void generate() {
     ensureParent();
-    mergeWithFile('${_content}\n', libStubPath);
+    mergeWithDartFile('${_content}\n', libStubPath);
     parts.forEach((part) => part.generate());
     benchmarks.forEach((benchmark) => benchmark.generate());
   }

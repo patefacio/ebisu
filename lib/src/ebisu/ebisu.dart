@@ -266,4 +266,28 @@ bool codeEquivalent(String s1, String s2, { bool stripComments : false }) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
+String dartFormat(String contents, [String fname = 'ebisu_txt.dart']) {
+  final tmpDir = Directory.systemTemp.createTempSync();
+  var tmpFile = new File(path.join(tmpDir.path, fname));
+  tmpFile.writeAsStringSync(contents);
+  final formatted = Process.runSync('dartfmt', [tmpFile.path]).stdout;
+  tmpDir.deleteSync(recursive : true);
+  return formatted;
+}
+
+bool _useDartFormatter =
+  Platform.environment['EBISU_DART_FORMAT'] != null &&
+  Platform.environment['EBISU_DART_FORMAT'] != '';
+
+set useDartFormatter(bool v) => _useDartFormatter = v;
+get useDartFormatter => _useDartFormatter;
+
+bool mergeWithDartFile(String generated, String destFilePath,
+    { bool useFormatter }) {
+  if(useFormatter == null) useFormatter = _useDartFormatter;
+  return mergeWithFile(generated, destFilePath, customBegin, customEnd,
+      useFormatter? dartFormat : null);
+}
+
+
 // end <part ebisu>
