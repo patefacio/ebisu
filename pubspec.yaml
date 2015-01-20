@@ -15,6 +15,9 @@ dependencies:
   id:
     git: git://github.com/patefacio/id
 
+  dart_style:
+    git: git://github.com/dart-lang/dart_style
+
 # end <ebisu dependencies>
 
 dev_dependencies:

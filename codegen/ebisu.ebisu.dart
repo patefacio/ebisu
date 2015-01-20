@@ -25,7 +25,7 @@ void main() {
 generate() {
 
   Library ebisu_utils = library('ebisu_utils')
-    ..imports = [ 'math', "'dart:convert' as convert" ]
+    ..imports = [ 'math', "'dart:convert' as convert", ]
     ..includeLogger = true
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
@@ -1089,6 +1089,7 @@ regenerating.
 
       ]
       ..imports = [
+        'package:dart_style/dart_style.dart',
         'io',
         '"package:path/path.dart" as path'
       ]

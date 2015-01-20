@@ -209,6 +209,7 @@ class PubSpec {
       _description,
       _dependencies,
       _devDependencies,
+      _dependencyOverrides,
       _transformers,
       _custom,
     ]
@@ -231,6 +232,10 @@ dev_dependencies:
 ${devDependencies.map((d) => d.yamlEntry).join()}
 ${scriptCustomBlock('$name dev dependencies')}''';
 
+  get _dependencyOverrides => '''
+dependency_overrides:
+${scriptCustomBlock('$name dependency overrides')}''';
+  
   get _transformers => '''
 transformers:
 ${pubTransformers.map((t) => t.yamlEntry).join()}''';

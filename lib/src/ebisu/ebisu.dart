@@ -266,13 +266,15 @@ bool codeEquivalent(String s1, String s2, { bool stripComments : false }) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
+final _dartFormatter = new DartFormatter();
+
 String dartFormat(String contents, [String fname = 'ebisu_txt.dart']) {
-  final tmpDir = Directory.systemTemp.createTempSync();
-  var tmpFile = new File(path.join(tmpDir.path, fname));
-  tmpFile.writeAsStringSync(contents);
-  final formatted = Process.runSync('dartfmt', [tmpFile.path]).stdout;
-  tmpDir.deleteSync(recursive : true);
-  return formatted;
+  try {
+    return _dartFormatter.format(contents);
+  } on FormatException catch(ex) {
+    _logger.warn('Caught dart formatting exception $ex');
+    return contents;
+  }
 }
 
 bool _useDartFormatter =
