@@ -140,7 +140,7 @@ class Script {
   }
 
   get nonPositionalArgs => args.where((a) => a.position == null);
-  
+
   void generate() {
     String scriptName = _id.snake;
     String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
@@ -192,7 +192,7 @@ result['${arg.name}'] = argResults['${arg.name}'] != null?
     arg.type == ArgType.INT? _coerced('int.parse', arg) :
     arg.type == ArgType.LONG? _coerced('int.parse', arg) :
     arg.type == ArgType.DOUBLE? _coerced('double.parse', arg) :
-    arg.type == ArgType.BOOL? _coerced('bool.parse', arg) :
+    arg.type == ArgType.BOOL? _coerced(null, arg) :
     _coerced(null, arg);
 
   get _parseArgs => '''
