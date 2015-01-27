@@ -120,6 +120,8 @@ class Script {
   List<String> imports = [];
   /// Arguments for this script
   List<ScriptArg> args = [];
+  /// If true makes script main async
+  bool isAsync = false;
   // custom <class Script>
 
 
@@ -271,7 +273,7 @@ ${arg.doc}
 
   get _loggerInit => "final _logger = new Logger('$id');\n";
   get _main => '''
-main(List<String> args) {
+main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.INFO;

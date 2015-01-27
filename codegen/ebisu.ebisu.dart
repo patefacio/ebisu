@@ -304,6 +304,9 @@ text to include in the license file.
           ..doc = 'Arguments for this script'
           ..type = 'List<ScriptArg>'
           ..classInit = '[]',
+          member('is_async')
+          ..doc = 'If true makes script main async'
+          ..classInit = false,
         ],
       ],
       part('pub')
