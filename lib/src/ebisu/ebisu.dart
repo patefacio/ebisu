@@ -266,7 +266,8 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
 
 final _dartFormatter = new DartFormatter();
 
-String dartFormat(String contents, [String fname = 'ebisu_txt.dart']) {
+/// Passes *contents* through *dart_style* formatting
+String dartFormat(String contents) {
   try {
     return _dartFormatter.format(contents);
   } on FormatException catch (ex) {
@@ -278,6 +279,7 @@ String dartFormat(String contents, [String fname = 'ebisu_txt.dart']) {
 bool _useDartFormatter = Platform.environment['EBISU_DART_FORMAT'] != null &&
     Platform.environment['EBISU_DART_FORMAT'] != '';
 
+/// when set will format generated code using awesome *dart_style* package
 set useDartFormatter(bool v) => _useDartFormatter = v;
 get useDartFormatter => _useDartFormatter;
 
@@ -288,22 +290,22 @@ bool mergeWithDartFile(String generated, String destFilePath,
       useFormatter ? dartFormat : null);
 }
 
+/// ignores null objects and empty strings
+bool _ignored(Object o) => o == null || (o is String && o == '');
+
+/// If provided an iterable of items joins each with *nl*
+///  mnemonic: like <br> in html
 String br(Object o) => o == null
     ? null
-    : o is Iterable
-        ? br(combine(o))
-        : (o is String && o.length > 0) ? '$o\n' : '';
+    : o is Iterable ? br(combine(o)) : _ignored(o) ? '' : '$o\n';
 
-bool ignored(Object o) =>
-    o == null || (o is String && (o as String).length == 0);
-
+/// combines the parts recursively if necessary
 String combine(Iterable<Object> parts) {
   final result = parts
       .map((o) => (o is Iterable) ? combine(o) : o)
-      .where((o) => !ignored(o))
+      .where((o) => !_ignored(o))
       .join('\n');
   return result;
-  //return result == '' ? null : result;
 }
 
 // end <part ebisu>

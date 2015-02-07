@@ -84,6 +84,8 @@ class Enum {
 
   String valueAsString(value) => isSnakeString ? value.snake : value.capCamel;
 
+  String valueId(EnumValue v) => requiresClass? v.shout : v.camel;
+
   get _content => br(requiresClass
       ? [
     _docComment,
@@ -100,13 +102,14 @@ class Enum {
       : [
     _docComment,
     'enum $enumName {',
-    values.map((v) => '  ${v.camel}').join(',\n'),
-    '}'
+    values.map((v) => '  ${valueId(v)}').join(',\n'),
+    '}',
+    _libraryScopedValues,
   ]);
 
   get _docComment => doc != null ? docComment(doc) : '';
   get _enumEntries => values
-      .map((v) => 'static const ${v.shout} = const $enumName._(${v.value});')
+      .map((v) => 'static const ${valueId(v)} = const $enumName._(${v.value});')
       .join('\n');
   get _enumValues => values.map((v) => v.shout).join(',\n  ');
   get _enumClassBegin => '''
@@ -134,7 +137,7 @@ ${indentBlock(_enumEntries)}
 ${
 indentBlock(
   values.map((v) =>
-    'case ${v.shout}: return "${valueAsString(v)}";').join('\n'), '      ')
+    'case ${valueId(v)}: return "${valueAsString(v)}";').join('\n'), '      ')
 }
     }
     return null;
@@ -148,7 +151,7 @@ indentBlock(
 ${
 indentBlock(
   values.map((v) =>
-    'case "${valueAsString(v)}": return ${v.shout};').join('\n'), '      ')
+    'case "${valueAsString(v)}": return ${valueId(v)};').join('\n'), '      ')
 }
       default: return null;
     }
@@ -180,7 +183,7 @@ indentBlock(
   get _enumClassEnd => '}\n';
   get _libraryScopedValues => libraryScopedValues
       ? '''
-${values.map((v) => 'const ${v.shout} = ${enumName}.${v.shout};').join('\n')}
+${values.map((v) => 'const ${valueId(v)} = ${enumName}.${valueId(v)};').join('\n')}
 '''
       : '';
 
