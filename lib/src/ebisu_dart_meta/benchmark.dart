@@ -22,9 +22,7 @@ class Benchmark {
     final dir = join(_parent.rootPath, 'benchmarks');
     final benchSnake = 'bench_$idStr';
     final benchLib = library(benchSnake)
-      ..imports = [
-        'package:benchmark_harness/benchmark_harness.dart'
-      ];
+      ..imports = ['package:benchmark_harness/benchmark_harness.dart'];
 
     final klass = class_(benchSnake)
       ..extend = 'BenchmarkBase'

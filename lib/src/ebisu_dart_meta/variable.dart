@@ -49,11 +49,11 @@ class Variable {
 
   void set parent(p) {
     _name = id.camel;
-    _varName = isPublic? _name : "_${_name}";
-    if(type == null) {
-      if((init != null) && (init is! String)) {
+    _varName = isPublic ? _name : "_${_name}";
+    if (type == null) {
+      if ((init != null) && (init is! String)) {
         type = '${init.runtimeType}';
-        if(type == 'LinkedHashMap') type = 'Map';
+        if (type == 'LinkedHashMap') type = 'Map';
       } else {
         type = 'String';
       }
@@ -64,20 +64,14 @@ class Variable {
 
   String define() => _content;
 
-  get _content =>
-    [
-      _docComment,
-      _init
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [_docComment, _init].where((line) => line != '').join('\n');
 
-  get _docComment => (doc != null)? rightTrim(docComment(doc)) : '';
-  get _const => isConst? 'const ' : '';
-  get _final => isFinal? 'final ' : '';
+  get _docComment => (doc != null) ? rightTrim(docComment(doc)) : '';
+  get _const => isConst ? 'const ' : '';
+  get _final => isFinal ? 'final ' : '';
   get _uninitialized => '$type $varName;';
   get _initialized => '$type $varName = $_initVal;';
-  get _initVal => type == 'String'? smartQuote(init) : init;
+  get _initVal => type == 'String' ? smartQuote(init) : init;
   get _init => '$_const$_final${init == null? _uninitialized : _initialized}';
 
   // end <class Variable>

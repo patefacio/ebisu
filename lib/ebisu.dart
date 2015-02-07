@@ -27,18 +27,23 @@ final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
 /// with multiple pubspecs would entail updating the config file and
 /// regenerating.
 ///
-final String ebisuPubVersions = (Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
-  Platform.environment['EBISU_PUB_VERSIONS'] :
-  "${Platform.environment['HOME']}/.ebisu_pub_versions.json";
-Map<String,String> licenseMap = {
-
-  'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
-  'mit' : 'License: <a href="http://opensource.org/licenses/MIT">MIT License</a>',
-  'apache-2.0' : 'License: <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>',
-  'bsd-3' : 'License: <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause "Revised"</a>',
-  'bsd-2' : 'License: <a href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>',
-  'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
-
+final String ebisuPubVersions = (Platform.environment['EBISU_PUB_VERSIONS'] !=
+        null)
+    ? Platform.environment['EBISU_PUB_VERSIONS']
+    : "${Platform.environment['HOME']}/.ebisu_pub_versions.json";
+Map<String, String> licenseMap = {
+  'boost':
+      'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
+  'mit':
+      'License: <a href="http://opensource.org/licenses/MIT">MIT License</a>',
+  'apache-2.0':
+      'License: <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>',
+  'bsd-3':
+      'License: <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause "Revised"</a>',
+  'bsd-2':
+      'License: <a href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>',
+  'mozilla-2.0':
+      'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
 };
 // custom <library ebisu>
 // end <library ebisu>

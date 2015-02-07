@@ -1,46 +1,10 @@
 part of ebisu.ebisu_dart_meta;
 
 /// When serializing json, how to name the keys
-class JsonKeyFormat implements Comparable<JsonKeyFormat> {
-  static const CAMEL = const JsonKeyFormat._(0);
-  static const CAP_CAMEL = const JsonKeyFormat._(1);
-  static const SNAKE = const JsonKeyFormat._(2);
-
-  static get values => [
-    CAMEL,
-    CAP_CAMEL,
-    SNAKE
-  ];
-
-  final int value;
-
-  int get hashCode => value;
-
-  const JsonKeyFormat._(this.value);
-
-  copy() => this;
-
-  int compareTo(JsonKeyFormat other) => value.compareTo(other.value);
-
-  String toString() {
-    switch(this) {
-      case CAMEL: return "Camel";
-      case CAP_CAMEL: return "CapCamel";
-      case SNAKE: return "Snake";
-    }
-    return null;
-  }
-
-  static JsonKeyFormat fromString(String s) {
-    if(s == null) return null;
-    switch(s) {
-      case "Camel": return CAMEL;
-      case "CapCamel": return CAP_CAMEL;
-      case "Snake": return SNAKE;
-      default: return null;
-    }
-  }
-
+enum JsonKeyFormat {
+  camel,
+  capCamel,
+  snake
 }
 
 /// Metadata associated with a constructor
@@ -65,41 +29,39 @@ class Ctor {
 
   Ctor();
 
-  String get qualifiedName => (name == 'default' || name == '')?
-    className : '${className}.${name}';
+  String get qualifiedName =>
+      (name == 'default' || name == '') ? className : '${className}.${name}';
 
   String get ctorSansNew {
     var classId = idFromString(className);
-    var id =
-    (name == 'default' || name == '')?
-    classId :
-    ((name == '_default')?
-        idFromString('${classId.snake}_default') :
-        new Id('${classId.snake}_${idFromString(name).snake}'));
+    var id = (name == 'default' || name == '')
+        ? classId
+        : ((name == '_default')
+            ? idFromString('${classId.snake}_default')
+            : new Id('${classId.snake}_${idFromString(name).snake}'));
 
     List<String> parms = [];
     List<String> args = [];
-    if(members.length > 0) {
+    if (members.length > 0) {
       List<String> required = [];
       members.forEach((m) => required.add('${m.type} ${m.varName}'));
       parms.add("${required.join(',\n')}");
       args.add(members.map((m) => '  ${m.varName}').join(',\n'));
     }
-    if(optMembers.length > 0) {
+    if (optMembers.length > 0) {
       List<String> optional = [];
-      optMembers.forEach((m) =>
-          optional.add('    ${m.type} ${m.varName}' +
-              ((m.ctorInit == null)? '' : ' = ${m.ctorInit}')));
+      optMembers.forEach((m) => optional.add('    ${m.type} ${m.varName}' +
+          ((m.ctorInit == null) ? '' : ' = ${m.ctorInit}')));
       parms.add("  [\n${optional.join(',\n')}\n  ]");
       args.add(optMembers.map((m) => '  ${m.varName}').join(',\n'));
     }
-    if(namedMembers.length > 0) {
+    if (namedMembers.length > 0) {
       List<String> named = [];
-      namedMembers.forEach((m) =>
-          named.add('    ${m.type} ${m.varName}' +
-                    ((m.ctorInit == null)? '':' : ${m.ctorInit}')));
+      namedMembers.forEach((m) => named.add('    ${m.type} ${m.varName}' +
+          ((m.ctorInit == null) ? '' : ' : ${m.ctorInit}')));
       parms.add("  {\n${named.join(',\n')}\n  }");
-      args.add(namedMembers.map((m) => '  ${m.varName}:${m.varName}').join(',\n'));
+      args.add(
+          namedMembers.map((m) => '  ${m.varName}:${m.varName}').join(',\n'));
     }
     String parmText = parms.join(',\n');
     String argText = args.join(',\n');
@@ -117,43 +79,45 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
 
   String get ctorText {
     List<String> result = [];
-    if(members.length > 0) {
+    if (members.length > 0) {
       List<String> required = [];
       members.forEach((m) => required.add('this.${m.varName}'));
       result.addAll(prepJoin(required));
     }
-    if(optMembers.length > 0) {
-      if(result.length > 0) result[result.length-1] += ',';
+    if (optMembers.length > 0) {
+      if (result.length > 0) result[result.length - 1] += ',';
       result.add('[');
       List<String> optional = [];
-      optMembers.forEach((m) =>
-          optional.add('this.${m.varName}' +
-              ((m.ctorInit == null)? '' : ' = ${m.ctorInit}')));
+      optMembers.forEach((m) => optional.add('this.${m.varName}' +
+          ((m.ctorInit == null) ? '' : ' = ${m.ctorInit}')));
       result.addAll(prepJoin(optional));
       result.add(']');
     }
-    if(namedMembers.length > 0) {
-      if(result.length > 0) result[result.length-1] += ',';
+    if (namedMembers.length > 0) {
+      if (result.length > 0) result[result.length - 1] += ',';
       result.add('{');
       List<String> named = [];
-      namedMembers.forEach((m) =>
-        named.add('this.${m.varName}' +
-            ((m.ctorInit == null)? '':' : ${m.ctorInit}')));
+      namedMembers.forEach((m) => named.add('this.${m.varName}' +
+          ((m.ctorInit == null) ? '' : ' : ${m.ctorInit}')));
       result.addAll(prepJoin(named));
       result.add('}');
     }
 
-    String cb = hasCustom?
-    indentBlock(rightTrim(customBlock('${qualifiedName}'))): '';
-    String constTag = isConst && !callsInit? 'const ' : '';
-    String body = callsInit? ' { _init(); }' :
-    (isConst || !hasCustom)? ';' : ''' {
+    String cb = hasCustom
+        ? indentBlock(rightTrim(customBlock('${qualifiedName}')))
+        : '';
+    String constTag = isConst && !callsInit ? 'const ' : '';
+    String body = callsInit
+        ? ' { _init(); }'
+        : (isConst || !hasCustom)
+            ? ';'
+            : ''' {
 ${chomp(cb, true)}
 }''';
 
     List decl = [];
     var method = '${constTag}${qualifiedName}(';
-    if(result.length > 0) {
+    if (result.length > 0) {
       decl
         ..add('$method${result.removeAt(0)}')
         ..addAll(result);
@@ -228,14 +192,12 @@ class Member {
 
   set parent(p) {
     _name = id.camel;
-    if(type == 'String' &&
-        (classInit != null) &&
-        (classInit is! String)) {
+    if (type == 'String' && (classInit != null) && (classInit is! String)) {
       type = '${classInit.runtimeType}';
-      if(type.contains('LinkedHashMap')) type = 'Map';
+      if (type.contains('LinkedHashMap')) type = 'Map';
     }
-    if(access == null) access = Access.RW;
-    _varName = isPublic? _name : "_$_name";
+    if (access == null) access = Access.RW;
+    _varName = isPublic ? _name : "_$_name";
     _parent = p;
   }
 
@@ -245,39 +207,39 @@ class Member {
   bool get hasPublicCode => isPublic || hasGetter || hasSetter;
   bool get hasPrivateCode => !isPublic;
 
-  String get finalDecl => isFinal? 'final ' : '';
-  String get observableDecl => isObservable? '@observable ' : '';
-  String get staticDecl => isStatic? 'static ' : '';
+  String get finalDecl => isFinal ? 'final ' : '';
+  String get observableDecl => isObservable ? '@observable ' : '';
+  String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreClassInit =>
-    _parent.nonTransientMembers.every((m) => m.isFinal)
-    && _parent.courtesyCtor
-    && !jsonTransient;
+      _parent.nonTransientMembers.every((m) => m.isFinal) &&
+          _parent.courtesyCtor &&
+          !jsonTransient;
 
-  String get decl =>
-    (_ignoreClassInit || classInit == null)?
-    "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};" :
-    ((type == 'String')?
-        "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};" :
-        "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
+  String get decl => (_ignoreClassInit || classInit == null)
+      ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};"
+      : ((type == 'String')
+          ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};"
+          : "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
 
   String get publicCode {
     //print("$name has public code");
     var result = [];
-    if(doc != null) result.add('${docComment(rightTrim(doc))}');
-    if(hasGetter) {
+    if (doc != null) result.add('${docComment(rightTrim(doc))}');
+    if (hasGetter) {
       result.add('$type get $name => $varName;');
     }
-    if(hasSetter) {
+    if (hasSetter) {
       result.add('set $name($type $name) => $varName = $name;');
     }
-    if(isPublic) result.add(decl);
+    if (isPublic) result.add(decl);
     return result.join('\n');
   }
 
   String get privateCode {
     var result = [];
-    if(doc != null && !hasPublicCode) result.add('${docComment(rightTrim(doc))}');
-    if(!isPublic) result.add(decl);
+    if (doc != null && !hasPublicCode) result
+        .add('${docComment(rightTrim(doc))}');
+    if (!isPublic) result.add(decl);
     return result.join('\n');
   }
 
@@ -310,7 +272,8 @@ class Class {
   /// If true a custom section will be included for Dart class
   bool includeCustom = true;
   /// Default access for members
-  set defaultMemberAccess(Access defaultMemberAccess) => _defaultMemberAccess = defaultMemberAccess;
+  set defaultMemberAccess(Access defaultMemberAccess) =>
+      _defaultMemberAccess = defaultMemberAccess;
   /// List of members of this class
   List<Member> members = [];
   /// List of ctors requiring custom block
@@ -318,7 +281,7 @@ class Class {
   /// List of ctors that should be const
   List<String> ctorConst = [];
   /// List of ctors of this class
-  Map<String,Ctor> get ctors => _ctors;
+  Map<String, Ctor> get ctors => _ctors;
   /// If true, class is abstract
   bool isAbstract = false;
   /// If true, generate toJson/fromJson on all members that are not jsonTransient
@@ -363,42 +326,39 @@ class Class {
   JsonKeyFormat jsonKeyFormat;
   // custom <class Class>
 
-
-  bool get ctorSansNew => _ctorSansNew == null?
-  _parent.ctorSansNew : _ctorSansNew;
+  bool get ctorSansNew =>
+      _ctorSansNew == null ? _parent.ctorSansNew : _ctorSansNew;
 
   bool get jsonSupport => _jsonSupport || jsonToString || jsonKeyFormat != null;
 
   List<Member> get publicMembers =>
-    members.where((member) => member.isPublic).toList();
+      members.where((member) => member.isPublic).toList();
 
   List<Member> get privateMembers =>
-    members.where((member) => !member.isPublic).toList();
+      members.where((member) => !member.isPublic).toList();
 
   List<Member> get nonStaticMembers =>
-    members.where((member) => !member.isStatic).toList();
+      members.where((member) => !member.isStatic).toList();
 
   List<Member> get nonTransientMembers =>
-    nonStaticMembers.where((member) => !member.jsonTransient).toList();
+      nonStaticMembers.where((member) => !member.jsonTransient).toList();
 
   List<Member> get transientMembers =>
-    nonStaticMembers.where((member) => member.jsonTransient).toList();
+      nonStaticMembers.where((member) => member.jsonTransient).toList();
 
-  List<Ctor> get publicCtors =>
-    ctors
-    .keys
-    .where((String name) => name.length == 0 || name[0] != '_')
-    .map((String name) => ctors[name])
-    .toList();
+  List<Ctor> get publicCtors => ctors.keys
+      .where((String name) => name.length == 0 || name[0] != '_')
+      .map((String name) => ctors[name])
+      .toList();
 
   bool get requiresEqualityHelpers =>
-    opEquals && members.any((m) => m.isMapOrList);
+      opEquals && members.any((m) => m.isMapOrList);
 
   String get jsonCtor {
-    if(courtesyCtor) {
+    if (courtesyCtor) {
       return '''
 return new ${_className}._fromJsonMapImpl(json);''';
-    } else if(_ctors.containsKey('_default')) {
+    } else if (_ctors.containsKey('_default')) {
       return '''
 return new ${_className}._default()
   .._fromJsonMapImpl(json);''';
@@ -410,11 +370,11 @@ return new ${_className}()
   }
 
   static String memberCompare(m) {
-    final myName = m.varName == 'other'? 'this.other' : m.varName;
+    final myName = m.varName == 'other' ? 'this.other' : m.varName;
     final otherName = 'other.${m.varName}';
-    if(m.type.startsWith('List')) {
+    if (m.type.startsWith('List')) {
       return '  const ListEquality().equals($myName, $otherName)';
-    } else if(m.type.startsWith('Map')) {
+    } else if (m.type.startsWith('Map')) {
       return '  const MapEquality().equals($myName, $otherName)';
     } else {
       return '  $myName == $otherName';
@@ -423,31 +383,30 @@ return new ${_className}()
 
   String get overrideHashCode {
     String result;
-    var parts = [ ];
-    parts.addAll(
-      nonTransientMembers.map((Member m) {
-        if(m.isList) {
-          return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName})';
-        } else if(m.isMap) {
-          return 'const MapEquality().hash(${m.varName})';
-        } else {
-          return '${m.varName}';
-        }
-      }));
+    var parts = [];
+    parts.addAll(nonTransientMembers.map((Member m) {
+      if (m.isList) {
+        return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName})';
+      } else if (m.isMap) {
+        return 'const MapEquality().hash(${m.varName})';
+      } else {
+        return '${m.varName}';
+      }
+    }));
 
     int numMembers = nonTransientMembers.length;
-    if(numMembers == 1) {
+    if (numMembers == 1) {
       result = '${parts.first}.hashCode';
-    } else if(numMembers == 2) {
+    } else if (numMembers == 2) {
       result = 'hash2(${parts.join(r", ")})';
-    } else if(numMembers == 3) {
+    } else if (numMembers == 3) {
       result = 'hash3(${parts.join(r", ")})';
-    } else if(numMembers == 4) {
+    } else if (numMembers == 4) {
       result = 'hash4(${parts.join(",\n  ")})';
     } else {
       result = 'hashObjects([\n  ${parts.join(",\n  ")}])';
     }
-    if(cacheHash) {
+    if (cacheHash) {
       result = '''
 _hashCode != null? _hashCode :
   (_hashCode = $result)''';
@@ -466,16 +425,16 @@ ${nonTransientMembers
 int get hashCode => ${overrideHashCode};
 ''';
 
-  static final _simpleCopies = new Set.from(['int', 'double', 'num', 'bool',
-      'String', 'DateTime', 'Date' ]);
+  static final _simpleCopies = new Set.from(
+      ['int', 'double', 'num', 'bool', 'String', 'DateTime', 'Date']);
 
   static _assignCopy(String type, String varname) {
-    if(_simpleCopies.contains(type)) return varname;
-    if(isMapType(type)) {
+    if (_simpleCopies.contains(type)) return varname;
+    if (isMapType(type)) {
       return '''
 valueApply($varname, (v) =>
   ${_assignCopy(jsonMapValueType(type), "v")})''';
-    } else if(isSplayTreeSetType(type)) {
+    } else if (isSplayTreeSetType(type)) {
       final elementType = templateParameterType(type);
       //      return 'ebisu_utils.deepCopySplayTreeSet($varname)';
       return '''
@@ -483,16 +442,16 @@ $varname == null? null :
   (new $type()
   ..addAll(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
-    } else if(isSetType(type)) {
+    } else if (isSetType(type)) {
       final elementType = templateParameterType(type);
       //return 'ebisu_utils.deepCopySet($varname)';
       return '''
 $varname == null? null :
   (new Set.from(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
-    } else if(isListType(type)) {
+    } else if (isListType(type)) {
       final elementType = jsonListValueType(type);
-      if(_simpleCopies.contains(elementType)) {
+      if (_simpleCopies.contains(elementType)) {
         return '$varname == null? null: new List.from($varname)';
       } else {
         return '''
@@ -505,35 +464,37 @@ $varname == null? null :
   }
 
   String get copyMethod {
-    if(courtesyCtor) {
+    if (courtesyCtor) {
       return 'copy() => new ${className}._copy(this);';
     } else {
       var terms = [];
       members.forEach((m) {
-            final rhs = _assignCopy(m.type, m.varName);
-            terms.add('\n  ..${m.varName} = $rhs');
-          });
-      var ctorName = defaultCtor? _className : '${_className}._default';
+        final rhs = _assignCopy(m.type, m.varName);
+        terms.add('\n  ..${m.varName} = $rhs');
+      });
+      var ctorName = defaultCtor ? _className : '${_className}._default';
       return 'copy() => new ${ctorName}()${terms.join()};\n';
     }
   }
 
-  String get _copyCtor => courtesyCtor && (jsonSupport || copyable)? indentBlock('''
+  String get _copyCtor => courtesyCtor && (jsonSupport || copyable)
+      ? indentBlock('''
 ${className}._copy(${className} other) :
 ${
   indentBlock(members
     .map((m) => '${m.varName} = ${_assignCopy(m.type, "other.${m.varName}")}')
     .join(',\n'), '  ')
 };
-''', '  '):'';
+''', '  ')
+      : '';
 
   String get comparableMethod {
     var comparableMembers = members.where((m) => m.isInComparable).toList();
-    if(comparableMembers
-        .any((m) => isListType(m.type) || isMapType(m.type))) {
-      throw new ArgumentError('$name can not have compareTo with list or map members');
+    if (comparableMembers.any((m) => isListType(m.type) || isMapType(m.type))) {
+      throw new ArgumentError(
+          '$name can not have compareTo with list or map members');
     }
-    if(comparableMembers.length == 1) {
+    if (comparableMembers.length == 1) {
       return '''
 int compareTo($_className other) =>
   ${comparableMembers[0].varName}.compareTo(other.${comparableMembers[0].varName});
@@ -543,7 +504,7 @@ int compareTo($_className other) =>
     comparableMembers.forEach((m) {
       terms.add('((result = ${m.varName}.compareTo(other.${m.varName})) == 0)');
     });
-    final otherType = polymorphicComparable? 'Object' : _className;
+    final otherType = polymorphicComparable ? 'Object' : _className;
     return '''
 int compareTo($otherType other) {
   int result = 0;
@@ -553,75 +514,70 @@ int compareTo($otherType other) {
 ''';
   }
 
-
-  get defaultMemberAccess => _defaultMemberAccess == null ?
-    (_parent == null? null : _parent.defaultMemberAccess) : _defaultMemberAccess;
+  get defaultMemberAccess => _defaultMemberAccess == null
+      ? (_parent == null ? null : _parent.defaultMemberAccess)
+      : _defaultMemberAccess;
 
   setDefaultMemberAccess(Member m) {
-    if(m.access == null) m.access = defaultMemberAccess;
+    if (m.access == null) m.access = defaultMemberAccess;
   }
 
   set parent(p) {
     _parent = p;
     _name = id.capCamel;
-    _className = isPublic? _name : "_$_name";
+    _className = isPublic ? _name : "_$_name";
     _ctors.clear();
 
-    if(defaultCtor && courtesyCtor) {
-      throw new
-        ArgumentError('$_name can not have defaultCtor and courtesyCtor both set to true');
+    if (defaultCtor && courtesyCtor) {
+      throw new ArgumentError(
+          '$_name can not have defaultCtor and courtesyCtor both set to true');
     }
 
-    if(cacheHash) {
+    if (cacheHash) {
       members.add(member('hash_code')
-          ..type = 'int'
-          ..access = IA
-          ..isInComparable = false
-          ..jsonTransient = true);
+        ..type = 'int'
+        ..access = IA
+        ..isInComparable = false
+        ..jsonTransient = true);
     }
 
-    if(immutable) {
+    if (immutable) {
       courtesyCtor = true;
       allMembersFinal = true;
     }
 
-    if(defaultCtor)
-      _ctors.putIfAbsent('', () => new Ctor()
-          ..name = ''
-          ..className = _className);
+    if (defaultCtor) _ctors.putIfAbsent('', () => new Ctor()
+      ..name = ''
+      ..className = _className);
 
-    if(allMembersFinal)
-      nonTransientMembers.forEach((m) => m.isFinal = true);
+    if (allMembersFinal) nonTransientMembers.forEach((m) => m.isFinal = true);
 
-    if(polymorphicComparable)
-      comparable = true;
+    if (polymorphicComparable) comparable = true;
 
-    if(comparable) {
-      if(polymorphicComparable) {
+    if (comparable) {
+      if (polymorphicComparable) {
         implement.add('Comparable<Object>');
       } else {
         implement.add('Comparable<$_className>');
       }
     }
 
-    if(courtesyCtor) {
-      members.forEach(
-        (m) {
-          if(!m.ctors.contains('') && !m.jsonTransient) m.ctors.add('');
-        });
+    if (courtesyCtor) {
+      members.forEach((m) {
+        if (!m.ctors.contains('') && !m.jsonTransient) m.ctors.add('');
+      });
     }
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
-
       setDefaultMemberAccess(m);
 
       m.parent = this;
 
       makeCtorName(ctorName) {
-        if(ctorName == '') return '';
+        if (ctorName == '') return '';
         bool isPrivate = ctorName.startsWith('_');
-        if(isPrivate) {
+        if (isPrivate) {
           return '_${idFromString(ctorName.substring(1)).camel}';
         } else {
           return idFromString(ctorName).camel;
@@ -658,40 +614,40 @@ int compareTo($otherType other) {
     });
 
     // To deserialize or copy a default ctor is needed
-    if(_hasPrivateDefaultCtor) {
+    if (_hasPrivateDefaultCtor) {
       _ctors.putIfAbsent('_default', () => new Ctor())
         ..name = '_default'
         ..className = _name;
     }
 
-    if(courtesyCtor && allMembersFinal && transientMembers.length == 0) {
+    if (courtesyCtor && allMembersFinal && transientMembers.length == 0) {
       _ctors[''].isConst = true;
     }
 
-    if(ctorCallsInit) {
+    if (ctorCallsInit) {
       _ctors[''].callsInit = true;
     }
   }
 
   bool get _hasPrivateDefaultCtor =>
-    (!courtesyCtor && (copyable || jsonSupport)) && !defaultCtor;
+      (!courtesyCtor && (copyable || jsonSupport)) && !defaultCtor;
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
     bool hasDefault = keys.remove('');
-    var privates = keys.where((k) => k[0]=='_').toList();
-    var publics = keys.where((k) => k[0]!='_').toList();
+    var privates = keys.where((k) => k[0] == '_').toList();
+    var publics = keys.where((k) => k[0] != '_').toList();
     privates.sort();
     publics.sort();
     var result = new List.from(publics)..addAll(privates);
-    if(hasDefault) {
+    if (hasDefault) {
       result.insert(0, '');
     }
     return result;
   }
 
   String get implementsClause {
-    if(implement.length>0) {
+    if (implement.length > 0) {
       return '\n  implements ${implement.join(',\n    ')} ';
     } else {
       return ' ';
@@ -699,30 +655,31 @@ int compareTo($otherType other) {
   }
 
   static String _fromJsonData(String type, String source) {
-    if(isClassJsonable(type)) {
+    if (isClassJsonable(type)) {
       return '${type}.fromJson($source)';
-    } else if(type == 'DateTime') {
+    } else if (type == 'DateTime') {
       return 'DateTime.parse($source)';
     }
     return source;
   }
 
-  static String _stringCheck(String type, String source) => type == 'String'?
-  source : '$type.fromString($source)';
+  static String _stringCheck(String type, String source) =>
+      type == 'String' ? source : '$type.fromString($source)';
 
-  String _fromJsonMapMember(Member member, [ String source = 'jsonMap' ]) {
+  String _fromJsonMapMember(Member member, [String source = 'jsonMap']) {
     String result;
     var lhs = '${member.varName}';
     var key = '"${_formattedMember(member)}"';
     var value = '$source[$key]';
     String rhs;
-    if(isClassJsonable(member.type)) {
+    if (isClassJsonable(member.type)) {
       result = '$lhs = ${member.type}.fromJson($value)';
     } else {
-      if(isMapType(member.type)) {
+      if (isMapType(member.type)) {
         final keyType = generalMapKeyType(member.type);
-        final convertKey = keyType == 'String'? '' :
-          ',\n    (key) => $keyType.fromString(key)';
+        final convertKey = keyType == 'String'
+            ? ''
+            : ',\n    (key) => $keyType.fromString(key)';
 
         result = '''
 // ${member.name} is ${member.type}
@@ -731,7 +688,7 @@ $lhs = ebisu_utils
     $value,
     (value) => ${_fromJsonData(jsonMapValueType(member.type), 'value')}$convertKey)
 ''';
-      } else if(isListType(member.type)) {
+      } else if (isListType(member.type)) {
         result = '''
 // ${member.name} is ${member.type}
 $lhs = ebisu_utils
@@ -745,8 +702,8 @@ $lhs = ebisu_utils
     return result;
   }
 
-  String fromJsonMapImpl() => courtesyCtor?
-'''
+  String fromJsonMapImpl() => courtesyCtor
+      ? '''
 $className._fromJsonMapImpl(Map jsonMap) :
 ${
    chomp(indentBlock(
@@ -754,8 +711,8 @@ ${
        .where((m) => !m.jsonTransient)
        .map((m) => chomp(_fromJsonMapMember(m)))
        .join(',\n')))};
-''' :
 '''
+      : '''
 void _fromJsonMapImpl(Map jsonMap) {
 ${
    indentBlock(
@@ -766,7 +723,7 @@ ${
 }''';
 
   String define() {
-    if(parent == null) parent = library('stub');
+    if (parent == null) parent = library('stub');
     return _content;
   }
 
@@ -776,75 +733,76 @@ ${
 
   bool get _isComparable => polymorphicComparable || comparable;
 
-  get _content =>
-    [
-      _docComment,
-      _classOpener,
-      _orderedCtors,
-      _opEquals,
-      _comparable,
-      _copyable,
-      _memberPublicCode,
-      _topInjection,
-      _includeCustom,
-      _jsonToString,
-      _jsonSerialization,
-      _copyCtor,
-      _randJson,
-      _memberPrivateCode,
-      _bottomInjection,
-      _classCloser,
-      _ctorSansNewImpl,
-      _builderClass,
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [
+    _docComment,
+    _classOpener,
+    _orderedCtors,
+    _opEquals,
+    _comparable,
+    _copyable,
+    _memberPublicCode,
+    _topInjection,
+    _includeCustom,
+    _jsonToString,
+    _jsonSerialization,
+    _copyCtor,
+    _randJson,
+    _memberPrivateCode,
+    _bottomInjection,
+    _classCloser,
+    _ctorSansNewImpl,
+    _builderClass,
+  ].where((line) => line != '').join('\n');
 
-  get _docComment => doc != null? docComment(doc) : '';
-  get _abstractTag => isAbstract? 'abstract ':'';
+  get _docComment => doc != null ? docComment(doc) : '';
+  get _abstractTag => isAbstract ? 'abstract ' : '';
   get _classOpener => '$_classWithExtends${implementsClause}{';
-  get _extendClass => (mixins.length > 0 && extend == null)? 'Object' : extend;
-  get _classWithExtends => mixins.length>0?
-    ('''
-${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}''') :
-    (extend != null?
-        '${_abstractTag}class $className extends $extend' :
-        '${_abstractTag}class $className');
-  get _orderedCtors => orderedCtors
-    .map((c) => indentBlock(ctors[c].ctorText)).join('\n');
-  get _opEquals => opEquals? indentBlock(opEqualsMethod):'';
-  get _comparable => _isComparable? indentBlock(comparableMethod):'';
-  get _copyable => copyable? indentBlock(copyMethod):'';
+  get _extendClass => (mixins.length > 0 && extend == null) ? 'Object' : extend;
+  get _classWithExtends => mixins.length > 0
+      ? ('''
+${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}''')
+      : (extend != null
+          ? '${_abstractTag}class $className extends $extend'
+          : '${_abstractTag}class $className');
+  get _orderedCtors =>
+      orderedCtors.map((c) => indentBlock(ctors[c].ctorText)).join('\n');
+  get _opEquals => opEquals ? indentBlock(opEqualsMethod) : '';
+  get _comparable => _isComparable ? indentBlock(comparableMethod) : '';
+  get _copyable => copyable ? indentBlock(copyMethod) : '';
   get _memberPublicCode => members
-    .where((m) => m.hasPublicCode)
-    .map((m) => indentBlock(chomp(m.publicCode)))
-    .join('\n');
-  get _topInjection => topInjection!=null? indentBlock(topInjection):'';
-  get _includeCustom => includeCustom?
-    "${rightTrim(indentBlock(customBlock('class $name')))}" : '';
+      .where((m) => m.hasPublicCode)
+      .map((m) => indentBlock(chomp(m.publicCode)))
+      .join('\n');
+  get _topInjection => topInjection != null ? indentBlock(topInjection) : '';
+  get _includeCustom => includeCustom
+      ? "${rightTrim(indentBlock(customBlock('class $name')))}"
+      : '';
 
-  _formattedMember(Member m) =>
-    jsonKeyFormat == snake? m.id.snake :
-    jsonKeyFormat == capCamel? m.id.capCamel :
-    jsonKeyFormat == camel? m.id.camel :
-    m.id.camel;
+  _formattedMember(Member m) => jsonKeyFormat == snake
+      ? m.id.snake
+      : jsonKeyFormat == capCamel
+          ? m.id.capCamel
+          : jsonKeyFormat == camel ? m.id.camel : m.id.camel;
 
   get _jsonMembers => members
-    .where((m) => !m.jsonTransient)
-    .map((m) =>
-        '"${_formattedMember(m)}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
-    .join('\n');
+      .where((m) => !m.jsonTransient)
+      .map((m) =>
+          '"${_formattedMember(m)}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
+      .join('\n');
 
-  get _jsonExtend =>
-    extend!=null? indentBlock('\n"$extend": super.toJson()', '      ') :
-    ((mixins.length>0)? '// TODO: consider mixin support' : '');
+  get _jsonExtend => extend != null
+      ? indentBlock('\n"$extend": super.toJson()', '      ')
+      : ((mixins.length > 0) ? '// TODO: consider mixin support' : '');
 
-  get _jsonToString => jsonToString? '''
+  get _jsonToString => jsonToString
+      ? '''
 
   toString() => '(\${runtimeType}) => \${ebisu_utils.prettyJsonMap(toJson())}';
-''' : '';
+'''
+      : '';
 
-  get _jsonSerialization => jsonSupport? '''
+  get _jsonSerialization => jsonSupport
+      ? '''
 
   Map toJson() => {
 ${indentBlock(_jsonMembers, '      ')}$_jsonExtend
@@ -859,37 +817,38 @@ ${indentBlock(_jsonMembers, '      ')}$_jsonExtend
 ${indentBlock(jsonCtor, '    ')}
   }
 
-${indentBlock(fromJsonMapImpl())}''':'';
-  get _randJson => hasRandJson? ''' // TODO: randjson support
-''':'';
+${indentBlock(fromJsonMapImpl())}'''
+      : '';
+  get _randJson => hasRandJson
+      ? ''' // TODO: randjson support
+'''
+      : '';
 
   get _memberPrivateCode => members
-    .where((m) => m.hasPrivateCode)
-    .map((m) => indentBlock(chomp(m.privateCode)))
-    .join('\n');
+      .where((m) => m.hasPrivateCode)
+      .map((m) => indentBlock(chomp(m.privateCode)))
+      .join('\n');
 
-  get _bottomInjection => bottomInjection != null?
-    indentBlock(bottomInjection) : '';
+  get _bottomInjection =>
+      bottomInjection != null ? indentBlock(bottomInjection) : '';
 
-  get _ctorSansNewImpl => ctorSansNew?
-    ((ctors.length > 0)?
-        publicCtors
-        .map((ctor) => ctor.ctorSansNew)
-        .join('\n') :
-        '${id.camel}() => new ${name}();'
-     ) + '\n': '';
+  get _ctorSansNewImpl => ctorSansNew
+      ? ((ctors.length > 0)
+              ? publicCtors.map((ctor) => ctor.ctorSansNew).join('\n')
+              : '${id.camel}() => new ${name}();') +
+          '\n'
+      : '';
 
   get _classCloser => '}\n';
 
   get _builderClass {
-    if(builder) {
+    if (builder) {
       final builderClass = class_('${id.snake}_builder')
         ..ctorSansNew = true
         ..defaultCtor = true
-        ..members = members.map((m) =>
-            member(m.id.snake)
-            ..type = m.type
-            ..classInit = m.classInit).toList()
+        ..members = members.map((m) => member(m.id.snake)
+          ..type = m.type
+          ..classInit = m.classInit).toList()
         ..bottomInjection = '''
 ${className} buildInstance() => new ${className}(
 ${indentBlock(
@@ -914,7 +873,7 @@ ${className}Builder._copyImpl(${className} _) :
   final Id _id;
   dynamic _parent;
   Access _defaultMemberAccess;
-  Map<String,Ctor> _ctors = {};
+  Map<String, Ctor> _ctors = {};
   bool _jsonSupport = false;
   bool _ctorSansNew;
   String _name;
@@ -922,8 +881,8 @@ ${className}Builder._copyImpl(${className} _) :
 }
 // custom <part class>
 
-final snake = JsonKeyFormat.SNAKE;
-final capCamel = JsonKeyFormat.CAP_CAMEL;
-final camel = JsonKeyFormat.CAMEL;
+final snake = JsonKeyFormat.snake;
+final capCamel = JsonKeyFormat.capCamel;
+final camel = JsonKeyFormat.camel;
 
 // end <part class>

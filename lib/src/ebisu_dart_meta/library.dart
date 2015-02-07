@@ -51,7 +51,7 @@ class Library {
   }
 
   set isTest(bool t) {
-    if(t) {
+    if (t) {
       _isTest = true;
       includeMain = true;
       imports.add('package:unittest/unittest.dart');
@@ -60,8 +60,9 @@ class Library {
 
   String get _additionalPathParts {
     String rootPath = _parent.rootPath == null ? path : _parent.rootPath;
-    List relPath = split(relative(dirname(libStubPath), from:rootPath));
-    if(relPath.length > 0 && (relPath.first == '.' || relPath.first == 'lib')) {
+    List relPath = split(relative(dirname(libStubPath), from: rootPath));
+    if (relPath.length > 0 &&
+        (relPath.first == '.' || relPath.first == 'lib')) {
       relPath.removeAt(0);
     }
     return relPath.join('.');
@@ -69,60 +70,60 @@ class Library {
 
   String get _packageName {
     var parent = _parent;
-    while(parent != null) {
-      if(parent is System) break;
+    while (parent != null) {
+      if (parent is System) break;
       parent = parent.parent;
     }
-    return parent == null? '' : parent.id.snake;
+    return parent == null ? '' : parent.id.snake;
   }
 
   String _makeQualifiedName() {
     var pathParts = _additionalPathParts;
     var pkgName = _packageName;
     String result = _id.snake;
-    if(pathParts.length > 0) result = '$pathParts.$result';
-    if(pkgName.length > 0) result = '$pkgName.$result';
+    if (pathParts.length > 0) result = '$pathParts.$result';
+    if (pkgName.length > 0) result = '$pkgName.$result';
     return result;
   }
 
   set parent(p) {
     _parent = p;
     _name = _id.snake;
-    _qualifiedName = _qualifiedName == null? _makeQualifiedName() : _qualifiedName;
+    _qualifiedName =
+        _qualifiedName == null ? _makeQualifiedName() : _qualifiedName;
     parts.forEach((part) => part.parent = this);
     variables.forEach((v) => v.parent = this);
     enums.forEach((e) => e.parent = this);
     classes.forEach((c) => c.parent = this);
     benchmarks.forEach((b) => b.parent = this.parent);
 
-    if(allClasses.any((c) => c.opEquals)) {
+    if (allClasses.any((c) => c.opEquals)) {
       imports.add('package:quiver/core.dart');
     }
-    if(allClasses.any((c) => c.jsonSupport)) {
+    if (allClasses.any((c) => c.jsonSupport)) {
       imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
       imports.add('"dart:convert" as convert');
     }
-    if(allClasses.any((c) => c.requiresEqualityHelpers == true)) {
+    if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {
       imports.add('package:collection/equality.dart');
     }
-    if(includeLogger) {
+    if (includeLogger) {
       imports.add("package:logging/logging.dart");
     }
-    imports = cleanImports(
-      imports.map((i) => importStatement(i)).toList());
+    imports = cleanImports(imports.map((i) => importStatement(i)).toList());
   }
 
   ensureParent() {
-    if(_parent == null) {
+    if (_parent == null) {
       parent = system('ignored');
     }
   }
 
-  String get libStubPath =>
-  path != null ? "${path}/${id.snake}.dart" :
-  (isTest?
-   "${_parent.rootPath}/test/${id.snake}.dart" :
-   "${_parent.rootPath}/lib/${id.snake}.dart");
+  String get libStubPath => path != null
+      ? "${path}/${id.snake}.dart"
+      : (isTest
+          ? "${_parent.rootPath}/test/${id.snake}.dart"
+          : "${_parent.rootPath}/lib/${id.snake}.dart");
 
   void generate() {
     ensureParent();
@@ -131,67 +132,90 @@ class Library {
     benchmarks.forEach((benchmark) => benchmark.generate());
   }
 
-  get _content =>
-    [
-      _docComment,
-      _libraryStatement,
-      _imports,
-      _additionalImports,
-      _parts,
-      _loggerInit,
-      _enums,
-      _classes,
-      _variables,
-      _libraryCustom,
-      _libraryMain,
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [
+    _docComment,
+    _libraryStatement,
+    _imports,
+    _additionalImports,
+    _parts,
+    _loggerInit,
+    _enums,
+    _classes,
+    _variables,
+    _libraryCustom,
+    _libraryMain,
+  ].where((line) => line != '').join('\n');
 
-  get _docComment => doc != null? docComment(doc) : '';
+  get _docComment => doc != null ? docComment(doc) : '';
   get _libraryStatement => 'library $qualifiedName;\n';
   get _imports => imports.join('\n');
   get _additionalImports => customBlock('additional imports');
-  get _parts =>
-    parts.length>0? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('') :'';
-  get _loggerInit => includeLogger? "final _logger = new Logger('$name');\n":'';
+  get _parts => parts.length > 0
+      ? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('')
+      : '';
+  get _loggerInit =>
+      includeLogger ? "final _logger = new Logger('$name');\n" : '';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
-  get _libraryCustom => includeCustom? chomp(customBlock('library $name')) : '';
-  get _libraryMain => includeMain? '''
+  get _libraryCustom =>
+      includeCustom ? chomp(customBlock('library $name')) : '';
+  get _libraryMain => includeMain
+      ? '''
 main() {
 ${customBlock('main')}
-}''' :
-    (libMain != null)? libMain : '';
+}'''
+      : (libMain != null) ? libMain : '';
 
   static final _standardImports = new Set.from([
-    'async', 'chrome', 'collection', 'core', 'crypto',
-    'html', 'indexed_db', 'io', 'isolate', 'json', 'math',
-    'mirrors', 'scalarlist', 'svg', 'uri', 'utf', 'web_audio',
-    'web_sql', 'convert'
+    'async',
+    'chrome',
+    'collection',
+    'core',
+    'crypto',
+    'html',
+    'indexed_db',
+    'io',
+    'isolate',
+    'json',
+    'math',
+    'mirrors',
+    'scalarlist',
+    'svg',
+    'uri',
+    'utf',
+    'web_audio',
+    'web_sql',
+    'convert'
   ]);
 
   static final _standardPackageImports = new Set.from([
-    'args', 'fixnum', 'intl', 'logging', 'matcher', 'meta',
-    'mock', 'scheduled_test', 'serialization',
+    'args',
+    'fixnum',
+    'intl',
+    'logging',
+    'matcher',
+    'meta',
+    'mock',
+    'scheduled_test',
+    'serialization',
     'unittest'
   ]);
 
   static final RegExp _hasQuotes = new RegExp(r'''[\'"]''');
 
   static String importUri(String uri) {
-    if(null == _hasQuotes.firstMatch(uri)) {
-       return '"${uri}"';
+    if (null == _hasQuotes.firstMatch(uri)) {
+      return '"${uri}"';
     } else {
-       return '${uri}';
+      return '${uri}';
     }
   }
 
   static String importStatement(String i) {
-    if(_standardImports.contains(i)) {
+    if (_standardImports.contains(i)) {
       return 'import "dart:$i";';
-    } else if(_standardPackageImports.contains(i)) {
+    } else if (_standardPackageImports.contains(i)) {
       return 'import "package:$i";';
     } else {
       return 'import ${importUri(i)};';
@@ -201,7 +225,6 @@ ${customBlock('main')}
   String get rootPath => _parent.rootPath;
 
   get _defaultAccess => defaultMemberAccess;
-
 
   // end <class Library>
   final Id _id;

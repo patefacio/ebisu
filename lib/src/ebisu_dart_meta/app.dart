@@ -78,7 +78,6 @@ main() {
   build(Platform.arguments, ['web/${_id.snake}.html']);
 }
 ''', appBuildPath);
-
   }
 
   get _content => '''

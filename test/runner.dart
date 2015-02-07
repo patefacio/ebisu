@@ -17,4 +17,3 @@ main() {
   test_functions.main();
   test_code_generation.main();
 }
-

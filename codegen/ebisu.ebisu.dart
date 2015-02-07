@@ -1,5 +1,6 @@
 import "dart:io";
 import "package:path/path.dart" as path;
+import "package:ebisu/ebisu.dart";
 import "package:ebisu/ebisu_dart_meta.dart";
 import "package:logging/logging.dart";
 
@@ -16,6 +17,7 @@ void main() {
       print("${r.loggerName} [${r.level}]:\t${r.message}"));
   }
 
+  useDartFormatter = true;
   var arguments = Platform.executableArguments;
   String here = path.absolute(Platform.script.path);
   _topDir = path.dirname(path.dirname(here));
@@ -248,6 +250,7 @@ text to include in the license file.
       ..enums = [
         enum_('arg_type')
         ..doc = 'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
+        ..requiresClass = true
         ..values = [
           id('string'), id('int'), id('long'), id('choice'), id('double'), id('bool')
         ]
@@ -429,6 +432,15 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'If true string value for each entry is snake case (default is shout)'
           ..type = 'bool'
           ..classInit = 'false',
+          member('requires_class')
+          ..doc = '''
+Before true enum support enums were emulated with a class containing static
+consts. This had some unique features in terms of ability to generate json
+support as well as some custom functions. Setting this will ensure that
+a class is generated instead of the newer and generally preffered enum.
+'''
+          ..type = 'bool'
+          ..access = Access.WO
         ],
       ],
       part('variable')

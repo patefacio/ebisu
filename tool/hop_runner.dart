@@ -9,23 +9,19 @@ import 'package:path/path.dart' as path;
 import '../test/runner.dart' as runner;
 
 void main(List<String> args) {
-
   Directory.current = path.dirname(path.dirname(Platform.script.path));
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
-  addTask('analyze_test',
-      createAnalyzerTask([
-        "test/test_functions.dart",
-        "test/test_code_generation.dart"
-      ]));
-
+  addTask('analyze_test', createAnalyzerTask(
+      ["test/test_functions.dart", "test/test_code_generation.dart"]));
 
   runHop(args);
 }
 
 Future<List<String>> _getLibs() {
-  return new Directory('lib').list()
+  return new Directory('lib')
+      .list()
       .where((FileSystemEntity fse) => fse is File)
       .map((File file) => file.path)
       .toList();

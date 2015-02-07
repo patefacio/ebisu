@@ -23,13 +23,15 @@ class Part {
   /// List of global variables in this part
   List<Variable> variables = [];
   /// Default access for members
-  set defaultMemberAccess(Access defaultMemberAccess) => _defaultMemberAccess = defaultMemberAccess;
+  set defaultMemberAccess(Access defaultMemberAccess) =>
+      _defaultMemberAccess = defaultMemberAccess;
   /// If true classes will get library functions to construct forwarding to ctors
   set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
   // custom <class Part>
 
-  get defaultMemberAccess => _defaultMemberAccess == null ?
-    _parent.defaultMemberAccess : _defaultMemberAccess;
+  get defaultMemberAccess => _defaultMemberAccess == null
+      ? _parent.defaultMemberAccess
+      : _defaultMemberAccess;
 
   set parent(p) {
     _parent = p;
@@ -40,31 +42,27 @@ class Part {
   }
 
   void generate() {
-    _filePath =
-      _parent.isTest?
-      "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart" :
-      "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
+    _filePath = _parent.isTest
+        ? "${_parent.rootPath}/test/src/${_parent.name}/${_name}.dart"
+        : "${_parent.rootPath}/lib/src/${_parent.name}/${_name}.dart";
     mergeWithDartFile('${chomp(_content)}\n', _filePath);
   }
 
-  bool get ctorSansNew => _ctorSansNew == null?
-  _parent.ctorSansNew : _ctorSansNew;
+  bool get ctorSansNew =>
+      _ctorSansNew == null ? _parent.ctorSansNew : _ctorSansNew;
 
-  get _content =>
-    [
-      _part,
-      _enums,
-      _classes,
-      _custom,
-      _variables,
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [
+    _part,
+    _enums,
+    _classes,
+    _custom,
+    _variables,
+  ].where((line) => line != '').join('\n');
 
   get _part => 'part of ${parent.qualifiedName};\n';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}').join('\n\n');
-  get _custom => includeCustom? customBlock('part $name') : '';
+  get _custom => includeCustom ? customBlock('part $name') : '';
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
   // end <class Part>

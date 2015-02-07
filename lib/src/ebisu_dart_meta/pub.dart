@@ -14,24 +14,26 @@ class PubDependency {
   String gitRef;
   // custom <class PubDependency>
 
-
   PubDepType get type {
-    if(_type == null) {
-      if(path != null) {
+    if (_type == null) {
+      if (path != null) {
         var match = _pubTypeRe.firstMatch(path);
 
-        switch(match.group(1)) {
-          case 'git:': {
-            _type = PubDepType.GIT;
-          }
+        switch (match.group(1)) {
+          case 'git:':
+            {
+              _type = PubDepType.GIT;
+            }
             break;
-          case 'http:': {
-            _type = PubDepType.HOSTED;
-          }
+          case 'http:':
+            {
+              _type = PubDepType.HOSTED;
+            }
             break;
-          default: {
-            _type = PubDepType.PATH;
-          }
+          default:
+            {
+              _type = PubDepType.PATH;
+            }
         }
       } else {
         _type = PubDepType.HOSTED;
@@ -48,11 +50,11 @@ class PubDependency {
   String get yamlEntry {
     String result;
 
-    if(isHosted) {
+    if (isHosted) {
       result = '''
   ${name}: ${version!=null? '"${version}"' : ''}
 ''';
-    } else if(isPath || isGit) {
+    } else if (isPath || isGit) {
       result = '''
   $name:
 ''';
@@ -62,16 +64,16 @@ class PubDependency {
 ''';
     }
 
-    if(path != null) {
-      if(isHosted) {
+    if (path != null) {
+      if (isHosted) {
         result += '''
       hosted:
         name: $name
         url: $path
       version: '$version'
 ''';
-      } else if(isGit) {
-        if(gitRef != null) {
+      } else if (isGit) {
+        if (gitRef != null) {
           result += '''
       git:
         url: ${path}
@@ -118,10 +120,9 @@ class PolymerTransformer extends PubTransformer {
   PolymerTransformer(this.entryPoints) : super('polymer');
 
   String get yamlEntry {
-    final entryPointList =
-    entryPoints
-    .map((String entryPoint) => '- $entryPoint')
-    .join('\n        ');
+    final entryPointList = entryPoints
+        .map((String entryPoint) => '- $entryPoint')
+        .join('\n        ');
 
     return '''
   - polymer:
@@ -129,7 +130,6 @@ class PolymerTransformer extends PubTransformer {
         $entryPointList
 ''';
   }
-
 
   // end <class PolymerTransformer>
 }
@@ -159,68 +159,64 @@ class PubSpec {
   // custom <class PubSpec>
 
   set parent(p) {
-    if(author == null && Platform.environment['EBISU_AUTHOR'] != null) {
+    if (author == null && Platform.environment['EBISU_AUTHOR'] != null) {
       author = Platform.environment['EBISU_AUTHOR'];
     }
 
-    if(homepage == null && Platform.environment['EBISU_HOMEPAGE'] != null) {
+    if (homepage == null && Platform.environment['EBISU_HOMEPAGE'] != null) {
       homepage = Platform.environment['EBISU_HOMEPAGE'];
     }
 
-    if(name == null)
-      name = _id.snake;
+    if (name == null) name = _id.snake;
     _parent = p;
   }
 
   void addTransformer(PubTransformer transformer) =>
-    pubTransformers.add(transformer);
+      pubTransformers.add(transformer);
 
-  void addDependency(PubDependency dep, [ bool ignoreIfPresent = false ]) {
-    if(depNotFound(dep.name)) {
+  void addDependency(PubDependency dep, [bool ignoreIfPresent = false]) {
+    if (depNotFound(dep.name)) {
       dependencies.add(dep);
     } else {
-      if(!ignoreIfPresent)
-        throw new ArgumentError("${dep.name} is already a dependency of ${_id}");
+      if (!ignoreIfPresent) throw new ArgumentError(
+          "${dep.name} is already a dependency of ${_id}");
     }
   }
 
-  void addDevDependency(PubDependency dep, [ bool ignoreIfPresent = false ]) {
-    if(depNotFound(dep.name)) {
+  void addDevDependency(PubDependency dep, [bool ignoreIfPresent = false]) {
+    if (depNotFound(dep.name)) {
       devDependencies.add(dep);
     } else {
-      if(!ignoreIfPresent)
-        throw new ArgumentError("${dep.name} is already a dev dependency of ${_id}");
+      if (!ignoreIfPresent) throw new ArgumentError(
+          "${dep.name} is already a dev dependency of ${_id}");
     }
   }
 
   void addDependencies(List<PubDependency> deps) =>
-    deps.forEach((dep) => addDependency(dep));
+      deps.forEach((dep) => addDependency(dep));
 
   bool depNotFound(String name) =>
-    !devDependencies.any((d) => d.name == name) &&
-    !dependencies.any((d) => d.name == name);
+      !devDependencies.any((d) => d.name == name) &&
+          !dependencies.any((d) => d.name == name);
 
-  get _content =>
-    [
-      _name,
-      _version,
-      _author,
-      _homepage,
-      _description,
-      _dependencies,
-      _devDependencies,
-      _dependencyOverrides,
-      _transformers,
-      _custom,
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [
+    _name,
+    _version,
+    _author,
+    _homepage,
+    _description,
+    _dependencies,
+    _devDependencies,
+    _dependencyOverrides,
+    _transformers,
+    _custom,
+  ].where((line) => line != '').join('\n');
 
   get _name => 'name: $name';
   get _version => 'version: $version';
-  get _author => author != null? 'author: $author':'';
-  get _homepage => homepage != null? 'homepage: $homepage':'';
-  get _description => doc != null? 'description: >\n${indentBlock(doc)}':'';
+  get _author => author != null ? 'author: $author' : '';
+  get _homepage => homepage != null ? 'homepage: $homepage' : '';
+  get _description => doc != null ? 'description: >\n${indentBlock(doc)}' : '';
 
   get _dependencies => '''
 dependencies:
@@ -235,7 +231,7 @@ ${scriptCustomBlock('$name dev dependencies')}''';
   get _dependencyOverrides => '''
 dependency_overrides:
 ${scriptCustomBlock('$name dependency overrides')}''';
-  
+
   get _transformers => '''
 transformers:
 ${pubTransformers.map((t) => t.yamlEntry).join()}''';

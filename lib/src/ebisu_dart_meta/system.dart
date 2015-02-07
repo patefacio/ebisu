@@ -21,7 +21,7 @@ class System {
   /// Information for the pubspec
   PubSpec pubSpec;
   /// Map of all classes that have jsonSupport
-  Map<String,Class> jsonableClasses = {};
+  Map<String, Class> jsonableClasses = {};
   /// Set to true on finalize
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
@@ -46,12 +46,13 @@ class System {
   // custom <class System>
 
   /// Create system from the id
-  System(Id id) : _id = id, pubSpec = new PubSpec(id) {}
+  System(Id id)
+      : _id = id,
+        pubSpec = new PubSpec(id) {}
 
   /// Finalize must be called before generate
   void finalize() {
-    if(!_finalized) {
-
+    if (!_finalized) {
       testLibraries.forEach((library) {
         library.isTest = true;
       });
@@ -59,7 +60,7 @@ class System {
       allLibraries = new List.from(libraries)..addAll(testLibraries);
       allLibraries.forEach((l) => l.parent = this);
       scripts.forEach((s) => s.parent = this);
-      if(app != null) {
+      if (app != null) {
         app.parent = this;
       }
       pubSpec.parent = this;
@@ -69,12 +70,10 @@ class System {
       // as well as classes and enums in each part to consider.
       bool benchmarksIncluded = false;
       allLibraries.forEach((Library library) {
-
-        if(library.benchmarks.length > 0)
-          benchmarksIncluded = true;
+        if (library.benchmarks.length > 0) benchmarksIncluded = true;
 
         library.classes.forEach((dclass) {
-          if(dclass.jsonSupport) {
+          if (dclass.jsonSupport) {
             jsonableClasses[dclass.name] = dclass;
           }
         });
@@ -83,7 +82,7 @@ class System {
         });
         library.parts.forEach((part) {
           part.classes.forEach((dclass) {
-            if(dclass.jsonSupport) {
+            if (dclass.jsonSupport) {
               jsonableClasses[dclass.name] = dclass;
             }
           });
@@ -93,7 +92,7 @@ class System {
         });
       });
 
-      if(benchmarksIncluded) {
+      if (benchmarksIncluded) {
         pubSpec.addDependency(new PubDependency('benchmark_harness'));
       }
 
@@ -103,31 +102,32 @@ class System {
 
   void overridePubs() {
     var overrideFile = new File(ebisuPubVersions);
-    if(overrideFile.existsSync()) {
+    if (overrideFile.existsSync()) {
       var overrideJson = convert.JSON.decode(overrideFile.readAsStringSync());
       var overrides = overrideJson['versions'];
       _logger.fine("Found version overides: ${overrideJson}");
-      var deps = new List.from(pubSpec.dependencies)..addAll(pubSpec.devDependencies);
+      var deps = new List.from(pubSpec.dependencies)
+        ..addAll(pubSpec.devDependencies);
       deps.forEach((dep) {
         var override = overrides[dep.name];
-        if(override != null) {
-          _logger.fine("Overriding: (((\n${dep.yamlEntry}\n))) with ${override}");
+        if (override != null) {
+          _logger
+              .fine("Overriding: (((\n${dep.yamlEntry}\n))) with ${override}");
           var version = override['version'];
-          if(version != null) {
+          if (version != null) {
             dep.version = version;
             dep.path = null;
             dep._type = PubDepType.HOSTED;
           } else {
             var path = override['path'];
-            if(path != null) {
+            if (path != null) {
               dep.path = path;
               dep.version = null;
               dep.gitRef = null;
               dep._type = PubDepType.PATH;
               _logger.fine("Yaml: ${dep.yamlEntry}");
             } else {
-              throw
-                new FormatException('''
+              throw new FormatException('''
 Entry ($override) in ${ebisuPubVersions} invalid.
 Only "version" and "path" overrides are supported.
 ''');
@@ -141,57 +141,56 @@ Only "version" and "path" overrides are supported.
   }
 
   /// Generate the code
-  void generate( { generateHop : true, generateRunner : true } ) {
+  void generate({generateHop: true, generateRunner: true}) {
+    if (rootPath == null) rootPath = '.';
 
-    if(rootPath == null) rootPath = '.';
-
-    if(app != null) {
-      if(pubSpec == null) {
+    if (app != null) {
+      if (pubSpec == null) {
         pubSpec = new PubSpec(app.id)
           ..addDependency(new PubDependency('browser'))
           ..addDependency(new PubDependency('path'))
-          ..addDependency(new PubDependency('polymer'))
-          ;
+          ..addDependency(new PubDependency('polymer'));
       }
     }
 
     pubSpec
-      ..addDevDependency(new PubDependency('unittest')..version = '>=0.11.0 < 0.12.0', true)
+      ..addDevDependency(
+          new PubDependency('unittest')..version = '>=0.11.0 < 0.12.0', true)
       ..addDevDependency(new PubDependency('browser'), true);
 
     finalize();
     scripts.forEach((script) => script.generate());
-    if(app != null) {
+    if (app != null) {
       app.generate();
     }
 
-    if(includeHop) {
-      if(pubSpec.depNotFound('hop')) {
+    if (includeHop) {
+      if (pubSpec.depNotFound('hop')) {
         pubSpec.addDevDependency(new PubDependency('hop'));
       }
-      if(pubSpec.depNotFound('hop_docgen')) {
+      if (pubSpec.depNotFound('hop_docgen')) {
         pubSpec.addDevDependency(new PubDependency('hop_docgen'));
       }
     }
 
     allLibraries.forEach((lib) {
       lib.generate();
-      if(lib.includeLogger) {
-        if(pubSpec.depNotFound('logging')) {
+      if (lib.includeLogger) {
+        if (pubSpec.depNotFound('logging')) {
           pubSpec.addDependency(new PubDependency('logging'));
         }
       }
     });
 
-    if(pubSpec != null && generatePubSpec) {
+    if (pubSpec != null && generatePubSpec) {
       overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
       scriptMergeWithFile('${pubSpec._content}\n', pubSpecPath);
     }
 
-    if(license != null) {
+    if (license != null) {
       var text = licenseMap[license];
-      if(text == null) text = license;
+      if (text == null) text = license;
       String licensePath = "${rootPath}/LICENSE";
       mergeWithFile(text, licensePath);
     }
@@ -213,12 +212,13 @@ build/
 *.js.deps
 *.js.map
 ${scriptCustomBlock('additional')}
-''',
-          gitIgnorePath);
+''', gitIgnorePath);
     }
 
-    if(includeReadme || todos.length > 0 ||
-       introduction != null || purpose != null) {
+    if (includeReadme ||
+        todos.length > 0 ||
+        introduction != null ||
+        purpose != null) {
       String readmePath = "${rootPath}/README.md";
       panDocMergeWithFile('''
 # ${id.title}
@@ -239,14 +239,15 @@ ${panDocCustomBlock('examples')}
 
 ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
-''',
-          readmePath);
+''', readmePath);
     }
 
-    if(generateHop && includeHop) {
+    if (generateHop && includeHop) {
       String hopRunnerPath = "${rootPath}/tool/hop_runner.dart";
       String i = '        ';
-      String analyzeTests = testLibraries.length == 0? '' : '''
+      String analyzeTests = testLibraries.length == 0
+          ? ''
+          : '''
   addTask('analyze_test',
       createAnalyzerTask([
 ${testLibraries
@@ -285,8 +286,7 @@ Future<List<String>> _getLibs() {
       .map((File file) => file.path)
       .toList();
 }
-''',
-          hopRunnerPath);
+''', hopRunnerPath);
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithDartFile('''
@@ -314,11 +314,10 @@ ${testLibraries
   .join('\n')}
 }
 
-''',
-          testRunnerPath);
+''', testRunnerPath);
     }
 
-    if(testLibraries.length > 0) {
+    if (testLibraries.length > 0) {
       mergeWithDartFile('''
 import 'package:unittest/html_enhanced_config.dart';
 import 'runner.dart' as runner;
@@ -327,8 +326,7 @@ main() {
   useHtmlEnhancedConfiguration();
   runner.main();
 }
-''',
-          '${rootPath}/test/html_runner.dart');
+''', '${rootPath}/test/html_runner.dart');
 
       mergeWithFile('''
 <html>
@@ -340,8 +338,7 @@ main() {
 <body>
 </body>
 </html>
-''',
-          '${rootPath}/test/index.html');
+''', '${rootPath}/test/index.html');
     }
   }
 

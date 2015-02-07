@@ -9,14 +9,7 @@ class ArgType implements Comparable<ArgType> {
   static const DOUBLE = const ArgType._(4);
   static const BOOL = const ArgType._(5);
 
-  static get values => [
-    STRING,
-    INT,
-    LONG,
-    CHOICE,
-    DOUBLE,
-    BOOL
-  ];
+  static get values => [STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
 
   final int value;
 
@@ -29,30 +22,42 @@ class ArgType implements Comparable<ArgType> {
   int compareTo(ArgType other) => value.compareTo(other.value);
 
   String toString() {
-    switch(this) {
-      case STRING: return "String";
-      case INT: return "Int";
-      case LONG: return "Long";
-      case CHOICE: return "Choice";
-      case DOUBLE: return "Double";
-      case BOOL: return "Bool";
+    switch (this) {
+      case STRING:
+        return "String";
+      case INT:
+        return "Int";
+      case LONG:
+        return "Long";
+      case CHOICE:
+        return "Choice";
+      case DOUBLE:
+        return "Double";
+      case BOOL:
+        return "Bool";
     }
     return null;
   }
 
   static ArgType fromString(String s) {
-    if(s == null) return null;
-    switch(s) {
-      case "String": return STRING;
-      case "Int": return INT;
-      case "Long": return LONG;
-      case "Choice": return CHOICE;
-      case "Double": return DOUBLE;
-      case "Bool": return BOOL;
-      default: return null;
+    if (s == null) return null;
+    switch (s) {
+      case "String":
+        return STRING;
+      case "Int":
+        return INT;
+      case "Long":
+        return LONG;
+      case "Choice":
+        return CHOICE;
+      case "Double":
+        return DOUBLE;
+      case "Bool":
+        return BOOL;
+      default:
+        return null;
     }
   }
-
 }
 
 /// An agrument to a script
@@ -91,10 +96,11 @@ class ScriptArg {
 
   set defaultsTo(dynamic val) {
     _defaultsTo = val;
-    type = val is int? ArgType.INT :
-      val is double? ArgType.DOUBLE :
-      val is bool? ArgType.BOOL :
-      ArgType.STRING;
+    type = val is int
+        ? ArgType.INT
+        : val is double
+            ? ArgType.DOUBLE
+            : val is bool ? ArgType.BOOL : ArgType.STRING;
   }
 
   // end <class ScriptArg>
@@ -124,21 +130,19 @@ class Script {
   bool isAsync = false;
   // custom <class Script>
 
-
   set parent(p) {
     _parent = p;
-    if(!args.any((a) => a.name == 'help')) {
+    if (!args.any((a) => a.name == 'help')) {
       args.add(new ScriptArg(new Id('help'))
-          ..isFlag = true
-          ..abbr = 'h'
-          ..doc = 'Display this help screen');
+        ..isFlag = true
+        ..abbr = 'h'
+        ..doc = 'Display this help screen');
     }
     args.forEach((sa) => sa.parent = this);
     imports.add('dart:io');
     imports.add('package:args/args.dart');
     imports.add('package:logging/logging.dart');
-    imports = cleanImports(
-      imports.map((i) => importStatement(i)).toList());
+    imports = cleanImports(imports.map((i) => importStatement(i)).toList());
   }
 
   get nonPositionalArgs => args.where((a) => a.position == null);
@@ -149,25 +153,21 @@ class Script {
     mergeWithDartFile('${_content}\n', scriptPath);
   }
 
-  Iterable get requiredArgs =>
-    args.where((arg) => arg.isRequired);
+  Iterable get requiredArgs => args.where((arg) => arg.isRequired);
 
-  get _content =>
-    [
-      _scriptTag,
-      _docComment,
-      _imports,
-      _argParser,
-      _usage,
-      reduceVerticalWhitespace(_parseArgs),
-      _loggerInit,
-      _main,
-    ]
-    .where((line) => line != '')
-    .join('\n');
+  get _content => [
+    _scriptTag,
+    _docComment,
+    _imports,
+    _argParser,
+    _usage,
+    reduceVerticalWhitespace(_parseArgs),
+    _loggerInit,
+    _main,
+  ].where((line) => line != '').join('\n');
 
   get _scriptTag => '#!/usr/bin/env dart';
-  get _docComment => doc != null? '${docComment(doc)}\n' : '';
+  get _docComment => doc != null ? '${docComment(doc)}\n' : '';
   get _imports => '${imports.join('\n')}\n';
   get _argParser => '''
 //! The parser for this script
@@ -183,19 +183,21 @@ $doc
 }
 ''';
 
-  _coerced(String parse, ScriptArg arg) =>
-    parse == null?
-    "result['${arg.name}'] = argResults['${arg.name}'];" :
-    '''
+  _coerced(String parse, ScriptArg arg) => parse == null
+      ? "result['${arg.name}'] = argResults['${arg.name}'];"
+      : '''
 result['${arg.name}'] = argResults['${arg.name}'] != null?
   $parse(argResults['${arg.name}']) : null;''';
 
-  _coerceArg(ScriptArg arg) =>
-    arg.type == ArgType.INT? _coerced('int.parse', arg) :
-    arg.type == ArgType.LONG? _coerced('int.parse', arg) :
-    arg.type == ArgType.DOUBLE? _coerced('double.parse', arg) :
-    arg.type == ArgType.BOOL? _coerced(null, arg) :
-    _coerced(null, arg);
+  _coerceArg(ScriptArg arg) => arg.type == ArgType.INT
+      ? _coerced('int.parse', arg)
+      : arg.type == ArgType.LONG
+          ? _coerced('int.parse', arg)
+          : arg.type == ArgType.DOUBLE
+              ? _coerced('double.parse', arg)
+              : arg.type == ArgType.BOOL
+                  ? _coerced(null, arg)
+                  : _coerced(null, arg);
 
   get _parseArgs => '''
 //! Method to parse command line options.
@@ -232,11 +234,9 @@ $_positionals
 ''';
 
   _defaultsTo(ScriptArg arg) =>
-    arg.defaultsTo == null? null : smartQuote(arg.defaultsTo.toString());
+      arg.defaultsTo == null ? null : smartQuote(arg.defaultsTo.toString());
 
-  get _addFlags => args
-    .where((arg) => arg.isFlag)
-    .map((arg) => '''
+  get _addFlags => args.where((arg) => arg.isFlag).map((arg) => '''
     _parser.addFlag('${arg.name}',
       help: \'\'\'
 ${arg.doc}
@@ -246,8 +246,8 @@ ${arg.doc}
     );''').join('\n') + '\n';
 
   get _addOptions => args
-    .where((arg) => !arg.isFlag && arg.position == null)
-    .map((arg) => '''
+      .where((arg) => !arg.isFlag && arg.position == null)
+      .map((arg) => '''
     _parser.addOption('${arg.name}',
       help: ${arg.doc == null? "''" : "\'\'\'\n${arg.doc}\n\'\'\'"},
       defaultsTo: ${_defaultsTo(arg)},
@@ -256,14 +256,13 @@ ${arg.doc}
       allowed: ${arg.allowed.length>0? arg.allowed.map((a) => "'$a'").toList() : null}
     );''').join('\n') + '\n';
 
-  get _pullPositionals => args
-    .where((sa) => sa.position != null).length > 0 ? '''
+  get _pullPositionals => args.where((sa) => sa.position != null).length > 0
+      ? '''
     // Pull out positional args as they were named
-    remaining = new List.from(argResults.rest);''' : '';
+    remaining = new List.from(argResults.rest);'''
+      : '';
 
-  get _positionals => args
-    .where((sa) => sa.position != null)
-    .map((sa) => '''
+  get _positionals => args.where((sa) => sa.position != null).map((sa) => '''
     if(${sa.position} >= remaining.length) {
       throw new
         ArgumentError('Positional argument ${sa.name} (position ${sa.position}) not available - not enough args');
@@ -286,7 +285,8 @@ ${indentBlock(customBlock("$id main"))}
 
 ${customBlock("$id global")}''';
 
-  get _requiredArgs => indentBlock(requiredArgs.length>0? '''
+  get _requiredArgs => indentBlock(requiredArgs.length > 0
+      ? '''
 try {
 
 $_processArgs
@@ -294,7 +294,8 @@ $_processArgs
   print(e);
   _usage();
 }
-''':'');
+'''
+      : '');
 
   get _processArgs => requiredArgs.map((arg) => '''
   if(options["${arg.name}"] == null)

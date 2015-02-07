@@ -1,4 +1,4 @@
-/// 
+///
 /// Support for storing dart meta data for purpose of generating code. Essentially
 /// this is a model of structural code items that comprise dart systems. Things like
 /// libraries (Library), classes (Class), class members (Member), pubspecs
@@ -70,14 +70,21 @@ part 'src/ebisu_dart_meta/dart_meta.dart';
 final _logger = new Logger('ebisu_dart_meta');
 
 List<String> _nonJsonableTypes = [
-  'String', 'int', 'double', 'bool', 'num',
-  'Map', 'List', 'DateTime', 'dynamic',
+  'String',
+  'int',
+  'double',
+  'bool',
+  'num',
+  'Map',
+  'List',
+  'DateTime',
+  'dynamic',
 ];
 // custom <library ebisu_dart_meta>
 
 bool isClassJsonable(String className) =>
-  !_nonJsonableTypes.contains(className) &&
-  !className.startsWith('Map<') &&
-  !className.startsWith('List<');
+    !_nonJsonableTypes.contains(className) &&
+        !className.startsWith('Map<') &&
+        !className.startsWith('List<');
 
 // end <library ebisu_dart_meta>

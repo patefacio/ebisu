@@ -14,22 +14,21 @@ String _scratchRemoveMeFolder;
 // custom <library setup>
 
 String get tempPath {
-  if(_scratchRemoveMeFolder == null) {
+  if (_scratchRemoveMeFolder == null) {
     String packageRootPath = dirname(dirname(absolute(Platform.script.path)));
     _scratchRemoveMeFolder =
-      joinAll([packageRootPath, 'test', 'scratch_remove_me']);
+        joinAll([packageRootPath, 'test', 'scratch_remove_me']);
   }
 
   return _scratchRemoveMeFolder;
 }
 
-System tempSystem(String id) =>
-  system(id)..rootPath = tempPath;
+System tempSystem(String id) => system(id)..rootPath = tempPath;
 
 void destroyTempData() {
   var dir = new Directory(tempPath);
-  if(dir.existsSync()) {
-    dir.deleteSync(recursive : true);
+  if (dir.existsSync()) {
+    dir.deleteSync(recursive: true);
   }
 }
 

@@ -34,6 +34,10 @@ environment:
 
 # end <ebisu dev dependencies>
 
+dependency_overrides:
+# custom <ebisu dependency overrides>
+# end <ebisu dependency overrides>
+
 transformers:
 
 # custom <ebisu transformers>
