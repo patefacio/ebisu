@@ -146,6 +146,7 @@ final RegExp _trailingNewline = new RegExp(r'\n$');
 final RegExp _trailingNewlines = new RegExp(r'\n*$');
 final RegExp _leadingWhiteSpace = new RegExp(r'^\s+');
 final RegExp _trailingWhiteSpace = new RegExp(r'\s+$');
+final RegExp _anyWhiteSpace = new RegExp(r'\s+');
 final RegExp _allWhiteSpace = new RegExp(r'^\s+$');
 final RegExp _multipleNewlines = new RegExp(r'\n\n+');
 final RegExp _commentLineTrailingWhite = new RegExp(r'///\s+\n');
@@ -264,14 +265,21 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
+String darkMatter(String s) => s.replaceAll(_anyWhiteSpace, '');
+
 final _dartFormatter = new DartFormatter();
 
 /// Passes *contents* through *dart_style* formatting
 String dartFormat(String contents) {
   try {
     return _dartFormatter.format(contents);
-  } on FormatException catch (ex) {
-    _logger.warn('Caught dart formatting exception $ex');
+  } on Exception catch (ex) {
+    _logger.warning('''
+Caught exception $ex
+-------------------------------------------------------------
+$contents
+-------------------------------------------------------------
+''');
     return contents;
   }
 }
