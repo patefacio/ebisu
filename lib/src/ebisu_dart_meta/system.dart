@@ -154,6 +154,7 @@ Only "version" and "path" overrides are supported.
     }
 
     pubSpec
+      ..addDevDependency(new PubDependency('yaml'))
       ..addDevDependency(
           new PubDependency('unittest')..version = '>=0.11.0 < 0.12.0', true)
       ..addDevDependency(new PubDependency('browser'), true);
