@@ -173,14 +173,7 @@ Only "version" and "path" overrides are supported.
       }
     }
 
-    allLibraries.forEach((lib) {
-      lib.generate();
-      if (lib.includeLogger) {
-        if (pubSpec.depNotFound('logging')) {
-          pubSpec.addDependency(new PubDependency('logging'));
-        }
-      }
-    });
+    allLibraries.forEach((lib) => lib.generate());
 
     if (pubSpec != null && generatePubSpec) {
       overridePubs();

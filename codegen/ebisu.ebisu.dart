@@ -27,8 +27,8 @@ void main() {
 generate() {
 
   Library ebisu_utils = library('ebisu_utils')
-    ..imports = [ 'math', "'dart:convert' as convert", ]
     ..includeLogger = true
+    ..imports = [ 'math', "'dart:convert' as convert", ]
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
   // The following are commonly used members of the meta data classes
@@ -868,7 +868,6 @@ text in generated ctor initializers''',
 
   System ebisu = system('ebisu')
     ..includeReadme = true
-    ..includeHop = true
     ..introduction = 'A library supporting code generation of Dart pub packages and many constituent assets.'
     ..purpose = '''
 There are two potentially distinct purposes for this package. First, for those
@@ -1041,18 +1040,17 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.11'
+        ..version = '0.0.12'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
 '''
         ..homepage = 'https://github.com/patefacio/ebisu'
         ..dependencies = [
-          pubdep('path'),
+          pubdep('path')..version = ">=1.3.0<1.4.0",
         ]
         ..devDependencies = [
-          pubdep('unittest'),
-          pubdep('yaml'),
+          pubdep('unittest')..version = ">=0.11.5<0.12.0",
         ]
                  )
     ..libraries = [

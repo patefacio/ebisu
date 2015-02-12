@@ -84,7 +84,7 @@ class Enum {
 
   String valueAsString(value) => isSnakeString ? value.snake : value.capCamel;
 
-  String valueId(EnumValue v) => requiresClass? v.shout : v.camel;
+  String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
 
   get _content => br(requiresClass
       ? [

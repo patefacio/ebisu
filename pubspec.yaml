@@ -1,5 +1,5 @@
 name: ebisu
-version: 0.0.11
+version: 0.0.12
 author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: https://github.com/patefacio/ebisu
 description: >
@@ -7,27 +7,26 @@ description: >
   other languages like D) using a fairly declarative aproach.
 
 dependencies:
-  path: "any"
-  logging: "any"
+  path: ">=1.3.0<1.4.0"
 
 # custom <ebisu dependencies>
 
-  id:
-    git: git://github.com/patefacio/id
+  logging: ">=0.9.3<0.10.0"
 
-  dart_style:
-    git: git://github.com/dart-lang/dart_style
+  id: ">=1.0.4<1.1.0"
+
+  dart_style: ">=0.1.3<0.2.0"
 
 # end <ebisu dependencies>
 
 dev_dependencies:
-  unittest: "any"
-  yaml: "any"
+  unittest: ">=0.11.5<0.12.0"
   browser: "any"
-  hop: "any"
-  hop_docgen: "any"
 
 # custom <ebisu dev dependencies>
+
+  hop: ">=0.31.1<0.32.0"
+  hop_docgen: "any"
 
 environment:
   sdk: ">=0.8.10+6 <2.0.0"
