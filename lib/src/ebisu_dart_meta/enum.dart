@@ -73,7 +73,7 @@ class Enum {
       final ev = values[i];
       if (ev is Id) {
         values[i] = new EnumValue(ev, i);
-      } else if(ev is EnumValue && (ev as EnumValue).value == null) {
+      } else if (ev is EnumValue && (ev as EnumValue).value == null) {
         ev.value = i;
       }
     }
@@ -89,11 +89,11 @@ class Enum {
 
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
 
-  String enumValueEntry(EnumValue v) => v.doc != null?
-    /** TODO Fix (make triple quote) once  addressed https://github.com/dart-lang/dart_style/issues/171 */
-    '''
+  String enumValueEntry(EnumValue v) => v.doc != null
+      ? '''
 ${indentBlock(docComment(v.doc))}
-${valueId(v)}''' : valueId(v);
+${valueId(v)}'''
+      : valueId(v);
 
   get _content => br(requiresClass
       ? [
@@ -195,7 +195,7 @@ indentBlock(
   get _enumClassEnd => '}\n';
 
   _commentedEnumAlias(EnumValue v) {
-    final userComment = v.doc == null? '' : '\n${v.doc}\n';
+    final userComment = v.doc == null ? '' : '\n${v.doc}\n';
     final comment = '''
 Convenient access to ${enumName}.${valueId(v)} with *${valueId(v)}* see [${enumName}].
 $userComment''';
@@ -206,8 +206,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   }
 
   get _libraryScopedValues => libraryScopedValues
-      ?
-    values.map((v) => _commentedEnumAlias(v)).join('\n')
+      ? values.map((v) => _commentedEnumAlias(v)).join('\n')
       : '';
 
   // end <class Enum>

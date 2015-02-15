@@ -183,8 +183,8 @@ String prettyJsonMap(dynamic item,
 typedef Object FromJsonConstructor(Object jsonData);
 constructMapFromJsonData(Map map, FromJsonConstructor ctor,
     [FromJsonConstructor keyCtor]) => map == null
-        ? null
-        : map.keys.fold({}, (newMap, key) => newMap
+    ? null
+    : map.keys.fold({}, (newMap, key) => newMap
   ..[keyCtor == null ? key : keyCtor(key)] = ctor(map[key]));
 
 constructListFromJsonData(List list, FromJsonConstructor ctor) => list == null
