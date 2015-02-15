@@ -70,8 +70,11 @@ class Enum {
     _name = _id.capCamel;
     _enumName = isPublic ? _name : "_$_name";
     for (int i = 0; i < values.length; i++) {
-      if (values[i] is Id) {
-        values[i] = new EnumValue(values[i], i);
+      final ev = values[i];
+      if (ev is Id) {
+        values[i] = new EnumValue(ev, i);
+      } else if(ev is EnumValue && (ev as EnumValue).value == null) {
+        ev.value = i;
       }
     }
     _parent = p;
@@ -85,6 +88,12 @@ class Enum {
   String valueAsString(value) => isSnakeString ? value.snake : value.capCamel;
 
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
+
+  String enumValueEntry(EnumValue v) => v.doc != null?
+    /** TODO Fix (make triple quote) once  addressed https://github.com/dart-lang/dart_style/issues/171 */
+    '''
+${indentBlock(docComment(v.doc))}
+${valueId(v)}''' : valueId(v);
 
   get _content => br(requiresClass
       ? [
@@ -102,16 +111,19 @@ class Enum {
       : [
     _docComment,
     'enum $enumName {',
-    values.map((v) => '  ${valueId(v)}').join(',\n'),
+    values.map((v) => chomp(enumValueEntry(v))).join(',\n'),
     '}',
     _libraryScopedValues,
   ]);
 
   get _docComment => doc != null ? docComment(doc) : '';
+
   get _enumEntries => values
       .map((v) => 'static const ${valueId(v)} = const $enumName._(${v.value});')
       .join('\n');
+
   get _enumValues => values.map((v) => v.shout).join(',\n  ');
+
   get _enumClassBegin => '''
 class $enumName implements Comparable<$enumName> {
 ${indentBlock(_enumEntries)}
@@ -181,10 +193,21 @@ indentBlock(
   get _custom =>
       hasCustom ? rightTrim(indentBlock(customBlock("enum $name"))) : '';
   get _enumClassEnd => '}\n';
+
+  _commentedEnumAlias(EnumValue v) {
+    final userComment = v.doc == null? '' : '\n${v.doc}\n';
+    final comment = '''
+Convenient access to ${enumName}.${valueId(v)} with *${valueId(v)}* see [${enumName}].
+$userComment''';
+    return '''
+${chomp(docComment(comment), true)}
+const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
+''';
+  }
+
   get _libraryScopedValues => libraryScopedValues
-      ? '''
-${values.map((v) => 'const ${valueId(v)} = ${enumName}.${valueId(v)};').join('\n')}
-'''
+      ?
+    values.map((v) => _commentedEnumAlias(v)).join('\n')
       : '';
 
   // end <class Enum>
