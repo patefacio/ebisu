@@ -170,11 +170,51 @@ String reduceVerticalWhitespace(String s) =>
 const List _defaultProtectionPair = const [customBegin, customEnd];
 const List _defaultProtections = const [_defaultProtectionPair];
 
+/// Defines a function that can be used to post-process merged,
+/// generated text prior to writing it to a target file
 typedef String PostProcessor(String);
 
+final _generatedFiles = new Set();
+
+/// The set of all generated files, whether *created*, *overwritten*,
+/// or *unchanged*
+Set<String> get generatedFiles => _generatedFiles;
+
+/// All directories into which code was targeted
+Iterable<String> get targetedDirectories =>
+  concat(new Set<String>.from(
+          generatedFiles.map((String filePath) => path.dirname(filePath)))
+      .map((String dir) => new Directory(dir)
+          .listSync()
+          .where((FileSystemEntity fse) => fse is File)));
+
+/// For every path of every generated file, lists all files in those
+/// paths that were not generated
+List<String> get nonGeneratedFiles =>
+  targetedDirectories
+  .where((FileSystemEntity fse) => !generatedFiles.contains(fse.path))
+  .toList();
+
+/// Take [generated] text and merge with contents of [destFilePath] taking care
+/// to preserve any *protect blocks*.
+///
+/// returns: true iff file written
+///
+/// [protections] A list of lists with two elements - (i.e. a list of
+/// pairs). The first element in the pair is the String that opens a
+/// protection block, the second a String that closes the protection
+/// block. By default the protections are:
+///
+///    [ [ r'//\s*custom', r'//\s*end' ] ]
+///
+/// [postProcess] An optional postProcessor function that may be run
+/// on merged contents prior to being written. An example usage is
+/// running merged text through a formatter.
 bool mergeBlocksWithFile(String generated, String destFilePath,
     [List protections = _defaultProtections, PostProcessor postProcessor]) {
   File inFile = new File(destFilePath);
+  bool fileWritten = false;
+
   if (inFile.existsSync()) {
     String currentText = inFile.readAsStringSync();
     protections.forEach((pair) {
@@ -187,16 +227,25 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
 
     if (generated == currentText) {
       print('No change: $destFilePath');
-      return false;
     } else {
       inFile.writeAsStringSync(generated);
+      fileWritten = true;
       print('Wrote: $destFilePath');
     }
   } else {
     new Directory(path.dirname(destFilePath))..createSync(recursive: true);
     inFile.writeAsStringSync(generated);
     print('Created $destFilePath');
+    fileWritten = true;
   }
+
+  if (_generatedFiles.contains(destFilePath)) {
+    _logger.warning('File generated multiple times: $destFilePath');
+  } else {
+    _generatedFiles.add(destFilePath);
+  }
+
+  return fileWritten;
 }
 
 bool mergeWithFile(String generated, String destFilePath,
@@ -246,6 +295,8 @@ List<String> cleanImports(List<String> dirtyImports) {
   return result;
 }
 
+/// Returns the string as '$s' with single quotes, assuming it does
+/// not already end in either a single or double quote
 String smartQuote(String s) =>
     ((s.indexOf("'") == -1) && (s.indexOf('"') == -1)) ? "'$s'" : s;
 

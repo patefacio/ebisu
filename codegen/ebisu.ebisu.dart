@@ -1056,6 +1056,12 @@ other languages like D) using a fairly declarative aproach.
     ..libraries = [
       library('ebisu')
       ..doc = 'Primary library for client usage of ebisu'
+      ..imports = [
+        'package:dart_style/dart_style.dart',
+        'io',
+        '"package:path/path.dart" as path',
+        'package:quiver/iterables.dart',
+      ]
       ..includeLogger = true
       ..variables = [
         variable('ebisu_path')
@@ -1100,11 +1106,6 @@ regenerating.
 
 }'''
 
-      ]
-      ..imports = [
-        'package:dart_style/dart_style.dart',
-        'io',
-        '"package:path/path.dart" as path'
       ]
       ..parts = [
         part('ebisu'),
