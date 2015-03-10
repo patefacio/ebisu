@@ -9,14 +9,7 @@ class ArgType implements Comparable<ArgType> {
   static const DOUBLE = const ArgType._(4);
   static const BOOL = const ArgType._(5);
 
-  static get values => [
-    STRING,
-    INT,
-    LONG,
-    CHOICE,
-    DOUBLE,
-    BOOL
-  ];
+  static get values => [STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
 
   final int value;
 
@@ -29,32 +22,43 @@ class ArgType implements Comparable<ArgType> {
   int compareTo(ArgType other) => value.compareTo(other.value);
 
   String toString() {
-    switch(this) {
-      case STRING: return "String";
-      case INT: return "Int";
-      case LONG: return "Long";
-      case CHOICE: return "Choice";
-      case DOUBLE: return "Double";
-      case BOOL: return "Bool";
+    switch (this) {
+      case STRING:
+        return "String";
+      case INT:
+        return "Int";
+      case LONG:
+        return "Long";
+      case CHOICE:
+        return "Choice";
+      case DOUBLE:
+        return "Double";
+      case BOOL:
+        return "Bool";
     }
     return null;
   }
 
   static ArgType fromString(String s) {
-    if(s == null) return null;
-    switch(s) {
-      case "String": return STRING;
-      case "Int": return INT;
-      case "Long": return LONG;
-      case "Choice": return CHOICE;
-      case "Double": return DOUBLE;
-      case "Bool": return BOOL;
-      default: return null;
+    if (s == null) return null;
+    switch (s) {
+      case "String":
+        return STRING;
+      case "Int":
+        return INT;
+      case "Long":
+        return LONG;
+      case "Choice":
+        return CHOICE;
+      case "Double":
+        return DOUBLE;
+      case "Bool":
+        return BOOL;
+      default:
+        return null;
     }
   }
-
 }
-
 
 /// An agrument to a script
 class ScriptArg {
@@ -209,7 +213,9 @@ result['${arg.name}'] = argResults['${arg.name}'] != null?
                   ? _coerced(null, arg)
                   : _coerced(null, arg);
 
-  get _logLevelCode => (noLogLevel? '' : indentBlock("""
+  get _logLevelCode => (noLogLevel
+      ? ''
+      : indentBlock("""
 if(result['log-level'] != null) {
   const choices = const {
     'all': Level.ALL, 'config': Level.CONFIG, 'fine': Level.FINE, 'finer': Level.FINER,
