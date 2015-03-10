@@ -307,6 +307,12 @@ text to include in the license file.
           ..doc = 'Arguments for this script'
           ..type = 'List<ScriptArg>'
           ..classInit = '[]',
+          member('no_log_level')
+          ..doc = '''
+By default a *log-level* argument will be included in the script.
+Set this to false to prevent this
+'''
+          ..classInit = false,
           member('is_async')
           ..doc = 'If true makes script main async'
           ..classInit = false,

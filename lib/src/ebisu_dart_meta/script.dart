@@ -9,7 +9,14 @@ class ArgType implements Comparable<ArgType> {
   static const DOUBLE = const ArgType._(4);
   static const BOOL = const ArgType._(5);
 
-  static get values => [STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
+  static get values => [
+    STRING,
+    INT,
+    LONG,
+    CHOICE,
+    DOUBLE,
+    BOOL
+  ];
 
   final int value;
 
@@ -22,43 +29,32 @@ class ArgType implements Comparable<ArgType> {
   int compareTo(ArgType other) => value.compareTo(other.value);
 
   String toString() {
-    switch (this) {
-      case STRING:
-        return "String";
-      case INT:
-        return "Int";
-      case LONG:
-        return "Long";
-      case CHOICE:
-        return "Choice";
-      case DOUBLE:
-        return "Double";
-      case BOOL:
-        return "Bool";
+    switch(this) {
+      case STRING: return "String";
+      case INT: return "Int";
+      case LONG: return "Long";
+      case CHOICE: return "Choice";
+      case DOUBLE: return "Double";
+      case BOOL: return "Bool";
     }
     return null;
   }
 
   static ArgType fromString(String s) {
-    if (s == null) return null;
-    switch (s) {
-      case "String":
-        return STRING;
-      case "Int":
-        return INT;
-      case "Long":
-        return LONG;
-      case "Choice":
-        return CHOICE;
-      case "Double":
-        return DOUBLE;
-      case "Bool":
-        return BOOL;
-      default:
-        return null;
+    if(s == null) return null;
+    switch(s) {
+      case "String": return STRING;
+      case "Int": return INT;
+      case "Long": return LONG;
+      case "Choice": return CHOICE;
+      case "Double": return DOUBLE;
+      case "Bool": return BOOL;
+      default: return null;
     }
   }
+
 }
+
 
 /// An agrument to a script
 class ScriptArg {
@@ -126,6 +122,9 @@ class Script {
   List<String> imports = [];
   /// Arguments for this script
   List<ScriptArg> args = [];
+  /// By default a *log-level* argument will be included in the script.
+  /// Set this to false to prevent this
+  bool noLogLevel = false;
   /// If true makes script main async
   bool isAsync = false;
   /// Classes to support this script, included directly in script above main
@@ -139,6 +138,14 @@ class Script {
         ..isFlag = true
         ..abbr = 'h'
         ..doc = 'Display this help screen');
+    }
+    if (!noLogLevel) {
+      args.add(new ScriptArg(new Id('log_level'))
+        ..doc = '''
+Select log level from:
+[ all, config, fine, finer, finest, info, levels,
+  off, severe, shout, warning ]
+''');
     }
     args.forEach((sa) => sa.parent = this);
     imports.add('dart:io');
@@ -202,6 +209,17 @@ result['${arg.name}'] = argResults['${arg.name}'] != null?
                   ? _coerced(null, arg)
                   : _coerced(null, arg);
 
+  get _logLevelCode => (noLogLevel? '' : indentBlock("""
+if(result['log-level'] != null) {
+  const choices = const {
+    'all': Level.ALL, 'config': Level.CONFIG, 'fine': Level.FINE, 'finer': Level.FINER,
+    'finest': Level.FINEST, 'info': Level.INFO, 'levels': Level.LEVELS, 'off': Level.OFF,
+    'severe': Level.SEVERE, 'shout': Level.SHOUT, 'warning': Level.WARNING };
+  final selection = choices[result['log-level'].toLowerCase()];
+  if(selection != null) Logger.root.level = selection;
+}
+"""));
+
   get _parseArgs => '''
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
@@ -226,7 +244,7 @@ indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
 }
 $_pullPositionals
 $_positionals
-
+$_logLevelCode
     return { 'options': result, 'rest': argResults.rest };
 
   } catch(e) {
@@ -278,7 +296,7 @@ ${arg.doc}
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
-  Logger.root.level = Level.INFO;
+  Logger.root.level = Level.OFF;
   Map argResults = _parseArgs(args);
   Map options = argResults['options'];
   List positionals = argResults['rest'];

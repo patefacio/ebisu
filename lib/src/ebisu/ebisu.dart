@@ -345,7 +345,9 @@ get useDartFormatter => _useDartFormatter;
 /// allows client code to exclude formatting of problem files while still
 /// formatting the good ones.
 final List<RegExp> _formatPrunes = [];
-set formatPrunes(List<RegExp> v) => _formatPrunes..clear()..addAll(v);
+set formatPrunes(List<RegExp> v) => _formatPrunes
+  ..clear()
+  ..addAll(v);
 get formatPrunes => _formatPrunes;
 
 bool mergeWithDartFile(String generated, String destFilePath,
@@ -353,7 +355,7 @@ bool mergeWithDartFile(String generated, String destFilePath,
   if (useFormatter == null) useFormatter = _useDartFormatter;
   if (useFormatter && !_formatPrunes.isEmpty) {
     final pruned = _formatPrunes.any((re) => re.hasMatch(destFilePath));
-    if(pruned) _logger.info('Pruned $destFilePath from formatting');
+    if (pruned) _logger.info('Pruned $destFilePath from formatting');
     useFormatter = !pruned;
   }
   return mergeWithFile(generated, destFilePath, customBegin, customEnd,
