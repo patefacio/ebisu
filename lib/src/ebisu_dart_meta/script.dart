@@ -128,6 +128,8 @@ class Script {
   List<ScriptArg> args = [];
   /// If true makes script main async
   bool isAsync = false;
+  /// Classes to support this script, included directly in script above main
+  List<Class> classes = [];
   // custom <class Script>
 
   set parent(p) {
@@ -163,6 +165,7 @@ class Script {
     _usage,
     reduceVerticalWhitespace(_parseArgs),
     _loggerInit,
+    br(classes.map((c) => c.define())),
     _main,
   ].where((line) => line != '').join('\n');
 
@@ -176,7 +179,7 @@ ArgParser _parser;
   get _usage => '''
 //! The comment and usage associated with this script
 void _usage() {
-  print(\'\'\'
+  print(r\'\'\'
 $doc
 \'\'\');
   print(_parser.getUsage());
@@ -224,7 +227,7 @@ indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
 $_pullPositionals
 $_positionals
 
-    return { 'options': result, 'rest': remaining };
+    return { 'options': result, 'rest': argResults.rest };
 
   } catch(e) {
     _usage();
@@ -238,7 +241,7 @@ $_positionals
 
   get _addFlags => args.where((arg) => arg.isFlag).map((arg) => '''
     _parser.addFlag('${arg.name}',
-      help: \'\'\'
+      help: r\'\'\'
 ${arg.doc}
 \'\'\',
       abbr: ${arg.abbr == null? null : "'${arg.abbr}'"},
@@ -249,7 +252,7 @@ ${arg.doc}
       .where((arg) => !arg.isFlag && arg.position == null)
       .map((arg) => '''
     _parser.addOption('${arg.name}',
-      help: ${arg.doc == null? "''" : "\'\'\'\n${arg.doc}\n\'\'\'"},
+      help: ${arg.doc == null? "''" : "r\'\'\'\n${arg.doc}\n\'\'\'"},
       defaultsTo: ${_defaultsTo(arg)},
       allowMultiple: ${arg.isMultiple},
       abbr: ${arg.abbr == null? null : "'${arg.abbr}'"},

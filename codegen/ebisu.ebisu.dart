@@ -310,6 +310,10 @@ text to include in the license file.
           member('is_async')
           ..doc = 'If true makes script main async'
           ..classInit = false,
+          member('classes')
+          ..doc = 'Classes to support this script, included directly in script above main'
+          ..type = 'List<Class>'
+          ..classInit = [],
         ],
       ],
       part('pub')

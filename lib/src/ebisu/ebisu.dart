@@ -181,19 +181,17 @@ final _generatedFiles = new Set();
 Set<String> get generatedFiles => _generatedFiles;
 
 /// All directories into which code was targeted
-Iterable<String> get targetedDirectories =>
-  concat(new Set<String>.from(
-          generatedFiles.map((String filePath) => path.dirname(filePath)))
-      .map((String dir) => new Directory(dir)
-          .listSync()
-          .where((FileSystemEntity fse) => fse is File)));
+Iterable<String> get targetedDirectories => concat(new Set<String>.from(
+    generatedFiles.map((String filePath) => path.dirname(filePath))).map(
+    (String dir) => new Directory(dir)
+        .listSync()
+        .where((FileSystemEntity fse) => fse is File)));
 
 /// For every path of every generated file, lists all files in those
 /// paths that were not generated
-List<String> get nonGeneratedFiles =>
-  targetedDirectories
-  .where((FileSystemEntity fse) => !generatedFiles.contains(fse.path))
-  .toList();
+List<String> get nonGeneratedFiles => targetedDirectories
+    .where((FileSystemEntity fse) => !generatedFiles.contains(fse.path))
+    .toList();
 
 /// Take [generated] text and merge with contents of [destFilePath] taking care
 /// to preserve any *protect blocks*.
@@ -342,9 +340,22 @@ bool _useDartFormatter = Platform.environment['EBISU_DART_FORMAT'] != null &&
 set useDartFormatter(bool v) => _useDartFormatter = v;
 get useDartFormatter => _useDartFormatter;
 
+/// List of regexes identifying files to not format, even if useDartFormatter is
+/// true. Occasionally a file causes dart_style some issues, so providing this
+/// allows client code to exclude formatting of problem files while still
+/// formatting the good ones.
+final List<RegExp> _formatPrunes = [];
+set formatPrunes(List<RegExp> v) => _formatPrunes..clear()..addAll(v);
+get formatPrunes => _formatPrunes;
+
 bool mergeWithDartFile(String generated, String destFilePath,
     {bool useFormatter}) {
   if (useFormatter == null) useFormatter = _useDartFormatter;
+  if (useFormatter && !_formatPrunes.isEmpty) {
+    final pruned = _formatPrunes.any((re) => re.hasMatch(destFilePath));
+    if(pruned) _logger.info('Pruned $destFilePath from formatting');
+    useFormatter = !pruned;
+  }
   return mergeWithFile(generated, destFilePath, customBegin, customEnd,
       useFormatter ? dartFormat : null);
 }
