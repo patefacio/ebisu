@@ -2,6 +2,7 @@ library ebisu.test.test_code_generation;
 
 import 'dart:async';
 import 'dart:io';
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
@@ -196,7 +197,10 @@ void generateTestLibraries() {
 }
 
 // end <library test_code_generation>
-main() {
+main([List<String> args]) {
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
 // custom <main>
 
   // Logger.root.onRecord.listen((LogRecord r) =>

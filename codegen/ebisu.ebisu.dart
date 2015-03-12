@@ -878,6 +878,7 @@ text in generated ctor initializers''',
 
   System ebisu = system('ebisu')
     ..includeReadme = true
+    ..includeHop = true
     ..introduction = 'A library supporting code generation of Dart pub packages and many constituent assets.'
     ..purpose = '''
 There are two potentially distinct purposes for this package. First, for those

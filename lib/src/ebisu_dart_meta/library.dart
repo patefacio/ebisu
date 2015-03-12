@@ -54,7 +54,9 @@ class Library {
     if (t) {
       _isTest = true;
       includeMain = true;
-      imports.add('package:unittest/unittest.dart');
+      includeLogger = true;
+      imports.addAll(
+          ['package:unittest/unittest.dart', 'package:args/args.dart',]);
     }
   }
 
@@ -160,10 +162,19 @@ class Library {
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
   get _libraryCustom =>
       includeCustom ? chomp(customBlock('library $name')) : '';
+
+  get _initLogger => isTest
+      ? r"""
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
+"""
+      : '';
+
   get _libraryMain => includeMain
       ? '''
-main() {
-${customBlock('main')}
+main([List<String> args]) {
+$_initLogger${customBlock('main')}
 }'''
       : (libMain != null) ? libMain : '';
 

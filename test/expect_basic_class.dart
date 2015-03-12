@@ -1,13 +1,20 @@
 library ebisu.test.expect_basic_class;
 
+import 'package:args/args.dart';
+import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/basic_class.dart';
 // custom <additional imports>
 // end <additional imports>
 
+final _logger = new Logger('expect_basic_class');
+
 // custom <library expect_basic_class>
 // end <library expect_basic_class>
-main() {
+main([List<String> args]) {
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
 // custom <main>
 
   var classNoInit = new ClassNoInit();

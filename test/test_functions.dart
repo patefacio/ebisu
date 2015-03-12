@@ -1,13 +1,20 @@
 library ebisu.test.test_functions;
 
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu.dart';
+import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 // custom <additional imports>
 // end <additional imports>
 
+final _logger = new Logger('test_functions');
+
 // custom <library test_functions>
 // end <library test_functions>
-main() {
+main([List<String> args]) {
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
 // custom <main>
 
   test('chomp removes one trailing newline',

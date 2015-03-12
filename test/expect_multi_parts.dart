@@ -1,13 +1,20 @@
 library ebisu.test.expect_multi_parts;
 
+import 'package:args/args.dart';
+import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/two_parts.dart';
 // custom <additional imports>
 // end <additional imports>
 
+final _logger = new Logger('expect_multi_parts');
+
 // custom <library expect_multi_parts>
 // end <library expect_multi_parts>
-main() {
+main([List<String> args]) {
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
 // custom <main>
 
   test('multi-parts public var found in main library found',

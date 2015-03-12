@@ -1,6 +1,7 @@
 library ebisu.test.setup;
 
 import 'dart:io';
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
@@ -33,7 +34,10 @@ void destroyTempData() {
 }
 
 // end <library setup>
-main() {
+main([List<String> args]) {
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
 // custom <main>
 // end <main>
 

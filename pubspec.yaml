@@ -22,6 +22,8 @@ dev_dependencies:
   unittest: ">=0.11.5<0.12.0"
   yaml: "any"
   browser: "any"
+  hop: "any"
+  hop_docgen: "any"
 
 # custom <ebisu dev dependencies>
 
