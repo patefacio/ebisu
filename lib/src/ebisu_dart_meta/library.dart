@@ -197,7 +197,8 @@ $_initLogger${customBlock('main')}
     'utf',
     'web_audio',
     'web_sql',
-    'convert'
+    'convert',
+    'typed_data',
   ]);
 
   static final _standardPackageImports = new Set.from([
