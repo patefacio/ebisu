@@ -44,7 +44,7 @@ class Enum {
   /// Reference to parent of this enum
   dynamic get parent => _parent;
   /// List of id's naming the values
-  List<dynamic> values = [];
+  List<EnumValue> get values => _values;
   /// If true, generate toJson/fromJson on wrapper class
   bool jsonSupport = false;
   /// If true, generate randJson
@@ -66,17 +66,22 @@ class Enum {
   set requiresClass(bool requiresClass) => _requiresClass = requiresClass;
   // custom <class Enum>
 
+  /// Setting of values accepts [ (String|Id|EnumValue),... ]
+  set values(List values) => _values = enumerate(values)
+      .map((IndexedValue iv) => iv.value is String
+          ? new EnumValue(idFromString(iv.value), iv.index)
+          : iv.value is Id
+              ? new EnumValue(iv.value, iv.index)
+              : (iv.value is EnumValue &&
+                      ((iv.value as EnumValue).value == null))
+                  ? new EnumValue(iv.id, iv.index)
+                  : iv.value)
+      .toList();
+
   set parent(p) {
     _name = _id.capCamel;
     _enumName = isPublic ? _name : "_$_name";
-    for (int i = 0; i < values.length; i++) {
-      final ev = values[i];
-      if (ev is Id) {
-        values[i] = new EnumValue(ev, i);
-      } else if (ev is EnumValue && (ev as EnumValue).value == null) {
-        ev.value = i;
-      }
-    }
+    values = _values;
     _parent = p;
   }
 
@@ -212,6 +217,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   // end <class Enum>
   final Id _id;
   dynamic _parent;
+  List<EnumValue> _values = [];
   String _name;
   String _enumName;
   bool _requiresClass;

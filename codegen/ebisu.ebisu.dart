@@ -113,7 +113,9 @@ classes with JSON support.
     ..imports = [
       'io', '"dart:convert" as convert',
       '"package:ebisu/ebisu.dart"',
-      '"package:id/id.dart"',
+      'package:id/id.dart',
+      'package:path/path.dart',
+      'package:quiver/iterables.dart',
     ]
     ..variables = [
       variable('non_jsonable_types')
@@ -414,7 +416,8 @@ At some point when true enums are provided this may be revisited.
           parent_member('enum'),
           member('values')
           ..doc = "List of id's naming the values"
-          ..type = 'List<dynamic>'
+          ..type = 'List<EnumValue>'
+          ..access = RO
           ..classInit = '[]',
           member('json_support')
           ..doc = "If true, generate toJson/fromJson on wrapper class"

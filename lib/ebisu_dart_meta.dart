@@ -50,8 +50,9 @@ import 'dart:io';
 import 'package:ebisu/ebisu.dart';
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
-// custom <additional imports>
 import 'package:path/path.dart';
+import 'package:quiver/iterables.dart';
+// custom <additional imports>
 // end <additional imports>
 
 part 'src/ebisu_dart_meta/test.dart';
