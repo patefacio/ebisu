@@ -370,7 +370,7 @@ Set this to false to prevent this
           parent_member('pub spec'),
           member('version')
           ..doc = 'Version for this package'
-          ..classInit = '0.1.0',
+          ..classInit = '0.0.1',
           member('name')
           ..doc = '''
 Name of the project described in spec.
@@ -1054,7 +1054,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.0.15'
+        ..version = '0.1.0'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
