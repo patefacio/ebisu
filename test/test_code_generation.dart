@@ -29,7 +29,7 @@ void generateTestLibraries() {
 
   var testSystem = tempSystem('test_code_generation')
     ..license = license
-    ..includeHop = true
+    ..includesHop = true
     ..pubSpec.doc = pubDoc
     ..pubSpec.author = author
     ..pubSpec.version = pubVersion
@@ -41,7 +41,7 @@ void generateTestLibraries() {
         ..imports = ['io', 'async', 'package:path/path.dart',]
         ..enums = [
           enum_('color')
-            ..jsonSupport = true
+            ..hasJsonSupport = true
             ..values = [id('red'), id('green'), id('blue')]
         ]
         ..classes = [
@@ -106,19 +106,19 @@ void generateTestLibraries() {
               member('m_map')..classInit = {1: 2},
             ],
           class_('simple_json')
-            ..defaultCtor = true
-            ..jsonSupport = true
+            ..hasDefaultCtor = true
+            ..hasJsonSupport = true
             ..members = [member('m_string')..classInit = 'whoop'],
           class_('courtesy_ctor')
-            ..courtesyCtor = true
+            ..hasCourtesyCtor = true
             ..members = [
               member('m_string')..classInit = 'whoop',
               member('m_secret')..classInit = 42,
             ],
           class_('class_json')
             ..defaultMemberAccess = RO
-            ..defaultCtor = true
-            ..jsonSupport = true
+            ..hasDefaultCtor = true
+            ..hasJsonSupport = true
             ..members = [
               member('m_string')..classInit = 'foo',
               member('m_int')..classInit = 3,
@@ -141,8 +141,8 @@ void generateTestLibraries() {
             ],
           class_('class_json_outer')
             ..defaultMemberAccess = RO
-            ..defaultCtor = true
-            ..jsonSupport = true
+            ..hasDefaultCtor = true
+            ..hasJsonSupport = true
             ..members = [
               member('m_nested')
                 ..type = 'ClassJson'

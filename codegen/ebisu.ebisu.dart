@@ -27,7 +27,7 @@ void main() {
 generate() {
 
   Library ebisu_utils = library('ebisu_utils')
-    ..includeLogger = true
+    ..includesLogger = true
     ..imports = [ 'math', "'dart:convert' as convert", ]
     ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
 
@@ -55,7 +55,7 @@ generate() {
   Member parent_member(String owner) => member('parent')
     ..doc = "Reference to parent of this $owner"
     ..type = 'dynamic'
-    ..jsonTransient = true
+    ..isJsonTransient = true
     ..access = Access.RO;
 
   Member custom_member(String owner) => member('include_custom')
@@ -75,14 +75,14 @@ example, the following is the structure of the imported id library.
 
       library('id')
       ..doc = '...'
-      ..includeLogger = true
+      ..includesLogger = true
       ..imports = [
         'dart:convert'
       ]
       ..classes = [
         class_('id')
         ..doc = "Given an id (all lower case string of words separated by '_')..."
-        ..ctorSansNew = true
+        ..hasCtorSansNew = true
         ..members = [
           member('id')
           ..doc = "String containing the lower case words separated by '_'"
@@ -126,7 +126,7 @@ classes with JSON support.
   'Map', 'List', 'DateTime', 'dynamic',
 ]'''
     ]
-    ..includeLogger = true
+    ..includesLogger = true
     ..parts = [
       part('test')
       ..classes = [
@@ -165,7 +165,7 @@ classes with JSON support.
           ..doc = 'Information for the pubspec'
           ..type = 'PubSpec',
           member('jsonable_classes')
-          ..doc = 'Map of all classes that have jsonSupport'
+          ..doc = 'Map of all classes with hasJsonSupport true'
           ..type = 'Map<String,Class>'
           ..classInit = '{}',
           member('finalized')
@@ -173,7 +173,7 @@ classes with JSON support.
           ..access = Access.RO
           ..type = 'bool'
           ..classInit = 'false',
-          member('generate_pub_spec')
+          member('generates_pub_spec')
           ..doc = 'If true generate a pubspec.xml file'
           ..type = 'bool'
           ..classInit = 'true',
@@ -186,7 +186,7 @@ to that license is used. The current keys of the map are:
 Otherwise the text is assumed to be the
 text to include in the license file.
 ''',
-          member('include_readme')
+          member('includes_readme')
           ..doc = 'If true standard outline for readme provided'
           ..type = 'bool'
           ..classInit = 'false',
@@ -195,10 +195,10 @@ text to include in the license file.
           member('purpose')
           ..doc = 'Purpose for this system, included in README.md',
           member('todos')
-          ..doc = 'List of todos included in the readme - If any present includeReadme assumed true'
+          ..doc = 'List of todos included in the readme - If any present includesReadme assumed true'
           ..type = 'List<String>'
           ..classInit = '[]',
-          member('include_hop')
+          member('includes_hop')
           ..doc = 'If true generates tool folder with hop_runner'
           ..type = 'bool'
           ..classInit = 'false',
@@ -240,7 +240,7 @@ text to include in the license file.
           member('parent')
           ..doc = "Reference to System parent of this benchmark"
           ..type = 'System'
-          ..jsonTransient = true
+          ..isJsonTransient = true
           ..access = Access.RO,
           member('classes')
           ..doc = 'Additional classes in the benchmark library'
@@ -341,7 +341,7 @@ Set this to false to prevent this
           ..doc = "Git reference",
           member('type')
           ..doc = "Type for the pub dependency"
-          ..jsonTransient = true
+          ..isJsonTransient = true
           ..type = 'PubDepType'
           ..access = IA,
         ],
@@ -370,7 +370,7 @@ Set this to false to prevent this
           parent_member('pub spec'),
           member('version')
           ..doc = 'Version for this package'
-          ..classInit = '0.0.1',
+          ..classInit = '0.1.0',
           member('name')
           ..doc = '''
 Name of the project described in spec.
@@ -395,7 +395,7 @@ If not set, id of system is used.
       ..classes = [
         class_('enum_value')
         ..doc = 'Define the id and value for an enum value'
-        ..ctorSansNew = true
+        ..hasCtorSansNew = true
         ..members = [
           id_member('enum_value'),
           member('value')
@@ -419,7 +419,7 @@ At some point when true enums are provided this may be revisited.
           ..type = 'List<EnumValue>'
           ..access = RO
           ..classInit = '[]',
-          member('json_support')
+          member('has_json_support')
           ..doc = "If true, generate toJson/fromJson on wrapper class"
           ..type = 'bool'
           ..classInit = 'false',
@@ -437,7 +437,7 @@ At some point when true enums are provided this may be revisited.
           ..doc = 'If true includes custom block for additional user supplied ctor code'
           ..type = 'bool'
           ..classInit = 'false',
-          member('library_scoped_values')
+          member('has_library_scoped_values')
           ..doc = 'If true scopes the enum values to library by assigning to var outside class'
           ..type = 'bool'
           ..classInit = 'false',
@@ -561,7 +561,7 @@ member('foo')..init = [1,2,3]
           member('parent')
           ..doc = "Reference to Class parent of this member"
           ..type = 'Class'
-          ..jsonTransient = true
+          ..isJsonTransient = true
           ..access = Access.RO,
           member('type')
           ..doc = 'Type of the member'
@@ -612,8 +612,8 @@ text in generated ctor initializers''',
           ..doc = 'True if the member is static'
           ..type = 'bool'
           ..classInit = 'false',
-          member('json_transient')
-          ..doc = 'True if the member should not be serialized if the parent class has jsonSupport'
+          member('is_json_transient')
+          ..doc = 'True if the member should not be serialized if the parent class has hasJsonSupport'
           ..type = 'bool'
           ..classInit = 'false',
           member('is_observable')
@@ -675,8 +675,8 @@ text in generated ctor initializers''',
           ..doc = "If true, class is abstract"
           ..type = 'bool'
           ..classInit = 'false',
-          member('json_support')
-          ..doc = "If true, generate toJson/fromJson on all members that are not jsonTransient"
+          member('has_json_support')
+          ..doc = "If true, generate toJson/fromJson on all members that are not isJsonTransient"
           ..type = 'bool'
           ..access = WO
           ..classInit = 'false',
@@ -684,19 +684,19 @@ text in generated ctor initializers''',
           ..doc = "If true, generate randJson function"
           ..type = 'bool'
           ..classInit = 'false',
-          member('op_equals')
+          member('has_op_equals')
           ..doc = "If true, generate operator== using all members"
           ..type = 'bool'
           ..classInit = 'false',
-          member('comparable')
+          member('is_comparable')
           ..doc = "If true, implements comparable"
           ..type = 'bool'
           ..classInit = 'false',
-          member('polymorphic_comparable')
+          member('is_polymorphic_comparable')
           ..doc = "If true, implements comparable with runtimeType check followed by rest"
           ..type = 'bool'
           ..classInit = 'false',
-          member('courtesy_ctor')
+          member('has_courtesy_ctor')
           ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
           ..type = 'bool'
           ..classInit = 'false',
@@ -704,19 +704,19 @@ text in generated ctor initializers''',
           ..doc = "If true adds sets all members to final"
           ..type = 'bool'
           ..classInit = 'false',
-          member('default_ctor')
+          member('has_default_ctor')
           ..doc = "If true adds empty default ctor"
           ..type = 'bool'
           ..classInit = 'false',
-          member('immutable')
-          ..doc = "If true sets allMembersFinal and defaultCtor to true"
+          member('is_immutable')
+          ..doc = "If true sets allMembersFinal and hasDefaultCtor to true"
           ..type = 'bool'
           ..classInit = 'false',
-          member('ctor_sans_new')
+          member('has_ctor_sans_new')
           ..doc = "If true creates library functions to construct forwarding to ctors"
           ..type = 'bool'
           ..access = WO,
-          member('copyable')
+          member('is_copyable')
           ..doc = "If true includes a copy function"
           ..type = 'bool'
           ..classInit = 'false',
@@ -730,11 +730,11 @@ text in generated ctor initializers''',
           ..doc = 'Additional code included in the class near the top',
           member('bottom_injection')
           ..doc = 'Additional code included in the class near the bottom',
-          member('builder')
+          member('has_builder')
           ..doc = r"If true includes a ${className}Builder class"
           ..type = 'bool'
           ..classInit = 'false',
-          member('json_to_string')
+          member('has_json_to_string')
           ..doc = "If true includes a toString() => ebisu_utils.prettyJsonMap(toJson())"
           ..type = 'bool'
           ..classInit = 'false',
@@ -743,7 +743,7 @@ text in generated ctor initializers''',
           ..type = 'bool'
           ..classInit = 'false',
           member('ctor_calls_init')
-          ..doc = 'If true courtesyCtor is `=> _init()`'
+          ..doc = 'If true hasCourtesyCtor is `=> _init()`'
           ..type = 'bool'
           ..classInit = 'false',
           member('json_key_format')
@@ -790,7 +790,7 @@ text in generated ctor initializers''',
           member('qualified_name')
           ..doc = "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
           ..access = Access.RO,
-          member('include_logger')
+          member('includes_logger')
           ..doc = 'If true includes logging support and a _logger'
           ..type = 'bool'
           ..classInit = 'false',
@@ -799,7 +799,7 @@ text in generated ctor initializers''',
           ..type = 'bool'
           ..access = Access.RO
           ..classInit = 'false',
-          member('include_main')
+          member('includes_main')
           ..doc = 'If true a main is included in the library file'
           ..type = 'bool'
           ..classInit = 'false',
@@ -811,7 +811,7 @@ text in generated ctor initializers''',
           ..doc = 'Default access for members'
           ..classInit = 'Access.RW'
           ..type = 'Access',
-          member('ctor_sans_new')
+          member('has_ctor_sans_new')
           ..doc = "If true classes will get library functions to construct forwarding to ctors"
           ..type = 'bool'
           ..classInit = false
@@ -848,7 +848,7 @@ text in generated ctor initializers''',
           ..doc = 'Default access for members'
           ..access = WO
           ..type = 'Access',
-          member('ctor_sans_new')
+          member('has_ctor_sans_new')
           ..doc = "If true classes will get library functions to construct forwarding to ctors"
           ..type = 'bool'
           ..access = WO
@@ -863,14 +863,14 @@ text in generated ctor initializers''',
       ]
       ..enums = [
         enum_('access')
-        ..jsonSupport = true
+        ..hasJsonSupport = true
         ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
         ..values = [
           id('ia'), id('ro'), id('rw'), id('wo'),
         ],
         enum_('pub_dep_type')
         ..doc = 'Dependency type of a PubDependency'
-        ..jsonSupport = true
+        ..hasJsonSupport = true
         ..values = [
           id('path'), id('git'), id('hosted')
         ],
@@ -880,8 +880,8 @@ text in generated ctor initializers''',
     ];
 
   System ebisu = system('ebisu')
-    ..includeReadme = true
-    ..includeHop = true
+    ..includesReadme = true
+    ..includesHop = true
     ..introduction = 'A library supporting code generation of Dart pub packages and many constituent assets.'
     ..purpose = '''
 There are two potentially distinct purposes for this package. First, for those
@@ -1017,8 +1017,8 @@ library/templates, a message like the following will be output:
         variable('scratch_remove_me_folder')
         ..isPublic = false
       ]
-      ..includeMain = false
-      ..includeLogger = true,
+      ..includesMain = false
+      ..includesLogger = true,
       library('test_functions')
       ..imports = [
         'package:ebisu/ebisu.dart',
@@ -1031,7 +1031,7 @@ library/templates, a message like the following will be output:
         'package:yaml/yaml.dart',
         'io',
         'async', ]
-      ..includeLogger = true,
+      ..includesLogger = true,
       library('expect_basic_class')
       ..imports = [
         'scratch_remove_me/lib/basic_class.dart',
@@ -1076,7 +1076,7 @@ other languages like D) using a fairly declarative aproach.
         '"package:path/path.dart" as path',
         'package:quiver/iterables.dart',
       ]
-      ..includeLogger = true
+      ..includesLogger = true
       ..variables = [
         variable('ebisu_path')
         ..doc = 'Path to this package - for use until this becomes a pub package'
@@ -1131,7 +1131,7 @@ regenerating.
   /*
   ebisu_dart_meta.parts.forEach((part) {
     part.classes.forEach((c) {
-      c.jsonSupport = true;
+      c.hasJsonSupport = true;
     });
   });
   */

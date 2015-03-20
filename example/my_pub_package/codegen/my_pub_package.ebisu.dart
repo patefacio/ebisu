@@ -14,7 +14,7 @@ void main() {
     Logger.root.onRecord.listen((LogRecord r) =>
         print("${r.loggerName} [${r.level}]:\t${r.message}"));
   }
-  
+
   String here = path.absolute(Platform.script.path);
   var topDir = path.dirname(path.dirname(here));
   System myPubPackage = system('my_pub_package')
@@ -25,7 +25,7 @@ Simple example pub package composed of:
 - Hop support
 '''
     ..rootPath = topDir
-    ..includeHop = true
+    ..includesHop = true
     ..todos = [ 'Add some real code' ]
     ..license = 'boost'
     ..pubSpec.homepage = 'http://foo.com'
@@ -63,7 +63,7 @@ Simple example pub package composed of:
         part('first_part')
         ..classes = [
           class_('c_1_1')
-          ..members = [ 
+          ..members = [
             member('m1'),
             member('m2')
           ],
@@ -76,7 +76,7 @@ Simple example pub package composed of:
         part('second_part')
         ..classes = [
           class_('c_2_1')
-          ..members = [ 
+          ..members = [
             member('m1'),
             member('m2')
           ],
@@ -88,7 +88,7 @@ Simple example pub package composed of:
         ]
       ]
     ];
-  
+
   myPubPackage.generate();
-        
+
 }

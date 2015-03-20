@@ -29,11 +29,11 @@ class Library {
   /// Qualified name of the library used inside library and library parts - qualified to reduce collisions
   String get qualifiedName => _qualifiedName;
   /// If true includes logging support and a _logger
-  bool includeLogger = false;
+  bool includesLogger = false;
   /// If true this library is a test library to appear in test folder
   bool get isTest => _isTest;
   /// If true a main is included in the library file
-  bool includeMain = false;
+  bool includesMain = false;
   /// Set desired if generating just a lib and not a package
   String path;
   /// If set the main function
@@ -41,7 +41,7 @@ class Library {
   /// Default access for members
   Access defaultMemberAccess = Access.RW;
   /// If true classes will get library functions to construct forwarding to ctors
-  bool ctorSansNew = false;
+  bool hasCtorSansNew = false;
   // custom <class Library>
 
   List<Class> get allClasses {
@@ -53,8 +53,8 @@ class Library {
   set isTest(bool t) {
     if (t) {
       _isTest = true;
-      includeMain = true;
-      includeLogger = true;
+      includesMain = true;
+      includesLogger = true;
       imports.addAll(
           ['package:unittest/unittest.dart', 'package:args/args.dart',]);
     }
@@ -99,17 +99,17 @@ class Library {
     classes.forEach((c) => c.parent = this);
     benchmarks.forEach((b) => b.parent = this.parent);
 
-    if (allClasses.any((c) => c.opEquals)) {
+    if (allClasses.any((c) => c.hasOpEquals)) {
       imports.add('package:quiver/core.dart');
     }
-    if (allClasses.any((c) => c.jsonSupport)) {
+    if (allClasses.any((c) => c.hasJsonSupport)) {
       imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
       imports.add('"dart:convert" as convert');
     }
     if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {
       imports.add('package:collection/equality.dart');
     }
-    if (includeLogger) {
+    if (includesLogger) {
       imports.add("package:logging/logging.dart");
     }
     imports = cleanImports(imports.map((i) => importStatement(i)).toList());
@@ -156,7 +156,7 @@ class Library {
       ? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('')
       : '';
   get _loggerInit =>
-      includeLogger ? "final _logger = new Logger('$name');\n" : '';
+      includesLogger ? "final _logger = new Logger('$name');\n" : '';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
@@ -171,7 +171,7 @@ class Library {
 """
       : '';
 
-  get _libraryMain => includeMain
+  get _libraryMain => includesMain
       ? '''
 main([List<String> args]) {
 $_initLogger${customBlock('main')}

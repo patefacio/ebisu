@@ -8,14 +8,14 @@
 ///
 ///       library('id')
 ///       ..doc = '...'
-///       ..includeLogger = true
+///       ..includesLogger = true
 ///       ..imports = [
 ///         'dart:convert'
 ///       ]
 ///       ..classes = [
 ///         class_('id')
 ///         ..doc = "Given an id (all lower case string of words separated by '_')..."
-///         ..ctorSansNew = true
+///         ..hasCtorSansNew = true
 ///         ..members = [
 ///           member('id')
 ///           ..doc = "String containing the lower case words separated by '_'"

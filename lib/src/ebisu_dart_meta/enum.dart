@@ -46,7 +46,7 @@ class Enum {
   /// List of id's naming the values
   List<EnumValue> get values => _values;
   /// If true, generate toJson/fromJson on wrapper class
-  bool jsonSupport = false;
+  bool hasJsonSupport = false;
   /// If true, generate randJson
   bool hasRandJson = false;
   /// Name of the enum class generated sans access prefix
@@ -56,7 +56,7 @@ class Enum {
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
   /// If true scopes the enum values to library by assigning to var outside class
-  bool libraryScopedValues = false;
+  bool hasLibraryScopedValues = false;
   /// If true string value for each entry is snake case (default is shout)
   bool isSnakeString = false;
   /// Before true enum support enums were emulated with a class containing static
@@ -67,15 +67,18 @@ class Enum {
   // custom <class Enum>
 
   /// Setting of values accepts [ (String|Id|EnumValue),... ]
+
+  _evCheckValue(EnumValue ev, int index) =>
+      ev.value == null ? ((new EnumValue(ev.id, index))..doc = ev.doc) : ev;
+
   set values(List values) => _values = enumerate(values)
       .map((IndexedValue iv) => iv.value is String
           ? new EnumValue(idFromString(iv.value), iv.index)
           : iv.value is Id
               ? new EnumValue(iv.value, iv.index)
-              : (iv.value is EnumValue &&
-                      ((iv.value as EnumValue).value == null))
-                  ? new EnumValue(iv.id, iv.index)
-                  : iv.value)
+              : (iv.value is EnumValue)
+                  ? _evCheckValue(iv.value, iv.index)
+                  : throw '${iv.value} not valid type for enum value')
       .toList();
 
   set parent(p) {
@@ -88,7 +91,7 @@ class Enum {
   String define() => _content;
 
   get requiresClass =>
-      _requiresClass == null ? (jsonSupport || hasCustom) : _requiresClass;
+      _requiresClass == null ? (hasJsonSupport || hasCustom) : _requiresClass;
 
   String valueAsString(value) => isSnakeString ? value.snake : value.capCamel;
 
@@ -175,12 +178,12 @@ indentBlock(
   }
 ''';
 
-  get _toJson => jsonSupport
+  get _toJson => hasJsonSupport
       ? '''
   int toJson() => value;'''
       : '';
 
-  get _fromJson => jsonSupport
+  get _fromJson => hasJsonSupport
       ? '''
   static $enumName fromJson(int v) {
     return v==null? null : values[v];
@@ -210,7 +213,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
 ''';
   }
 
-  get _libraryScopedValues => libraryScopedValues
+  get _libraryScopedValues => hasLibraryScopedValues
       ? values.map((v) => _commentedEnumAlias(v)).join('\n')
       : '';
 

@@ -20,12 +20,12 @@ class System {
   List<Library> allLibraries = [];
   /// Information for the pubspec
   PubSpec pubSpec;
-  /// Map of all classes that have jsonSupport
+  /// Map of all classes with hasJsonSupport true
   Map<String, Class> jsonableClasses = {};
   /// Set to true on finalize
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
-  bool generatePubSpec = true;
+  bool generatesPubSpec = true;
   /// A string indicating the license.
   /// A map of common licenses is looked up and if found a link
   /// to that license is used. The current keys of the map are:
@@ -34,15 +34,15 @@ class System {
   /// text to include in the license file.
   String license;
   /// If true standard outline for readme provided
-  bool includeReadme = false;
+  bool includesReadme = false;
   /// A brief introduction for this system, included in README.md
   String introduction;
   /// Purpose for this system, included in README.md
   String purpose;
-  /// List of todos included in the readme - If any present includeReadme assumed true
+  /// List of todos included in the readme - If any present includesReadme assumed true
   List<String> todos = [];
   /// If true generates tool folder with hop_runner
-  bool includeHop = false;
+  bool includesHop = false;
   // custom <class System>
 
   /// Create system from the id
@@ -73,7 +73,7 @@ class System {
         if (library.benchmarks.length > 0) benchmarksIncluded = true;
 
         library.classes.forEach((dclass) {
-          if (dclass.jsonSupport) {
+          if (dclass.hasJsonSupport) {
             jsonableClasses[dclass.name] = dclass;
           }
         });
@@ -82,7 +82,7 @@ class System {
         });
         library.parts.forEach((part) {
           part.classes.forEach((dclass) {
-            if (dclass.jsonSupport) {
+            if (dclass.hasJsonSupport) {
               jsonableClasses[dclass.name] = dclass;
             }
           });
@@ -165,7 +165,7 @@ Only "version" and "path" overrides are supported.
       app.generate();
     }
 
-    if (includeHop) {
+    if (includesHop) {
       if (pubSpec.depNotFound('hop')) {
         pubSpec.addDevDependency(new PubDependency('hop'));
       }
@@ -176,7 +176,7 @@ Only "version" and "path" overrides are supported.
 
     allLibraries.forEach((lib) => lib.generate());
 
-    if (pubSpec != null && generatePubSpec) {
+    if (pubSpec != null && generatesPubSpec) {
       overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
       scriptMergeWithFile('${pubSpec._content}\n', pubSpecPath);
@@ -209,7 +209,7 @@ ${scriptCustomBlock('additional')}
 ''', gitIgnorePath);
     }
 
-    if (includeReadme ||
+    if (includesReadme ||
         todos.length > 0 ||
         introduction != null ||
         purpose != null) {
@@ -236,7 +236,7 @@ ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('t
 ''', readmePath);
     }
 
-    if (generateHop && includeHop) {
+    if (generateHop && includesHop) {
       String hopRunnerPath = "${rootPath}/tool/hop_runner.dart";
       String i = '        ';
       String analyzeTests = testLibraries.length == 0

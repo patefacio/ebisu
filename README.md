@@ -146,10 +146,10 @@ support. Of course, there already exists a _serialization_ library,
 which may be a good solotion. However, that does have dependencies on
 mirrors and is a rather heavy weight solution.
 
-So, adding _jsonSupport = true_ in the following ebisu declaration:
+So, adding _hasJsonSupport = true_ in the following ebisu declaration:
 
         class_('point')
-        ..jsonSupport = true
+        ..hasJsonSupport = true
         ..members = [
           member('x')..classInit = 0.0,
           member('y')..classInit = 0.0,      

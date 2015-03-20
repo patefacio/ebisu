@@ -1,7 +1,11 @@
 part of ebisu.ebisu_dart_meta;
 
 /// When serializing json, how to name the keys
-enum JsonKeyFormat { camel, capCamel, snake }
+enum JsonKeyFormat {
+  camel,
+  capCamel,
+  snake
+}
 
 /// Metadata associated with a constructor
 class Ctor {
@@ -168,8 +172,8 @@ class Member {
   bool isConst = false;
   /// True if the member is static
   bool isStatic = false;
-  /// True if the member should not be serialized if the parent class has jsonSupport
-  bool jsonTransient = false;
+  /// True if the member should not be serialized if the parent class has hasJsonSupport
+  bool isJsonTransient = false;
   /// If true annotated with observable
   bool isObservable = false;
   /// If true and member is in class that is comparable, it will be included in compareTo method
@@ -208,8 +212,8 @@ class Member {
   String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreClassInit =>
       _parent.nonTransientMembers.every((m) => m.isFinal) &&
-          _parent.courtesyCtor &&
-          !jsonTransient;
+          _parent.hasCourtesyCtor &&
+          !isJsonTransient;
 
   String get decl => (_ignoreClassInit || classInit == null)
       ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};"
@@ -280,28 +284,28 @@ class Class {
   Map<String, Ctor> get ctors => _ctors;
   /// If true, class is abstract
   bool isAbstract = false;
-  /// If true, generate toJson/fromJson on all members that are not jsonTransient
-  set jsonSupport(bool jsonSupport) => _jsonSupport = jsonSupport;
+  /// If true, generate toJson/fromJson on all members that are not isJsonTransient
+  set hasJsonSupport(bool hasJsonSupport) => _hasJsonSupport = hasJsonSupport;
   /// If true, generate randJson function
   bool hasRandJson = false;
   /// If true, generate operator== using all members
-  bool opEquals = false;
+  bool hasOpEquals = false;
   /// If true, implements comparable
-  bool comparable = false;
+  bool isComparable = false;
   /// If true, implements comparable with runtimeType check followed by rest
-  bool polymorphicComparable = false;
+  bool isPolymorphicComparable = false;
   /// If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)
-  bool courtesyCtor = false;
+  bool hasCourtesyCtor = false;
   /// If true adds sets all members to final
   bool allMembersFinal = false;
   /// If true adds empty default ctor
-  bool defaultCtor = false;
-  /// If true sets allMembersFinal and defaultCtor to true
-  bool immutable = false;
+  bool hasDefaultCtor = false;
+  /// If true sets allMembersFinal and hasDefaultCtor to true
+  bool isImmutable = false;
   /// If true creates library functions to construct forwarding to ctors
-  set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
+  set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
   /// If true includes a copy function
-  bool copyable = false;
+  bool isCopyable = false;
   /// Name of the class - sans any access prefix (i.e. no '_')
   String get name => _name;
   /// Name of the class, including access prefix
@@ -311,21 +315,22 @@ class Class {
   /// Additional code included in the class near the bottom
   String bottomInjection;
   /// If true includes a ${className}Builder class
-  bool builder = false;
+  bool hasBuilder = false;
   /// If true includes a toString() => ebisu_utils.prettyJsonMap(toJson())
-  bool jsonToString = false;
+  bool hasJsonToString = false;
   /// If true adds transient hash code and caches the has on first call
   bool cacheHash = false;
-  /// If true courtesyCtor is `=> _init()`
+  /// If true hasCourtesyCtor is `=> _init()`
   bool ctorCallsInit = false;
   /// When serializing json, how to format the keys
   JsonKeyFormat jsonKeyFormat;
   // custom <class Class>
 
-  bool get ctorSansNew =>
-      _ctorSansNew == null ? _parent.ctorSansNew : _ctorSansNew;
+  bool get hasCtorSansNew =>
+      _hasCtorSansNew == null ? _parent.hasCtorSansNew : _hasCtorSansNew;
 
-  bool get jsonSupport => _jsonSupport || jsonToString || jsonKeyFormat != null;
+  bool get hasJsonSupport =>
+      _hasJsonSupport || hasJsonToString || jsonKeyFormat != null;
 
   List<Member> get publicMembers =>
       members.where((member) => member.isPublic).toList();
@@ -337,10 +342,10 @@ class Class {
       members.where((member) => !member.isStatic).toList();
 
   List<Member> get nonTransientMembers =>
-      nonStaticMembers.where((member) => !member.jsonTransient).toList();
+      nonStaticMembers.where((member) => !member.isJsonTransient).toList();
 
   List<Member> get transientMembers =>
-      nonStaticMembers.where((member) => member.jsonTransient).toList();
+      nonStaticMembers.where((member) => member.isJsonTransient).toList();
 
   List<Ctor> get publicCtors => ctors.keys
       .where((String name) => name.length == 0 || name[0] != '_')
@@ -348,10 +353,10 @@ class Class {
       .toList();
 
   bool get requiresEqualityHelpers =>
-      opEquals && members.any((m) => m.isMapOrList);
+      hasOpEquals && members.any((m) => m.isMapOrList);
 
   String get jsonCtor {
-    if (courtesyCtor) {
+    if (hasCourtesyCtor) {
       return '''
 return new ${_className}._fromJsonMapImpl(json);''';
     } else if (_ctors.containsKey('_default')) {
@@ -460,7 +465,7 @@ $varname == null? null :
   }
 
   String get copyMethod {
-    if (courtesyCtor) {
+    if (hasCourtesyCtor) {
       return 'copy() => new ${className}._copy(this);';
     } else {
       var terms = [];
@@ -468,12 +473,12 @@ $varname == null? null :
         final rhs = _assignCopy(m.type, m.varName);
         terms.add('\n  ..${m.varName} = $rhs');
       });
-      var ctorName = defaultCtor ? _className : '${_className}._default';
+      var ctorName = hasDefaultCtor ? _className : '${_className}._default';
       return 'copy() => new ${ctorName}()${terms.join()};\n';
     }
   }
 
-  String get _copyCtor => courtesyCtor && (jsonSupport || copyable)
+  String get _copyCtor => hasCourtesyCtor && (hasJsonSupport || isCopyable)
       ? indentBlock('''
 ${className}._copy(${className} other) :
 ${
@@ -500,7 +505,7 @@ int compareTo($_className other) =>
     comparableMembers.forEach((m) {
       terms.add('((result = ${m.varName}.compareTo(other.${m.varName})) == 0)');
     });
-    final otherType = polymorphicComparable ? 'Object' : _className;
+    final otherType = isPolymorphicComparable ? 'Object' : _className;
     return '''
 int compareTo($otherType other) {
   int result = 0;
@@ -524,9 +529,9 @@ int compareTo($otherType other) {
     _className = isPublic ? _name : "_$_name";
     _ctors.clear();
 
-    if (defaultCtor && courtesyCtor) {
+    if (hasDefaultCtor && hasCourtesyCtor) {
       throw new ArgumentError(
-          '$_name can not have defaultCtor and courtesyCtor both set to true');
+          '$_name can not have hasDefaultCtor and hasCourtesyCtor both set to true');
     }
 
     if (cacheHash) {
@@ -534,33 +539,33 @@ int compareTo($otherType other) {
         ..type = 'int'
         ..access = IA
         ..isInComparable = false
-        ..jsonTransient = true);
+        ..isJsonTransient = true);
     }
 
-    if (immutable) {
-      courtesyCtor = true;
+    if (isImmutable) {
+      hasCourtesyCtor = true;
       allMembersFinal = true;
     }
 
-    if (defaultCtor) _ctors.putIfAbsent('', () => new Ctor()
+    if (hasDefaultCtor) _ctors.putIfAbsent('', () => new Ctor()
       ..name = ''
       ..className = _className);
 
     if (allMembersFinal) nonTransientMembers.forEach((m) => m.isFinal = true);
 
-    if (polymorphicComparable) comparable = true;
+    if (isPolymorphicComparable) isComparable = true;
 
-    if (comparable) {
-      if (polymorphicComparable) {
+    if (isComparable) {
+      if (isPolymorphicComparable) {
         implement.add('Comparable<Object>');
       } else {
         implement.add('Comparable<$_className>');
       }
     }
 
-    if (courtesyCtor) {
+    if (hasCourtesyCtor) {
       members.forEach((m) {
-        if (!m.ctors.contains('') && !m.jsonTransient) m.ctors.add('');
+        if (!m.ctors.contains('') && !m.isJsonTransient) m.ctors.add('');
       });
     }
 
@@ -616,7 +621,7 @@ int compareTo($otherType other) {
         ..className = _name;
     }
 
-    if (courtesyCtor && allMembersFinal && transientMembers.length == 0) {
+    if (hasCourtesyCtor && allMembersFinal && transientMembers.length == 0) {
       _ctors[''].isConst = true;
     }
 
@@ -626,7 +631,7 @@ int compareTo($otherType other) {
   }
 
   bool get _hasPrivateDefaultCtor =>
-      (!courtesyCtor && (copyable || jsonSupport)) && !defaultCtor;
+      (!hasCourtesyCtor && (isCopyable || hasJsonSupport)) && !hasDefaultCtor;
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
@@ -698,13 +703,13 @@ $lhs = ebisu_utils
     return result;
   }
 
-  String fromJsonMapImpl() => courtesyCtor
+  String fromJsonMapImpl() => hasCourtesyCtor
       ? '''
 $className._fromJsonMapImpl(Map jsonMap) :
 ${
    chomp(indentBlock(
      members
-       .where((m) => !m.jsonTransient)
+       .where((m) => !m.isJsonTransient)
        .map((m) => chomp(_fromJsonMapMember(m)))
        .join(',\n')))};
 '''
@@ -713,7 +718,7 @@ void _fromJsonMapImpl(Map jsonMap) {
 ${
    indentBlock(
      members
-       .where((m) => !m.jsonTransient)
+       .where((m) => !m.isJsonTransient)
        .map((m) => _fromJsonMapMember(m))
        .join(';\n'))};
 }''';
@@ -727,7 +732,7 @@ ${
     throw new ArgumentError("Class does not support ${msg.memberName}");
   }
 
-  bool get _isComparable => polymorphicComparable || comparable;
+  bool get _isComparable => isPolymorphicComparable || isComparable;
 
   get _content => [
     _docComment,
@@ -762,9 +767,9 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
           : '${_abstractTag}class $className');
   get _orderedCtors =>
       orderedCtors.map((c) => indentBlock(ctors[c].ctorText)).join('\n');
-  get _opEquals => opEquals ? indentBlock(opEqualsMethod) : '';
+  get _opEquals => hasOpEquals ? indentBlock(opEqualsMethod) : '';
   get _comparable => _isComparable ? indentBlock(comparableMethod) : '';
-  get _copyable => copyable ? indentBlock(copyMethod) : '';
+  get _copyable => isCopyable ? indentBlock(copyMethod) : '';
   get _memberPublicCode => members
       .where((m) => m.hasPublicCode)
       .map((m) => indentBlock(chomp(m.publicCode)))
@@ -781,7 +786,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
           : jsonKeyFormat == camel ? m.id.camel : m.id.camel;
 
   get _jsonMembers => members
-      .where((m) => !m.jsonTransient)
+      .where((m) => !m.isJsonTransient)
       .map((m) =>
           '"${_formattedMember(m)}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
       .join('\n');
@@ -790,14 +795,14 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
       ? indentBlock('\n"$extend": super.toJson()', '      ')
       : ((mixins.length > 0) ? '// TODO: consider mixin support' : '');
 
-  get _jsonToString => jsonToString
+  get _jsonToString => hasJsonToString
       ? '''
 
   toString() => '(\${runtimeType}) => \${ebisu_utils.prettyJsonMap(toJson())}';
 '''
       : '';
 
-  get _jsonSerialization => jsonSupport
+  get _jsonSerialization => hasJsonSupport
       ? '''
 
   Map toJson() => {
@@ -828,7 +833,7 @@ ${indentBlock(fromJsonMapImpl())}'''
   get _bottomInjection =>
       bottomInjection != null ? indentBlock(bottomInjection) : '';
 
-  get _ctorSansNewImpl => ctorSansNew
+  get _ctorSansNewImpl => hasCtorSansNew
       ? ((ctors.length > 0)
               ? publicCtors.map((ctor) => ctor.ctorSansNew).join('\n')
               : '${id.camel}() => new ${name}();') +
@@ -838,10 +843,10 @@ ${indentBlock(fromJsonMapImpl())}'''
   get _classCloser => '}\n';
 
   get _builderClass {
-    if (builder) {
+    if (hasBuilder) {
       final builderClass = class_('${id.snake}_builder')
-        ..ctorSansNew = true
-        ..defaultCtor = true
+        ..hasCtorSansNew = true
+        ..hasDefaultCtor = true
         ..members = members.map((m) => member(m.id.snake)
           ..type = m.type
           ..classInit = m.classInit).toList()
@@ -870,8 +875,8 @@ ${className}Builder._copyImpl(${className} _) :
   dynamic _parent;
   Access _defaultMemberAccess;
   Map<String, Ctor> _ctors = {};
-  bool _jsonSupport = false;
-  bool _ctorSansNew;
+  bool _hasJsonSupport = false;
+  bool _hasCtorSansNew;
   String _name;
   String _className;
 }

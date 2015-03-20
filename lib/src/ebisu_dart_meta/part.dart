@@ -26,7 +26,7 @@ class Part {
   set defaultMemberAccess(Access defaultMemberAccess) =>
       _defaultMemberAccess = defaultMemberAccess;
   /// If true classes will get library functions to construct forwarding to ctors
-  set ctorSansNew(bool ctorSansNew) => _ctorSansNew = ctorSansNew;
+  set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
   // custom <class Part>
 
   get defaultMemberAccess => _defaultMemberAccess == null
@@ -48,8 +48,8 @@ class Part {
     mergeWithDartFile('${chomp(_content)}\n', _filePath);
   }
 
-  bool get ctorSansNew =>
-      _ctorSansNew == null ? _parent.ctorSansNew : _ctorSansNew;
+  bool get hasCtorSansNew =>
+      _hasCtorSansNew == null ? _parent.hasCtorSansNew : _hasCtorSansNew;
 
   get _content => [
     _part,
@@ -71,7 +71,7 @@ class Part {
   String _name;
   String _filePath;
   Access _defaultMemberAccess;
-  bool _ctorSansNew;
+  bool _hasCtorSansNew;
 }
 // custom <part part>
 // end <part part>
