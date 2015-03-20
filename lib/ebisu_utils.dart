@@ -9,6 +9,105 @@ import 'package:logging/logging.dart';
 
 final _logger = new Logger('ebisu_utils');
 
+/// Wraps an optional protection block with optional code injection
+///
+/// [CodeBlock]s have two functions, they provide an opportunity
+/// to include hand written code with a protection block and they
+/// provide specific target locations for injecting generated code.
+///
+/// For contrived example, assume there were two variables, *topCodeBlock*
+/// and *bottomCodeBlock* of type CodeBlock and they were used in a
+/// context like this:
+///
+///     """
+///     class Imaginary {
+///       ${topCodeBlock}
+///     ....
+///       ${bottomCodeBlock}
+///     }
+///     """
+///
+/// The generated text might look like:
+///     """
+///     class Imaginary {
+///       /// custom begin top
+///       /// custom end top
+///     ....
+///       /// custom begin bottom
+///       /// custom end bottom
+///     }
+///     """
+///
+/// Now assume a code generator needed to inject into the top portion
+/// something specific to the class, like a versionId stored in a file and
+/// available during code generation:
+///
+///     topCodeBlock
+///     .snippets
+///     .add("versionId = ${new File(version.txt).readAsStringSync()}")
+///
+/// the newly generated code might look like:
+///
+///     """
+///     class Imaginary {
+///       /// custom begin top
+///       /// custom end top
+///       versionId = "0.1.21";
+///     ...
+///       /// custom begin bottom
+///       /// custom end bottom
+///     }
+///     """
+///
+/// and adding:
+///
+///     topCodeBlock.hasSnippetsFirst = true
+///
+/// would give:
+///
+///     """
+///     class Imaginary {
+///       versionId = "0.1.21";
+///       /// custom begin top
+///       /// custom end top
+///     ...
+///       /// custom begin bottom
+///       /// custom end bottom
+///     }
+///     """
+///
+///
+class CodeBlock {
+  CodeBlock(this.tag);
+
+  /// Tag for protect block. If present includes protect block
+  String tag;
+  /// Effecitively a hook to throw in generated text
+  List<String> snippets = [];
+  /// Determines whether the injected code snippets come before the
+  /// protection block or after
+  bool hasSnippetsFirst = false;
+  // custom <class CodeBlock>
+
+  bool get hasTag => tag != null && tag.length > 0;
+
+  String toString() {
+    if (hasTag) {
+      return hasSnippetsFirst
+          ? combine([]
+        ..addAll(snippets)
+        ..add(customBlock(tag)))
+          : combine([customBlock(tag)]..addAll(snippets));
+    }
+    return combine(snippets);
+  }
+
+  // end <class CodeBlock>
+}
+
+/// Create a CodeBlock sans new, for more declarative construction
+CodeBlock codeBlock([String tag]) => new CodeBlock(tag);
+
 // custom <library ebisu_utils>
 
 bool _toJsonRequired(final object) {

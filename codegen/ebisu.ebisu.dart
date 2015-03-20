@@ -29,7 +29,94 @@ generate() {
   Library ebisu_utils = library('ebisu_utils')
     ..includesLogger = true
     ..imports = [ 'math', "'dart:convert' as convert", ]
-    ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)';
+    ..doc = 'Support code to be used by libraries generated with ebisu. Example (toJson)'
+    ..classes = [
+      class_('code_block')
+      ..doc = r'''
+Wraps an optional protection block with optional code injection
+
+[CodeBlock]s have two functions, they provide an opportunity
+to include hand written code with a protection block and they
+provide specific target locations for injecting generated code.
+
+For contrived example, assume there were two variables, *topCodeBlock*
+and *bottomCodeBlock* of type CodeBlock and they were used in a
+context like this:
+
+    """
+    class Imaginary {
+      ${topCodeBlock}
+    ....
+      ${bottomCodeBlock}
+    }
+    """
+
+The generated text might look like:
+    """
+    class Imaginary {
+      /// custom begin top
+      /// custom end top
+    ....
+      /// custom begin bottom
+      /// custom end bottom
+    }
+    """
+
+Now assume a code generator needed to inject into the top portion
+something specific to the class, like a versionId stored in a file and
+available during code generation:
+
+    topCodeBlock
+    .snippets
+    .add("versionId = ${new File(version.txt).readAsStringSync()}")
+
+the newly generated code might look like:
+
+    """
+    class Imaginary {
+      /// custom begin top
+      /// custom end top
+      versionId = "0.1.21";
+    ...
+      /// custom begin bottom
+      /// custom end bottom
+    }
+    """
+
+and adding:
+
+    topCodeBlock.hasSnippetsFirst = true
+
+would give:
+
+    """
+    class Imaginary {
+      versionId = "0.1.21";
+      /// custom begin top
+      /// custom end top
+    ...
+      /// custom begin bottom
+      /// custom end bottom
+    }
+    """
+
+'''
+      ..hasCtorSansNew = true
+      ..members = [
+        member('tag')
+        ..doc = 'Tag for protect block. If present includes protect block'
+        ..ctors = [''],
+        member('snippets')
+        ..doc = 'Effecitively a hook to throw in generated text'
+        ..type = 'List<String>'..classInit = [],
+        member('has_snippets_first')
+        ..doc = '''
+Determines whether the injected code snippets come before the
+protection block or after
+'''
+        ..classInit = false,
+      ],
+    ];
 
   // The following are commonly used members of the meta data classes
   Member doc_member(String owner) => member('doc')
@@ -1054,7 +1141,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.1.0'
+        ..version = '0.1.1'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
