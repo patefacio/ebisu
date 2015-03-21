@@ -1,7 +1,7 @@
 library self_contained;
 
 import 'dart:convert' as convert;
-import 'package:ebisu/ebisu_utils.dart' as ebisu_utils;
+import 'package:ebisu/ebisu.dart' as ebisu;
 // custom <additional imports>
 // end <additional imports>
 
@@ -20,9 +20,9 @@ class Address {
 
   Map toJson() {
     return {
-    "zip": ebisu_utils.toJson(zip),
-    "street": ebisu_utils.toJson(street),
-    "streetNumber": ebisu_utils.toJson(streetNumber),
+    "zip": ebisu.toJson(zip),
+    "street": ebisu.toJson(street),
+    "streetNumber": ebisu.toJson(streetNumber),
     };
   }
 
@@ -60,7 +60,7 @@ class AddressBook {
 
   Map toJson() {
     return {
-    "book": ebisu_utils.toJson(book),
+    "book": ebisu.toJson(book),
     };
   }
 

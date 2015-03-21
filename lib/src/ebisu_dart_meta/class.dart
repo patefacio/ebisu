@@ -316,7 +316,7 @@ class Class {
   String bottomInjection;
   /// If true includes a ${className}Builder class
   bool hasBuilder = false;
-  /// If true includes a toString() => ebisu_utils.prettyJsonMap(toJson())
+  /// If true includes a toString() => prettyJsonMap(toJson())
   bool hasJsonToString = false;
   /// If true adds transient hash code and caches the has on first call
   bool cacheHash = false;
@@ -415,7 +415,7 @@ _hashCode != null? _hashCode :
     return result;
   }
 
-  String get opEqualsMethod => '''
+  String get hasOpEqualsMethod => '''
 bool operator==($_className other) =>
   identical(this, other) ||
 ${nonTransientMembers
@@ -437,7 +437,7 @@ valueApply($varname, (v) =>
   ${_assignCopy(jsonMapValueType(type), "v")})''';
     } else if (isSplayTreeSetType(type)) {
       final elementType = templateParameterType(type);
-      //      return 'ebisu_utils.deepCopySplayTreeSet($varname)';
+      //      return 'ebisu.deepCopySplayTreeSet($varname)';
       return '''
 $varname == null? null :
   (new $type()
@@ -445,7 +445,7 @@ $varname == null? null :
     ${_assignCopy(elementType, "e")})))''';
     } else if (isSetType(type)) {
       final elementType = templateParameterType(type);
-      //return 'ebisu_utils.deepCopySet($varname)';
+      //return 'ebisu.deepCopySet($varname)';
       return '''
 $varname == null? null :
   (new Set.from(${varname}.map((e) =>
@@ -684,7 +684,7 @@ int compareTo($otherType other) {
 
         result = '''
 // ${member.name} is ${member.type}
-$lhs = ebisu_utils
+$lhs = ebisu
   .constructMapFromJsonData(
     $value,
     (value) => ${_fromJsonData(jsonMapValueType(member.type), 'value')}$convertKey)
@@ -692,7 +692,7 @@ $lhs = ebisu_utils
       } else if (isListType(member.type)) {
         result = '''
 // ${member.name} is ${member.type}
-$lhs = ebisu_utils
+$lhs = ebisu
   .constructListFromJsonData($value,
                              (data) => ${_fromJsonData(jsonListValueType(member.type), 'data')})
 ''';
@@ -767,7 +767,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
           : '${_abstractTag}class $className');
   get _orderedCtors =>
       orderedCtors.map((c) => indentBlock(ctors[c].ctorText)).join('\n');
-  get _opEquals => hasOpEquals ? indentBlock(opEqualsMethod) : '';
+  get _opEquals => hasOpEquals ? indentBlock(hasOpEqualsMethod) : '';
   get _comparable => _isComparable ? indentBlock(comparableMethod) : '';
   get _copyable => isCopyable ? indentBlock(copyMethod) : '';
   get _memberPublicCode => members
@@ -788,7 +788,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
   get _jsonMembers => members
       .where((m) => !m.isJsonTransient)
       .map((m) =>
-          '"${_formattedMember(m)}": ebisu_utils.toJson(${m.hasGetter? m.name : m.varName}),')
+          '"${_formattedMember(m)}": ebisu.toJson(${m.hasGetter? m.name : m.varName}),')
       .join('\n');
 
   get _jsonExtend => extend != null
@@ -798,7 +798,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
   get _jsonToString => hasJsonToString
       ? '''
 
-  toString() => '(\${runtimeType}) => \${ebisu_utils.prettyJsonMap(toJson())}';
+  toString() => '(\${runtimeType}) => \${ebisu.prettyJsonMap(toJson())}';
 '''
       : '';
 

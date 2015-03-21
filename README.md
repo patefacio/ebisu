@@ -160,8 +160,8 @@ will generate these additional methods for the _Point_ class:
 
       Map toJson() {
         return {
-        "x": ebisu_utils.toJson(x),
-        "y": ebisu_utils.toJson(y),
+        "x": ebisu.toJson(x),
+        "y": ebisu.toJson(y),
         };
       }
     

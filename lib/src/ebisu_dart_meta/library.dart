@@ -103,7 +103,7 @@ class Library {
       imports.add('package:quiver/core.dart');
     }
     if (allClasses.any((c) => c.hasJsonSupport)) {
-      imports.add('"package:ebisu/ebisu_utils.dart" as ebisu_utils');
+      imports.add('"package:ebisu/ebisu.dart" as ebisu');
       imports.add('"dart:convert" as convert');
     }
     if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {

@@ -37,7 +37,7 @@ Simple example pub package composed of:
       library('self_contained')
       ..classes = [
         class_('address')
-        ..jsonSupport = true
+        ..hasJsonSupport = true
         ..doc = 'An address composed of zip, street and street number'
         ..members = [
           member('zip'),                         // Default type is String
@@ -45,7 +45,7 @@ Simple example pub package composed of:
           member('street_number')..type = 'int',
         ],
         class_('address_book')
-        ..jsonSupport = true
+        ..hasJsonSupport = true
         ..members = [
           member('book')
           ..type = 'Map<String,Address>'
