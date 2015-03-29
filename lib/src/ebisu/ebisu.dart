@@ -48,4 +48,13 @@ bool mergeWithDartFile(String generated, String destFilePath,
       useFormatter ? dartFormat : null);
 }
 
+/// Given a list of scalars mixed with iterables (possibly recursively), return
+/// as [Iterable] of scalars. Useful for things like:
+///
+///    ..members = flatten([ commonMembers, member('foo'), member('goo'), ])
+///
+/// where *commonMembers* is Iterable<Member>
+///
+flatten(iterable) => iterable.expand((v) => v is Iterable ? flatten(v) : [v]);
+
 // end <part ebisu>
