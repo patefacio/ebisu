@@ -1064,6 +1064,7 @@ other languages like D) using a fairly declarative aproach.
       ..doc = 'Primary library for client usage of ebisu'
       ..imports = [
         'package:dart_style/dart_style.dart',
+        'package:id/id.dart',
         'io',
         'math',
         '"dart:convert" as convert',

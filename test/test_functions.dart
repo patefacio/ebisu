@@ -5,6 +5,7 @@ import 'package:ebisu/ebisu.dart';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 // custom <additional imports>
+import 'package:id/id.dart';
 // end <additional imports>
 
 final _logger = new Logger('test_functions');
@@ -102,7 +103,7 @@ class C {
   {
     const first = '''
 class C {
-   /* 
+   /*
      this is a code smell
     */
    int x;
@@ -111,7 +112,7 @@ class C {
 
     const second = '''
 class C {
-   /* this is 
+   /* this is
       good stuff */
    int x;
 }
@@ -123,6 +124,16 @@ class C {
     test('codeEquivalent can ignore block comments',
         () => expect(codeEquivalent(first, second, stripComments: true), true));
   }
+
+  test('addPrefixToId', () {
+    expect(addPrefixToId('t', 'bone_steak').snake, 't_bone_steak');
+    expect(addPrefixToId(idFromString('t'), idFromString('bone_steak')).snake, 't_bone_steak');
+  });
+
+  test('addSuffixToId', () {
+    expect(addSuffixToId('t', 'bone_steak').snake, 'bone_steak_t');
+    expect(addSuffixToId(idFromString('t'), idFromString('bone_steak')).snake, 'bone_steak_t');
+  });
 
 // end <main>
 
