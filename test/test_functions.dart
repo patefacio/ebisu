@@ -127,12 +127,14 @@ class C {
 
   test('addPrefixToId', () {
     expect(addPrefixToId('t', 'bone_steak').snake, 't_bone_steak');
-    expect(addPrefixToId(idFromString('t'), idFromString('bone_steak')).snake, 't_bone_steak');
+    expect(addPrefixToId(idFromString('t'), idFromString('bone_steak')).snake,
+        't_bone_steak');
   });
 
   test('addSuffixToId', () {
     expect(addSuffixToId('t', 'bone_steak').snake, 'bone_steak_t');
-    expect(addSuffixToId(idFromString('t'), idFromString('bone_steak')).snake, 'bone_steak_t');
+    expect(addSuffixToId(idFromString('t'), idFromString('bone_steak')).snake,
+        'bone_steak_t');
   });
 
 // end <main>

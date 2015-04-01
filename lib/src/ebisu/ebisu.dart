@@ -56,7 +56,12 @@ bool mergeWithDartFile(String generated, String destFilePath,
 /// where *commonMembers* is Iterable<Member>
 ///
 flatten(iterable) => iterable.expand((v) => v is Iterable ? flatten(v) : [v]);
+
+/// Given an [Id] or [String] returns corresponding [Id]
 Id makeId(id) => id is Id ? id : idFromString(id);
+
+/// Given [prefix] and [id], both of which may be [String] or [Id] returns the
+/// [id] prefixed by [prefix]
 Id addPrefixToId(prefix, id, [preventDupe = true]) {
   prefix = makeId(prefix);
   id = makeId(id);
@@ -64,6 +69,9 @@ Id addPrefixToId(prefix, id, [preventDupe = true]) {
       ? id
       : idFromString('${prefix.snake}_${id.snake}');
 }
+
+/// Given [suffix] and [id], both of which may be [String] or [Id] returns the
+/// [id] suffixed by [suffix]
 Id addSuffixToId(suffix, id, [preventDupe = true]) {
   suffix = makeId(suffix);
   id = makeId(id);
