@@ -24,9 +24,6 @@ class EnumValue {
   final Id _id;
 }
 
-/// Create a EnumValue sans new, for more declarative construction
-EnumValue enumValue([Id _id, var value]) => new EnumValue(_id, value);
-
 /// Defines an enum - to be generated idiomatically as a class
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 /// At some point when true enums are provided this may be revisited.
@@ -226,4 +223,8 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   bool _requiresClass;
 }
 // custom <part enum>
+
+/// Create a EnumValue sans new, for more declarative construction
+EnumValue enumValue(_id, [var value]) => new EnumValue(makeId(_id), value);
+
 // end <part enum>

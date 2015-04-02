@@ -65,7 +65,7 @@ Id makeId(id) => id is Id ? id : idFromString(id);
 Id addPrefixToId(prefix, id, [preventDupe = true]) {
   prefix = makeId(prefix);
   id = makeId(id);
-  return (preventDupe && id.snake.startsWith(prefix.snake))
+  return (preventDupe && id.snake.startsWith('${prefix.snake}_'))
       ? id
       : idFromString('${prefix.snake}_${id.snake}');
 }
@@ -75,7 +75,7 @@ Id addPrefixToId(prefix, id, [preventDupe = true]) {
 Id addSuffixToId(suffix, id, [preventDupe = true]) {
   suffix = makeId(suffix);
   id = makeId(id);
-  return (preventDupe && id.snake.endsWith(suffix.snake))
+  return (preventDupe && id.snake.endsWith('_${suffix.snake}'))
       ? id
       : idFromString('${id.snake}_${suffix.snake}');
 }

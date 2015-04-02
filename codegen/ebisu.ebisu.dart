@@ -390,7 +390,6 @@ If not set, id of system is used.
       ..classes = [
         class_('enum_value')
         ..doc = 'Define the id and value for an enum value'
-        ..hasCtorSansNew = true
         ..members = [
           id_member('enum_value'),
           member('value')
@@ -1049,7 +1048,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.2.3'
+        ..version = '0.2.4'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
