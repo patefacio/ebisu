@@ -2,6 +2,7 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart system (collection of libraries and apps)
 class System {
+
   /// Id for this system
   Id get id => _id;
   /// Documentation for this system
@@ -43,6 +44,7 @@ class System {
   List<String> todos = [];
   /// If true generates tool folder with hop_runner
   bool includesHop = false;
+
   // custom <class System>
 
   /// Create system from the id
@@ -337,8 +339,10 @@ main() {
   }
 
   // end <class System>
+
   Id _id;
   bool _finalized = false;
 }
+
 // custom <part system>
 // end <part system>

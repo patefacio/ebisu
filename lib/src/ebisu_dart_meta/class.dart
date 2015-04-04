@@ -9,6 +9,7 @@ enum JsonKeyFormat {
 
 /// Metadata associated with a constructor
 class Ctor {
+
   /// Name of the class of this ctor.
   String className;
   /// Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()
@@ -25,6 +26,7 @@ class Ctor {
   bool isConst = false;
   /// If true implementation is `=> _init()`
   bool callsInit = false;
+
   // custom <class Ctor>
 
   Ctor();
@@ -131,6 +133,7 @@ ${formatFill(decl)})${body}
   }
 
   // end <class Ctor>
+
 }
 
 /// Metadata associated with a member of a Dart class
@@ -182,6 +185,7 @@ class Member {
   String get name => _name;
   /// Name of variable for the member - varies depending on public/private
   String get varName => _varName;
+
   // custom <class Member>
 
   bool get isPublic => access == Access.RW;
@@ -244,6 +248,7 @@ class Member {
   }
 
   // end <class Member>
+
   final Id _id;
   Class _parent;
   String _name;
@@ -324,6 +329,7 @@ class Class {
   bool ctorCallsInit = false;
   /// When serializing json, how to format the keys
   JsonKeyFormat jsonKeyFormat;
+
   // custom <class Class>
 
   bool get hasCtorSansNew =>
@@ -734,9 +740,8 @@ ${
 
   bool get _isComparable => isPolymorphicComparable || isComparable;
 
-  get _content => brCompact([
-    _docComment,
-    _classOpener,
+  get _content => br([
+    brCompact([_docComment, _classOpener]),
     _orderedCtors,
     _opEquals,
     _comparable,
@@ -871,6 +876,7 @@ ${className}Builder._copyImpl(${className} _) :
   }
 
   // end <class Class>
+
   final Id _id;
   dynamic _parent;
   Access _defaultMemberAccess;
@@ -880,6 +886,7 @@ ${className}Builder._copyImpl(${className} _) :
   String _name;
   String _className;
 }
+
 // custom <part class>
 
 final snake = JsonKeyFormat.snake;

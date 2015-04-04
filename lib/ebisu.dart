@@ -95,6 +95,7 @@ class CodeBlock {
   /// Determines whether the injected code snippets come before the
   /// protection block or after
   bool hasSnippetsFirst = false;
+
   // custom <class CodeBlock>
 
   bool get hasTag => tag != null && tag.length > 0;
@@ -109,6 +110,7 @@ class CodeBlock {
   }
 
   // end <class CodeBlock>
+
 }
 
 /// Create a CodeBlock sans new, for more declarative construction
@@ -658,8 +660,9 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
-String darkMatter(s) =>
-    (s is String ? s : s.toString()).replaceAll(_anyWhiteSpace, '');
+asStr(o) => o is String ? o : o.toString();
+
+String darkMatter(s) => asStr(s).replaceAll(_anyWhiteSpace, '');
 
 /// ignores null objects and empty strings
 bool _ignored(Object o) => o == null || (o is String && o == '');
@@ -669,13 +672,16 @@ bool _ignored(Object o) => o == null || (o is String && o == '');
 String br(Object o, [nl = '\n\n', chompFirst = true]) => o == null
     ? null
     : o is Iterable
-        ? br(combine(o, nl), nl)
+        ? br(combine(o, nl, chompFirst), nl, chompFirst)
         : _ignored(o) ? '' : '${chompFirst?chomp(o,true):o}$nl';
 
 /// combines the parts recursively if necessary
-String combine(Iterable<Object> parts, [nl = '']) {
+String combine(Iterable<Object> parts, [nl = '', chompFirst = false]) {
   final result = parts
-      .map((o) => (o is Iterable) ? combine(o, nl) : o)
+      .where((o) => !_ignored(o))
+      .map((o) => (o is Iterable)
+          ? combine(o, nl, chompFirst)
+          : chompFirst ? chomp(asStr(o), true) : asStr(o))
       .where((o) => !_ignored(o))
       .join(nl);
   return result;

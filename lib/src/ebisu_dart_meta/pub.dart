@@ -12,6 +12,7 @@ class PubDependency {
   String path;
   /// Git reference
   String gitRef;
+
   // custom <class PubDependency>
 
   PubDepType get type {
@@ -94,6 +95,7 @@ class PubDependency {
   }
 
   // end <class PubDependency>
+
   /// Type for the pub dependency
   PubDepType _type;
 }
@@ -104,17 +106,21 @@ abstract class PubTransformer {
 
   /// Name of transformer
   String name;
+
   // custom <class PubTransformer>
 
   String get yamlEntry;
 
   // end <class PubTransformer>
+
 }
 
 /// A polymer transformer entry
 class PolymerTransformer extends PubTransformer {
+
   /// List of entry points
   List<String> entryPoints;
+
   // custom <class PolymerTransformer>
 
   PolymerTransformer(this.entryPoints) : super('polymer');
@@ -132,6 +138,7 @@ class PolymerTransformer extends PubTransformer {
   }
 
   // end <class PolymerTransformer>
+
 }
 
 /// Information for the pubspec of the system
@@ -156,6 +163,7 @@ class PubSpec {
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];
   List<PubTransformer> pubTransformers = [];
+
   // custom <class PubSpec>
 
   set parent(p) {
@@ -239,8 +247,10 @@ ${pubTransformers.map((t) => t.yamlEntry).join()}''';
   get _custom => scriptCustomBlock('$name transformers');
 
   // end <class PubSpec>
+
   Id _id;
   dynamic _parent;
 }
+
 // custom <part pub>
 // end <part pub>

@@ -20,6 +20,7 @@ class App {
   List<Variable> variables = [];
   /// If true this is a web ui app
   bool isWebUi = false;
+
   // custom <class App>
 
   set parent(p) {
@@ -89,8 +90,10 @@ void main() {
 ''';
 
   // end <class App>
+
   final Id _id;
   dynamic _parent;
 }
+
 // custom <part app>
 // end <part app>

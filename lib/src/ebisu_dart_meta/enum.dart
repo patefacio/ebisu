@@ -10,6 +10,7 @@ class EnumValue {
   var value;
   /// Documentation for this enum_value
   String doc;
+
   // custom <class EnumValue>
 
   get snake => _id.snake;
@@ -21,6 +22,7 @@ class EnumValue {
   toString() => 'EV($_id => $value)';
 
   // end <class EnumValue>
+
   final Id _id;
 }
 
@@ -61,6 +63,7 @@ class Enum {
   /// support as well as some custom functions. Setting this will ensure that
   /// a class is generated instead of the newer and generally preffered enum.
   set requiresClass(bool requiresClass) => _requiresClass = requiresClass;
+
   // custom <class Enum>
 
   /// Setting of values accepts [ (String|Id|EnumValue),... ]
@@ -216,6 +219,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
       : '';
 
   // end <class Enum>
+
   final Id _id;
   dynamic _parent;
   List<EnumValue> _values = [];
@@ -223,6 +227,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   String _enumName;
   bool _requiresClass;
 }
+
 // custom <part enum>
 
 /// Create a EnumValue sans new, for more declarative construction

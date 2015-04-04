@@ -42,6 +42,7 @@ class Library {
   Access defaultMemberAccess = Access.RW;
   /// If true classes will get library functions to construct forwarding to ctors
   bool hasCtorSansNew = false;
+
   // custom <class Library>
 
   List<Class> get allClasses {
@@ -239,11 +240,13 @@ $_initLogger${customBlock('main')}
   get _defaultAccess => defaultMemberAccess;
 
   // end <class Library>
+
   final Id _id;
   dynamic _parent;
   String _name;
   String _qualifiedName;
   bool _isTest = false;
 }
+
 // custom <part library>
 // end <part library>

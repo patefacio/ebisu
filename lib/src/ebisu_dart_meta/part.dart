@@ -27,6 +27,7 @@ class Part {
       _defaultMemberAccess = defaultMemberAccess;
   /// If true classes will get library functions to construct forwarding to ctors
   set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
+
   // custom <class Part>
 
   get defaultMemberAccess => _defaultMemberAccess == null
@@ -66,6 +67,7 @@ class Part {
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
   // end <class Part>
+
   final Id _id;
   dynamic _parent;
   String _name;
@@ -73,5 +75,6 @@ class Part {
   Access _defaultMemberAccess;
   bool _hasCtorSansNew;
 }
+
 // custom <part part>
 // end <part part>

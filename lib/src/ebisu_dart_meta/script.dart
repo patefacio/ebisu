@@ -87,6 +87,7 @@ class ScriptArg {
   /// An abbreviation (single character)
   String abbr;
   ArgType type;
+
   // custom <class ScriptArg>
 
   set parent(p) {
@@ -104,6 +105,7 @@ class ScriptArg {
   }
 
   // end <class ScriptArg>
+
   final Id _id;
   dynamic _parent;
   String _name;
@@ -133,6 +135,7 @@ class Script {
   bool isAsync = false;
   /// Classes to support this script, included directly in script above main
   List<Class> classes = [];
+
   // custom <class Script>
 
   set parent(p) {
@@ -330,8 +333,10 @@ $_processArgs
 ''').join('');
 
   // end <class Script>
+
   final Id _id;
   dynamic _parent;
 }
+
 // custom <part script>
 // end <part script>

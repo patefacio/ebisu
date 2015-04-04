@@ -45,6 +45,7 @@ class Variable {
   String get name => _name;
   /// Name of variable - varies depending on public/private
   String get varName => _varName;
+
   // custom <class Variable>
 
   void set parent(p) {
@@ -75,10 +76,12 @@ class Variable {
   get _init => '$_const$_final${init == null? _uninitialized : _initialized}';
 
   // end <class Variable>
+
   final Id _id;
   dynamic _parent;
   String _name;
   String _varName;
 }
+
 // custom <part variable>
 // end <part variable>

@@ -11,6 +11,7 @@ class Benchmark {
   System get parent => _parent;
   /// Additional classes in the benchmark library
   List<Class> classes = [];
+
   // custom <class Benchmark>
 
   set parent(p) {
@@ -46,8 +47,10 @@ main() {
   }
 
   // end <class Benchmark>
+
   final Id _id;
   System _parent;
 }
+
 // custom <part benchmark>
 // end <part benchmark>

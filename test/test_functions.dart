@@ -137,7 +137,7 @@ class C {
         'bone_steak_t');
   });
 
-  test('br', () {
+  test('br/brCompact/combine', () {
     expect(br(['a', 'b', 'c']), 'a\n\nb\n\nc\n\n');
     expect(br(['a', 'b', 'c'], '\n'), 'a\nb\nc\n');
     expect(br(['a', 'b', 'c'], '\n\n'), 'a\n\nb\n\nc\n\n');
@@ -158,6 +158,7 @@ class C {
     expect(combine(['a', 'b', null, null, 'c'], ''), 'abc');
 
     expect(combine(['a', [null], [['b']], null, ['c', ['d']]]), 'abcd');
+    expect(brCompact([null, null, 'a\n\n\n', null, null, 'b']), 'a\nb\n');
   });
 
 // end <main>
