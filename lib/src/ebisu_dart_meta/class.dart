@@ -734,7 +734,7 @@ ${
 
   bool get _isComparable => isPolymorphicComparable || isComparable;
 
-  get _content => [
+  get _content => brCompact([
     _docComment,
     _classOpener,
     _orderedCtors,
@@ -753,7 +753,7 @@ ${
     _classCloser,
     _ctorSansNewImpl,
     _builderClass,
-  ].where((line) => line != '').join('\n');
+  ].where((line) => line != ''));
 
   get _docComment => doc != null ? docComment(doc) : '';
   get _abstractTag => isAbstract ? 'abstract ' : '';

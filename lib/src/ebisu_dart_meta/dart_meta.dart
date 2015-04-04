@@ -50,6 +50,7 @@ class Access implements Comparable<Access> {
   }
 
   int toJson() => value;
+
   static Access fromJson(int v) {
     return v == null ? null : values[v];
   }
@@ -100,6 +101,7 @@ class PubDepType implements Comparable<PubDepType> {
   }
 
   int toJson() => value;
+
   static PubDepType fromJson(int v) {
     return v == null ? null : values[v];
   }

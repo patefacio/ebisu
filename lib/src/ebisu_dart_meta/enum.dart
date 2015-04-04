@@ -102,8 +102,7 @@ ${valueId(v)}'''
 
   get _content => br(requiresClass
       ? [
-    _docComment,
-    _enumClassBegin,
+    brCompact([chomp(_docComment), _enumClassBegin]),
     _toString,
     _fromString,
     _toJson,
@@ -114,11 +113,13 @@ ${valueId(v)}'''
     _libraryScopedValues,
   ]
       : [
-    _docComment,
-    'enum $enumName {',
-    values.map((v) => chomp(enumValueEntry(v))).join(',\n'),
-    '}',
-    _libraryScopedValues,
+    brCompact([
+      _docComment,
+      'enum $enumName {',
+      combine(values.map((v) => enumValueEntry(v)), ',\n'),
+      '}',
+      _libraryScopedValues,
+    ])
   ]);
 
   get _docComment => doc != null ? docComment(doc) : '';

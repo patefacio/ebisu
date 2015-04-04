@@ -137,6 +137,29 @@ class C {
         'bone_steak_t');
   });
 
+  test('br', () {
+    expect(br(['a', 'b', 'c']), 'a\n\nb\n\nc\n\n');
+    expect(br(['a', 'b', 'c'], '\n'), 'a\nb\nc\n');
+    expect(br(['a', 'b', 'c'], '\n\n'), 'a\n\nb\n\nc\n\n');
+
+    expect(br(['a', null, 'b', null, 'c']), 'a\n\nb\n\nc\n\n');
+    expect(br([null, 'a', 'b', 'c', null], '\n'), 'a\nb\nc\n');
+    expect(br(['a', 'b', null, null, 'c'], '\n\n'), 'a\n\nb\n\nc\n\n');
+
+    expect(
+        br(['a', [null], [['b']], null, ['c', ['d']]]), 'a\n\nb\n\nc\n\nd\n\n');
+
+    expect(combine(['a', 'b', 'c']), 'abc');
+    expect(combine(['a', 'b', 'c'], ''), 'abc');
+    expect(combine(['a', 'b', 'c'], ''), 'abc');
+
+    expect(combine(['a', null, 'b', null, 'c']), 'abc');
+    expect(combine([null, 'a', 'b', 'c', null], ''), 'abc');
+    expect(combine(['a', 'b', null, null, 'c'], ''), 'abc');
+
+    expect(combine(['a', [null], [['b']], null, ['c', ['d']]]), 'abcd');
+  });
+
 // end <main>
 
 }

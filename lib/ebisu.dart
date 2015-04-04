@@ -102,10 +102,8 @@ class CodeBlock {
   String toString() {
     if (hasTag) {
       return hasSnippetsFirst
-          ? combine([]
-        ..addAll(snippets)
-        ..add(customBlock(tag)))
-          : combine([customBlock(tag)]..addAll(snippets));
+          ? br([snippets, customBlock(tag)])
+          : br([customBlock(tag)]..addAll(snippets));
     }
     return combine(snippets);
   }
@@ -660,24 +658,29 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
-String darkMatter(String s) => s.replaceAll(_anyWhiteSpace, '');
+String darkMatter(s) =>
+    (s is String ? s : s.toString()).replaceAll(_anyWhiteSpace, '');
 
 /// ignores null objects and empty strings
 bool _ignored(Object o) => o == null || (o is String && o == '');
 
 /// If provided an iterable of items joins each with *nl*
 ///  mnemonic: like <br> in html
-String br(Object o) => o == null
+String br(Object o, [nl = '\n\n', chompFirst = true]) => o == null
     ? null
-    : o is Iterable ? br(combine(o)) : _ignored(o) ? '' : '$o\n';
+    : o is Iterable
+        ? br(combine(o, nl), nl)
+        : _ignored(o) ? '' : '${chompFirst?chomp(o,true):o}$nl';
 
 /// combines the parts recursively if necessary
-String combine(Iterable<Object> parts) {
+String combine(Iterable<Object> parts, [nl = '']) {
   final result = parts
-      .map((o) => (o is Iterable) ? combine(o) : o)
+      .map((o) => (o is Iterable) ? combine(o, nl) : o)
       .where((o) => !_ignored(o))
-      .join('\n');
+      .join(nl);
   return result;
 }
+
+String brCompact(o) => br(o, '\n', true);
 
 // end <library ebisu>
