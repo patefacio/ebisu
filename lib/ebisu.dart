@@ -662,6 +662,7 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
 
 asStr(o) => o is String ? o : o.toString();
 
+bool darkSame(a, b) => darkMatter(a) == darkMatter(b);
 String darkMatter(s) => asStr(s).replaceAll(_anyWhiteSpace, '');
 
 /// ignores null objects and empty strings
