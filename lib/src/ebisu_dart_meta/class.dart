@@ -256,6 +256,112 @@ class Member {
 }
 
 /// Metadata associated with a Dart class
+///
+/// A class consists primarily of its [members], but other niceties are provided.
+///
+/// For example:
+///
+///       print(dartFormat(
+///               (class_('pair')
+///                   ..members = [
+///                     member('a'),
+///                     member('b'),
+///                   ])
+///               .definition));
+///
+/// Prints:
+///
+///     class Pair {
+///       String a;
+///       String b;
+///
+///       // custom <class Pair>
+///       // end <class Pair>
+///     }
+///
+/// Note by default a custom block is provided since most classes have behavior -
+/// i.e. are more than just *plain old data*. To exclude the custom block set
+/// *includeCustom* to false.
+///
+///       print(dartFormat(
+///               (class_('pair')
+///                   ..includeCustom = false
+///                   ..members = [
+///                     member('a'),
+///                     member('b'),
+///                   ])
+///               .definition));
+///
+/// Prints:
+///
+///         class Pair {
+///           String a;
+///           String b;
+///         }
+///
+/// Dart classes may extend another class:
+///
+///       print(dartFormat(
+///               (class_('a')..extend = 'B')
+///               .definition));
+///
+/// Prints:
+///
+///     class A extends B {
+///       // custom <class A>
+///       // end <class A>
+///     }
+///
+/// Dart classes may implement interfaces:
+///
+///       print(dartFormat(
+///               (class_('a')..implement = [ 'B', 'C' ])
+///               .definition));
+///
+/// Prints:
+///
+///     class A implements B, C {
+///       // custom <class A>
+///       // end <class A>
+///     }
+///
+/// Note the tense of the attributes *extend* and *implement* avoids the *s* at the
+/// end and therefore conflicts with keywords. That may take getting used to.
+///
+/// Dart classes may include *mixins*:
+///
+///       print(dartFormat(
+///               (class_('a')
+///                   ..extend = 'Base'
+///                   ..mixins = [ 'B', 'C' ]
+///                   ..implement = [ 'D', 'E' ]
+///                )
+///               .definition));
+///
+/// Prints:
+///
+///     class A extends Base with B, C implements D, E {
+///
+///       // custom <class A>
+///       // end <class A>
+///
+///     }
+///
+/// Dart classes may be abstract:
+///
+///       print(dartFormat(
+///               (class_('a')..isAbstract = true)
+///               .definition));
+///
+/// Prints:
+///
+///     abstract class A {
+///       // custom <class A>
+///       // end <class A>
+///     }
+///
+///
+///
 class Class {
   Class(this._id);
 
@@ -728,6 +834,8 @@ ${
        .map((m) => _fromJsonMapMember(m))
        .join(';\n'))};
 }''';
+
+  get definition => define();
 
   String define() {
     if (parent == null) parent = library('stub');
