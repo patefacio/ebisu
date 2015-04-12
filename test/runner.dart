@@ -1,5 +1,6 @@
 import 'package:unittest/unittest.dart';
 import 'package:logging/logging.dart';
+import 'test_dart_meta.dart' as test_dart_meta;
 import 'test_functions.dart' as test_functions;
 import 'test_code_generation.dart' as test_code_generation;
 
@@ -14,6 +15,7 @@ main() {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
+  test_dart_meta.main();
   test_functions.main();
   test_code_generation.main();
 }

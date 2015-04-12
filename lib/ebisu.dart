@@ -1,4 +1,11 @@
-/// Primary library for client usage of ebisu
+/// Library with common utilities for generating code.
+///
+/// The *ebisu* package has two primary libraries with following focus:
+///
+/// - *ebisu.dart* Assist in generating source text in code generation
+/// - *ebisu_dart_meta.dart* Assist in generating *Dart* source code
+///
+///
 library ebisu.ebisu;
 
 import 'dart:convert' as convert;
@@ -275,6 +282,8 @@ dynamic randJson(Random generator, var obj, [final dynamic type]) {
   }
 }
 
+/// Given an [item] of an assumed nested structure consistent with the result of
+/// json parse, iterate over the objects and pretty print them to a String
 String prettyJsonMap(dynamic item,
     [String indent = "", bool showCount = false]) {
   List<String> result = new List<String>();
@@ -407,8 +416,14 @@ String formatFill(List<String> entries,
   return result.join('\n');
 }
 
+/// Standard *custom begin* opening text for *C* based languages
 const String customBegin = r'//\s*custom';
+
+/// Standard *custom end* closing text for *C* based languages
 const String customEnd = r'//\s*end';
+
+/// Defines the textual structure of a block of text that needs to be identified
+/// within a source text and treated in a special manner
 const String customBlockText = '''
 // ${'custom'} <TAG>
 // ${'end'} <TAG>
@@ -430,8 +445,12 @@ String customBlock(String tag) {
   return customBlockText.replaceAll('TAG', tag);
 }
 
+/// Standard *custom begin* opening text for *html* based languages
 const String htmlCustomBegin = r'<!--\s*custom';
+
+/// Standard *custom end* closing text for *html* based languages
 const String htmlCustomEnd = r'<!--\s*end';
+
 const String htmlCustomBlockText = '''
 <!-- custom <TAG> -->
 <!-- end <TAG> -->
@@ -624,19 +643,6 @@ String mergeWithContents(String generated, String currentText,
     }
   });
   return generated;
-}
-
-List<String> cleanImports(List<String> dirtyImports) {
-  List<String> result = [];
-  var hit = new Set<String>();
-  dirtyImports.forEach((i) {
-    i = i.replaceAll('"', "'");
-    if (hit.contains(i)) return;
-    hit.add(i);
-    result.add(i);
-  });
-  result.sort();
-  return result;
 }
 
 /// Returns the string as '$s' with single quotes, assuming it does

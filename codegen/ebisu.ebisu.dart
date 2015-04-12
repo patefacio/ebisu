@@ -61,12 +61,13 @@ generate() {
   Library ebisu_dart_meta = library('ebisu_dart_meta')
     ..doc = '''
 
-Support for storing dart meta data for purpose of generating code. Essentially
-this is a model of structural code items that comprise dart systems. Things like
-libraries (Library), classes (Class), class members (Member), pubspecs
-(PubSpec), etc. A very nice feature of Dart is the dot-dot _.._ operator, which
-allows one to conveniently string together accessor calls to objects. For
-example, the following is the structure of the imported id library.
+Support for storing dart meta data for purpose of generating *Dart*
+code. Essentially this is a model of structural code items that comprise dart
+systems. Things like libraries (Library), classes (Class), class members
+(Member), pubspecs (PubSpec), etc. A very nice feature of Dart is the dot-dot
+_.._ operator, which allows one to conveniently string together accessor calls
+to objects. For example, the following is the structure of the imported id
+library.
 
       library('id')
       ..doc = '...'
@@ -1126,10 +1127,8 @@ library/templates, a message like the following will be output:
       ]
       ..includesMain = false
       ..includesLogger = true,
-      library('test_functions')
-      ..imports = [
-        'package:ebisu/ebisu.dart',
-      ],
+      library('test_dart_meta')..imports = ['package:ebisu/ebisu_dart_meta.dart',],
+      library('test_functions')..imports = [ 'package:ebisu/ebisu.dart', ],
       library('test_code_generation')
       ..imports = [
         'package:ebisu/ebisu_dart_meta.dart',
@@ -1161,7 +1160,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.2.9'
+        ..version = '0.2.11'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1173,7 +1172,15 @@ other languages like D) using a fairly declarative aproach.
                  )
     ..libraries = [
       library('ebisu')
-      ..doc = 'Primary library for client usage of ebisu'
+      ..doc = '''
+Library with common utilities for generating code.
+
+The *ebisu* package has two primary libraries with following focus:
+
+- *ebisu.dart* Assist in generating source text in code generation
+- *ebisu_dart_meta.dart* Assist in generating *Dart* source code
+
+'''
       ..imports = [
         'package:dart_style/dart_style.dart',
         'package:id/id.dart',

@@ -13,8 +13,11 @@ void main(List<String> args) {
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
-  addTask('analyze_test', createAnalyzerTask(
-      ["test/test_functions.dart", "test/test_code_generation.dart"]));
+  addTask('analyze_test', createAnalyzerTask([
+    "test/test_dart_meta.dart",
+    "test/test_functions.dart",
+    "test/test_code_generation.dart"
+  ]));
 
   runHop(args);
 }
