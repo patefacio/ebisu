@@ -18,14 +18,12 @@ main([List<String> args]) {
 // custom <main>
 
   test('cleanImports', () {
-    expect(cleanImports(
-        [
-          'dart',
-          'io',
-          '"packages:awesome/awesome.dart" as awesome',
-          "'packages:awesome/awesome.dart' as awesome",
-        ]),
-        [ "'packages:awesome/awesome.dart' as awesome", 'dart', 'io' ]);
+    expect(cleanImports([
+      'dart',
+      'io',
+      '"packages:awesome/awesome.dart" as awesome',
+      "'packages:awesome/awesome.dart' as awesome",
+    ]), ["'packages:awesome/awesome.dart' as awesome", 'dart', 'io']);
   });
 
 // end <main>
