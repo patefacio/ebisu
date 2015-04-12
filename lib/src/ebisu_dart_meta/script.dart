@@ -126,6 +126,9 @@ class Script {
   bool includeCustom = true;
   /// List of imports to be included by this script
   List<String> imports = [];
+  /// Where to create the script.
+  /// If not present will be determined by parent [System] rootPath
+  set scriptPath(String scriptPath) => _scriptPath = scriptPath;
   /// Arguments for this script
   List<ScriptArg> args = [];
   /// By default a *log-level* argument will be included in the script.
@@ -155,41 +158,46 @@ Select log level from:
 ''');
     }
     args.forEach((sa) => sa.parent = this);
-    imports.add('dart:io');
-    imports.add('package:args/args.dart');
-    imports.add('package:logging/logging.dart');
-    imports = cleanImports(imports.map((i) => importStatement(i)).toList());
   }
 
   get nonPositionalArgs => args.where((a) => a.position == null);
 
+  get scriptPath =>
+      _scriptPath == null ? join(_parent.rootPath, 'bin') : _scriptPath;
+
   void generate() {
+    imports.add('dart:io');
+    imports.add('package:args/args.dart');
+    imports.add('package:logging/logging.dart');
+    imports = cleanImports(imports.map((i) => importStatement(i)).toList());
     String scriptName = _id.snake;
-    String scriptPath = "${_parent.rootPath}/bin/${scriptName}.dart";
-    mergeWithDartFile('${_content}\n', scriptPath);
+    String dartPath = join(scriptPath, '${scriptName}.dart');
+    mergeWithDartFile('${_content}\n', dartPath);
   }
 
   Iterable get requiredArgs => args.where((arg) => arg.isRequired);
 
-  get _content => [
+  get _content => brCompact([
     _scriptTag,
     _docComment,
     _imports,
-    _argParser,
-    _usage,
-    reduceVerticalWhitespace(_parseArgs),
+    args.isEmpty
+        ? null
+        : brCompact([_argParser, _usage, reduceVerticalWhitespace(_parseArgs)]),
     _loggerInit,
     br(classes.map((c) => c.define())),
     _main,
-  ].where((line) => line != '').join('\n');
+  ].where((line) => line != ''));
 
   get _scriptTag => '#!/usr/bin/env dart';
   get _docComment => doc != null ? '${docComment(doc)}\n' : '';
   get _imports => '${imports.join('\n')}\n';
+
   get _argParser => '''
 //! The parser for this script
 ArgParser _parser;
 ''';
+
   get _usage => '''
 //! The comment and usage associated with this script
 void _usage() {
@@ -301,15 +309,21 @@ ${arg.doc}
 ''').join('\n');
 
   get _loggerInit => "final _logger = new Logger('$id');\n";
+
+  get _argMap => args.isEmpty
+      ? null
+      : '''
+  Map argResults = _parseArgs(args);
+  Map options = argResults['options'];
+  List positionals = argResults['rest'];
+${_requiredArgs}
+''';
+
   get _main => '''
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;
-  Map argResults = _parseArgs(args);
-  Map options = argResults['options'];
-  List positionals = argResults['rest'];
-${_requiredArgs}
 ${indentBlock(customBlock("$id main"))}
 }
 
@@ -336,6 +350,7 @@ $_processArgs
 
   final Id _id;
   dynamic _parent;
+  String _scriptPath;
 }
 
 // custom <part script>

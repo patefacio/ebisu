@@ -300,6 +300,12 @@ text to include in the license file.
           ..doc = 'List of imports to be included by this script'
           ..type = 'List<String>'
           ..classInit = '[]',
+          member('script_path')
+          ..doc = '''
+Where to create the script.
+If not present will be determined by parent [System] rootPath
+'''
+          ..access = WO,
           member('args')
           ..doc = 'Arguments for this script'
           ..type = 'List<ScriptArg>'
@@ -1155,7 +1161,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.2.8'
+        ..version = '0.2.9'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1322,6 +1328,33 @@ regenerating.
     });
   });
   */
+
+  ebisu.scripts = [
+    script('bootstrap_ebisu')
+    ..imports = [
+      'package:id/id.dart',
+      'package:path/path.dart',
+      "'package:ebisu/ebisu.dart' as ebisu",
+      'package:ebisu/ebisu_dart_meta.dart',
+    ]
+    ..doc = 'Creates an ebisu setup'
+    ..classes = [
+      class_('project')
+      ..hasJsonToString = true
+      ..members = [
+        member('id')..type = 'Id',
+        member('root_path'),
+        member('codegen_path'),
+        member('script_name'),
+        member('ebisu_file_path'),
+      ]
+    ]
+    ..args = [
+      scriptArg('project_path')
+      ..doc = 'Path to top level of desired ebisu project'
+      ..abbr = 'p',
+    ]
+  ];
 
   ebisu.generate();
 }
