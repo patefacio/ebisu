@@ -1,5 +1,5 @@
 name: ebisu
-version: 0.2.12
+version: 0.2.13
 author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: https://github.com/patefacio/ebisu
 description: >
@@ -27,6 +27,7 @@ dev_dependencies:
 
 # custom <ebisu dev dependencies>
 
+  args: "^0.12.0"
   hop: ">=0.31.1<0.32.0"
   hop_docgen: "any"
 

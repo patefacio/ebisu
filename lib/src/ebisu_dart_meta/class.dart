@@ -1,11 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
 /// When serializing json, how to name the keys
-enum JsonKeyFormat {
-  camel,
-  capCamel,
-  snake
-}
+enum JsonKeyFormat { camel, capCamel, snake }
 
 /// Metadata associated with a constructor
 class Ctor {

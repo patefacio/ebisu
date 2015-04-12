@@ -71,15 +71,17 @@ class Enum {
   _evCheckValue(EnumValue ev, int index) =>
       ev.value == null ? ((new EnumValue(ev.id, index))..doc = ev.doc) : ev;
 
-  set values(List values) => _values = enumerate(values)
-      .map((IndexedValue iv) => iv.value is String
-          ? new EnumValue(idFromString(iv.value), iv.index)
-          : iv.value is Id
-              ? new EnumValue(iv.value, iv.index)
-              : (iv.value is EnumValue)
-                  ? _evCheckValue(iv.value, iv.index)
-                  : throw '${iv.value} not valid type for enum value')
-      .toList();
+  set values(List values) =>
+      _values =
+      enumerate(values)
+          .map((IndexedValue iv) => iv.value is String
+              ? new EnumValue(idFromString(iv.value), iv.index)
+              : iv.value is Id
+                  ? new EnumValue(iv.value, iv.index)
+                  : (iv.value is EnumValue)
+                      ? _evCheckValue(iv.value, iv.index)
+                      : throw '${iv.value} not valid type for enum value')
+          .toList();
 
   set parent(p) {
     _name = _id.capCamel;
