@@ -203,6 +203,7 @@ text to include in the license file.
       part('app')
       ..classes = [
         class_('app')
+        ..mixins = [ 'CustomCodeBlock' ]
         ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
         ..members = [
           id_member('app'),
@@ -292,6 +293,7 @@ text to include in the license file.
         ],
         class_('script')
         ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
+        ..mixins = [ 'CustomCodeBlock' ]
         ..members = [
           id_member('script'),
           doc_member('script'),
@@ -524,6 +526,7 @@ member('foo')..init = [1,2,3]
       ..classes = [
         class_('ctor')
         ..doc = 'Metadata associated with a constructor'
+        ..mixins = [ 'CustomCodeBlock' ]
         ..members = [
           member('class_name')
           ..doc = "Name of the class of this ctor.",
@@ -741,6 +744,7 @@ Prints:
 
 
 '''
+        ..mixins = [ 'CustomCodeBlock' ]
         ..members = [
           id_member('Dart class'),
           doc_member('Dart class'),
@@ -862,6 +866,7 @@ Prints:
       part('library')
       ..classes = [
         class_('library')
+        ..mixins = [ 'CustomCodeBlock' ]
         ..doc = "Defines a dart library - a collection of parts"
         ..members = [
           id_member('library'),
@@ -928,12 +933,13 @@ Prints:
       part('part')
       ..classes = [
         class_('part')
+        ..mixins = [ 'CustomCodeBlock' ]
         ..doc = "Defines a dart part - as in 'part of' source file"
         ..members = [
           id_member('part'),
           doc_member('part'),
           parent_member('part'),
-          custom_member('app'),
+          custom_member('part'),
           member('classes')
           ..doc = 'Classes defined in this part of the library'
           ..type = 'List<Class>'
@@ -1191,6 +1197,15 @@ The *ebisu* package has two primary libraries with following focus:
         'package:quiver/iterables.dart',
       ]
       ..classes = [
+
+        class_('custom_code_block')
+        ..doc = 'Mixin to provide a common approach to adding custom code'
+        ..members = [
+          member('custom_code_block')
+          ..doc = 'A custom code block for a class'
+          ..type = 'CodeBlock'..access = WO,
+        ],
+
         class_('code_block')
         ..doc = r'''
 Wraps an optional protection block with optional code injection

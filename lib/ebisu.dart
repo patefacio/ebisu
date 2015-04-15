@@ -24,6 +24,43 @@ part 'src/ebisu/ebisu.dart';
 
 final _logger = new Logger('ebisu');
 
+/// Mixin to provide a common approach to adding custom code
+class CustomCodeBlock {
+
+  /// A custom code block for a class
+  set customCodeBlock(CodeBlock customCodeBlock) =>
+      _customCodeBlock = customCodeBlock;
+
+  // custom <class CustomCodeBlock>
+
+  bool get includesCustom => _customCodeBlock != null;
+
+  set includesCustom(bool ic) {
+    if (ic) {
+      _initCustomBlock();
+    } else {
+      _logger.warning('Turning custom code off for $runtimeType');
+    }
+  }
+
+  CodeBlock get customCodeBlock => _initCustomBlock();
+
+  CodeBlock _initCustomBlock() {
+    if (_customCodeBlock == null) {
+      _customCodeBlock = new CodeBlock(null);
+    }
+    return _customCodeBlock;
+  }
+
+  taggedBlockText(String tag) => (customCodeBlock..tag = tag).toString();
+
+  //_copyCodeBlock(String tag) =>
+
+  // end <class CustomCodeBlock>
+
+  CodeBlock _customCodeBlock;
+}
+
 /// Wraps an optional protection block with optional code injection
 ///
 /// [CodeBlock]s have two functions, they provide an opportunity

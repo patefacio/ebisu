@@ -4,7 +4,7 @@ part of ebisu.ebisu_dart_meta;
 enum JsonKeyFormat { camel, capCamel, snake }
 
 /// Metadata associated with a constructor
-class Ctor {
+class Ctor extends Object with CustomCodeBlock {
 
   /// Name of the class of this ctor.
   String className;
@@ -358,7 +358,7 @@ class Member {
 ///
 ///
 ///
-class Class {
+class Class extends Object with CustomCodeBlock {
   Class(this._id);
 
   /// Id for this Dart class

@@ -1,7 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart *web* application. For non-web console app, use Script
-class App {
+class App extends Object with CustomCodeBlock {
   App(this._id);
 
   /// Id for this app

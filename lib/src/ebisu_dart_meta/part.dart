@@ -1,7 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart part - as in 'part of' source file
-class Part {
+class Part extends Object with CustomCodeBlock {
   Part(this._id);
 
   /// Id for this part
@@ -10,7 +10,7 @@ class Part {
   String doc;
   /// Reference to parent of this part
   dynamic get parent => _parent;
-  /// If true a custom section will be included for app
+  /// If true a custom section will be included for part
   bool includeCustom = true;
   /// Classes defined in this part of the library
   List<Class> classes = [];

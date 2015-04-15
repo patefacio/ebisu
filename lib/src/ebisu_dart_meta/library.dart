@@ -1,7 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart library - a collection of parts
-class Library {
+class Library extends Object with CustomCodeBlock {
   Library(this._id);
 
   /// Id for this library

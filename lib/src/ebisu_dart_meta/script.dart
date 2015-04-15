@@ -113,7 +113,7 @@ class ScriptArg {
 }
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
-class Script {
+class Script extends Object with CustomCodeBlock {
   Script(this._id);
 
   /// Id for this script
@@ -324,7 +324,7 @@ main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;
-${indentBlock(customBlock("$id main"))}
+${indentBlock(taggedBlockText("$id main"))}
 }
 
 ${customBlock("$id global")}''';
