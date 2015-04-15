@@ -39,7 +39,10 @@ class CustomCodeBlock {
     if (ic) {
       _initCustomBlock();
     } else {
-      _logger.warning('Turning custom code off for $runtimeType');
+      if (_customCodeBlock != null && _customCodeBlock.snippets.isNotEmpty) {
+        _logger.warning('Custom code disabled for $runtimeType');
+        _logger.warning('Snippets removed: ${br(_customCodeBlock.snippets)}');
+      }
       _customCodeBlock = null;
     }
   }
@@ -53,13 +56,14 @@ class CustomCodeBlock {
     return _customCodeBlock;
   }
 
-  taggedBlockText(String tag) => (customCodeBlock..tag = tag).toString();
+  taggedBlockText(String tag) =>
+      _customCodeBlock != null ? (_customCodeBlock..tag = tag).toString() : '';
 
   //_copyCodeBlock(String tag) =>
 
   // end <class CustomCodeBlock>
 
-  CodeBlock _customCodeBlock;
+  CodeBlock _customCodeBlock = new CodeBlock(null);
 }
 
 /// Wraps an optional protection block with optional code injection
@@ -148,8 +152,8 @@ class CodeBlock {
   String toString() {
     if (hasTag) {
       return hasSnippetsFirst
-          ? br([snippets, customBlock(tag)])
-          : br([customBlock(tag)]..addAll(snippets));
+          ? brCompact([snippets, customBlock(tag)])
+          : br([customBlock(tag)]..add(brCompact(snippets)));
     }
     return combine(snippets);
   }

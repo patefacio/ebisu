@@ -1158,7 +1158,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.2.14'
+        ..version = '0.3.1'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1195,7 +1195,9 @@ The *ebisu* package has two primary libraries with following focus:
         ..members = [
           member('custom_code_block')
           ..doc = 'A custom code block for a class'
-          ..type = 'CodeBlock'..access = WO,
+          ..type = 'CodeBlock'
+          ..access = WO
+          ..classInit = 'new CodeBlock(null)' ,
         ],
 
         class_('code_block')
