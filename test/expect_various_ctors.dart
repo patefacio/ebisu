@@ -11,6 +11,7 @@ final _logger = new Logger('expect_various_ctors');
 
 // custom <library expect_various_ctors>
 // end <library expect_various_ctors>
+
 main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));

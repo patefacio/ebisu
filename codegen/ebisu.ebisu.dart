@@ -53,11 +53,6 @@ generate() {
     ..isJsonTransient = true
     ..access = Access.RO;
 
-  Member custom_member(String owner) => member('include_custom')
-    ..doc = "If true a custom section will be included for $owner"
-    ..type = 'bool'
-    ..classInit = 'true';
-
   Library ebisu_dart_meta = library('ebisu_dart_meta')
     ..doc = '''
 
@@ -209,7 +204,6 @@ text to include in the license file.
           id_member('app'),
           doc_member('app'),
           parent_member('app'),
-          custom_member('app'),
           member('classes')
           ..doc = 'Classes defined in this app'
           ..type = 'List<Class>'
@@ -298,7 +292,6 @@ text to include in the license file.
           id_member('script'),
           doc_member('script'),
           parent_member('script'),
-          custom_member('script'),
           member('imports')
           ..doc = 'List of imports to be included by this script'
           ..type = 'List<String>'
@@ -761,7 +754,6 @@ Prints:
           ..doc = 'Any implements (NOTE implement not implements)'
           ..type = 'List<String>'
           ..classInit = '[]',
-          custom_member('Dart class'),
           member('default_member_access')
           ..doc = 'Default access for members'
           ..access = WO
@@ -872,7 +864,6 @@ Prints:
           id_member('library'),
           doc_member('library'),
           parent_member('library'),
-          custom_member('library'),
           member('imports')
           ..doc = 'List of imports to be included by this library'
           ..type = 'List<String>'
@@ -912,10 +903,12 @@ Prints:
           ..type = 'bool'
           ..access = Access.RO
           ..classInit = 'false',
-          member('includes_main')
-          ..doc = 'If true a main is included in the library file'
-          ..type = 'bool'
-          ..classInit = 'false',
+
+          member('main_custom_block')
+          ..doc = 'Code block inside main for custom code'
+          ..type = 'CodeBlock'
+          ..access = WO,
+
           member('path')
           ..doc = 'Set desired if generating just a lib and not a package',
           member('lib_main')
@@ -939,7 +932,6 @@ Prints:
           id_member('part'),
           doc_member('part'),
           parent_member('part'),
-          custom_member('part'),
           member('classes')
           ..doc = 'Classes defined in this part of the library'
           ..type = 'List<Class>'

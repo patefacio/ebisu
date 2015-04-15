@@ -40,6 +40,7 @@ class CustomCodeBlock {
       _initCustomBlock();
     } else {
       _logger.warning('Turning custom code off for $runtimeType');
+      _customCodeBlock = null;
     }
   }
 

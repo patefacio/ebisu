@@ -10,8 +10,6 @@ class App extends Object with CustomCodeBlock {
   String doc;
   /// Reference to parent of this app
   dynamic get parent => _parent;
-  /// If true a custom section will be included for app
-  bool includeCustom = true;
   /// Classes defined in this app
   List<Class> classes = [];
   /// List of libraries of this app

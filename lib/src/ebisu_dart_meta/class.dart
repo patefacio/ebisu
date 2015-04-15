@@ -376,8 +376,6 @@ class Class extends Object with CustomCodeBlock {
   String extend;
   /// Any implements (NOTE implement not implements)
   List<String> implement = [];
-  /// If true a custom section will be included for Dart class
-  bool includeCustom = true;
   /// Default access for members
   set defaultMemberAccess(Access defaultMemberAccess) =>
       _defaultMemberAccess = defaultMemberAccess;
@@ -884,9 +882,10 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
       .map((m) => indentBlock(chomp(m.publicCode)))
       .join('\n');
   get _topInjection => topInjection != null ? indentBlock(topInjection) : '';
-  get _includeCustom => includeCustom
-      ? "${rightTrim(indentBlock(customBlock('class $name')))}"
-      : '';
+
+  /// TODO: deprecated - use includesCustom
+  set includeCustom(bool ic) => includesCustom = ic;
+  get _includeCustom => rightTrim(indentBlock(taggedBlockText('class $name')));
 
   _formattedMember(Member m) => jsonKeyFormat == snake
       ? m.id.snake

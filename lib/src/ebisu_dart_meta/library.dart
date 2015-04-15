@@ -10,8 +10,6 @@ class Library extends Object with CustomCodeBlock {
   String doc;
   /// Reference to parent of this library
   dynamic get parent => _parent;
-  /// If true a custom section will be included for library
-  bool includeCustom = true;
   /// List of imports to be included by this library
   List<String> imports = [];
   /// List of parts in this library
@@ -32,8 +30,9 @@ class Library extends Object with CustomCodeBlock {
   bool includesLogger = false;
   /// If true this library is a test library to appear in test folder
   bool get isTest => _isTest;
-  /// If true a main is included in the library file
-  bool includesMain = false;
+  /// Code block inside main for custom code
+  set mainCustomBlock(CodeBlock mainCustomBlock) =>
+      _mainCustomBlock = mainCustomBlock;
   /// Set desired if generating just a lib and not a package
   String path;
   /// If set the main function
@@ -161,8 +160,10 @@ class Library extends Object with CustomCodeBlock {
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
-  get _libraryCustom =>
-      includeCustom ? chomp(customBlock('library $name')) : '';
+
+  /// TODO: deprecated - use includesCustom
+  set includeCustom(bool ic) => includesCustom = ic;
+  get _libraryCustom => chomp(taggedBlockText('library $name'));
 
   get _initLogger => isTest
       ? r"""
@@ -172,10 +173,21 @@ class Library extends Object with CustomCodeBlock {
 """
       : '';
 
+  get mainCustomBlock =>
+      _mainCustomBlock = _mainCustomBlock == null ? new CodeBlock(null) : null;
+
+  get includesMain => _mainCustomBlock != null;
+  set includesMain(bool im) => _mainCustomBlock =
+      (im && _mainCustomBlock == null) ? new CodeBlock(null) : null;
+
+  get _mainCustomText => _mainCustomBlock != null
+      ? (_mainCustomBlock..tag = 'main').toString()
+      : '';
+
   get _libraryMain => includesMain
       ? '''
 main([List<String> args]) {
-$_initLogger${customBlock('main')}
+$_initLogger${_mainCustomText}
 }'''
       : (libMain != null) ? libMain : '';
 
@@ -246,6 +258,7 @@ $_initLogger${customBlock('main')}
   String _name;
   String _qualifiedName;
   bool _isTest = false;
+  CodeBlock _mainCustomBlock;
 }
 
 // custom <part library>

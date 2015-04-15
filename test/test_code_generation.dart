@@ -197,6 +197,7 @@ void generateTestLibraries() {
 }
 
 // end <library test_code_generation>
+
 main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));

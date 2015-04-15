@@ -122,8 +122,6 @@ class Script extends Object with CustomCodeBlock {
   String doc;
   /// Reference to parent of this script
   dynamic get parent => _parent;
-  /// If true a custom section will be included for script
-  bool includeCustom = true;
   /// List of imports to be included by this script
   List<String> imports = [];
   /// Where to create the script.

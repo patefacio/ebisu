@@ -10,8 +10,6 @@ class Part extends Object with CustomCodeBlock {
   String doc;
   /// Reference to parent of this part
   dynamic get parent => _parent;
-  /// If true a custom section will be included for part
-  bool includeCustom = true;
   /// Classes defined in this part of the library
   List<Class> classes = [];
   /// Enums defined in this part of the library
@@ -63,7 +61,10 @@ class Part extends Object with CustomCodeBlock {
   get _part => 'part of ${parent.qualifiedName};\n';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}').join('\n\n');
-  get _custom => includeCustom ? customBlock('part $name') : '';
+
+  /// TODO: deprecated - use includesCustom
+  set includeCustom(bool ic) => includesCustom = ic;
+  get _custom => chomp(taggedBlockText('part $name'));
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
   // end <class Part>
