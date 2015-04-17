@@ -147,7 +147,11 @@ class CodeBlock {
 
   // custom <class CodeBlock>
 
+  /// Returns true if has [tag] string that is not empty
   bool get hasTag => tag != null && tag.length > 0;
+
+  /// Returns true if [hasTag] or has snippets content
+  bool get hasContent => hasTag || snippets.isNotEmpty;
 
   String toString() {
     if (hasTag) {
@@ -708,9 +712,16 @@ bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
   return s1.replaceAll(_normalizeRe, ' ') == s2.replaceAll(_normalizeRe, ' ');
 }
 
+/// Returns [o] as a String using [toString] if needed
 asStr(o) => o is String ? o : o.toString();
 
+/// Return true iff [darkMatter] of both inputs are the same
 bool darkSame(a, b) => darkMatter(a) == darkMatter(b);
+
+/// Returns the contents of [s], converted to String if needed, with all
+/// whitespace removed
+///
+/// Useful for testing
 String darkMatter(s) => asStr(s).replaceAll(_anyWhiteSpace, '');
 
 /// ignores null objects and empty strings
@@ -736,6 +747,8 @@ String combine(Iterable<Object> parts, [nl = '', chompFirst = false]) {
   return result;
 }
 
+/// Combine all entries with single new-line
+/// Same as [br] but with less vertical spacing
 String brCompact(o) => br(o, '\n', true);
 
 // end <library ebisu>
