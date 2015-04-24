@@ -408,6 +408,10 @@ String blockComment(String text, [String indent = '   ']) {
   return "/**\n${indentBlock(text, indent)}\n*/";
 }
 
+/// Return a new string with [text] wrapped in `#...` comment block
+String scriptComment(String text, [String indent = '   ']) =>
+    ['#$indent', text.split('\n').join('\n#$indent')].join();
+
 /// Return a new string with [text] wrapped in `///` doc comment block
 String docComment(String text, [String indent = ' ']) {
   String guts = text

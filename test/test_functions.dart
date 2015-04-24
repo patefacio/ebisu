@@ -162,6 +162,25 @@ class C {
     expect(brCompact([null, null, 'a\n\n\n', null, null, 'b']), 'a\nb\n');
   });
 
+  test('scriptComment', () {
+    expect(darkSame(scriptComment('''
+this is
+a test'''),
+            '''
+#   this is
+#   a test
+'''), true);
+
+    expect(darkSame(scriptComment('''
+this is
+a test''', ' '),
+            '''
+# this is
+# a test
+'''), true);
+
+  });
+
 // end <main>
 
 }
