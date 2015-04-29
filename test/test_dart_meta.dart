@@ -35,7 +35,7 @@ main([List<String> args]) {
       ..includesMain = true;
 
     [l1, l2].forEach((Library l) {
-      expect(darkMatter(l.tar).contains('// foo'), true);
+      expect(l.tar.contains('// foo'), true);
     });
   });
 
