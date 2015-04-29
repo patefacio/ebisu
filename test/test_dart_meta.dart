@@ -5,6 +5,7 @@ import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 // custom <additional imports>
+import 'package:ebisu/ebisu.dart';
 // end <additional imports>
 
 final _logger = new Logger('test_dart_meta');
@@ -25,6 +26,17 @@ main([List<String> args]) {
       '"packages:awesome/awesome.dart" as awesome',
       "'packages:awesome/awesome.dart' as awesome",
     ]), ["'packages:awesome/awesome.dart' as awesome", 'dart', 'io']);
+  });
+
+  group('mainCustomBlock', () {
+    final l1 = library('x')..mainCustomBlock.snippets.add('// foo');
+    final l2 = library('x')
+      ..mainCustomBlock.snippets.add('// foo')
+      ..includesMain = true;
+
+    [l1, l2].forEach((Library l) {
+      expect(darkMatter(l.tar).contains('// foo'), true);
+    });
   });
 
 // end <main>

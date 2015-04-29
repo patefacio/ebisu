@@ -134,6 +134,12 @@ class Library extends Object with CustomCodeBlock {
     benchmarks.forEach((benchmark) => benchmark.generate());
   }
 
+  /// Returns a string with all contents concatenated together
+  get tar {
+    ensureParent();
+    return combine([_content, parts.map((p) => p._content)]);
+  }
+
   get _content => [
     _docComment,
     _libraryStatement,
@@ -173,12 +179,17 @@ class Library extends Object with CustomCodeBlock {
 """
       : '';
 
-  get mainCustomBlock =>
-      _mainCustomBlock = _mainCustomBlock == null ? new CodeBlock(null) : null;
+  get mainCustomBlock => _mainCustomBlock =
+      _mainCustomBlock == null ? new CodeBlock(null) : _mainCustomBlock;
+
+  withMainCustomBlock(f(CodeBlock cb)) => f(mainCustomBlock);
 
   get includesMain => _mainCustomBlock != null;
-  set includesMain(bool im) => _mainCustomBlock =
-      (im && _mainCustomBlock == null) ? new CodeBlock(null) : null;
+
+  set includesMain(bool im) =>
+      _mainCustomBlock = (im && _mainCustomBlock == null)
+          ? new CodeBlock(null)
+          : im ? _mainCustomBlock : null;
 
   get _mainCustomText => _mainCustomBlock != null
       ? (_mainCustomBlock..tag = 'main').toString()
