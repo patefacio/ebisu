@@ -92,6 +92,5 @@ void main() {
   final Id _id;
   dynamic _parent;
 }
-
 // custom <part app>
 // end <part app>

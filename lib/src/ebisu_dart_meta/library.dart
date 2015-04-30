@@ -271,6 +271,5 @@ $_initLogger${_mainCustomText}
   bool _isTest = false;
   CodeBlock _mainCustomBlock;
 }
-
 // custom <part library>
 // end <part library>

@@ -51,6 +51,5 @@ main() {
   final Id _id;
   System _parent;
 }
-
 // custom <part benchmark>
 // end <part benchmark>

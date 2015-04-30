@@ -50,13 +50,14 @@ class Part extends Object with CustomCodeBlock {
   bool get hasCtorSansNew =>
       _hasCtorSansNew == null ? _parent.hasCtorSansNew : _hasCtorSansNew;
 
-  get _content => [
+  get _content => brCompact([
+    doc != null ? docComment(chomp(doc)) : null,
     _part,
     _enums,
     _classes,
     _custom,
     _variables,
-  ].where((line) => line != '').join('\n');
+  ].where((line) => line != ''));
 
   get _part => 'part of ${parent.qualifiedName};\n';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
@@ -76,6 +77,5 @@ class Part extends Object with CustomCodeBlock {
   Access _defaultMemberAccess;
   bool _hasCtorSansNew;
 }
-
 // custom <part part>
 // end <part part>

@@ -251,6 +251,5 @@ ${pubTransformers.map((t) => t.yamlEntry).join()}''';
   Id _id;
   dynamic _parent;
 }
-
 // custom <part pub>
 // end <part pub>

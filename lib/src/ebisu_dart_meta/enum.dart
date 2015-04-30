@@ -229,7 +229,6 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   String _enumName;
   bool _requiresClass;
 }
-
 // custom <part enum>
 
 /// Create a EnumValue sans new, for more declarative construction

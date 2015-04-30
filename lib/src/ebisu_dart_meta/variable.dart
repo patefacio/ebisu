@@ -82,6 +82,5 @@ class Variable {
   String _name;
   String _varName;
 }
-
 // custom <part variable>
 // end <part variable>

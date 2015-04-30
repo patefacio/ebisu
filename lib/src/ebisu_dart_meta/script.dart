@@ -59,7 +59,6 @@ class ArgType implements Comparable<ArgType> {
     }
   }
 }
-
 /// An agrument to a script
 class ScriptArg {
   ScriptArg(this._id);
@@ -350,6 +349,5 @@ $_processArgs
   dynamic _parent;
   String _scriptPath;
 }
-
 // custom <part script>
 // end <part script>

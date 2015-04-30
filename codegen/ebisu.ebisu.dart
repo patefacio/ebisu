@@ -1188,20 +1188,83 @@ The *ebisu* package has two primary libraries with following focus:
         '"package:path/path.dart" as path',
         'package:quiver/iterables.dart',
       ]
-      ..classes = [
+      ..includesLogger = true
+      ..parts = [
+        part('random_support')
+        ..doc = '''
+Some support for generating random data - sometimes useful for testing
+''',
+        part('ebisu_variables')
+        ..doc = '''
+Variables used by ebisu when generating Dart code.
+'''
+        ..variables = [
+          variable('ebisu_path')
+          ..doc = 'Path to this package - for use until this becomes a pub package'
+          ..isFinal = true
+          ..init = "Platform.environment['EBISU_PATH']",
+          variable('ebisu_author')
+          ..doc = 'Author of the generated code'
+          ..isFinal = true
+          ..init = "Platform.environment['EBISU_AUTHOR']",
+          variable('ebisu_homepage')
+          ..doc = 'Hompage for pubspec'
+          ..isFinal = true
+          ..init = "Platform.environment['EBISU_HOMEPAGE']",
+          variable('ebisu_pub_versions')
+          ..doc = '''
+File containing default pub versions. Dart code generation at times
+generates code that requires packages. For example, generated
+test cases require unittest, generated code can require logging,
+hop support requries hop. Since the pubspec yaml is generated
+the idea here is to pull the versions of these packages out of
+the code and into a config file. Then to upgrade multiple packages
+with multiple pubspecs would entail updating the config file and
+regenerating.
+'''
+          ..isFinal = true
+          ..init = '''
+(Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
+  Platform.environment['EBISU_PUB_VERSIONS'] :
+  "\${Platform.environment['HOME']}/.ebisu_pub_versions.json"''',
+          variable('license_map')
+          ..type = 'Map<String,String>'
+          ..init = '''
+{
 
-        class_('custom_code_block')
-        ..doc = 'Mixin to provide a common approach to adding custom code'
-        ..members = [
-          member('custom_code_block')
-          ..doc = 'A custom code block for a class'
-          ..type = 'CodeBlock'
-          ..access = WO
-          ..classInit = 'new CodeBlock(null)' ,
+  'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
+  'mit' : 'License: <a href="http://opensource.org/licenses/MIT">MIT License</a>',
+  'apache-2.0' : 'License: <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>',
+  'bsd-3' : 'License: <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause "Revised"</a>',
+  'bsd-2' : 'License: <a href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>',
+  'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
+
+}'''
+
         ],
+        part('json_support')
+        ..doc = 'Code pulled in when generated Dart needs to serialize json',
+        part('codegen_utils')
+        ..doc = 'Common functions used in the code-generation process',
+        part('code_block')
+        ..doc = '''
+Support for code blocks - markers for custom hand-written or code
+generation injected code.
+'''
+        ..classes = [
 
-        class_('code_block')
-        ..doc = r'''
+          class_('custom_code_block')
+          ..doc = 'Mixin to provide a common approach to adding custom code'
+          ..members = [
+            member('custom_code_block')
+            ..doc = 'A custom code block for a class'
+            ..type = 'CodeBlock'
+            ..access = WO
+            ..classInit = 'new CodeBlock(null)' ,
+          ],
+
+          class_('code_block')
+          ..doc = r'''
 Wraps an optional protection block with optional code injection
 
 [CodeBlock]s have two functions, they provide an opportunity
@@ -1270,80 +1333,26 @@ would give:
     """
 
 '''
-        ..hasCtorSansNew = true
-        ..members = [
-          member('tag')
-          ..doc = 'Tag for protect block. If present includes protect block'
-          ..ctors = [''],
-          member('snippets')
-          ..doc = 'Effecitively a hook to throw in generated text'
-          ..type = 'List<String>'..classInit = [],
-          member('has_snippets_first')
-          ..doc = '''
+          ..hasCtorSansNew = true
+          ..members = [
+            member('tag')
+            ..doc = 'Tag for protect block. If present includes protect block'
+            ..ctors = [''],
+            member('snippets')
+            ..doc = 'Effecitively a hook to throw in generated text'
+            ..type = 'List<String>'..classInit = [],
+            member('has_snippets_first')
+            ..doc = '''
 Determines whether the injected code snippets come before the
 protection block or after
 '''
-          ..classInit = false,
-        ],
-      ]
-      ..includesLogger = true
-      ..variables = [
-        variable('ebisu_path')
-        ..doc = 'Path to this package - for use until this becomes a pub package'
-        ..isFinal = true
-        ..init = "Platform.environment['EBISU_PATH']",
-        variable('ebisu_author')
-        ..doc = 'Author of the generated code'
-        ..isFinal = true
-        ..init = "Platform.environment['EBISU_AUTHOR']",
-        variable('ebisu_homepage')
-        ..doc = 'Hompage for pubspec'
-        ..isFinal = true
-        ..init = "Platform.environment['EBISU_HOMEPAGE']",
-        variable('ebisu_pub_versions')
-        ..doc = '''
-File containing default pub versions. Dart code generation at times
-generates code that requires packages. For example, generated
-test cases require unittest, generated code can require logging,
-hop support requries hop. Since the pubspec yaml is generated
-the idea here is to pull the versions of these packages out of
-the code and into a config file. Then to upgrade multiple packages
-with multiple pubspecs would entail updating the config file and
-regenerating.
-'''
-        ..isFinal = true
-        ..init = '''
-(Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
-  Platform.environment['EBISU_PUB_VERSIONS'] :
-  "\${Platform.environment['HOME']}/.ebisu_pub_versions.json"''',
-        variable('license_map')
-        ..type = 'Map<String,String>'
-        ..init = '''
-{
+            ..classInit = false,
+          ],
+        ]
 
-  'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
-  'mit' : 'License: <a href="http://opensource.org/licenses/MIT">MIT License</a>',
-  'apache-2.0' : 'License: <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>',
-  'bsd-3' : 'License: <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause "Revised"</a>',
-  'bsd-2' : 'License: <a href="http://opensource.org/licenses/BSD-2-Clause">BSD 2-Clause</a>',
-  'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
-
-}'''
-
-      ]
-      ..parts = [
-        part('ebisu'),
       ],
       ebisu_dart_meta,
     ];
-
-  /*
-  ebisu_dart_meta.parts.forEach((part) {
-    part.classes.forEach((c) {
-      c.hasJsonSupport = true;
-    });
-  });
-  */
 
   ebisu.scripts = [
     script('bootstrap_ebisu')
