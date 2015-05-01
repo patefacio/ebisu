@@ -19,7 +19,7 @@ void main() {
 
   useDartFormatter = true;
   var arguments = Platform.executableArguments;
-  String here = path.absolute(Platform.script.path);
+  String here = path.absolute(Platform.script.toFilePath());
   _topDir = path.dirname(path.dirname(here));
   generate();
 }

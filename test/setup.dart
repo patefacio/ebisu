@@ -16,7 +16,8 @@ String _scratchRemoveMeFolder;
 
 String get tempPath {
   if (_scratchRemoveMeFolder == null) {
-    String packageRootPath = dirname(dirname(absolute(Platform.script.path)));
+    String packageRootPath =
+        dirname(dirname(absolute(Platform.script.toFilePath())));
     _scratchRemoveMeFolder =
         joinAll([packageRootPath, 'test', 'scratch_remove_me']);
   }

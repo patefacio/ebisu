@@ -261,7 +261,8 @@ main([List<String> args]) {
   group('subprocesses', () {
     List allDartFilesComplete = [];
 
-    String packageRootPath = dirname(dirname(absolute(Platform.script.path)));
+    String packageRootPath =
+        dirname(dirname(absolute(Platform.script.toFilePath())));
     String testPath = join(packageRootPath, 'test');
 
     //////////////////////////////////////////////////////////////////////

@@ -15,7 +15,7 @@ void main() {
         print("${r.loggerName} [${r.level}]:\t${r.message}"));
   }
 
-  String here = path.absolute(Platform.script.path);
+  String here = path.absolute(Platform.script.toFilePath());
   var topDir = path.dirname(path.dirname(here));
   System myPubPackage = system('my_pub_package')
     .. doc = '''

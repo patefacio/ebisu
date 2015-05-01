@@ -267,7 +267,7 @@ import '../test/runner.dart' as runner;
 
 void main(List<String> args) {
 
-  Directory.current = path.dirname(path.dirname(Platform.script.path));
+  Directory.current = path.dirname(path.dirname(Platform.script.toFilePath()));
 
   addTask('analyze_lib', createAnalyzerTask(_getLibs));
   //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
