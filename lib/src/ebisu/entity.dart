@@ -77,7 +77,6 @@ abstract class Entity implements Identifiable {
     ..add(child)
     ..addAll(child.progeny));
 
-
   findAncestorWhere(predicate) => predicate(this)
       ? this
       : owner == null ? owner : owner.findAncestorWhere(predicate);
@@ -102,5 +101,6 @@ abstract class Entity implements Identifiable {
   Entity _owner;
   List<Entity> _entityPath = [];
 }
+
 // custom <part entity>
 // end <part entity>

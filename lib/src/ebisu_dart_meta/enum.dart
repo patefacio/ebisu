@@ -30,7 +30,7 @@ class EnumValue {
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 /// At some point when true enums are provided this may be revisited.
 ///
-class Enum {
+class Enum extends Object with Entity {
   Enum(this._id);
 
   /// Id for this enum
@@ -40,8 +40,6 @@ class Enum {
   /// True if enum is public.
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
-  /// Reference to parent of this enum
-  dynamic get parent => _parent;
   /// List of id's naming the values
   List<EnumValue> get values => _values;
   /// If true, generate toJson/fromJson on wrapper class
@@ -66,6 +64,9 @@ class Enum {
 
   // custom <class Enum>
 
+  /// Enum has no children
+  Iterable<Entity> get children => new Iterable<Entity>.generate(0);
+
   /// Setting of values accepts [ (String|Id|EnumValue),... ]
 
   _evCheckValue(EnumValue ev, int index) =>
@@ -83,11 +84,10 @@ class Enum {
                       : throw '${iv.value} not valid type for enum value')
           .toList();
 
-  set parent(p) {
+  onOwnershipEstablished() {
     _name = _id.capCamel;
     _enumName = isPublic ? _name : "_$_name";
     values = _values;
-    _parent = p;
   }
 
   String define() => _content;
@@ -223,12 +223,12 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   // end <class Enum>
 
   final Id _id;
-  dynamic _parent;
   List<EnumValue> _values = [];
   String _name;
   String _enumName;
   bool _requiresClass;
 }
+
 // custom <part enum>
 
 /// Create a EnumValue sans new, for more declarative construction

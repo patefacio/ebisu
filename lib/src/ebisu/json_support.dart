@@ -1,5 +1,6 @@
 /// Code pulled in when generated Dart needs to serialize json
 part of ebisu.ebisu;
+
 // custom <part json_support>
 
 /// A function that really is designed to single out those objects whose type is

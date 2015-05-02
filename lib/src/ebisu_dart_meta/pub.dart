@@ -142,15 +142,13 @@ class PolymerTransformer extends PubTransformer {
 }
 
 /// Information for the pubspec of the system
-class PubSpec {
+class PubSpec extends Object with Entity {
   PubSpec(this._id);
 
   /// Id for this pub spec
   Id get id => _id;
   /// Documentation for this pub spec
   String doc;
-  /// Reference to parent of this pub spec
-  dynamic get parent => _parent;
   /// Version for this package
   String version = '0.0.1';
   /// Name of the project described in spec.
@@ -166,7 +164,10 @@ class PubSpec {
 
   // custom <class PubSpec>
 
-  set parent(p) {
+  /// PubSpec has no children
+  Iterable<Entity> get children => new Iterable<Entity>.generate(0);
+
+  onOwnershipEstablished() {
     if (author == null && Platform.environment['EBISU_AUTHOR'] != null) {
       author = Platform.environment['EBISU_AUTHOR'];
     }
@@ -176,7 +177,6 @@ class PubSpec {
     }
 
     if (name == null) name = _id.snake;
-    _parent = p;
   }
 
   void addTransformer(PubTransformer transformer) =>
@@ -249,7 +249,7 @@ ${pubTransformers.map((t) => t.yamlEntry).join()}''';
   // end <class PubSpec>
 
   Id _id;
-  dynamic _parent;
 }
+
 // custom <part pub>
 // end <part pub>

@@ -3,6 +3,7 @@ part of ebisu.ebisu;
 
 // custom <part ebisu_variables>
 // end <part ebisu_variables>
+
 /// Path to this package - for use until this becomes a pub package
 final String ebisuPath = Platform.environment['EBISU_PATH'];
 /// Author of the generated code

@@ -1,10 +1,10 @@
-library ebisu.test.test_entity;
+library ebisu.test_entity;
 
-import 'package:args/args.dart';
 import 'package:ebisu/ebisu.dart';
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
+import 'package:args/args.dart';
 // custom <additional imports>
 // end <additional imports>
 
@@ -115,7 +115,8 @@ main([List<String> args]) {
 
     root.owner = null;
 
-    _logger.info(brCompact(root.progeny.map((e) => '${e.runtimeType}::${e.id}')));
+    _logger
+        .info(brCompact(root.progeny.map((e) => '${e.runtimeType}::${e.id}')));
 
     test('progeny finds all', () {
       expect(root.progeny.length, 9);
@@ -149,10 +150,9 @@ main([List<String> args]) {
       final gc2Id = idFromString('gc2');
       final ggc23Id = idFromString('ggc23');
 
-      expect(gcc23.entityPathIds, [ c1Id, gc2Id, ggc23Id ]);
+      expect(gcc23.entityPathIds, [c1Id, gc2Id, ggc23Id]);
       expect(chomp(gcc23.detailedPath),
-        '(ChildEntity:c1), (GrandchildEntity:gc2), (GreatGrandchildEntity:ggc23)'
-      );
+          '(ChildEntity:c1), (GrandchildEntity:gc2), (GreatGrandchildEntity:ggc23)');
     });
   });
 

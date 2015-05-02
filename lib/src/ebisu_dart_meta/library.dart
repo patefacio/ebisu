@@ -1,15 +1,13 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart library - a collection of parts
-class Library extends Object with CustomCodeBlock {
+class Library extends Object with CustomCodeBlock, Entity {
   Library(this._id);
 
   /// Id for this library
   Id get id => _id;
   /// Documentation for this library
   String doc;
-  /// Reference to parent of this library
-  dynamic get parent => _parent;
   /// List of imports to be included by this library
   List<String> imports = [];
   /// List of parts in this library
@@ -44,6 +42,9 @@ class Library extends Object with CustomCodeBlock {
 
   // custom <class Library>
 
+  Iterable<Entity> get children =>
+      concat([parts, variables, classes, benchmarks, enums]);
+
   List<Class> get allClasses {
     List<Class> result = new List.from(classes);
     parts.forEach((part) => result.addAll(part.classes));
@@ -55,13 +56,16 @@ class Library extends Object with CustomCodeBlock {
       _isTest = true;
       includesMain = true;
       includesLogger = true;
-      imports.addAll(
-          ['package:unittest/unittest.dart', 'package:args/args.dart',]);
+      imports.addAll([
+        "import 'package:logging/logging.dart';",
+        "import 'package:unittest/unittest.dart';",
+        "import 'package:args/args.dart';",
+      ]);
     }
   }
 
   String get _additionalPathParts {
-    String rootPath = _parent.rootPath == null ? path : _parent.rootPath;
+    String rootPath = root.rootPath;
     List relPath = split(relative(dirname(libStubPath), from: rootPath));
     if (relPath.length > 0 &&
         (relPath.first == '.' || relPath.first == 'lib')) {
@@ -70,14 +74,7 @@ class Library extends Object with CustomCodeBlock {
     return relPath.join('.');
   }
 
-  String get _packageName {
-    var parent = _parent;
-    while (parent != null) {
-      if (parent is System) break;
-      parent = parent.parent;
-    }
-    return parent == null ? '' : parent.id.snake;
-  }
+  String get _packageName => root.id.snake;
 
   String _makeQualifiedName() {
     var pathParts = _additionalPathParts;
@@ -88,16 +85,10 @@ class Library extends Object with CustomCodeBlock {
     return result;
   }
 
-  set parent(p) {
-    _parent = p;
+  onOwnershipEstablished() {
     _name = _id.snake;
     _qualifiedName =
         _qualifiedName == null ? _makeQualifiedName() : _qualifiedName;
-    parts.forEach((part) => part.parent = this);
-    variables.forEach((v) => v.parent = this);
-    enums.forEach((e) => e.parent = this);
-    classes.forEach((c) => c.parent = this);
-    benchmarks.forEach((b) => b.parent = this.parent);
 
     if (allClasses.any((c) => c.hasOpEquals)) {
       imports.add('package:quiver/core.dart');
@@ -115,20 +106,20 @@ class Library extends Object with CustomCodeBlock {
     imports = cleanImports(imports.map((i) => importStatement(i)).toList());
   }
 
-  ensureParent() {
-    if (_parent == null) {
-      parent = system('ignored');
+  ensureOwner() {
+    if (owner == null) {
+      owner = system('ignored');
     }
   }
 
   String get libStubPath => path != null
       ? "${path}/${id.snake}.dart"
       : (isTest
-          ? "${_parent.rootPath}/test/${id.snake}.dart"
-          : "${_parent.rootPath}/lib/${id.snake}.dart");
+          ? "$rootPath/test/${id.snake}.dart"
+          : "$rootPath/lib/${id.snake}.dart");
 
   void generate() {
-    ensureParent();
+    ensureOwner();
     mergeWithDartFile('${_content}\n', libStubPath);
     parts.forEach((part) => part.generate());
     benchmarks.forEach((benchmark) => benchmark.generate());
@@ -136,7 +127,7 @@ class Library extends Object with CustomCodeBlock {
 
   /// Returns a string with all contents concatenated together
   get tar {
-    ensureParent();
+    ensureOwner();
     return combine([_content, parts.map((p) => p._content)]);
   }
 
@@ -258,18 +249,18 @@ $_initLogger${_mainCustomText}
     }
   }
 
-  String get rootPath => _parent.rootPath;
+  String get rootPath => owner.rootPath;
 
   get _defaultAccess => defaultMemberAccess;
 
   // end <class Library>
 
   final Id _id;
-  dynamic _parent;
   String _name;
   String _qualifiedName;
   bool _isTest = false;
   CodeBlock _mainCustomBlock;
 }
+
 // custom <part library>
 // end <part library>

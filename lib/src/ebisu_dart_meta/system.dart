@@ -1,7 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart system (collection of libraries and apps)
-class System {
+class System extends Object with Entity {
 
   /// Id for this system
   Id get id => _id;
@@ -47,6 +47,19 @@ class System {
 
   // custom <class System>
 
+  _dumpChildren() => print('''
+Children on system invoked:
+** Libs **
+ ${brCompact(libraries.map((e) => e.detailedPath))}
+** Test Libs **
+ ${brCompact(testLibraries.map((e) => e.detailedPath))}
+** Done **
+''');
+
+  Iterable<Entity> get children {
+    return concat([scripts, libraries, testLibraries, [pubSpec]]);
+  }
+
   /// Create system from the id
   System(Id id)
       : _id = id,
@@ -60,12 +73,6 @@ class System {
       });
 
       allLibraries = new List.from(libraries)..addAll(testLibraries);
-      allLibraries.forEach((l) => l.parent = this);
-      scripts.forEach((s) => s.parent = this);
-      if (app != null) {
-        app.parent = this;
-      }
-      pubSpec.parent = this;
 
       // Track all classes and enums with json support so the template side can
       // do proper inserts of code. There are classes and enums in the library
@@ -144,6 +151,8 @@ Only "version" and "path" overrides are supported.
 
   /// Generate the code
   void generate({generateHop: true, generateRunner: true}) {
+    owner = null;
+
     if (rootPath == null) rootPath = '.';
 
     if (app != null) {
@@ -343,5 +352,6 @@ main() {
   Id _id;
   bool _finalized = false;
 }
+
 // custom <part system>
 // end <part system>

@@ -148,5 +148,6 @@ class CodeBlock {
 
 /// Create a CodeBlock sans new, for more declarative construction
 CodeBlock codeBlock([String tag]) => new CodeBlock(tag);
+
 // custom <part code_block>
 // end <part code_block>

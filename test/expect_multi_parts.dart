@@ -1,9 +1,10 @@
-library ebisu.test.expect_multi_parts;
+library ebisu.expect_multi_parts;
 
-import 'package:args/args.dart';
-import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'scratch_remove_me/lib/two_parts.dart';
+import 'package:logging/logging.dart';
+import 'package:unittest/unittest.dart';
+import 'package:args/args.dart';
 // custom <additional imports>
 // end <additional imports>
 

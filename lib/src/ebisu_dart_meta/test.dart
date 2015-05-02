@@ -7,5 +7,6 @@ class Test {
   // end <class Test>
 
 }
+
 // custom <part test>
 // end <part test>

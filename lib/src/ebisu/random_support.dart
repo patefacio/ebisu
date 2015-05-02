@@ -1,5 +1,6 @@
 /// Some support for generating random data - sometimes useful for testing
 part of ebisu.ebisu;
+
 // custom <part random_support>
 
 final _sourceChars =

@@ -24,6 +24,7 @@ part 'src/ebisu/random_support.dart';
 part 'src/ebisu/ebisu_variables.dart';
 part 'src/ebisu/json_support.dart';
 part 'src/ebisu/codegen_utils.dart';
+part 'src/ebisu/entity.dart';
 part 'src/ebisu/code_block.dart';
 
 final _logger = new Logger('ebisu');

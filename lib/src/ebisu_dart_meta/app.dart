@@ -1,15 +1,13 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart *web* application. For non-web console app, use Script
-class App extends Object with CustomCodeBlock {
+class App extends Object with CustomCodeBlock, Entity {
   App(this._id);
 
   /// Id for this app
   Id get id => _id;
   /// Documentation for this app
   String doc;
-  /// Reference to parent of this app
-  dynamic get parent => _parent;
   /// Classes defined in this app
   List<Class> classes = [];
   /// List of libraries of this app
@@ -21,19 +19,15 @@ class App extends Object with CustomCodeBlock {
 
   // custom <class App>
 
-  set parent(p) {
-    libraries.forEach((l) => l.parent = this);
-    variables.forEach((v) => v.parent = this);
-    _parent = p;
-  }
+  Iterable<Entity> get children => concat([classes, libraries, variables]);
 
   void generate() {
     classes.forEach((c) => c.generate());
     libraries.forEach((lib) => lib.generate());
-    String appPath = "${_parent.rootPath}/web/${_id.snake}.dart";
-    String appHtmlPath = "${_parent.rootPath}/web/${_id.snake}.html";
-    String appCssPath = "${_parent.rootPath}/web/${_id.snake}.css";
-    String appBuildPath = "${_parent.rootPath}/build.dart";
+    String appPath = "${root.rootPath}/web/${_id.snake}.dart";
+    String appHtmlPath = "${root.rootPath}/web/${_id.snake}.html";
+    String appCssPath = "${root.rootPath}/web/${_id.snake}.css";
+    String appBuildPath = "${root.rootPath}/build.dart";
     mergeWithDartFile(_content, appPath);
     htmlMergeWithFile('''<!DOCTYPE html>
 
@@ -90,7 +84,7 @@ void main() {
   // end <class App>
 
   final Id _id;
-  dynamic _parent;
 }
+
 // custom <part app>
 // end <part app>

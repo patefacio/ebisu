@@ -59,16 +59,15 @@ class ArgType implements Comparable<ArgType> {
     }
   }
 }
+
 /// An agrument to a script
-class ScriptArg {
+class ScriptArg extends Object with Entity {
   ScriptArg(this._id);
 
   /// Id for this script argument
   Id get id => _id;
   /// Documentation for this script argument
   String doc;
-  /// Reference to parent of this script argument
-  dynamic get parent => _parent;
   /// Name of the the arg (emacs naming convention)
   String get name => _name;
   /// If true the argument is required
@@ -89,8 +88,10 @@ class ScriptArg {
 
   // custom <class ScriptArg>
 
-  set parent(p) {
-    _parent = p;
+  /// ScriptArg has no children
+  Iterable<Entity> get children => new Iterable<Entity>.generate(0);
+
+  onOwnershipEstablished() {
     _name = _id.emacs;
   }
 
@@ -106,21 +107,18 @@ class ScriptArg {
   // end <class ScriptArg>
 
   final Id _id;
-  dynamic _parent;
   String _name;
   dynamic _defaultsTo;
 }
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
-class Script extends Object with CustomCodeBlock {
+class Script extends Object with CustomCodeBlock, Entity {
   Script(this._id);
 
   /// Id for this script
   Id get id => _id;
   /// Documentation for this script
   String doc;
-  /// Reference to parent of this script
-  dynamic get parent => _parent;
   /// List of imports to be included by this script
   List<String> imports = [];
   /// Where to create the script.
@@ -138,8 +136,9 @@ class Script extends Object with CustomCodeBlock {
 
   // custom <class Script>
 
-  set parent(p) {
-    _parent = p;
+  Iterable<Entity> get children => concat([args, classes]);
+
+  onOwnershipEstablished() {
     if (!args.any((a) => a.name == 'help')) {
       args.add(new ScriptArg(new Id('help'))
         ..isFlag = true
@@ -154,13 +153,12 @@ Select log level from:
   off, severe, shout, warning ]
 ''');
     }
-    args.forEach((sa) => sa.parent = this);
   }
 
   get nonPositionalArgs => args.where((a) => a.position == null);
 
   get scriptPath =>
-      _scriptPath == null ? join(_parent.rootPath, 'bin') : _scriptPath;
+      _scriptPath == null ? join(root.rootPath, 'bin') : _scriptPath;
 
   void generate() {
     imports.add('dart:io');
@@ -346,8 +344,8 @@ $_processArgs
   // end <class Script>
 
   final Id _id;
-  dynamic _parent;
   String _scriptPath;
 }
+
 // custom <part script>
 // end <part script>

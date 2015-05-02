@@ -106,6 +106,7 @@ class PubDepType implements Comparable<PubDepType> {
     return v == null ? null : values[v];
   }
 }
+
 // custom <part dart_meta>
 
 get IA => Access.IA;
@@ -181,4 +182,5 @@ String importUri(String s) => Library.importUri(s);
 String importStatement(String s) => Library.importStatement(s);
 
 // end <part dart_meta>
+
 RegExp _pubTypeRe = new RegExp(r"(git:|http:|[./.])");

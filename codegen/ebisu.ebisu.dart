@@ -47,12 +47,6 @@ generate() {
     ..type = 'Id'
     ..access = Access.RO;
 
-  Member parent_member(String owner) => member('parent')
-    ..doc = "Reference to parent of this $owner"
-    ..type = 'dynamic'
-    ..isJsonTransient = true
-    ..access = Access.RO;
-
   Library ebisu_dart_meta = library('ebisu_dart_meta')
     ..doc = '''
 
@@ -128,6 +122,7 @@ classes with JSON support.
       ..classes = [
         class_('system')
         ..doc = 'Defines a dart system (collection of libraries and apps)'
+        ..mixins = [ 'Entity' ]
         ..members = [
           non_final_id_member('system'),
           doc_member('system'),
@@ -198,12 +193,11 @@ text to include in the license file.
       part('app')
       ..classes = [
         class_('app')
-        ..mixins = [ 'CustomCodeBlock' ]
+        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
         ..members = [
           id_member('app'),
           doc_member('app'),
-          parent_member('app'),
           member('classes')
           ..doc = 'Classes defined in this app'
           ..type = 'List<Class>'
@@ -225,14 +219,10 @@ text to include in the license file.
       part('benchmark')
       ..classes = [
         class_('benchmark')
+        ..mixins = [ 'Entity' ]
         ..members = [
           id_member('benchmark'),
           doc_member('benchmark'),
-          member('parent')
-          ..doc = "Reference to System parent of this benchmark"
-          ..type = 'System'
-          ..isJsonTransient = true
-          ..access = Access.RO,
           member('classes')
           ..doc = 'Additional classes in the benchmark library'
           ..type = 'List<Class>'
@@ -251,10 +241,10 @@ text to include in the license file.
       ..classes = [
         class_('script_arg')
         ..doc = 'An agrument to a script'
+        ..mixins = [ 'Entity' ]
         ..members = [
           id_member('script argument'),
           doc_member('script argument'),
-          parent_member('script argument'),
           member('name')
           ..doc = 'Name of the the arg (emacs naming convention)'
           ..access = Access.RO,
@@ -287,11 +277,10 @@ text to include in the license file.
         ],
         class_('script')
         ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
-        ..mixins = [ 'CustomCodeBlock' ]
+        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..members = [
           id_member('script'),
           doc_member('script'),
-          parent_member('script'),
           member('imports')
           ..doc = 'List of imports to be included by this script'
           ..type = 'List<String>'
@@ -360,11 +349,11 @@ Set this to false to prevent this
         ],
         class_('pub_spec')
         ..doc = 'Information for the pubspec of the system'
+        ..mixins = [ 'Entity' ]
         ..members = [
           // In general id is final - but here we want json
           id_member('pub spec')..isFinal = false,
           doc_member('pub spec'),
-          parent_member('pub spec'),
           member('version')
           ..doc = 'Version for this package'
           ..classInit = '0.0.1',
@@ -405,11 +394,11 @@ If not set, id of system is used.
 See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 At some point when true enums are provided this may be revisited.
 '''
+        ..mixins = [ 'Entity' ]
         ..members = [
           id_member('enum'),
           doc_member('enum'),
           public_member('enum'),
-          parent_member('enum'),
           member('values')
           ..doc = "List of id's naming the values"
           ..type = 'List<EnumValue>'
@@ -455,10 +444,10 @@ a class is generated instead of the newer and generally preffered enum.
       part('variable')
       ..classes = [
         class_('variable')
+        ..mixins = [ 'Entity' ]
         ..members = [
           id_member('variable'),
           doc_member('variable'),
-          parent_member('variable'),
           public_member('variable'),
           member('type')
           ..doc = 'Type for the variable'
@@ -551,15 +540,11 @@ member('foo')..init = [1,2,3]
           ..classInit = 'false',
         ],
         class_('member')
+        ..mixins = [ 'Entity' ]
         ..doc = 'Metadata associated with a member of a Dart class'
         ..members = [
           id_member('class member'),
           doc_member('class member'),
-          member('parent')
-          ..doc = "Reference to Class parent of this member"
-          ..type = 'Class'
-          ..isJsonTransient = true
-          ..access = Access.RO,
           member('type')
           ..doc = 'Type of the member'
           ..type = 'String'
@@ -737,11 +722,10 @@ Prints:
 
 
 '''
-        ..mixins = [ 'CustomCodeBlock' ]
+        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..members = [
           id_member('Dart class'),
           doc_member('Dart class'),
-          parent_member('Dart class'),
           public_member('Dart class'),
           member('mixins')
           ..doc = 'List of mixins'
@@ -858,12 +842,11 @@ Prints:
       part('library')
       ..classes = [
         class_('library')
-        ..mixins = [ 'CustomCodeBlock' ]
+        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..doc = "Defines a dart library - a collection of parts"
         ..members = [
           id_member('library'),
           doc_member('library'),
-          parent_member('library'),
           member('imports')
           ..doc = 'List of imports to be included by this library'
           ..type = 'List<String>'
@@ -926,12 +909,11 @@ Prints:
       part('part')
       ..classes = [
         class_('part')
-        ..mixins = [ 'CustomCodeBlock' ]
+        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..doc = "Defines a dart part - as in 'part of' source file"
         ..members = [
           id_member('part'),
           doc_member('part'),
-          parent_member('part'),
           member('classes')
           ..doc = 'Classes defined in this part of the library'
           ..type = 'List<Class>'
@@ -1127,6 +1109,37 @@ library/templates, a message like the following will be output:
       ..includesLogger = true,
       library('test_dart_meta')..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = [ 'package:ebisu/ebisu.dart', ],
+      library('test_entity')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ]
+      ..classes = [
+        class_('base')
+        ..members = [
+          member('ownership_count')..classInit = 0,
+        ],
+        class_('root_entity')
+        ..extend = 'Base'
+        ..mixins = [ 'Entity' ]
+        ..members = [
+          member('children')
+          ..type = 'List<ChildEntity>'..classInit = []
+        ],
+        class_('child_entity')
+        ..extend = 'Base'
+        ..mixins = [ 'Entity' ]
+        ..members = [
+          member('grand_children')
+          ..type = 'List<GrandchildEntity>'..classInit = []
+        ],
+        class_('grandchild_entity')
+        ..extend = 'Base'
+        ..mixins = [ 'Entity' ]
+        ..members = [
+          member('great_grand_children')
+          ..type = 'List<GreatGrandchildEntity>'..classInit = []
+        ],
+        class_('great_grandchild_entity')
+        ..extend = 'Base'
+        ..mixins = [ 'Entity' ],
+      ],
       library('test_code_generation')
       ..imports = [
         'package:ebisu/ebisu_dart_meta.dart',
@@ -1246,6 +1259,45 @@ regenerating.
         ..doc = 'Code pulled in when generated Dart needs to serialize json',
         part('codegen_utils')
         ..doc = 'Common functions used in the code-generation process',
+
+        part('entity')
+        ..doc = 'Provides support for mixing in recursive design pattern'
+        ..classes = [
+            ///////////////////
+          class_('identifiable')
+          ..isAbstract = true,
+
+          class_('entity')
+          ..isAbstract = true
+          ..implement = [ 'Identifiable' ]
+          ..doc = '''
+Provides support for mixing in recursive design pattern among various
+*Entities*
+'''
+          ..members = [
+
+            member('descr')
+            ..doc = 'Description of entity',
+            member('owner')
+            ..doc = '''
+The entity containing this entity (e.g. the [Class] containing the [Member]).
+[Installation] is a top level entity and has no owner.
+'''
+            ..access = RO
+            ..type = 'Entity',
+
+            member('entity_path')
+            ..doc = 'Path from root to this entity'
+            ..type = 'List<Entity>'
+            ..access = RO
+            ..classInit = [],
+          ],
+
+            ///////////////////
+        ],
+
+
+
         part('code_block')
         ..doc = '''
 Support for code blocks - markers for custom hand-written or code

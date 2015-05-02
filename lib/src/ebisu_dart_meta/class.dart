@@ -2,6 +2,7 @@ part of ebisu.ebisu_dart_meta;
 
 /// When serializing json, how to name the keys
 enum JsonKeyFormat { camel, capCamel, snake }
+
 /// Metadata associated with a constructor
 class Ctor extends Object with CustomCodeBlock {
 
@@ -132,15 +133,13 @@ ${formatFill(decl)})${body}
 }
 
 /// Metadata associated with a member of a Dart class
-class Member {
+class Member extends Object with Entity {
   Member(this._id);
 
   /// Id for this class member
   Id get id => _id;
   /// Documentation for this class member
   String doc;
-  /// Reference to Class parent of this member
-  Class get parent => _parent;
   /// Type of the member
   String type = 'String';
   /// Access level supported for this member
@@ -183,13 +182,16 @@ class Member {
 
   // custom <class Member>
 
+  /// [Member] has no children
+  Iterable<Entity> get children => new Iterable<Entity>.generate(0);
+
   bool get isPublic => access == Access.RW;
 
   bool get isMap => isMapType(type);
   bool get isList => isListType(type);
   bool get isMapOrList => isMap || isList;
 
-  set parent(p) {
+  onOwnershipEstablished() {
     _name = id.camel;
     if (type == 'String' && (classInit != null) && (classInit is! String)) {
       type = '${classInit.runtimeType}';
@@ -197,7 +199,6 @@ class Member {
     }
     if (access == null) access = Access.RW;
     _varName = isPublic ? _name : "_$_name";
-    _parent = p;
   }
 
   bool get hasGetter => !isPublic && access == RO;
@@ -210,8 +211,8 @@ class Member {
   String get observableDecl => isObservable ? '@observable ' : '';
   String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreClassInit =>
-      _parent.nonTransientMembers.every((m) => m.isFinal) &&
-          _parent.hasCourtesyCtor &&
+      (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
+          (owner as Class).hasCourtesyCtor &&
           !isJsonTransient;
 
   String get decl => (_ignoreClassInit || classInit == null)
@@ -245,7 +246,6 @@ class Member {
   // end <class Member>
 
   final Id _id;
-  Class _parent;
   String _name;
   String _varName;
 }
@@ -357,15 +357,13 @@ class Member {
 ///
 ///
 ///
-class Class extends Object with CustomCodeBlock {
+class Class extends Object with CustomCodeBlock, Entity {
   Class(this._id);
 
   /// Id for this Dart class
   Id get id => _id;
   /// Documentation for this Dart class
   String doc;
-  /// Reference to parent of this Dart class
-  dynamic get parent => _parent;
   /// True if Dart class is public.
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
@@ -431,8 +429,11 @@ class Class extends Object with CustomCodeBlock {
 
   // custom <class Class>
 
-  bool get hasCtorSansNew =>
-      _hasCtorSansNew == null ? _parent.hasCtorSansNew : _hasCtorSansNew;
+  Iterable<Entity> get children => concat([members]);
+
+  bool get hasCtorSansNew => _hasCtorSansNew == null
+      ? ((owner is Library) ? (owner as Library).hasCtorSansNew : false)
+      : _hasCtorSansNew;
 
   bool get hasJsonSupport =>
       _hasJsonSupport || hasJsonToString || jsonKeyFormat != null;
@@ -621,15 +622,16 @@ int compareTo($otherType other) {
   }
 
   get defaultMemberAccess => _defaultMemberAccess == null
-      ? (_parent == null ? null : _parent.defaultMemberAccess)
+      ? (owner != null && owner is Class)
+          ? (owner as Class).defaultMemberAccess
+          : null
       : _defaultMemberAccess;
 
   setDefaultMemberAccess(Member m) {
     if (m.access == null) m.access = defaultMemberAccess;
   }
 
-  set parent(p) {
-    _parent = p;
+  onOwnershipEstablished() {
     _name = id.capCamel;
     _className = isPublic ? _name : "_$_name";
     _ctors.clear();
@@ -678,7 +680,7 @@ int compareTo($otherType other) {
     members.forEach((m) {
       setDefaultMemberAccess(m);
 
-      m.parent = this;
+      m.owner = this;
 
       makeCtorName(ctorName) {
         if (ctorName == '') return '';
@@ -692,7 +694,7 @@ int compareTo($otherType other) {
 
       m.ctors.forEach((ctorName) {
         ctorName = makeCtorName(ctorName);
-        Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
+        ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
@@ -701,7 +703,7 @@ int compareTo($otherType other) {
       });
       m.ctorsOpt.forEach((ctorName) {
         ctorName = makeCtorName(ctorName);
-        Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
+        ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
@@ -710,7 +712,7 @@ int compareTo($otherType other) {
       });
       m.ctorsNamed.forEach((ctorName) {
         ctorName = makeCtorName(ctorName);
-        Ctor ctor = _ctors.putIfAbsent(ctorName, () => new Ctor())
+        _ctors.putIfAbsent(ctorName, () => new Ctor())
           ..name = ctorName
           ..hasCustom = ctorCustoms.contains(ctorName)
           ..isConst = ctorConst.contains(ctorName)
@@ -769,15 +771,12 @@ int compareTo($otherType other) {
     return source;
   }
 
-  static String _stringCheck(String type, String source) =>
-      type == 'String' ? source : '$type.fromString($source)';
-
   String _fromJsonMapMember(Member member, [String source = 'jsonMap']) {
     String result;
     var lhs = '${member.varName}';
     var key = '"${_formattedMember(member)}"';
     var value = '$source[$key]';
-    String rhs;
+
     if (isClassJsonable(member.type)) {
       result = '$lhs = ${member.type}.fromJson($value)';
     } else {
@@ -831,7 +830,7 @@ ${
   get definition => define();
 
   String define() {
-    if (parent == null) parent = library('stub');
+    if (owner == null) owner = library('stub');
     return _content;
   }
 
@@ -980,7 +979,6 @@ ${className}Builder._copyImpl(${className} _) :
   // end <class Class>
 
   final Id _id;
-  dynamic _parent;
   Access _defaultMemberAccess;
   Map<String, Ctor> _ctors = {};
   bool _hasJsonSupport = false;
@@ -988,6 +986,7 @@ ${className}Builder._copyImpl(${className} _) :
   String _name;
   String _className;
 }
+
 // custom <part class>
 
 final snake = JsonKeyFormat.snake;

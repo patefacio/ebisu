@@ -16,6 +16,7 @@ void main(List<String> args) {
   addTask('analyze_test', createAnalyzerTask([
     "test/test_dart_meta.dart",
     "test/test_functions.dart",
+    "test/test_entity.dart",
     "test/test_code_generation.dart"
   ]));
 

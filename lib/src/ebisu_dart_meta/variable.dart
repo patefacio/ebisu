@@ -1,14 +1,12 @@
 part of ebisu.ebisu_dart_meta;
 
-class Variable {
+class Variable extends Object with Entity {
   Variable(this._id);
 
   /// Id for this variable
   Id get id => _id;
   /// Documentation for this variable
   String doc;
-  /// Reference to parent of this variable
-  dynamic get parent => _parent;
   /// True if variable is public.
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
@@ -48,7 +46,9 @@ class Variable {
 
   // custom <class Variable>
 
-  void set parent(p) {
+  Iterable<Entity> get children => new Iterable<Entity>.generate(0);
+
+  onOwnershipEstablished() {
     _name = id.camel;
     _varName = isPublic ? _name : "_${_name}";
     if (type == null) {
@@ -59,8 +59,6 @@ class Variable {
         type = 'String';
       }
     }
-
-    _parent = p;
   }
 
   String define() => _content;
@@ -78,9 +76,9 @@ class Variable {
   // end <class Variable>
 
   final Id _id;
-  dynamic _parent;
   String _name;
   String _varName;
 }
+
 // custom <part variable>
 // end <part variable>

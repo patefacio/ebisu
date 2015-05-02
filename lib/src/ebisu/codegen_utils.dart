@@ -1,5 +1,6 @@
 /// Common functions used in the code-generation process
 part of ebisu.ebisu;
+
 // custom <part codegen_utils>
 
 /// Return a new string with [text] wrapped in `/*...*/` comment block
