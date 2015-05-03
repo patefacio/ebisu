@@ -125,7 +125,6 @@ classes with JSON support.
         ..mixins = [ 'Entity' ]
         ..members = [
           non_final_id_member('system'),
-          doc_member('system'),
           member('root_path')
           ..doc = 'Path to which code is generated',
           member('scripts')
@@ -197,7 +196,6 @@ text to include in the license file.
         ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
         ..members = [
           id_member('app'),
-          doc_member('app'),
           member('classes')
           ..doc = 'Classes defined in this app'
           ..type = 'List<Class>'
@@ -222,7 +220,6 @@ text to include in the license file.
         ..mixins = [ 'Entity' ]
         ..members = [
           id_member('benchmark'),
-          doc_member('benchmark'),
           member('classes')
           ..doc = 'Additional classes in the benchmark library'
           ..type = 'List<Class>'
@@ -244,7 +241,6 @@ text to include in the license file.
         ..mixins = [ 'Entity' ]
         ..members = [
           id_member('script argument'),
-          doc_member('script argument'),
           member('name')
           ..doc = 'Name of the the arg (emacs naming convention)'
           ..access = Access.RO,
@@ -280,7 +276,6 @@ text to include in the license file.
         ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..members = [
           id_member('script'),
-          doc_member('script'),
           member('imports')
           ..doc = 'List of imports to be included by this script'
           ..type = 'List<String>'
@@ -353,7 +348,6 @@ Set this to false to prevent this
         ..members = [
           // In general id is final - but here we want json
           id_member('pub spec')..isFinal = false,
-          doc_member('pub spec'),
           member('version')
           ..doc = 'Version for this package'
           ..classInit = '0.0.1',
@@ -397,7 +391,6 @@ At some point when true enums are provided this may be revisited.
         ..mixins = [ 'Entity' ]
         ..members = [
           id_member('enum'),
-          doc_member('enum'),
           public_member('enum'),
           member('values')
           ..doc = "List of id's naming the values"
@@ -447,7 +440,6 @@ a class is generated instead of the newer and generally preffered enum.
         ..mixins = [ 'Entity' ]
         ..members = [
           id_member('variable'),
-          doc_member('variable'),
           public_member('variable'),
           member('type')
           ..doc = 'Type for the variable'
@@ -544,7 +536,6 @@ member('foo')..init = [1,2,3]
         ..doc = 'Metadata associated with a member of a Dart class'
         ..members = [
           id_member('class member'),
-          doc_member('class member'),
           member('type')
           ..doc = 'Type of the member'
           ..type = 'String'
@@ -725,7 +716,6 @@ Prints:
         ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..members = [
           id_member('Dart class'),
-          doc_member('Dart class'),
           public_member('Dart class'),
           member('mixins')
           ..doc = 'List of mixins'
@@ -785,7 +775,10 @@ Prints:
           ..type = 'bool'
           ..classInit = 'false',
           member('has_courtesy_ctor')
-          ..doc = "If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)"
+          ..doc = """
+If true adds '..ctors[''] to all members (i.e. ensures generation of
+empty ctor with all members passed as arguments)
+          """
           ..type = 'bool'
           ..classInit = 'false',
           member('all_members_final')
@@ -846,7 +839,6 @@ Prints:
         ..doc = "Defines a dart library - a collection of parts"
         ..members = [
           id_member('library'),
-          doc_member('library'),
           member('imports')
           ..doc = 'List of imports to be included by this library'
           ..type = 'List<String>'
@@ -913,7 +905,6 @@ Prints:
         ..doc = "Defines a dart part - as in 'part of' source file"
         ..members = [
           id_member('part'),
-          doc_member('part'),
           member('classes')
           ..doc = 'Classes defined in this part of the library'
           ..type = 'List<Class>'
@@ -1270,18 +1261,28 @@ regenerating.
           class_('entity')
           ..isAbstract = true
           ..implement = [ 'Identifiable' ]
+          ..brief = 'Used to track composition hierarchy of named entities'
           ..doc = '''
 Provides support for mixing in recursive design pattern among various
 *Entities*
 '''
           ..members = [
 
+            member('brief')
+            ..brief = 'Brief description for the entity.'
+            ..doc = '''
+These items support both a brief comment ([brief]) and a more
+descriptive comment [descr]
+''',
+
             member('descr')
-            ..doc = 'Description of entity',
+            ..brief = 'Description of entity',
+
             member('owner')
+            ..brief = 'Owner of this [Entity]'
             ..doc = '''
 The entity containing this entity (e.g. the [Class] containing the [Member]).
-[Installation] is a top level entity and has no owner.
+The top level entity and has the value *null* since it has no owner.
 '''
             ..access = RO
             ..type = 'Entity',

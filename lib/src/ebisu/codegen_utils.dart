@@ -22,6 +22,8 @@ String docComment(String text, [String indent = ' ']) {
   return "///$indent$guts";
 }
 
+final dartComment = docComment;
+
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
   return block == null

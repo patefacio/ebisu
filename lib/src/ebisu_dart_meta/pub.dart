@@ -1,16 +1,21 @@
 part of ebisu.ebisu_dart_meta;
 
 /// A dependency of the system
+///
 class PubDependency {
   PubDependency(this.name);
 
   /// Name of dependency
+  ///
   String name;
   /// Required version for this dependency
+  ///
   String version = 'any';
   /// Path to package, infers package type for git (git:...), hosted (http:...), path
+  ///
   String path;
   /// Git reference
+  ///
   String gitRef;
 
   // custom <class PubDependency>
@@ -101,10 +106,12 @@ class PubDependency {
 }
 
 /// Entry in the transformer sections
+///
 abstract class PubTransformer {
   PubTransformer(this.name);
 
   /// Name of transformer
+  ///
   String name;
 
   // custom <class PubTransformer>
@@ -116,9 +123,11 @@ abstract class PubTransformer {
 }
 
 /// A polymer transformer entry
+///
 class PolymerTransformer extends PubTransformer {
 
   /// List of entry points
+  ///
   List<String> entryPoints;
 
   // custom <class PolymerTransformer>
@@ -142,21 +151,25 @@ class PolymerTransformer extends PubTransformer {
 }
 
 /// Information for the pubspec of the system
+///
 class PubSpec extends Object with Entity {
   PubSpec(this._id);
 
   /// Id for this pub spec
+  ///
   Id get id => _id;
-  /// Documentation for this pub spec
-  String doc;
   /// Version for this package
+  ///
   String version = '0.0.1';
   /// Name of the project described in spec.
   /// If not set, id of system is used.
+  ///
   String name;
   /// Author of the pub package
+  ///
   String author;
   /// Homepage of the pub package
+  ///
   String homepage;
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];

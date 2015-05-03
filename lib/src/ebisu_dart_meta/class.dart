@@ -4,23 +4,32 @@ part of ebisu.ebisu_dart_meta;
 enum JsonKeyFormat { camel, capCamel, snake }
 
 /// Metadata associated with a constructor
+///
 class Ctor extends Object with CustomCodeBlock {
 
   /// Name of the class of this ctor.
+  ///
   String className;
   /// Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()
+  ///
   String name;
   /// List of members initialized in this ctor
+  ///
   List<Member> members = [];
   /// List of optional members initialized in this ctor (i.e. those in [])
+  ///
   List<Member> optMembers = [];
   /// List of optional members initialized in this ctor (i.e. those in {})
+  ///
   List<Member> namedMembers = [];
   /// If true includes custom block for additional user supplied ctor code
+  ///
   bool hasCustom = false;
   /// True if the variable is const
+  ///
   bool isConst = false;
   /// If true implementation is `=> _init()`
+  ///
   bool callsInit = false;
 
   // custom <class Ctor>
@@ -133,16 +142,18 @@ ${formatFill(decl)})${body}
 }
 
 /// Metadata associated with a member of a Dart class
+///
 class Member extends Object with Entity {
   Member(this._id);
 
   /// Id for this class member
+  ///
   Id get id => _id;
-  /// Documentation for this class member
-  String doc;
   /// Type of the member
+  ///
   String type = 'String';
   /// Access level supported for this member
+  ///
   Access access;
   /// If provided the member will be initialized with value.
   /// The type of the member can be inferred from the type
@@ -153,31 +164,44 @@ class Member extends Object with Entity {
   /// and the type of member is String (which is default)
   /// the type of member will be set to
   /// classInit.runtimeType.
+  ///
   dynamic classInit;
   /// If provided the member will be initialized to this
   /// text in generated ctor initializers
+  ///
   String ctorInit;
   /// List of ctor names to include this member in
+  ///
   List<String> ctors = [];
   /// List of ctor names to include this member in as optional parameter
+  ///
   List<String> ctorsOpt = [];
   /// List of ctor names to include this member in as named optional parameter
+  ///
   List<String> ctorsNamed = [];
   /// True if the member is final
+  ///
   bool isFinal = false;
   /// True if the member is const
+  ///
   bool isConst = false;
   /// True if the member is static
+  ///
   bool isStatic = false;
   /// True if the member should not be serialized if the parent class has hasJsonSupport
+  ///
   bool isJsonTransient = false;
   /// If true annotated with observable
+  ///
   bool isObservable = false;
   /// If true and member is in class that is comparable, it will be included in compareTo method
+  ///
   bool isInComparable = true;
   /// Name of variable for the member, excluding access prefix (i.e. no '_')
+  ///
   String get name => _name;
   /// Name of variable for the member - varies depending on public/private
+  ///
   String get varName => _varName;
 
   // custom <class Member>
@@ -221,19 +245,24 @@ class Member extends Object with Entity {
           ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};"
           : "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
 
-  String get publicCode {
-    //print("$name has public code");
-    var result = [];
-    if (doc != null) result.add('${docComment(rightTrim(doc))}');
-    if (hasGetter) {
-      result.add('$type get $name => $varName;');
-    }
-    if (hasSetter) {
-      result.add('set $name($type $name) => $varName = $name;');
-    }
-    if (isPublic) result.add(decl);
-    return result.join('\n');
-  }
+  String get publicCode => brCompact([
+    (this as Entity).docComment,
+    hasGetter ? '$type get $name => $varName;' : '',
+    hasSetter ? 'set $name($type $name) => $varName = $name;' : '',
+    isPublic ? decl : ''
+  ]);
+
+  //   var result = [];
+  //   if (doc != null) result.add('${docComment(rightTrim(doc))}');
+  //   if (hasGetter) {
+  //     result.add('$type get $name => $varName;');
+  //   }
+  //   if (hasSetter) {
+  //     result.add('set $name($type $name) => $varName = $name;');
+  //   }
+  //   if (isPublic) result.add(decl);
+  //   return result.join('\n');
+  // }
 
   String get privateCode {
     var result = [];
@@ -355,76 +384,105 @@ class Member extends Object with Entity {
 ///       // end <class A>
 ///     }
 ///
-///
-///
 class Class extends Object with CustomCodeBlock, Entity {
   Class(this._id);
 
   /// Id for this Dart class
+  ///
   Id get id => _id;
-  /// Documentation for this Dart class
-  String doc;
   /// True if Dart class is public.
   /// Code generation support will prefix private variables appropriately
+  ///
   bool isPublic = true;
   /// List of mixins
+  ///
   List<String> mixins = [];
   /// Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin
+  ///
   String extend;
   /// Any implements (NOTE implement not implements)
+  ///
   List<String> implement = [];
   /// Default access for members
+  ///
   set defaultMemberAccess(Access defaultMemberAccess) =>
       _defaultMemberAccess = defaultMemberAccess;
   /// List of members of this class
+  ///
   List<Member> members = [];
   /// List of ctors requiring custom block
+  ///
   List<String> ctorCustoms = [];
   /// List of ctors that should be const
+  ///
   List<String> ctorConst = [];
   /// List of ctors of this class
+  ///
   Map<String, Ctor> get ctors => _ctors;
   /// If true, class is abstract
+  ///
   bool isAbstract = false;
   /// If true, generate toJson/fromJson on all members that are not isJsonTransient
+  ///
   set hasJsonSupport(bool hasJsonSupport) => _hasJsonSupport = hasJsonSupport;
   /// If true, generate randJson function
+  ///
   bool hasRandJson = false;
   /// If true, generate operator== using all members
+  ///
   bool hasOpEquals = false;
   /// If true, implements comparable
+  ///
   bool isComparable = false;
   /// If true, implements comparable with runtimeType check followed by rest
+  ///
   bool isPolymorphicComparable = false;
-  /// If true adds '..ctors[''] to all members (i.e. ensures generation of empty ctor with all members passed as arguments)
+  /// If true adds '..ctors[''] to all members (i.e. ensures generation of
+  /// empty ctor with all members passed as arguments)
+  ///
+  ///
   bool hasCourtesyCtor = false;
   /// If true adds sets all members to final
+  ///
   bool allMembersFinal = false;
   /// If true adds empty default ctor
+  ///
   bool hasDefaultCtor = false;
   /// If true sets allMembersFinal and hasDefaultCtor to true
+  ///
   bool isImmutable = false;
   /// If true creates library functions to construct forwarding to ctors
+  ///
   set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
   /// If true includes a copy function
+  ///
   bool isCopyable = false;
   /// Name of the class - sans any access prefix (i.e. no '_')
+  ///
   String get name => _name;
   /// Name of the class, including access prefix
+  ///
   String get className => _className;
   /// Additional code included in the class near the top
+  ///
   String topInjection;
   /// Additional code included in the class near the bottom
+  ///
   String bottomInjection;
   /// If true includes a ${className}Builder class
+  ///
   bool hasBuilder = false;
   /// If true includes a toString() => prettyJsonMap(toJson())
+  ///
   bool hasJsonToString = false;
   /// If true adds transient hash code and caches the has on first call
+  ///
   bool cacheHash = false;
   /// If true hasCourtesyCtor is `=> _init()`
+  ///
   bool ctorCallsInit = false;
   /// When serializing json, how to format the keys
+  ///
   JsonKeyFormat jsonKeyFormat;
 
   // custom <class Class>
@@ -841,7 +899,7 @@ ${
   bool get _isComparable => isPolymorphicComparable || isComparable;
 
   get _content => br([
-    brCompact([_docComment, _classOpener]),
+    brCompact([(this as Entity).docComment, _classOpener]),
     _orderedCtors,
     _opEquals,
     _comparable,
@@ -860,7 +918,6 @@ ${
     _builderClass,
   ].where((line) => line != ''));
 
-  get _docComment => doc != null ? docComment(doc) : '';
   get _abstractTag => isAbstract ? 'abstract ' : '';
   get _classOpener => '$_classWithExtends${implementsClause}{';
   get _extendClass => (mixins.length > 0 && extend == null) ? 'Object' : extend;

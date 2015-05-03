@@ -11,17 +11,30 @@ abstract class Identifiable {
 
 }
 
+/// Used to track composition hierarchy of named entities
+///
 /// Provides support for mixing in recursive design pattern among various
 /// *Entities*
 ///
 abstract class Entity implements Identifiable {
 
+  /// Brief description for the entity.
+  ///
+  /// These items support both a brief comment ([brief]) and a more
+  /// descriptive comment [descr]
+  ///
+  String brief;
   /// Description of entity
+  ///
   String descr;
+  /// Owner of this [Entity]
+  ///
   /// The entity containing this entity (e.g. the [Class] containing the [Member]).
-  /// [Installation] is a top level entity and has no owner.
+  /// The top level entity and has the value *null* since it has no owner.
+  ///
   Entity get owner => _owner;
   /// Path from root to this entity
+  ///
   List<Entity> get entityPath => _entityPath;
 
   // custom <class Entity>
@@ -31,22 +44,32 @@ abstract class Entity implements Identifiable {
 
   String get briefComment => brief != null ? '//! $brief' : null;
 
-  String get detailedComment => descr != null ? blockComment(descr, ' ') : null;
+  String get docComment {
+    final contents = chomp(br([brief, descr]));
+    if (contents.isNotEmpty) {
+      return dartComment(contents);
+    }
+    return null;
+  }
 
-  String get docComment => combine([briefComment, detailedComment]);
-
+  /// Returns an iterable of ids from root to this item
   Iterable<Id> get entityPathIds => _entityPath.map((e) => e.id);
 
+  /// In order to provide a unique id which may be used as *tag* of custom
+  /// block, this method creates a string of the entire path and uses its
+  /// hashcode
   get uniqueId => entityPathIds.toString().hashCode;
 
   get dottedName => entityPathIds.map((id) => id.snake).join('.');
 
+  /// The path displayed as iterable of *runtimeType:id*
   get detailedPath => brCompact(
       entityPath.map((e) => '(${e.runtimeType}:${e.id.snake})').join(', '));
 
   set doc(String d) => descr = d;
   get doc => descr;
 
+  /// Returns true if this has the brief or more detailed comment
   get hasComment => brief != null || descr != null;
 
   /// Establishes the [Entity] that *this* [Entity] is owned by.

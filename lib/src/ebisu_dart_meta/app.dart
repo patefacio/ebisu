@@ -1,20 +1,24 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart *web* application. For non-web console app, use Script
+///
 class App extends Object with CustomCodeBlock, Entity {
   App(this._id);
 
   /// Id for this app
+  ///
   Id get id => _id;
-  /// Documentation for this app
-  String doc;
   /// Classes defined in this app
+  ///
   List<Class> classes = [];
   /// List of libraries of this app
+  ///
   List<Library> libraries = [];
   /// List of global variables for this library
+  ///
   List<Variable> variables = [];
   /// If true this is a web ui app
+  ///
   bool isWebUi = false;
 
   // custom <class App>

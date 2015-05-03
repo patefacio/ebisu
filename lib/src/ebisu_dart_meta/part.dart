@@ -1,27 +1,34 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart part - as in 'part of' source file
+///
 class Part extends Object with CustomCodeBlock, Entity {
   Part(this._id);
 
   /// Id for this part
+  ///
   Id get id => _id;
-  /// Documentation for this part
-  String doc;
   /// Classes defined in this part of the library
+  ///
   List<Class> classes = [];
   /// Enums defined in this part of the library
+  ///
   List<Enum> enums = [];
   /// Name of the part - for use in naming the part file
+  ///
   String get name => _name;
   /// Path to the generated part dart file
+  ///
   String get filePath => _filePath;
   /// List of global variables in this part
+  ///
   List<Variable> variables = [];
   /// Default access for members
+  ///
   set defaultMemberAccess(Access defaultMemberAccess) =>
       _defaultMemberAccess = defaultMemberAccess;
   /// If true classes will get library functions to construct forwarding to ctors
+  ///
   set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
 
   // custom <class Part>
