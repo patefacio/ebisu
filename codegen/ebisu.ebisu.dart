@@ -1162,7 +1162,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.3.6'
+        ..version = '0.3.7'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

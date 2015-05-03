@@ -116,7 +116,6 @@ abstract class Entity implements Identifiable {
     return result;
   }
 
-
   /// Recursively walks up to root (i.e. Entity with null parent)
   get rootEntity => _owner == null ? this : _owner.root;
 
