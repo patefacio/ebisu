@@ -84,7 +84,7 @@ abstract class Entity implements Identifiable {
         ..add(this);
     }
 
-    _logger.info('Set owner ($id:${runtimeType}) to '
+    _logger.info('SetOwner: ($id:${runtimeType}) to '
         '${newOwner == null? "root" : "(${newOwner.id}:${newOwner.runtimeType})"}');
 
     for (final child in children) {
@@ -116,8 +116,12 @@ abstract class Entity implements Identifiable {
     return result;
   }
 
+
   /// Recursively walks up to root (i.e. Entity with null parent)
-  get root => _owner == null ? this : _owner.root;
+  get rootEntity => _owner == null ? this : _owner.root;
+
+  /// Alias to [rootEntity] - deprecated
+  get root => rootEntity;
 
   // end <class Entity>
 
