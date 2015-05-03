@@ -43,7 +43,6 @@
 /// ability take a simple Altova UML model in XMI format and convert it to Dart
 /// classes with JSON support.
 ///
-///
 library ebisu.ebisu_dart_meta;
 
 import 'dart:convert' as convert;
@@ -53,21 +52,22 @@ import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:quiver/iterables.dart';
+
 // custom <additional imports>
 // end <additional imports>
 
-part 'src/ebisu_dart_meta/test.dart';
-part 'src/ebisu_dart_meta/system.dart';
 part 'src/ebisu_dart_meta/app.dart';
 part 'src/ebisu_dart_meta/benchmark.dart';
-part 'src/ebisu_dart_meta/script.dart';
-part 'src/ebisu_dart_meta/pub.dart';
-part 'src/ebisu_dart_meta/enum.dart';
-part 'src/ebisu_dart_meta/variable.dart';
 part 'src/ebisu_dart_meta/class.dart';
+part 'src/ebisu_dart_meta/dart_meta.dart';
+part 'src/ebisu_dart_meta/enum.dart';
 part 'src/ebisu_dart_meta/library.dart';
 part 'src/ebisu_dart_meta/part.dart';
-part 'src/ebisu_dart_meta/dart_meta.dart';
+part 'src/ebisu_dart_meta/pub.dart';
+part 'src/ebisu_dart_meta/script.dart';
+part 'src/ebisu_dart_meta/system.dart';
+part 'src/ebisu_dart_meta/test.dart';
+part 'src/ebisu_dart_meta/variable.dart';
 
 final _logger = new Logger('ebisu_dart_meta');
 
@@ -82,17 +82,17 @@ List<String> _nonJsonableTypes = [
   'DateTime',
   'dynamic',
 ];
+
 // custom <library ebisu_dart_meta>
 
+/// Returns true if the class name alone indicates the type may be convertible
+/// to json
 bool isClassJsonable(String className) =>
     !_nonJsonableTypes.contains(className) &&
         !className.startsWith('Map<') &&
         !className.startsWith('List<');
 
 /// Given a list of [dirtyImports], cleans them up and removes duplicates
-///
-///
-///
 ///
 List<String> cleanImports(List<String> dirtyImports) {
   List<String> result = [];

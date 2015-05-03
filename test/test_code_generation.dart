@@ -2,14 +2,14 @@ library ebisu.test_code_generation;
 
 import 'dart:async';
 import 'dart:io';
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+import 'package:unittest/unittest.dart';
 import 'package:yaml/yaml.dart';
 import 'setup.dart';
-import 'package:logging/logging.dart';
-import 'package:unittest/unittest.dart';
-import 'package:args/args.dart';
+
 // custom <additional imports>
 // end <additional imports>
 

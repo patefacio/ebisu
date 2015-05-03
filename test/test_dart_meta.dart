@@ -1,11 +1,13 @@
 library ebisu.test_dart_meta;
 
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
-import 'package:args/args.dart';
+
 // custom <additional imports>
 import 'package:ebisu/ebisu.dart';
+
 // end <additional imports>
 
 final _logger = new Logger('test_dart_meta');

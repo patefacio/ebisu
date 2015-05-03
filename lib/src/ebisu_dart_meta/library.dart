@@ -72,9 +72,9 @@ class Library extends Object with CustomCodeBlock, Entity {
       includesMain = true;
       includesLogger = true;
       imports.addAll([
-        "import 'package:logging/logging.dart';",
-        "import 'package:unittest/unittest.dart';",
-        "import 'package:args/args.dart';",
+        'package:logging/logging.dart',
+        'package:unittest/unittest.dart',
+        'package:args/args.dart',
       ]);
     }
   }
@@ -118,10 +118,9 @@ class Library extends Object with CustomCodeBlock, Entity {
     if (includesLogger) {
       imports.add("package:logging/logging.dart");
     }
-    imports = cleanImports(imports.map((i) => importStatement(i)).toList());
   }
 
-  ensureOwner() {
+  _ensureOwner() {
     if (owner == null) {
       owner = system('ignored');
     }
@@ -134,7 +133,7 @@ class Library extends Object with CustomCodeBlock, Entity {
           : "$rootPath/lib/${id.snake}.dart");
 
   void generate() {
-    ensureOwner();
+    _ensureOwner();
     mergeWithDartFile('${_content}\n', libStubPath);
     parts.forEach((part) => part.generate());
     benchmarks.forEach((benchmark) => benchmark.generate());
@@ -142,30 +141,31 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   /// Returns a string with all contents concatenated together
   get tar {
-    ensureOwner();
+    _ensureOwner();
     return combine([_content, parts.map((p) => p._content)]);
   }
 
-  get _content => [
-    _docComment,
-    _libraryStatement,
-    _imports,
+  get _content => br([
+    brCompact([this.docComment, _libraryStatement]),
+    brCompact(_clensedImports),
     _additionalImports,
-    _parts,
+    brCompact(_parts),
     _loggerInit,
     _enums,
     _classes,
     _variables,
     _libraryCustom,
     _libraryMain,
-  ].where((line) => line != '').join('\n');
+  ]);
 
-  get _docComment => doc != null ? docComment(doc) : '';
+  get _clensedImports =>
+      cleanImports(imports.map((i) => importStatement(i)).toList());
   get _libraryStatement => 'library $qualifiedName;\n';
-  get _imports => imports.join('\n');
   get _additionalImports => customBlock('additional imports');
   get _parts => parts.length > 0
-      ? parts.map((p) => "part 'src/$name/${p.name}.dart';\n").join('')
+      ? ([]
+    ..addAll(parts.map((p) => "part 'src/$name/${p.name}.dart';\n"))
+    ..sort())
       : '';
   get _loggerInit =>
       includesLogger ? "final _logger = new Logger('$name');\n" : '';

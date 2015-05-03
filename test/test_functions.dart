@@ -1,11 +1,13 @@
 library ebisu.test_functions;
 
+import 'package:args/args.dart';
 import 'package:ebisu/ebisu.dart';
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
-import 'package:args/args.dart';
+
 // custom <additional imports>
 import 'package:id/id.dart';
+
 // end <additional imports>
 
 final _logger = new Logger('test_functions');
