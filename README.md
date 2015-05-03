@@ -6,7 +6,7 @@ A library supporting code generation of Dart pub packages and many constituent a
 
 [![Build Status](https://drone.io/github.com/patefacio/ebisu/status.png)](https://drone.io/github.com/patefacio/ebisu/latest)
 
-<!--- end <introduction> --->
+<!--- end <introduction> -->
 
 
 # Purpose
@@ -133,7 +133,7 @@ library/templates, a message like the following will be output:
 
 
 <!--- custom <purpose> --->
-<!--- end <purpose> --->
+<!--- end <purpose> -->
 
 
 <!--- custom <body> --->
@@ -230,7 +230,7 @@ referenced by environment variable _EBISU\_PUB\_VERSIONS_ then those
 overrides will take effect and any generated puspecs will have those
 versions if present.
 
-<!--- end <body> --->
+<!--- end <body> -->
 
 
 # Examples
@@ -338,13 +338,13 @@ For example the _pubspec.yaml_ looks something like:
     # end <json_schema dev dependencies>
 
 
-<!--- end <examples> --->
+<!--- end <examples> -->
 
 
 # Todos
 
 - Add examples
 <!--- custom <todos> --->
-<!--- end <todos> --->
+<!--- end <todos> -->
 
 

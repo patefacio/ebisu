@@ -56,7 +56,7 @@ abstract class Entity implements Identifiable {
     onOwnershipEstablished();
 
     if (!isRoot) {
-      _entityPath
+      _entityPath = []
         ..addAll(newOwner.entityPath)
         ..add(this);
     }

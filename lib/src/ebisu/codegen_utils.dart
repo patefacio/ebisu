@@ -116,8 +116,8 @@ bool htmlMergeWithFile(String generated, String destFilePath) {
 const String panDocCustomBegin = r'<!---\s*custom';
 const String panDocCustomEnd = r'<!---\s*end';
 const String panDocCustomBlockText = '''
-<!--- custom <TAG> --->
-<!--- end <TAG> --->
+<!--- custom <TAG> -->
+<!--- end <TAG> -->
 ''';
 String panDocCustomBlock(String tag) {
   return panDocCustomBlockText.replaceAll('TAG', tag);
