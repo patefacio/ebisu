@@ -275,8 +275,8 @@ String mergeWithContents(String generated, String currentText,
   Map<String, String> captures = {};
   Map<String, String> empties = {};
 
-  RegExp block = new RegExp('\\n?[^\\S\\n]*?${beginProtect}' // Look for begin
-      '\\s+<(.*?)>(?:.|\\n)*?' // Eat - non-greedy
+  RegExp block = new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+      '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
       '${endProtect}\\s+<\\1>', // Require matching end
       multiLine: true);
 
