@@ -72,7 +72,7 @@ class Variable extends Object with Entity {
 
   get _content => [_docComment, _init].where((line) => line != '').join('\n');
 
-  get _docComment => (doc != null) ? rightTrim(docComment(doc)) : '';
+  get _docComment => (doc != null) ? rightTrim(dartComment(doc)) : '';
   get _const => isConst ? 'const ' : '';
   get _final => isFinal ? 'final ' : '';
   get _uninitialized => '$type $varName;';

@@ -113,11 +113,6 @@ classes with JSON support.
     ]
     ..includesLogger = true
     ..parts = [
-      part('test')
-      ..classes = [
-        class_('test')
-        ..doc = 'A test generated in a standard format',
-      ],
       part('system')
       ..classes = [
         class_('system')
@@ -156,8 +151,7 @@ classes with JSON support.
           member('finalized')
           ..doc = 'Set to true on finalize'
           ..access = Access.RO
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('generates_pub_spec')
           ..doc = 'If true generate a pubspec.xml file'
           ..type = 'bool'
@@ -173,8 +167,7 @@ text to include in the license file.
 ''',
           member('includes_readme')
           ..doc = 'If true standard outline for readme provided'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('introduction')
           ..doc = 'A brief introduction for this system, included in README.md',
           member('purpose')
@@ -185,8 +178,17 @@ text to include in the license file.
           ..classInit = '[]',
           member('includes_hop')
           ..doc = 'If true generates tool folder with hop_runner'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
+          member('prefer_test_package')
+          ..doc = '''
+*unittest* became *test* => https://plus.google.com/+KevinMoore314/posts/7YwEtwh2ktc
+
+Set this to true to
+  import *package/test/test.dart*
+instead of
+  *package:unittest/unittest.dart*
+'''
+          ..classInit = false
         ],
       ],
       part('app')
@@ -210,8 +212,7 @@ text to include in the license file.
           ..classInit = '[]',
           member('is_web_ui')
           ..doc = 'If true this is a web ui app'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
         ],
       ],
       part('benchmark')
@@ -246,16 +247,13 @@ text to include in the license file.
           ..access = Access.RO,
           member('is_required')
           ..doc = 'If true the argument is required'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_flag')
           ..doc = 'If true this argument is a boolean flag (i.e. no option is required)'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_multiple')
           ..doc = 'If true the argument may be specified mutiple times'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('defaults_to')
           ..doc = 'Used to initialize the value in case not set'
           ..type = 'dynamic'
@@ -399,12 +397,10 @@ At some point when true enums are provided this may be revisited.
           ..classInit = '[]',
           member('has_json_support')
           ..doc = "If true, generate toJson/fromJson on wrapper class"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_rand_json')
           ..doc = "If true, generate randJson"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('name')
           ..doc = "Name of the enum class generated sans access prefix"
           ..access = Access.RO,
@@ -413,16 +409,13 @@ At some point when true enums are provided this may be revisited.
           ..access = Access.RO,
           member('has_custom')
           ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_library_scoped_values')
           ..doc = 'If true scopes the enum values to library by assigning to var outside class'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_snake_string')
           ..doc = 'If true string value for each entry is snake case (default is shout)'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('requires_class')
           ..doc = '''
 Before true enum support enums were emulated with a class containing static
@@ -471,16 +464,13 @@ member('foo')..init = [1,2,3]
           ..type = 'dynamic',
           member('is_final')
           ..doc = 'True if the variable is final'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_const')
           ..doc = 'True if the variable is const'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_static')
           ..doc = 'True if the variable is static'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('name')
           ..doc = "Name of the enum class generated sans access prefix"
           ..access = Access.RO,
@@ -520,16 +510,13 @@ member('foo')..init = [1,2,3]
           ..classInit = '[]',
           member('has_custom')
           ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_const')
           ..doc = 'True if the variable is const'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('calls_init')
           ..doc = 'If true implementation is `=> _init()`'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
         ],
         class_('member')
         ..mixins = [ 'Entity' ]
@@ -575,24 +562,19 @@ text in generated ctor initializers''',
           ..classInit = '[]',
           member('is_final')
           ..doc = 'True if the member is final'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_const')
           ..doc = 'True if the member is const'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_static')
           ..doc = 'True if the member is static'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_json_transient')
           ..doc = 'True if the member should not be serialized if the parent class has hasJsonSupport'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_observable')
           ..doc = 'If true annotated with observable'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_in_comparable')
           ..doc = 'If true and member is in class that is comparable, it will be included in compareTo method'
           ..type = 'bool'
@@ -751,56 +733,45 @@ Prints:
           ..access = Access.RO,
           member('is_abstract')
           ..doc = "If true, class is abstract"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_json_support')
           ..doc = "If true, generate toJson/fromJson on all members that are not isJsonTransient"
-          ..type = 'bool'
           ..access = WO
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_rand_json')
           ..doc = "If true, generate randJson function"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_op_equals')
           ..doc = "If true, generate operator== using all members"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_comparable')
           ..doc = "If true, implements comparable"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_polymorphic_comparable')
           ..doc = "If true, implements comparable with runtimeType check followed by rest"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_courtesy_ctor')
           ..doc = """
 If true adds '..ctors[''] to all members (i.e. ensures generation of
 empty ctor with all members passed as arguments)
           """
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('all_members_final')
           ..doc = "If true adds sets all members to final"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_default_ctor')
           ..doc = "If true adds empty default ctor"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_immutable')
           ..doc = "If true sets allMembersFinal and hasDefaultCtor to true"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_ctor_sans_new')
           ..doc = "If true creates library functions to construct forwarding to ctors"
           ..type = 'bool'
           ..access = WO,
           member('is_copyable')
           ..doc = "If true includes a copy function"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('name')
           ..doc = "Name of the class - sans any access prefix (i.e. no '_')"
           ..access = Access.RO,
@@ -813,20 +784,16 @@ empty ctor with all members passed as arguments)
           ..doc = 'Additional code included in the class near the bottom',
           member('has_builder')
           ..doc = r"If true includes a ${className}Builder class"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('has_json_to_string')
           ..doc = "If true includes a toString() => prettyJsonMap(toJson())"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('cache_hash')
           ..doc = "If true adds transient hash code and caches the has on first call"
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('ctor_calls_init')
           ..doc = 'If true hasCourtesyCtor is `=> _init()`'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('json_key_format')
           ..doc = 'When serializing json, how to format the keys'
           ..type = 'JsonKeyFormat',
@@ -871,13 +838,11 @@ empty ctor with all members passed as arguments)
           ..access = Access.RO,
           member('includes_logger')
           ..doc = 'If true includes logging support and a _logger'
-          ..type = 'bool'
-          ..classInit = 'false',
+          ..classInit = false,
           member('is_test')
           ..doc = 'If true this library is a test library to appear in test folder'
-          ..type = 'bool'
           ..access = Access.RO
-          ..classInit = 'false',
+          ..classInit = false,
 
           member('main_custom_block')
           ..doc = 'Code block inside main for custom code'
@@ -1162,7 +1127,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.3.7'
+        ..version = '0.4.0'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

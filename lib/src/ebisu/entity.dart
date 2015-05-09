@@ -76,7 +76,7 @@ abstract class Entity implements Identifiable {
   set owner(Entity newOwner) {
     bool isRoot = newOwner == null;
 
-    if(_owner != null) {
+    if (_owner != null) {
       _logger.severe('Owner being set when already has value ${_owner.id}');
     }
 

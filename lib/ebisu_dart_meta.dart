@@ -66,7 +66,6 @@ part 'src/ebisu_dart_meta/part.dart';
 part 'src/ebisu_dart_meta/pub.dart';
 part 'src/ebisu_dart_meta/script.dart';
 part 'src/ebisu_dart_meta/system.dart';
-part 'src/ebisu_dart_meta/test.dart';
 part 'src/ebisu_dart_meta/variable.dart';
 
 final _logger = new Logger('ebisu_dart_meta');

@@ -56,7 +56,7 @@ class Part extends Object with CustomCodeBlock, Entity {
       _hasCtorSansNew == null ? owner.hasCtorSansNew : _hasCtorSansNew;
 
   get _content => br([
-    brCompact([doc != null ? docComment(chomp(doc)) : null, _part]),
+    brCompact([doc != null ? dartComment(chomp(doc)) : null, _part]),
     brCompact(_enums),
     brCompact(_classes),
     _custom,

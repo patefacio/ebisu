@@ -13,7 +13,7 @@ String scriptComment(String text, [String indent = '   ']) =>
     ['#$indent', text.split('\n').join('\n#$indent')].join();
 
 /// Return a new string with [text] wrapped in `///` doc comment block
-String docComment(String text, [String indent = ' ']) {
+String tripleSlashComment(String text, [String indent = ' ']) {
   String guts = text
       .split('\n')
       .join("\n///$indent")
@@ -22,7 +22,7 @@ String docComment(String text, [String indent = ' ']) {
   return "///$indent$guts";
 }
 
-final dartComment = docComment;
+final dartComment = tripleSlashComment;
 
 /// Return a new string with each line [block] indented by [indent]
 String indentBlock(String block, [String indent = '  ']) {
@@ -275,7 +275,8 @@ String mergeWithContents(String generated, String currentText,
   Map<String, String> captures = {};
   Map<String, String> empties = {};
 
-  RegExp block = new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+  RegExp block = new RegExp(
+      '\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
       '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
       '${endProtect}\\s+<\\1>', // Require matching end
       multiLine: true);

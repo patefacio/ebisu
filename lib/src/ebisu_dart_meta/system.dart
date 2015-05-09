@@ -60,6 +60,14 @@ class System extends Object with Entity {
   /// If true generates tool folder with hop_runner
   ///
   bool includesHop = false;
+  /// *unittest* became *test* => https://plus.google.com/+KevinMoore314/posts/7YwEtwh2ktc
+  ///
+  /// Set this to true to
+  ///   import *package/test/test.dart*
+  /// instead of
+  ///   *package:unittest/unittest.dart*
+  ///
+  bool preferTestPackage = false;
 
   // custom <class System>
 

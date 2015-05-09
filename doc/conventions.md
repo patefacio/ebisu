@@ -3,7 +3,7 @@
 
 One of the goals of this setup for code generation is to make it as
 declarative as possible. To that end, there is a push for
-fluidity. Dart cascades are excelletn for this. However, there are
+fluidity. Dart cascades are excellent for this. However, there are
 some times where a little extra coding will add to the
 fluidity. Consider:
 
@@ -22,7 +22,7 @@ fluidity. Consider:
       ];
 
 There is not an easy way to start a sub-cascade chain, so that there
-is not repitition of the calls to *getCodeBlock*. This is the purpose
+is not repetition of the calls to *getCodeBlock*. This is the purpose
 of the *with...(...)* convention. In this case class has a
 *withCustomBlock* method which simply returns the initialized instance
 of the desired custom block.

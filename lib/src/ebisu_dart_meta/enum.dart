@@ -17,10 +17,19 @@ class EnumValue {
 
   // custom <class EnumValue>
 
+  /// Returns the [Id] for this enum as snake case
   get snake => _id.snake;
+
+  /// Returns the [Id] for this enum as camel case
   get camel => _id.camel;
+
+  /// Returns the [Id] for this enum as cap camel case
   get capCamel => _id.capCamel;
+
+  /// Returns the [Id] for this enum as emacs case
   get emacs => _id.emacs;
+
+  /// Returns the [Id] for this enum as shout
   get shout => _id.shout;
 
   toString() => 'EV($_id => $value)';
@@ -114,7 +123,7 @@ class Enum extends Object with Entity {
 
   String enumValueEntry(EnumValue v) => v.doc != null
       ? '''
-${indentBlock(docComment(v.doc))}
+${indentBlock(dartComment(v.doc))}
 ${valueId(v)}'''
       : valueId(v);
 
@@ -140,7 +149,7 @@ ${valueId(v)}'''
     ])
   ]);
 
-  get _docComment => doc != null ? docComment(doc) : '';
+  get _docComment => doc != null ? dartComment(doc) : '';
 
   get _enumEntries => values
       .map((v) => 'static const ${valueId(v)} = const $enumName._(${v.value});')
@@ -224,7 +233,7 @@ indentBlock(
 Convenient access to ${enumName}.${valueId(v)} with *${valueId(v)}* see [${enumName}].
 $userComment''';
     return '''
-${chomp(docComment(comment), true)}
+${chomp(dartComment(comment), true)}
 const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
 ''';
   }

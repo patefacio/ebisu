@@ -199,7 +199,7 @@ Select log level from:
   ].where((line) => line != ''));
 
   get _scriptTag => '#!/usr/bin/env dart';
-  get _docComment => doc != null ? '${docComment(doc)}\n' : '';
+  get _docComment => doc != null ? '${dartComment(doc)}\n' : '';
   get _imports => '${imports.join('\n')}\n';
 
   get _argParser => '''

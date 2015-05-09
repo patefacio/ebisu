@@ -73,7 +73,9 @@ class Library extends Object with CustomCodeBlock, Entity {
       includesLogger = true;
       imports.addAll([
         'package:logging/logging.dart',
-        'package:unittest/unittest.dart',
+        ((rootEntity as System).preferTestPackage
+            ? 'package:test/test.dart'
+            : 'package:unittest/unittest.dart'),
         'package:args/args.dart',
       ]);
     }

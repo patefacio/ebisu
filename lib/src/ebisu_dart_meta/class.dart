@@ -252,22 +252,10 @@ class Member extends Object with Entity {
     isPublic ? decl : ''
   ]);
 
-  //   var result = [];
-  //   if (doc != null) result.add('${docComment(rightTrim(doc))}');
-  //   if (hasGetter) {
-  //     result.add('$type get $name => $varName;');
-  //   }
-  //   if (hasSetter) {
-  //     result.add('set $name($type $name) => $varName = $name;');
-  //   }
-  //   if (isPublic) result.add(decl);
-  //   return result.join('\n');
-  // }
-
   String get privateCode {
     var result = [];
     if (doc != null && !hasPublicCode) result
-        .add('${docComment(rightTrim(doc))}');
+        .add('${dartComment(rightTrim(doc))}');
     if (!isPublic) result.add(decl);
     return result.join('\n');
   }
