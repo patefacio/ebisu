@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:ebisu/ebisu.dart';
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 // custom <additional imports>
 // end <additional imports>

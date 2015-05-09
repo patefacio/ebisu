@@ -2,7 +2,7 @@ library ebisu.expect_multi_parts;
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'scratch_remove_me/lib/two_parts.dart';
 
 // custom <additional imports>

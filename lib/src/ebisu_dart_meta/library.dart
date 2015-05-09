@@ -56,9 +56,7 @@ class Library extends Object with CustomCodeBlock, Entity {
       includesLogger = true;
       imports.addAll([
         'package:logging/logging.dart',
-        ((rootEntity as System).preferTestPackage
-            ? 'package:test/test.dart'
-            : 'package:unittest/unittest.dart'),
+        'package:test/test.dart',
         'package:args/args.dart',
       ]);
     }
@@ -226,7 +224,8 @@ $_initLogger${_mainCustomText}
     'mock',
     'scheduled_test',
     'serialization',
-    'unittest'
+    'unittest',
+    'test',
   ]);
 
   static final RegExp _hasQuotes = new RegExp(r'''[\'"]''');

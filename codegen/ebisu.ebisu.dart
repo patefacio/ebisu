@@ -179,16 +179,6 @@ text to include in the license file.
           member('includes_hop')
           ..doc = 'If true generates tool folder with hop_runner'
           ..classInit = false,
-          member('prefer_test_package')
-          ..doc = '''
-*unittest* became *test* => https://plus.google.com/+KevinMoore314/posts/7YwEtwh2ktc
-
-Set this to true to
-  import *package/test/test.dart*
-instead of
-  *package:unittest/unittest.dart*
-'''
-          ..classInit = false
         ],
       ],
       part('app')
@@ -1108,17 +1098,17 @@ library/templates, a message like the following will be output:
       library('expect_basic_class')
       ..imports = [
         'scratch_remove_me/lib/basic_class.dart',
-        'package:unittest/unittest.dart',
+        'package:test/test.dart',
       ],
       library('expect_various_ctors')
       ..imports = [
         'scratch_remove_me/lib/various_ctors.dart',
-        'package:unittest/unittest.dart',
+        'package:test/test.dart',
       ],
       library('expect_multi_parts')
       ..imports = [
         'scratch_remove_me/lib/two_parts.dart',
-        'package:unittest/unittest.dart'
+        'package:test/test.dart'
       ],
     ]
     ..todos = [
@@ -1127,14 +1117,13 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.4.0'
+        ..version = '0.5.0'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
 '''
         ..homepage = 'https://github.com/patefacio/ebisu'
         ..devDependencies = [
-          pubdep('unittest')..version = ">=0.11.5<0.12.0",
         ]
                  )
     ..libraries = [
@@ -1184,7 +1173,7 @@ Variables used by ebisu when generating Dart code.
           ..doc = '''
 File containing default pub versions. Dart code generation at times
 generates code that requires packages. For example, generated
-test cases require unittest, generated code can require logging,
+test cases require *test*, generated code can require logging,
 hop support requries hop. Since the pubspec yaml is generated
 the idea here is to pull the versions of these packages out of
 the code and into a config file. Then to upgrade multiple packages

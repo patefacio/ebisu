@@ -42,13 +42,6 @@ class System extends Object with Entity {
   List<String> todos = [];
   /// If true generates tool folder with hop_runner
   bool includesHop = false;
-  /// *unittest* became *test* => https://plus.google.com/+KevinMoore314/posts/7YwEtwh2ktc
-  ///
-  /// Set this to true to
-  ///   import *package/test/test.dart*
-  /// instead of
-  ///   *package:unittest/unittest.dart*
-  bool preferTestPackage = false;
 
   // custom <class System>
 
@@ -171,8 +164,6 @@ Only "version" and "path" overrides are supported.
 
     pubSpec
       ..addDevDependency(new PubDependency('yaml'))
-      ..addDevDependency(
-          new PubDependency('unittest')..version = '>=0.11.0 < 0.12.0', true)
       ..addDevDependency(new PubDependency('browser'), true);
 
     finalize();
@@ -300,7 +291,7 @@ Future<List<String>> _getLibs() {
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithDartFile('''
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
@@ -328,27 +319,7 @@ ${testLibraries
     }
 
     if (testLibraries.length > 0) {
-      mergeWithDartFile('''
-import 'package:unittest/html_enhanced_config.dart';
-import 'runner.dart' as runner;
-
-main() {
-  useHtmlEnhancedConfiguration();
-  runner.main();
-}
-''', '${rootPath}/test/html_runner.dart');
-
-      mergeWithFile('''
-<html>
-<head>
-  <title>Test Runner</title>
-  <script type="application/dart" src="html_runner.dart"></script>
-  <script src="packages/browser/dart.js"></script>
-</head>
-<body>
-</body>
-</html>
-''', '${rootPath}/test/index.html');
+      /// *TODO* Figure out how html testing works in [test]
     }
   }
 

@@ -6,7 +6,7 @@ import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 import 'setup.dart';
 
@@ -36,7 +36,7 @@ void generateTestLibraries() {
     ..pubSpec.version = pubVersion
     ..pubSpec.homepage = pubHomepage
     ..pubSpec.addDependency(pubdep('quiver'))
-    ..pubSpec.addDevDependency(pubdep('unittest'))
+    ..pubSpec.addDevDependency(pubdep('test'))
     ..libraries = [
       library('basic_class')
         ..imports = ['io', 'async', 'package:path/path.dart',]
@@ -248,8 +248,8 @@ main([List<String> args]) {
           () => expect(yaml['homepage'].trim(), pubHomepage));
       test('pubspec dep quiver',
           () => expect(yaml['dependencies']['quiver'] != null, true));
-      test('pubspec user supplied dev dep unittest',
-          () => expect(yaml['dev_dependencies']['unittest'] != null, true));
+      test('pubspec user supplied dev dep test',
+          () => expect(yaml['dev_dependencies']['test'] != null, true));
     });
     test('.gitignore exists',
         () => expect(exists(join(tempPath, '.gitignore')), true));

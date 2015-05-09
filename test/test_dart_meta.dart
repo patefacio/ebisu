@@ -3,7 +3,7 @@ library ebisu.test_dart_meta;
 import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 // custom <additional imports>
 import 'package:ebisu/ebisu.dart';
@@ -36,8 +36,11 @@ main([List<String> args]) {
       ..mainCustomBlock.snippets.add('// foo')
       ..includesMain = true;
 
-    [l1, l2].forEach((Library l) {
-      expect(l.tar.contains('// foo'), true);
+    test('tar shows contents', () {
+      [l1, l2].forEach((Library l) {
+        expect(l.tar.contains('// foo'), true);
+        //expect(l.tar.contains('// foo'));
+      });
     });
   });
 

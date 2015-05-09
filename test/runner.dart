@@ -1,4 +1,4 @@
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 import 'test_dart_meta.dart' as test_dart_meta;
 import 'test_functions.dart' as test_functions;
