@@ -37,8 +37,11 @@ abstract class Entity implements Identifiable {
   /// All entities must provide iteration on [children] entities
   Iterable<Entity> get children;
 
+  /// Returns the [brief] comment as a comment
   String get briefComment => brief != null ? '//! $brief' : null;
 
+  /// Returns a dart style triple slash comment including the [brief] and
+  /// [descr] (i.e. detailed portion).
   String get docComment {
     final contents = chomp(br([brief, descr]), true);
     if (contents.isNotEmpty) {
@@ -55,13 +58,14 @@ abstract class Entity implements Identifiable {
   /// hashcode
   get uniqueId => entityPathIds.toString().hashCode;
 
-  get dottedName => entityPathIds.map((id) => id.snake).join('.');
-
   /// The path displayed as iterable of *runtimeType:id*
   get detailedPath => brCompact(
       entityPath.map((e) => '(${e.runtimeType}:${e.id.snake})').join(', '));
 
+  /// Sets the detailed portion of the comment (ie [descr]).
   set doc(String d) => descr = d;
+
+  /// Gets the detailed portion of the comment (ie [descr]).
   get doc => descr;
 
   /// Returns true if this has the brief or more detailed comment
@@ -100,6 +104,7 @@ abstract class Entity implements Identifiable {
     ..add(child)
     ..addAll(child.progeny));
 
+  /// Returns all enity ancestors where [predicate] is true
   findAncestorWhere(predicate) => predicate(this)
       ? this
       : owner == null ? owner : owner.findAncestorWhere(predicate);
