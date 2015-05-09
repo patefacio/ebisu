@@ -61,36 +61,26 @@ class ArgType implements Comparable<ArgType> {
 }
 
 /// An agrument to a script
-///
 class ScriptArg extends Object with Entity {
   ScriptArg(this._id);
 
   /// Id for this script argument
-  ///
   Id get id => _id;
   /// Name of the the arg (emacs naming convention)
-  ///
   String get name => _name;
   /// If true the argument is required
-  ///
   bool isRequired = false;
   /// If true this argument is a boolean flag (i.e. no option is required)
-  ///
   bool isFlag = false;
   /// If true the argument may be specified mutiple times
-  ///
   bool isMultiple = false;
   /// Used to initialize the value in case not set
-  ///
   dynamic get defaultsTo => _defaultsTo;
   /// A list of allowed values to choose from
-  ///
   List<String> allowed = [];
   /// If not null - holds the position of a positional (i.e. unnamed) argument
-  ///
   int position;
   /// An abbreviation (single character)
-  ///
   String abbr;
   ArgType type;
 
@@ -120,32 +110,24 @@ class ScriptArg extends Object with Entity {
 }
 
 /// A typical script - (i.e. like a bash/python/ruby script but in dart)
-///
 class Script extends Object with CustomCodeBlock, Entity {
   Script(this._id);
 
   /// Id for this script
-  ///
   Id get id => _id;
   /// List of imports to be included by this script
-  ///
   List<String> imports = [];
   /// Where to create the script.
   /// If not present will be determined by parent [System] rootPath
-  ///
   set scriptPath(String scriptPath) => _scriptPath = scriptPath;
   /// Arguments for this script
-  ///
   List<ScriptArg> args = [];
   /// By default a *log-level* argument will be included in the script.
   /// Set this to false to prevent this
-  ///
   bool noLogLevel = false;
   /// If true makes script main async
-  ///
   bool isAsync = false;
   /// Classes to support this script, included directly in script above main
-  ///
   List<Class> classes = [];
 
   // custom <class Script>

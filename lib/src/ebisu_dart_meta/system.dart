@@ -1,41 +1,29 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart system (collection of libraries and apps)
-///
 class System extends Object with Entity {
 
   /// Id for this system
-  ///
   Id get id => _id;
   /// Path to which code is generated
-  ///
   String rootPath;
   /// Scripts in the system
-  ///
   List<Script> scripts = [];
   /// App for this package
-  ///
   App app;
   /// List of test libraries of this app
-  ///
   List<Library> testLibraries = [];
   /// Libraries in the system
-  ///
   List<Library> libraries = [];
   /// Regular and test libraries
-  ///
   List<Library> allLibraries = [];
   /// Information for the pubspec
-  ///
   PubSpec pubSpec;
   /// Map of all classes with hasJsonSupport true
-  ///
   Map<String, Class> jsonableClasses = {};
   /// Set to true on finalize
-  ///
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file
-  ///
   bool generatesPubSpec = true;
   /// A string indicating the license.
   /// A map of common licenses is looked up and if found a link
@@ -43,22 +31,16 @@ class System extends Object with Entity {
   /// [ 'boost', 'mit', 'apache-2.0', 'bsd-2', 'bsd-3', 'mozilla-2.0' ]
   /// Otherwise the text is assumed to be the
   /// text to include in the license file.
-  ///
   String license;
   /// If true standard outline for readme provided
-  ///
   bool includesReadme = false;
   /// A brief introduction for this system, included in README.md
-  ///
   String introduction;
   /// Purpose for this system, included in README.md
-  ///
   String purpose;
   /// List of todos included in the readme - If any present includesReadme assumed true
-  ///
   List<String> todos = [];
   /// If true generates tool folder with hop_runner
-  ///
   bool includesHop = false;
   /// *unittest* became *test* => https://plus.google.com/+KevinMoore314/posts/7YwEtwh2ktc
   ///
@@ -66,7 +48,6 @@ class System extends Object with Entity {
   ///   import *package/test/test.dart*
   /// instead of
   ///   *package:unittest/unittest.dart*
-  ///
   bool preferTestPackage = false;
 
   // custom <class System>

@@ -42,7 +42,6 @@
 /// which is stored in XML). A simple use that is provided as an extension is the
 /// ability take a simple Altova UML model in XMI format and convert it to Dart
 /// classes with JSON support.
-///
 library ebisu.ebisu_dart_meta;
 
 import 'dart:convert' as convert;

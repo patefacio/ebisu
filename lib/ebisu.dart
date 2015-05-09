@@ -4,7 +4,6 @@
 ///
 /// - *ebisu.dart* Assist in generating source text in code generation
 /// - *ebisu_dart_meta.dart* Assist in generating *Dart* source code
-///
 library ebisu.ebisu;
 
 import 'dart:convert' as convert;

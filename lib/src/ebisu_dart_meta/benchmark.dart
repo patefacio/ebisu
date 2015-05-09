@@ -4,10 +4,8 @@ class Benchmark extends Object with Entity {
   Benchmark(this._id);
 
   /// Id for this benchmark
-  ///
   Id get id => _id;
   /// Additional classes in the benchmark library
-  ///
   List<Class> classes = [];
 
   // custom <class Benchmark>

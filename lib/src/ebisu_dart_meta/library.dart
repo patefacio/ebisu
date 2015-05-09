@@ -1,58 +1,41 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart library - a collection of parts
-///
 class Library extends Object with CustomCodeBlock, Entity {
   Library(this._id);
 
   /// Id for this library
-  ///
   Id get id => _id;
   /// List of imports to be included by this library
-  ///
   List<String> imports = [];
   /// List of parts in this library
-  ///
   List<Part> parts = [];
   /// List of global variables for this library
-  ///
   List<Variable> variables = [];
   /// Classes defined in this library
-  ///
   List<Class> classes = [];
   /// Named benchmarks associated with this library
-  ///
   List<Benchmark> benchmarks = [];
   /// Enums defined in this library
-  ///
   List<Enum> enums = [];
   /// Name of the library file
-  ///
   String get name => _name;
   /// Qualified name of the library used inside library and library parts - qualified to reduce collisions
-  ///
   String get qualifiedName => _qualifiedName;
   /// If true includes logging support and a _logger
-  ///
   bool includesLogger = false;
   /// If true this library is a test library to appear in test folder
-  ///
   bool get isTest => _isTest;
   /// Code block inside main for custom code
-  ///
   set mainCustomBlock(CodeBlock mainCustomBlock) =>
       _mainCustomBlock = mainCustomBlock;
   /// Set desired if generating just a lib and not a package
-  ///
   String path;
   /// If set the main function
-  ///
   String libMain;
   /// Default access for members
-  ///
   Access defaultMemberAccess = Access.RW;
   /// If true classes will get library functions to construct forwarding to ctors
-  ///
   bool hasCtorSansNew = false;
 
   // custom <class Library>

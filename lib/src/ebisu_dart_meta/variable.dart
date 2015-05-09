@@ -4,14 +4,11 @@ class Variable extends Object with Entity {
   Variable(this._id);
 
   /// Id for this variable
-  ///
   Id get id => _id;
   /// True if variable is public.
   /// Code generation support will prefix private variables appropriately
-  ///
   bool isPublic = true;
   /// Type for the variable
-  ///
   String type;
   /// Data used to initialize the variable
   /// If init is a String and type is not specified, [type] is a String
@@ -33,22 +30,16 @@ class Variable extends Object with Entity {
   ///   String foo = 3;
   /// member('foo')..init = [1,2,3]
   ///   Map foo = [1,2,3];
-  ///
   dynamic init;
   /// True if the variable is final
-  ///
   bool isFinal = false;
   /// True if the variable is const
-  ///
   bool isConst = false;
   /// True if the variable is static
-  ///
   bool isStatic = false;
   /// Name of the enum class generated sans access prefix
-  ///
   String get name => _name;
   /// Name of variable - varies depending on public/private
-  ///
   String get varName => _varName;
 
   // custom <class Variable>

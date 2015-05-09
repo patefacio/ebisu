@@ -1,18 +1,14 @@
 part of ebisu.ebisu_dart_meta;
 
 /// Define the id and value for an enum value
-///
 class EnumValue {
   EnumValue(this._id, this.value);
 
   /// Id for this enum_value
-  ///
   Id get id => _id;
   /// User specified value for enum value
-  ///
   var value;
   /// Documentation for this enum_value
-  ///
   String doc;
 
   // custom <class EnumValue>
@@ -42,46 +38,34 @@ class EnumValue {
 /// Defines an enum - to be generated idiomatically as a class
 /// See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
 /// At some point when true enums are provided this may be revisited.
-///
 class Enum extends Object with Entity {
   Enum(this._id);
 
   /// Id for this enum
-  ///
   Id get id => _id;
   /// True if enum is public.
   /// Code generation support will prefix private variables appropriately
-  ///
   bool isPublic = true;
   /// List of id's naming the values
-  ///
   List<EnumValue> get values => _values;
   /// If true, generate toJson/fromJson on wrapper class
-  ///
   bool hasJsonSupport = false;
   /// If true, generate randJson
-  ///
   bool hasRandJson = false;
   /// Name of the enum class generated sans access prefix
-  ///
   String get name => _name;
   /// Name of the enum class generated with access prefix
-  ///
   String get enumName => _enumName;
   /// If true includes custom block for additional user supplied ctor code
-  ///
   bool hasCustom = false;
   /// If true scopes the enum values to library by assigning to var outside class
-  ///
   bool hasLibraryScopedValues = false;
   /// If true string value for each entry is snake case (default is shout)
-  ///
   bool isSnakeString = false;
   /// Before true enum support enums were emulated with a class containing static
   /// consts. This had some unique features in terms of ability to generate json
   /// support as well as some custom functions. Setting this will ensure that
   /// a class is generated instead of the newer and generally preffered enum.
-  ///
   set requiresClass(bool requiresClass) => _requiresClass = requiresClass;
 
   // custom <class Enum>
