@@ -2,7 +2,12 @@
 /// generation injected code.
 part of ebisu.ebisu;
 
-/// Mixin to provide a common approach to adding custom code
+/// Mixin to provide a common approach to adding custom code.
+///
+/// This is a way for [Entity] objects, like [Part], [Library], [Ctor], etc, to
+/// include a single [CodeBlock] allowing support for hand-written code (via the
+/// *protect block* of [CodeBlock]) or injected code (via the [snippets] list within
+/// the [CodeBlock].
 class CustomCodeBlock {
 
   /// A custom code block for a class
@@ -11,23 +16,46 @@ class CustomCodeBlock {
 
   // custom <class CustomCodeBlock>
 
-  bool get includesCustom => _customCodeBlock != null;
+  /// Returns whether the inclusion of the [customBlock] of this mixin has been
+  /// requested.
+  ///
+  /// By default, if the [customCodeBlock] has been initialized (eg via
+  /// accessing [customCodeBlock] or using it via [withCustomBlock]) then this
+  /// returns true. However, the custom portion of a [CodeBlock] (i.e. the
+  /// custom begin/end tags) may be destracting or not needed if code can be
+  /// entirely generated. Setting [includesCustom] to false will result in any
+  /// *injected* code being returned via [taggedBlockText] without the custom
+  /// protection block.
+  bool get includesCustom => (_includesCustom != null &&
+      _includesCustom == false) ? false : _customCodeBlock != null;
 
+  /// Requests that the custom portion (ie protect block) of the [CodeBlock] be
+  /// included or excluded.
   set includesCustom(bool ic) {
     if (ic) {
+      _includesCustom = true;
       _initCustomBlock();
     } else {
       if (_customCodeBlock != null && _customCodeBlock.snippets.isNotEmpty) {
         _logger.warning('Custom code disabled for $runtimeType');
         _logger.warning('Snippets removed: ${br(_customCodeBlock.snippets)}');
       }
+      _includesCustom = false;
       _customCodeBlock = null;
     }
   }
 
+  /// *Auto-initializing* access to the [customCodeBlock]
   CodeBlock get customCodeBlock => _initCustomBlock();
 
+  /// *Auto-initializing* access to the [customCodeBlock] via callback
   withCustomBlock(f(CodeBlock)) => f(customCodeBlock);
+
+  /// Get the contents of the [CodeBlock] including both the *custom protect
+  /// block* portion as well as any injected code (ie snippets)
+  String taggedBlockText(String tag) => _customCodeBlock != null
+      ? (_customCodeBlock..tag = (includesCustom ? tag : null)).toString()
+      : '';
 
   CodeBlock _initCustomBlock() {
     if (_customCodeBlock == null) {
@@ -36,13 +64,9 @@ class CustomCodeBlock {
     return _customCodeBlock;
   }
 
-  taggedBlockText(String tag) =>
-      _customCodeBlock != null ? (_customCodeBlock..tag = tag).toString() : '';
-
-  //_copyCodeBlock(String tag) =>
-
   // end <class CustomCodeBlock>
 
+  bool _includesCustom;
   CodeBlock _customCodeBlock = new CodeBlock(null);
 }
 

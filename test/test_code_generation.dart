@@ -176,21 +176,21 @@ void generateTestLibraries() {
         ],
       library('two_parts')
         ..variables = [
-          variable('l_v_1_public')..init = 4,
-          variable('l_v_1_private')
+          variable('l_v1_public')..init = 4,
+          variable('l_v1_private')
             ..isPublic = false
             ..init = 'foo'
         ]
         ..parts = [
-          part('p_1')
+          part('p1')
             ..variables = [
-              variable('p_1_v_1')..init = 3,
-              variable('p_1_v_2')..init = 4
+              variable('p1_v1')..init = 3,
+              variable('p1_v2')..init = 4
             ]
-            ..classes = [class_('p_1_c_1'), class_('p_1_c_2'),],
-          part('p_2')
-            ..variables = [variable('p_2_v_1')..init = 'goo',]
-            ..classes = [class_('p_2_c_1'), class_('p_2_c_2'),],
+            ..classes = [class_('p1_c1'), class_('p1_c2'),],
+          part('p2')
+            ..variables = [variable('p2_v1')..init = 'goo',]
+            ..classes = [class_('p2_c1'), class_('p2_c2'),],
         ]
     ];
 

@@ -1261,8 +1261,16 @@ generation injected code.
         ..classes = [
 
           class_('custom_code_block')
-          ..doc = 'Mixin to provide a common approach to adding custom code'
+          ..doc = '''
+Mixin to provide a common approach to adding custom code.
+
+This is a way for [Entity] objects, like [Part], [Library], [Ctor], etc, to
+include a single [CodeBlock] allowing support for hand-written code (via the
+*protect block* of [CodeBlock]) or injected code (via the [snippets] list within
+the [CodeBlock].
+'''
           ..members = [
+            member('includes_custom')..access = IA..type = 'bool',
             member('custom_code_block')
             ..doc = 'A custom code block for a class'
             ..type = 'CodeBlock'

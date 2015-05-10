@@ -868,8 +868,6 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
       .join('\n');
   get _topInjection => topInjection != null ? indentBlock(topInjection) : '';
 
-  /// TODO: deprecated - use includesCustom
-  set includeCustom(bool ic) => includesCustom = ic;
   get _includeCustom => rightTrim(indentBlock(taggedBlockText('class $name')));
 
   _formattedMember(Member m) => jsonKeyFormat == snake

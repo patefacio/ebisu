@@ -431,7 +431,11 @@ bool mergeWithDartFile(String generated, String destFilePath,
 flatten(iterable) => iterable.expand((v) => v is Iterable ? flatten(v) : [v]);
 
 /// Given an [Id] or [String] returns corresponding [Id]
-Id makeId(id) => id is Id ? id : idFromString(id);
+Id makeId(id) => id is Id
+    ? id
+    : id is String
+        ? idFromString(id)
+        : throw '*makeId(id)* requires an [Id] or [String]';
 
 /// Given [prefix] and [id], both of which may be [String] or [Id] returns the
 /// [id] prefixed by [prefix]
