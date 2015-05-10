@@ -115,13 +115,13 @@ get RW => Access.RW;
 get WO => Access.WO;
 
 Id id(String _id) => new Id(_id);
-Enum enum_(String _id) => new Enum(id(_id));
-System system(String _id) => new System(id(_id));
-App app(String _id) => new App(id(_id));
-Library library(String _id) => new Library(id(_id));
-Variable variable(String _id) => new Variable(id(_id));
-Part part(String _id) => new Part(id(_id));
-Class class_(String _id) => new Class(id(_id));
+Enum enum_(_id) => new Enum(makeId(_id));
+System system(_id) => new System(makeId(_id));
+App app(_id) => new App(makeId(_id));
+Library library(_id) => new Library(makeId(_id));
+Variable variable(_id) => new Variable(makeId(_id));
+Part part(_id) => new Part(makeId(_id));
+Class class_(_id) => new Class(makeId(_id));
 
 /// Create new member from snake case id
 Member member(String _id) => new Member(id(_id));
