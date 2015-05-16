@@ -249,6 +249,11 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
     }
   } else {
     new Directory(path.dirname(destFilePath))..createSync(recursive: true);
+
+    if (postProcessor != null) {
+      generated = postProcessor(generated);
+    }
+
     inFile.writeAsStringSync(generated);
     print('Created $destFilePath');
     fileWritten = true;
