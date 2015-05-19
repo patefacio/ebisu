@@ -372,9 +372,35 @@ If not set, id of system is used.
           doc_member('enum_value'),
         ],
         class_('enum')
-        ..doc = '''Defines an enum - to be generated idiomatically as a class
-See (http://stackoverflow.com/questions/13899928/does-dart-support-enumerations)
-At some point when true enums are provided this may be revisited.
+        ..doc = '''Defines an enum.
+
+There are two styles of generation - the language supplied and the original
+*class* paradigm proposed prior to existance of language enums. See
+(http://stackoverflow.com/questions/13899928/does-dart-support-enumerations).
+
+One advantage of a class enum is there is capability to add functions and
+enforce a transformation in the serialization. For instance, you might want the
+values to be serialized as the int value or as the string name for
+legibility.
+
+    final colorEnum = enum_('rgb')
+      ..doc = 'Colors'
+      ..owner = null
+      ..values = [
+        'red',
+        'green',
+        'blue'
+      ];
+    print(colorEnum.define());
+
+Prints:
+
+    /// Colors
+    enum Rgb {
+    red,
+    green,
+    blue
+    }
 '''
         ..mixins = [ 'Entity' ]
         ..members = [
@@ -1055,6 +1081,7 @@ library/templates, a message like the following will be output:
       ..includesLogger = true,
       library('test_dart_meta')..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = [ 'package:ebisu/ebisu.dart', ],
+      library('test_enums')..imports = [ ],
       library('test_entity')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ]
       ..classes = [
         class_('base')
