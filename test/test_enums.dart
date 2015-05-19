@@ -24,11 +24,7 @@ main([List<String> args]) {
     final colorEnum = enum_('rgb')
       ..doc = 'Colors'
       ..owner = null
-      ..values = [
-        'red',
-        'green',
-        'blue'
-      ];
+      ..values = ['red', 'green', 'blue'];
     expect(darkMatter(colorEnum.define()), darkMatter('''
 /// Colors
 enum Rgb {
