@@ -64,6 +64,14 @@ class CustomCodeBlock {
     return _customCodeBlock;
   }
 
+  /// Set the tag associated with the custom block
+  set tag(String protectBlockTag) => customCodeBlock.tag = protectBlockTag;
+
+  /// Get the tag associated with the custom block
+  ///
+  /// Note: calling this auto-initialized the customCodeBlock
+  get tag => customCodeBlock.tag;
+
   // end <class CustomCodeBlock>
 
   bool _includesCustom;
