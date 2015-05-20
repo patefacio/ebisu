@@ -65,7 +65,12 @@ class CustomCodeBlock {
   }
 
   /// Set the tag associated with the custom block
-  set tag(String protectBlockTag) => customCodeBlock.tag = protectBlockTag;
+  set tag(String protectBlockTag) {
+    if (protectBlockTag != null && protectBlockTag.isNotEmpty) {
+      includesCustom = true;
+    }
+    customCodeBlock.tag = protectBlockTag;
+  }
 
   /// Get the tag associated with the custom block
   ///
