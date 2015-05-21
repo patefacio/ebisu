@@ -17,6 +17,7 @@ void main(List<String> args) {
     "test/test_dart_meta.dart",
     "test/test_functions.dart",
     "test/test_enums.dart",
+    "test/test_class.dart",
     "test/test_entity.dart",
     "test/test_code_generation.dart"
   ]));

@@ -713,7 +713,7 @@ Prints:
 '''
         ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..members = [
-          id_member('Dart class'),
+          id_member('Dart class')..ctors = [],
           public_member('Dart class'),
           member('mixins')
           ..doc = 'List of mixins'
@@ -821,7 +821,7 @@ empty ctor with all members passed as arguments)
         ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..doc = "Defines a dart library - a collection of parts"
         ..members = [
-          id_member('library'),
+          id_member('library')..ctors = [],
           member('imports')
           ..doc = 'List of imports to be included by this library'
           ..type = 'List<String>'
@@ -885,7 +885,7 @@ empty ctor with all members passed as arguments)
         ..mixins = [ 'CustomCodeBlock', 'Entity' ]
         ..doc = "Defines a dart part - as in 'part of' source file"
         ..members = [
-          id_member('part'),
+          id_member('part')..ctors = [],
           member('classes')
           ..doc = 'Classes defined in this part of the library'
           ..type = 'List<Class>'
@@ -1082,6 +1082,7 @@ library/templates, a message like the following will be output:
       library('test_dart_meta')..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = [ 'package:ebisu/ebisu.dart', ],
       library('test_enums')..imports = [ ],
+      library('test_class')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ],
       library('test_entity')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ]
       ..classes = [
         class_('base')
@@ -1289,13 +1290,15 @@ generation injected code.
           ..doc = '''
 Mixin to provide a common approach to adding custom code.
 
+*Custom* in this context may be either hand-coded text in a *protection block*
+or *injected* custom code.
+
 This is a way for [Entity] objects, like [Part], [Library], [Ctor], etc, to
 include a single [CodeBlock] allowing support for hand-written code (via the
 *protect block* of [CodeBlock]) or injected code (via the [snippets] list within
-the [CodeBlock].
+the [CodeBlock]).
 '''
           ..members = [
-            member('includes_custom')..access = IA..type = 'bool',
             member('custom_code_block')
             ..doc = 'A custom code block for a class'
             ..type = 'CodeBlock'

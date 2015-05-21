@@ -346,7 +346,6 @@ class Member extends Object with Entity {
 ///       // end <class A>
 ///     }
 class Class extends Object with CustomCodeBlock, Entity {
-  Class(this._id);
 
   /// Id for this Dart class
   Id get id => _id;
@@ -416,6 +415,11 @@ class Class extends Object with CustomCodeBlock, Entity {
   JsonKeyFormat jsonKeyFormat;
 
   // custom <class Class>
+
+  Class(this._id) {
+    _name = id.capCamel;
+    includesProtectBlock = true;
+  }
 
   Iterable<Entity> get children => concat([members]);
 
@@ -609,6 +613,9 @@ int compareTo($otherType other) {
 ''';
   }
 
+  set includesProtectBlock(bool value) =>
+      customCodeBlock.tag = value ? 'class $name' : null;
+
   get defaultMemberAccess => _defaultMemberAccess == null
       ? (owner != null && owner is Class)
           ? (owner as Class).defaultMemberAccess
@@ -620,7 +627,6 @@ int compareTo($otherType other) {
   }
 
   onOwnershipEstablished() {
-    _name = id.capCamel;
     _className = isPublic ? _name : "_$_name";
     _ctors.clear();
 
@@ -836,7 +842,7 @@ ${
     _copyable,
     _memberPublicCode,
     _topInjection,
-    _includeCustom,
+    _includedCustom,
     _jsonToString,
     _jsonSerialization,
     _copyCtor,
@@ -868,7 +874,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
       .join('\n');
   get _topInjection => topInjection != null ? indentBlock(topInjection) : '';
 
-  get _includeCustom => rightTrim(indentBlock(taggedBlockText('class $name')));
+  get _includedCustom => indentBlock(blockText);
 
   _formattedMember(Member m) => jsonKeyFormat == snake
       ? m.id.snake

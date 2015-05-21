@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart library - a collection of parts
 class Library extends Object with CustomCodeBlock, Entity {
-  Library(this._id);
 
   /// Id for this library
   Id get id => _id;
@@ -39,6 +38,11 @@ class Library extends Object with CustomCodeBlock, Entity {
   bool hasCtorSansNew = false;
 
   // custom <class Library>
+
+  Library(this._id) {
+    _name = _id.snake;
+    includesProtectBlock = true;
+  }
 
   Iterable<Entity> get children =>
       concat([parts, variables, classes, benchmarks, enums]);
@@ -84,7 +88,6 @@ class Library extends Object with CustomCodeBlock, Entity {
   }
 
   onOwnershipEstablished() {
-    _name = _id.snake;
     _qualifiedName =
         _qualifiedName == null ? _makeQualifiedName() : _qualifiedName;
 
@@ -156,9 +159,10 @@ class Library extends Object with CustomCodeBlock, Entity {
   get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
-  /// TODO: deprecated - use includesCustom
-  set includeCustom(bool ic) => includesCustom = ic;
-  get _libraryCustom => chomp(taggedBlockText('library $name'));
+  set includesProtectBlock(bool value) =>
+      customCodeBlock.tag = value ? 'library $name' : null;
+
+  get _libraryCustom => indentBlock(blockText);
 
   get _initLogger => isTest
       ? r"""

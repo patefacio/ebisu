@@ -2,7 +2,6 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart part - as in 'part of' source file
 class Part extends Object with CustomCodeBlock, Entity {
-  Part(this._id);
 
   /// Id for this part
   Id get id => _id;
@@ -24,15 +23,18 @@ class Part extends Object with CustomCodeBlock, Entity {
 
   // custom <class Part>
 
+  Part(this._id) {
+    _name = _id.snake;
+    includesProtectBlock = true;
+  }
+
   Iterable<Entity> get children => concat([classes, enums, variables]);
 
   get defaultMemberAccess => _defaultMemberAccess == null
       ? _owningLibrary.defaultMemberAccess
       : _defaultMemberAccess;
 
-  onOwnershipEstablished() {
-    _name = _id.snake;
-  }
+  onOwnershipEstablished() {}
 
   void generate() {
     _filePath = _owningLibrary.isTest
@@ -58,9 +60,10 @@ class Part extends Object with CustomCodeBlock, Entity {
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}').join('\n\n');
 
-  /// TODO: deprecated - use includesCustom
-  set includeCustom(bool ic) => includesCustom = ic;
-  get _custom => chomp(taggedBlockText('part $name'));
+  set includesProtectBlock(bool value) =>
+      customCodeBlock.tag = value ? 'part $name' : null;
+
+  get _custom => indentBlock(blockText);
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
 
   // end <class Part>

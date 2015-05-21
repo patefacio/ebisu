@@ -4,10 +4,13 @@ part of ebisu.ebisu;
 
 /// Mixin to provide a common approach to adding custom code.
 ///
+/// *Custom* in this context may be either hand-coded text in a *protection block*
+/// or *injected* custom code.
+///
 /// This is a way for [Entity] objects, like [Part], [Library], [Ctor], etc, to
 /// include a single [CodeBlock] allowing support for hand-written code (via the
 /// *protect block* of [CodeBlock]) or injected code (via the [snippets] list within
-/// the [CodeBlock].
+/// the [CodeBlock]).
 class CustomCodeBlock {
 
   /// A custom code block for a class
@@ -16,34 +19,17 @@ class CustomCodeBlock {
 
   // custom <class CustomCodeBlock>
 
-  /// Returns whether the inclusion of the [customBlock] of this mixin has been
-  /// requested.
-  ///
-  /// By default, if the [customCodeBlock] has been initialized (eg via
-  /// accessing [customCodeBlock] or using it via [withCustomBlock]) then this
-  /// returns true. However, the custom portion of a [CodeBlock] (i.e. the
-  /// custom begin/end tags) may be destracting or not needed if code can be
-  /// entirely generated. Setting [includesCustom] to false will result in any
-  /// *injected* code being returned via [taggedBlockText] without the custom
-  /// protection block.
-  bool get includesCustom => (_includesCustom != null &&
-      _includesCustom == false) ? false : _customCodeBlock != null;
+  /// True iff the [CodeBlock] has been initialized and has a valid [tag]
+  bool get includesProtectBlock =>
+      _customCodeBlock != null && _customCodeBlock.tag != null;
 
-  /// Requests that the custom portion (ie protect block) of the [CodeBlock] be
-  /// included or excluded.
-  set includesCustom(bool ic) {
-    if (ic) {
-      _includesCustom = true;
-      _initCustomBlock();
-    } else {
-      if (_customCodeBlock != null && _customCodeBlock.snippets.isNotEmpty) {
-        _logger.warning('Custom code disabled for $runtimeType');
-        _logger.warning('Snippets removed: ${br(_customCodeBlock.snippets)}');
-      }
-      _includesCustom = false;
-      _customCodeBlock = null;
-    }
-  }
+  /// True iff the [CodeBlock] has been initialized and has some injected
+  /// [snippets]
+  bool get includesSnippets =>
+      _customCodeBlock != null && _customCodeBlock.snippets.isNotEmpty;
+
+  /// True if either [includesProtectBlock] or [includesSnippets]
+  bool get includesContent => includesSnippets || includesProtectBlock;
 
   /// *Auto-initializing* access to the [customCodeBlock]
   CodeBlock get customCodeBlock => _initCustomBlock();
@@ -51,11 +37,17 @@ class CustomCodeBlock {
   /// *Auto-initializing* access to the [customCodeBlock] via callback
   withCustomBlock(f(CodeBlock)) => f(customCodeBlock);
 
-  /// Get the contents of the [CodeBlock] including both the *custom protect
-  /// block* portion as well as any injected code (ie snippets)
-  String taggedBlockText(String tag) => _customCodeBlock != null
-      ? (_customCodeBlock..tag = (includesCustom ? tag : null)).toString()
-      : '';
+  /// The text associated with the [CodeBlock] if iniialized, null otherwise
+  get blockText =>
+      _customCodeBlock == null ? null : _customCodeBlock.toString();
+
+  /// Set the tag associated with the custom block
+  ///
+  /// Note: calling this auto-initialized the customCodeBlock
+  set tag(String protectBlockTag) => customCodeBlock.tag = protectBlockTag;
+
+  /// The tag associated with the [CodeBlock] if initialized, null otherwise
+  get tag => _customCodeBlock == null ? tag : _customCodeBlock.tag;
 
   CodeBlock _initCustomBlock() {
     if (_customCodeBlock == null) {
@@ -64,22 +56,8 @@ class CustomCodeBlock {
     return _customCodeBlock;
   }
 
-  /// Set the tag associated with the custom block
-  set tag(String protectBlockTag) {
-    if (protectBlockTag != null && protectBlockTag.isNotEmpty) {
-      includesCustom = true;
-    }
-    customCodeBlock.tag = protectBlockTag;
-  }
-
-  /// Get the tag associated with the custom block
-  ///
-  /// Note: calling this auto-initialized the customCodeBlock
-  get tag => customCodeBlock.tag;
-
   // end <class CustomCodeBlock>
 
-  bool _includesCustom;
   CodeBlock _customCodeBlock = new CodeBlock(null);
 }
 

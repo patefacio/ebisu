@@ -315,7 +315,7 @@ main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;
-${indentBlock(taggedBlockText("$id main"))}
+${indentBlock((this..tag = "$id main").blockText)}
 }
 
 ${customBlock("$id global")}''';
