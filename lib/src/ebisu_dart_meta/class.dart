@@ -220,7 +220,7 @@ class Member extends Object with Entity {
           : "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
 
   String get publicCode => brCompact([
-    (this as Entity).docComment,
+    this.docComment,
     hasGetter ? '$type get $name => $varName;' : '',
     hasSetter ? 'set $name($type $name) => $varName = $name;' : '',
     isPublic ? decl : ''
@@ -835,7 +835,7 @@ ${
   bool get _isComparable => isPolymorphicComparable || isComparable;
 
   get _content => br([
-    brCompact([(this as Entity).docComment, _classOpener]),
+    brCompact([this.docComment, _classOpener]),
     _orderedCtors,
     _opEquals,
     _comparable,

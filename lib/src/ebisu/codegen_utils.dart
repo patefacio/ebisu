@@ -52,7 +52,6 @@ String formatFill(List<String> entries,
   if (entries.length == 0) return '';
   List<String> result = [];
   String current = '${entries.first}';
-  int currentLength = 0;
   for (int i = 1; i < entries.length; i++) {
     var entry = entries[i];
     if ((current.length + entry.length) >= maxLength) {
@@ -198,17 +197,19 @@ final _generatedFiles = new Set();
 Set<String> get generatedFiles => _generatedFiles;
 
 /// All directories into which code was targeted
-Iterable<String> get targetedDirectories => concat(new Set<String>.from(
-    generatedFiles.map((String filePath) => path.dirname(filePath))).map(
-    (String dir) => new Directory(dir)
+Iterable<String> get targetedDirectories => new Set<String>.from(
+    generatedFiles.map((String filePath) => path.dirname(filePath)));
+
+Set<String> get potentialTargetFiles => new Set<String>.from(concat(
+    targetedDirectories.map((String dir) => new Directory(dir)
         .listSync()
-        .where((FileSystemEntity fse) => fse is File)));
+        .where((FileSystemEntity fse) => fse is File)
+        .map((fse) => fse.path))));
 
 /// For every path of every generated file, lists all files in those
 /// paths that were not generated
-List<String> get nonGeneratedFiles => targetedDirectories
-    .where((FileSystemEntity fse) => !generatedFiles.contains(fse.path))
-    .toList();
+Set<String> get nonGeneratedFiles =>
+    potentialTargetFiles.difference(generatedFiles);
 
 /// Take [generated] text and merge with contents of [destFilePath] taking care
 /// to preserve any *protect blocks*.

@@ -6,6 +6,8 @@ import "package:logging/logging.dart";
 
 String _topDir;
 
+final _logger = new Logger('ebisu.ebisu');
+
 bool _enableLogging = false;
 
 void main() {
@@ -146,7 +148,7 @@ classes with JSON support.
           ..type = 'PubSpec',
           member('jsonable_classes')
           ..doc = 'Map of all classes with hasJsonSupport true'
-          ..type = 'Map<String,Class>'
+          ..type = 'Map<String,Object>'
           ..classInit = '{}',
           member('finalized')
           ..doc = 'Set to true on finalize'
@@ -1145,7 +1147,7 @@ library/templates, a message like the following will be output:
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.6.0'
+        ..version = '0.6.1'
         ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1425,4 +1427,9 @@ protection block or after
   ];
 
   ebisu.generate();
+
+  print('''
+**** NON GENERATED FILES ****
+${indentBlock(brCompact(nonGeneratedFiles))}
+''');  
 }

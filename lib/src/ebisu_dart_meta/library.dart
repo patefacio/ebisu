@@ -67,7 +67,6 @@ class Library extends Object with CustomCodeBlock, Entity {
   }
 
   String get _additionalPathParts {
-    String rootPath = root.rootPath;
     List relPath = split(relative(dirname(libStubPath), from: rootPath));
     if (relPath.length > 0 &&
         (relPath.first == '.' || relPath.first == 'lib')) {
@@ -252,9 +251,7 @@ $_initLogger${_mainCustomText}
     }
   }
 
-  String get rootPath => owner.rootPath;
-
-  get _defaultAccess => defaultMemberAccess;
+  String get rootPath => (rootEntity as System).rootPath;
 
   // end <class Library>
 

@@ -20,7 +20,7 @@ class System extends Object with Entity {
   /// Information for the pubspec
   PubSpec pubSpec;
   /// Map of all classes with hasJsonSupport true
-  Map<String, Class> jsonableClasses = {};
+  Map<String, Object> jsonableClasses = {};
   /// Set to true on finalize
   bool get finalized => _finalized;
   /// If true generate a pubspec.xml file

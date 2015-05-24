@@ -301,15 +301,6 @@ ${arg.doc}
 
   get _loggerInit => "final _logger = new Logger('$id');\n";
 
-  get _argMap => args.isEmpty
-      ? null
-      : '''
-  Map argResults = _parseArgs(args);
-  Map options = argResults['options'];
-  List positionals = argResults['rest'];
-${_requiredArgs}
-''';
-
   get _main => '''
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>

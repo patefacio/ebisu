@@ -38,15 +38,17 @@ class Part extends Object with CustomCodeBlock, Entity {
 
   void generate() {
     _filePath = _owningLibrary.isTest
-        ? "${root.rootPath}/test/src/${owner.name}/${_name}.dart"
-        : "${root.rootPath}/lib/src/${owner.name}/${_name}.dart";
+        ? "${rootPath}/test/src/${_owningLibrary.name}/${_name}.dart"
+        : "${rootPath}/lib/src/${_owningLibrary.name}/${_name}.dart";
     mergeWithDartFile('${chomp(_content)}\n', _filePath);
   }
+
+  String get rootPath => (rootEntity as System).rootPath;
 
   get _owningLibrary => owner as Library;
 
   bool get hasCtorSansNew =>
-      _hasCtorSansNew == null ? owner.hasCtorSansNew : _hasCtorSansNew;
+      _hasCtorSansNew == null ? _owningLibrary.hasCtorSansNew : _hasCtorSansNew;
 
   get _content => br([
     brCompact([doc != null ? dartComment(chomp(doc)) : null, _part]),
@@ -56,7 +58,7 @@ class Part extends Object with CustomCodeBlock, Entity {
     brCompact(_variables),
   ]);
 
-  get _part => 'part of ${owner.qualifiedName};\n';
+  get _part => 'part of ${_owningLibrary.qualifiedName};\n';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}').join('\n\n');
 

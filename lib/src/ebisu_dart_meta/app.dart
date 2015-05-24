@@ -19,13 +19,14 @@ class App extends Object with CustomCodeBlock, Entity {
 
   Iterable<Entity> get children => concat([classes, libraries, variables]);
 
+  String get rootPath => (rootEntity as System).rootPath;
+
   void generate() {
-    classes.forEach((c) => c.generate());
     libraries.forEach((lib) => lib.generate());
-    String appPath = "${root.rootPath}/web/${_id.snake}.dart";
-    String appHtmlPath = "${root.rootPath}/web/${_id.snake}.html";
-    String appCssPath = "${root.rootPath}/web/${_id.snake}.css";
-    String appBuildPath = "${root.rootPath}/build.dart";
+    String appPath = "${rootPath}/web/${_id.snake}.dart";
+    String appHtmlPath = "${rootPath}/web/${_id.snake}.html";
+    String appCssPath = "${rootPath}/web/${_id.snake}.css";
+    String appBuildPath = "${rootPath}/build.dart";
     mergeWithDartFile(_content, appPath);
     htmlMergeWithFile('''<!DOCTYPE html>
 
@@ -71,13 +72,15 @@ main() {
 ''', appBuildPath);
   }
 
-  get _content => '''
-import 'package:mdv/mdv.dart' as mdv;
-
+  get _content => brCompact([
+    "import 'package:mdv/mdv.dart' as mdv;",
+    brCompact(classes.forEach((c) => c.definition())),
+    '''
 void main() {
   mdv.initialize();
 }
-''';
+'''
+  ]);
 
   // end <class App>
 
