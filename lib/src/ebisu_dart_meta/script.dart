@@ -184,6 +184,15 @@ Select log level from:
   get _docComment => doc != null ? '${dartComment(doc)}\n' : '';
   get _imports => '${imports.join('\n')}\n';
 
+  get _argMap => args.isEmpty
+      ? null
+      : '''
+  Map argResults = _parseArgs(args);
+  Map options = argResults['options'];
+  List positionals = argResults['rest'];
+${_requiredArgs}
+''';
+
   get _argParser => '''
 //! The parser for this script
 ArgParser _parser;
@@ -301,15 +310,19 @@ ${arg.doc}
 
   get _loggerInit => "final _logger = new Logger('$id');\n";
 
-  get _main => '''
+  get _main => brCompact([
+    '''
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
-  Logger.root.level = Level.OFF;
+  Logger.root.level = Level.OFF;''',
+    _argMap,
+    '''
 ${indentBlock((this..tag = "$id main").blockText)}
 }
 
-${customBlock("$id global")}''';
+${customBlock("$id global")}'''
+  ]);
 
   get _requiredArgs => indentBlock(requiredArgs.length > 0
       ? '''
