@@ -289,6 +289,10 @@ Set this to false to prevent this
           member('is_async')
           ..doc = 'If true makes script main async'
           ..classInit = false,
+          member('enums')
+          ..doc = 'Enums for this script'
+          ..type = 'List<Enum>'
+          ..classInit = [],
           member('classes')
           ..doc = 'Classes to support this script, included directly in script above main'
           ..type = 'List<Class>'
@@ -406,7 +410,7 @@ Prints:
 '''
         ..mixins = [ 'Entity' ]
         ..members = [
-          id_member('enum'),
+          id_member('enum')..ctors = [],          
           public_member('enum'),
           member('values')
           ..doc = "List of id's naming the values"

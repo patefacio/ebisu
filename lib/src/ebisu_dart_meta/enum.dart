@@ -65,7 +65,6 @@ class EnumValue {
 ///     blue
 ///     }
 class Enum extends Object with Entity {
-  Enum(this._id);
 
   /// Id for this enum
   Id get id => _id;
@@ -96,6 +95,11 @@ class Enum extends Object with Entity {
 
   // custom <class Enum>
 
+  Enum(this._id) {
+    _name = id.capCamel;
+    _enumName = isPublic ? _name : "_$_name";
+  }
+
   /// Enum has no children
   Iterable<Entity> get children => new Iterable<Entity>.generate(0);
 
@@ -117,8 +121,6 @@ class Enum extends Object with Entity {
           .toList();
 
   onOwnershipEstablished() {
-    _name = _id.capCamel;
-    _enumName = isPublic ? _name : "_$_name";
     values = _values;
   }
 

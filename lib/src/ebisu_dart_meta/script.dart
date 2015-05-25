@@ -127,6 +127,8 @@ class Script extends Object with CustomCodeBlock, Entity {
   bool noLogLevel = false;
   /// If true makes script main async
   bool isAsync = false;
+  /// Enums for this script
+  List<Enum> enums = [];
   /// Classes to support this script, included directly in script above main
   List<Class> classes = [];
 
@@ -176,6 +178,7 @@ Select log level from:
         ? null
         : brCompact([_argParser, _usage, reduceVerticalWhitespace(_parseArgs)]),
     _loggerInit,
+    br(enums.map((e) => e.define())),
     br(classes.map((c) => c.define())),
     _main,
   ].where((line) => line != ''));
