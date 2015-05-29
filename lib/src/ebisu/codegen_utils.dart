@@ -309,6 +309,15 @@ String mergeWithContents(String generated, String currentText,
 String smartQuote(String s) =>
     ((s.indexOf("'") == -1) && (s.indexOf('"') == -1)) ? "'$s'" : s;
 
+/// Wrap string in double quotes
+String doubleQuote(String s) => '"$s"';
+
+/// Wrap string in triple single tick quotes
+String tripleSingleQuote(String s) => "'''$s'''";
+
+/// Wrap string in triple double quotes
+String tripleDoubleQuote(String s) => '"""$s"""';
+
 var _normalizeRe = new RegExp(r'\s+');
 var _blockCommentRe =
     new RegExp(r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/', multiLine: true);

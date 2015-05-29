@@ -180,6 +180,18 @@ a test''', ' '), '''
 '''), true);
   });
 
+  test('doubleQuote', () {
+    expect(doubleQuote('foo'), '"foo"');
+  });
+
+  test('tripleDoubleQuote', () {
+    expect(tripleDoubleQuote('foo'), '"""foo"""');
+  });
+
+  test('tripleSingleQuote', () {
+    expect(tripleSingleQuote('foo'), "'''foo'''");
+  });
+
 // end <main>
 
 }

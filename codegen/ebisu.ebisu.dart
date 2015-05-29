@@ -219,6 +219,14 @@ text to include in the license file.
           ..classInit = '[]',
         ]
       ],
+
+      part('emacs_support')
+      ..doc = 'Support for generating emacs functions for accessing generated code'
+      ..classes = [
+        class_('installation_walker')
+        ..doc = 'Walks installation and creates single emacs file with utility functions'
+      ],
+      
       part('script')
       ..enums = [
         enum_('arg_type')
