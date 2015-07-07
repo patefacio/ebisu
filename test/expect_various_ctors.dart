@@ -1,6 +1,5 @@
 library ebisu.expect_various_ctors;
 
-import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 import 'scratch_remove_me/lib/various_ctors.dart';

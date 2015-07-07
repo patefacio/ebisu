@@ -58,11 +58,8 @@ class Library extends Object with CustomCodeBlock, Entity {
       _isTest = true;
       includesMain = true;
       includesLogger = true;
-      imports.addAll([
-        'package:logging/logging.dart',
-        'package:test/test.dart',
-        'package:args/args.dart',
-      ]);
+      imports
+          .addAll(['package:logging/logging.dart', 'package:test/test.dart',]);
     }
   }
 

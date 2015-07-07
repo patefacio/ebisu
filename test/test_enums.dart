@@ -1,6 +1,5 @@
 library ebisu.test_enums;
 
-import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 

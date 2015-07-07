@@ -281,7 +281,6 @@ Future<List<String>> _getLibs() {
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithDartFile('''
-import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))

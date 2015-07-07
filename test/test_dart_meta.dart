@@ -1,6 +1,5 @@
 library ebisu.test_dart_meta;
 
-import 'package:args/args.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
