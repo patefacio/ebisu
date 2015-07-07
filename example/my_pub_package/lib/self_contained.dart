@@ -1,15 +1,15 @@
-library self_contained;
+library my_pub_package.self_contained;
 
 import 'dart:convert' as convert;
 import 'package:ebisu/ebisu.dart' as ebisu;
+
 // custom <additional imports>
 // end <additional imports>
-
 
 /// An address composed of zip, street and street number
 class Address {
 
-  Address._json();
+  Address._default();
 
   String zip;
   String street;
@@ -18,27 +18,21 @@ class Address {
   // custom <class Address>
   // end <class Address>
 
-  Map toJson() {
-    return {
-    "zip": ebisu.toJson(zip),
-    "street": ebisu.toJson(street),
-    "streetNumber": ebisu.toJson(streetNumber),
-    };
-  }
 
-  static Address fromJson(String json) {
+  Map toJson() => {
+      "zip": ebisu.toJson(zip),
+      "street": ebisu.toJson(street),
+      "streetNumber": ebisu.toJson(streetNumber),
+  };
+
+  static Address fromJson(Object json) {
     if(json == null) return null;
-    Map jsonMap = convert.JSON.decode(json);
-    Address result = new Address._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  static Address fromJsonMap(Map jsonMap) {
-    if(jsonMap == null) return null;
-    Address result = new Address._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
+    if(json is String) {
+      json = convert.JSON.decode(json);
+    }
+    assert(json is Map);
+    return new Address._default()
+      .._fromJsonMapImpl(json);
   }
 
   void _fromJsonMapImpl(Map jsonMap) {
@@ -49,50 +43,43 @@ class Address {
 
 }
 
+
 class AddressBook {
 
-  AddressBook._json();
+  AddressBook._default();
 
   Map<String,Address> book = {};
 
   // custom <class AddressBook>
   // end <class AddressBook>
 
-  Map toJson() {
-    return {
-    "book": ebisu.toJson(book),
-    };
-  }
 
-  static AddressBook fromJson(String json) {
+  Map toJson() => {
+      "book": ebisu.toJson(book),
+  };
+
+  static AddressBook fromJson(Object json) {
     if(json == null) return null;
-    Map jsonMap = convert.JSON.decode(json);
-    AddressBook result = new AddressBook._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
-  }
-
-  static AddressBook fromJsonMap(Map jsonMap) {
-    if(jsonMap == null) return null;
-    AddressBook result = new AddressBook._json();
-    result._fromJsonMapImpl(jsonMap);
-    return result;
+    if(json is String) {
+      json = convert.JSON.decode(json);
+    }
+    assert(json is Map);
+    return new AddressBook._default()
+      .._fromJsonMapImpl(json);
   }
 
   void _fromJsonMapImpl(Map jsonMap) {
-
     // book is Map<String,Address>
-    book = {};
-    jsonMap["book"].forEach((k,v) {
-      book[
-        k
-      ] = (v is Map)?
-      Address.fromJsonMap(v) :
-      Address.fromJson(v);
-    });
+    book = ebisu
+      .constructMapFromJsonData(
+        jsonMap["book"],
+        (value) => Address.fromJson(value))
+  ;
   }
 
 }
 
 // custom <library self_contained>
 // end <library self_contained>
+
+

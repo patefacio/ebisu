@@ -54,7 +54,7 @@ Simple example pub package composed of:
       ],
       library('multi_part')
       ..variables = [
-        variable('global_var_1')
+        variable('global_var1')
         ..type = 'List<String>'
         ..isConst = true
         ..init = '["foo", "bar", "goo"]'
@@ -62,12 +62,12 @@ Simple example pub package composed of:
       ..parts = [
         part('first_part')
         ..classes = [
-          class_('c_1_1')
+          class_('c11')
           ..members = [
             member('m1'),
             member('m2')
           ],
-          class_('c_1_2')
+          class_('c12')
           ..members = [
             member('m1')..type = 'double',
             member('m2')..type = 'dynamic',
@@ -75,12 +75,12 @@ Simple example pub package composed of:
         ],
         part('second_part')
         ..classes = [
-          class_('c_2_1')
+          class_('c21')
           ..members = [
             member('m1'),
             member('m2')
           ],
-          class_('c_2_2')
+          class_('c22')
           ..members = [
             member('m1')..type = 'double',
             member('m2')..type = 'dynamic',

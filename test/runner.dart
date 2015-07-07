@@ -7,11 +7,6 @@ import 'test_class.dart' as test_class;
 import 'test_entity.dart' as test_entity;
 import 'test_code_generation.dart' as test_code_generation;
 
-void testCore(Configuration config) {
-  unittestConfiguration = config;
-  main();
-}
-
 main() {
   Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord rec) {

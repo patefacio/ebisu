@@ -1,19 +1,29 @@
 name: my_pub_package
 version: 0.0.1
+author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: http://foo.com
 description: >
   Just a toy, never see the light of day
 dependencies:
+
 # custom <my_pub_package dependencies>
 # end <my_pub_package dependencies>
 
 dev_dependencies:
-  hop: ">=0.27.0"
+  yaml: "any"
+  browser: "any"
+  hop: "any"
+  hop_docgen: "any"
 
 # custom <my_pub_package dev dependencies>
 # end <my_pub_package dev dependencies>
 
+dependency_overrides:
+# custom <my_pub_package dependency overrides>
+# end <my_pub_package dependency overrides>
+
 transformers:
+
 # custom <my_pub_package transformers>
 # end <my_pub_package transformers>
 

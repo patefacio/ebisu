@@ -3,29 +3,29 @@
 
 
 <!--- custom <introduction> --->
-<!--- end <introduction> --->
+<!--- end <introduction> -->
 
 
 # Purpose
 
 <!--- custom <purpose> --->
-<!--- end <purpose> --->
+<!--- end <purpose> -->
 
 
 <!--- custom <body> --->
-<!--- end <body> --->
+<!--- end <body> -->
 
 
 # Examples
 
 <!--- custom <examples> --->
-<!--- end <examples> --->
+<!--- end <examples> -->
 
 
 # Todos
 
 - Add some real code
 <!--- custom <todos> --->
-<!--- end <todos> --->
+<!--- end <todos> -->
 
 

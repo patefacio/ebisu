@@ -14,13 +14,12 @@ void main() {
 
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
-  if(_enableLogging) {
-    Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  if (_enableLogging) {
+    Logger.root.onRecord.listen(
+        (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   }
 
   useDartFormatter = true;
-  var arguments = Platform.executableArguments;
   String here = path.absolute(Platform.script.toFilePath());
   _topDir = path.dirname(path.dirname(here));
   generate();
@@ -29,11 +28,12 @@ void main() {
 generate() {
 
   // The following are commonly used members of the meta data classes
-  Member doc_member(String owner) => member('doc')
-    ..doc = "Documentation for this $owner";
+  Member doc_member(String owner) =>
+      member('doc')..doc = "Documentation for this $owner";
 
   Member public_member(String owner) => member('is_public')
-    ..doc = "True if $owner is public.\nCode generation support will prefix private variables appropriately"
+    ..doc =
+    "True if $owner is public.\nCode generation support will prefix private variables appropriately"
     ..type = 'bool'
     ..classInit = 'true';
 
@@ -98,7 +98,8 @@ classes with JSON support.
 
 '''
     ..imports = [
-      'io', '"dart:convert" as convert',
+      'io',
+      '"dart:convert" as convert',
       '"package:ebisu/ebisu.dart"',
       'package:id/id.dart',
       'package:path/path.dart',
@@ -106,9 +107,9 @@ classes with JSON support.
     ]
     ..variables = [
       variable('non_jsonable_types')
-      ..isPublic = false
-      ..type = 'List<String>'
-      ..init = '''[
+        ..isPublic = false
+        ..type = 'List<String>'
+        ..init = '''[
   'String', 'int', 'double', 'bool', 'num',
   'Map', 'List', 'DateTime', 'dynamic',
 ]'''
@@ -116,50 +117,49 @@ classes with JSON support.
     ..includesLogger = true
     ..parts = [
       part('system')
-      ..classes = [
-        class_('system')
-        ..doc = 'Defines a dart system (collection of libraries and apps)'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          non_final_id_member('system'),
-          member('root_path')
-          ..doc = 'Path to which code is generated',
-          member('scripts')
-          ..doc = 'Scripts in the system'
-          ..type = 'List<Script>'
-          ..classInit = '[]',
-          member('app')
-          ..doc = 'App for this package'
-          ..type = 'App',
-          member('test_libraries')
-          ..doc = 'List of test libraries of this app'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('libraries')
-          ..doc = 'Libraries in the system'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('all_libraries')
-          ..doc = 'Regular and test libraries'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('pub_spec')
-          ..doc = 'Information for the pubspec'
-          ..type = 'PubSpec',
-          member('jsonable_classes')
-          ..doc = 'Map of all classes with hasJsonSupport true'
-          ..type = 'Map<String,Object>'
-          ..classInit = '{}',
-          member('finalized')
-          ..doc = 'Set to true on finalize'
-          ..access = Access.RO
-          ..classInit = false,
-          member('generates_pub_spec')
-          ..doc = 'If true generate a pubspec.xml file'
-          ..type = 'bool'
-          ..classInit = 'true',
-          member('license')
-          ..doc = '''
+        ..classes = [
+          class_('system')
+            ..doc = 'Defines a dart system (collection of libraries and apps)'
+            ..mixins = ['Entity']
+            ..members = [
+              non_final_id_member('system'),
+              member('root_path')..doc = 'Path to which code is generated',
+              member('scripts')
+                ..doc = 'Scripts in the system'
+                ..type = 'List<Script>'
+                ..classInit = '[]',
+              member('app')
+                ..doc = 'App for this package'
+                ..type = 'App',
+              member('test_libraries')
+                ..doc = 'List of test libraries of this app'
+                ..type = 'List<Library>'
+                ..classInit = '[]',
+              member('libraries')
+                ..doc = 'Libraries in the system'
+                ..type = 'List<Library>'
+                ..classInit = '[]',
+              member('all_libraries')
+                ..doc = 'Regular and test libraries'
+                ..type = 'List<Library>'
+                ..classInit = '[]',
+              member('pub_spec')
+                ..doc = 'Information for the pubspec'
+                ..type = 'PubSpec',
+              member('jsonable_classes')
+                ..doc = 'Map of all classes with hasJsonSupport true'
+                ..type = 'Map<String,Object>'
+                ..classInit = '{}',
+              member('finalized')
+                ..doc = 'Set to true on finalize'
+                ..access = Access.RO
+                ..classInit = false,
+              member('generates_pub_spec')
+                ..doc = 'If true generate a pubspec.xml file'
+                ..type = 'bool'
+                ..classInit = 'true',
+              member('license')
+                ..doc = '''
 A string indicating the license.
 A map of common licenses is looked up and if found a link
 to that license is used. The current keys of the map are:
@@ -167,226 +167,236 @@ to that license is used. The current keys of the map are:
 Otherwise the text is assumed to be the
 text to include in the license file.
 ''',
-          member('includes_readme')
-          ..doc = 'If true standard outline for readme provided'
-          ..classInit = false,
-          member('introduction')
-          ..doc = 'A brief introduction for this system, included in README.md',
-          member('purpose')
-          ..doc = 'Purpose for this system, included in README.md',
-          member('todos')
-          ..doc = 'List of todos included in the readme - If any present includesReadme assumed true'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('includes_hop')
-          ..doc = 'If true generates tool folder with hop_runner'
-          ..classInit = false,
+              member('includes_readme')
+                ..doc = 'If true standard outline for readme provided'
+                ..classInit = false,
+              member('introduction')
+                ..doc =
+                'A brief introduction for this system, included in README.md',
+              member('purpose')
+                ..doc = 'Purpose for this system, included in README.md',
+              member('todos')
+                ..doc =
+                'List of todos included in the readme - If any present includesReadme assumed true'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('includes_hop')
+                ..doc = 'If true generates tool folder with hop_runner'
+                ..classInit = false,
+            ],
         ],
-      ],
       part('app')
-      ..classes = [
-        class_('app')
-        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
-        ..doc = 'Defines a dart *web* application. For non-web console app, use Script'
-        ..members = [
-          id_member('app'),
-          member('classes')
-          ..doc = 'Classes defined in this app'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('libraries')
-          ..doc = 'List of libraries of this app'
-          ..type = 'List<Library>'
-          ..classInit = '[]',
-          member('variables')
-          ..doc = 'List of global variables for this library'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('is_web_ui')
-          ..doc = 'If true this is a web ui app'
-          ..classInit = false,
+        ..classes = [
+          class_('app')
+            ..mixins = ['CustomCodeBlock', 'Entity']
+            ..doc =
+            'Defines a dart *web* application. For non-web console app, use Script'
+            ..members = [
+              id_member('app'),
+              member('classes')
+                ..doc = 'Classes defined in this app'
+                ..type = 'List<Class>'
+                ..classInit = '[]',
+              member('libraries')
+                ..doc = 'List of libraries of this app'
+                ..type = 'List<Library>'
+                ..classInit = '[]',
+              member('variables')
+                ..doc = 'List of global variables for this library'
+                ..type = 'List<Variable>'
+                ..classInit = '[]',
+              member('is_web_ui')
+                ..doc = 'If true this is a web ui app'
+                ..classInit = false,
+            ],
         ],
-      ],
       part('benchmark')
-      ..classes = [
-        class_('benchmark')
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          id_member('benchmark'),
-          member('classes')
-          ..doc = 'Additional classes in the benchmark library'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-        ]
-      ],
-
-      part('emacs_support')
-      ..doc = 'Support for generating emacs functions for accessing generated code'
-      ..classes = [
-        class_('installation_walker')
-        ..doc = 'Walks installation and creates single emacs file with utility functions'
-      ],
-      
-      part('script')
-      ..enums = [
-        enum_('arg_type')
-        ..doc = 'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
-        ..requiresClass = true
-        ..values = [
-          id('string'), id('int'), id('long'), id('choice'), id('double'), id('bool')
-        ]
-      ]
-      ..classes = [
-        class_('script_arg')
-        ..doc = 'An agrument to a script'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          id_member('script argument'),
-          member('name')
-          ..doc = 'Name of the the arg (emacs naming convention)'
-          ..access = Access.RO,
-          member('is_required')
-          ..doc = 'If true the argument is required'
-          ..classInit = false,
-          member('is_flag')
-          ..doc = 'If true this argument is a boolean flag (i.e. no option is required)'
-          ..classInit = false,
-          member('is_multiple')
-          ..doc = 'If true the argument may be specified mutiple times'
-          ..classInit = false,
-          member('defaults_to')
-          ..doc = 'Used to initialize the value in case not set'
-          ..type = 'dynamic'
-          ..access = RO,
-          member('allowed')
-          ..doc = 'A list of allowed values to choose from'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('position')
-          ..doc = 'If not null - holds the position of a positional (i.e. unnamed) argument'
-          ..type = 'int',
-          member('abbr')
-          ..doc = 'An abbreviation (single character)',
-          member('type')..type = 'ArgType',
+        ..classes = [
+          class_('benchmark')
+            ..mixins = ['Entity']
+            ..members = [
+              id_member('benchmark'),
+              member('classes')
+                ..doc = 'Additional classes in the benchmark library'
+                ..type = 'List<Class>'
+                ..classInit = '[]',
+            ]
         ],
-        class_('script')
-        ..doc = 'A typical script - (i.e. like a bash/python/ruby script but in dart)'
-        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
-        ..members = [
-          id_member('script'),
-          member('imports')
-          ..doc = 'List of imports to be included by this script'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('script_path')
-          ..doc = '''
+      part('emacs_support')
+        ..doc =
+        'Support for generating emacs functions for accessing generated code'
+        ..classes = [
+          class_('installation_walker')
+            ..doc =
+            'Walks installation and creates single emacs file with utility functions'
+        ],
+      part('script')
+        ..enums = [
+          enum_('arg_type')
+            ..doc =
+            'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
+            ..requiresClass = true
+            ..values = [
+              id('string'),
+              id('int'),
+              id('long'),
+              id('choice'),
+              id('double'),
+              id('bool')
+            ]
+        ]
+        ..classes = [
+          class_('script_arg')
+            ..doc = 'An agrument to a script'
+            ..mixins = ['Entity']
+            ..members = [
+              id_member('script argument'),
+              member('name')
+                ..doc = 'Name of the the arg (emacs naming convention)'
+                ..access = Access.RO,
+              member('is_required')
+                ..doc = 'If true the argument is required'
+                ..classInit = false,
+              member('is_flag')
+                ..doc =
+                'If true this argument is a boolean flag (i.e. no option is required)'
+                ..classInit = false,
+              member('is_multiple')
+                ..doc = 'If true the argument may be specified mutiple times'
+                ..classInit = false,
+              member('defaults_to')
+                ..doc = 'Used to initialize the value in case not set'
+                ..type = 'dynamic'
+                ..access = RO,
+              member('allowed')
+                ..doc = 'A list of allowed values to choose from'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('position')
+                ..doc =
+                'If not null - holds the position of a positional (i.e. unnamed) argument'
+                ..type = 'int',
+              member('abbr')..doc = 'An abbreviation (single character)',
+              member('type')..type = 'ArgType',
+            ],
+          class_('script')
+            ..doc =
+            'A typical script - (i.e. like a bash/python/ruby script but in dart)'
+            ..mixins = ['CustomCodeBlock', 'Entity']
+            ..members = [
+              id_member('script'),
+              member('imports')
+                ..doc = 'List of imports to be included by this script'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('script_path')
+                ..doc = '''
 Where to create the script.
 If not present will be determined by parent [System] rootPath
 '''
-          ..access = WO,
-          member('args')
-          ..doc = 'Arguments for this script'
-          ..type = 'List<ScriptArg>'
-          ..classInit = '[]',
-          member('no_log_level')
-          ..doc = '''
+                ..access = WO,
+              member('args')
+                ..doc = 'Arguments for this script'
+                ..type = 'List<ScriptArg>'
+                ..classInit = '[]',
+              member('no_log_level')
+                ..doc = '''
 By default a *log-level* argument will be included in the script.
 Set this to false to prevent this
 '''
-          ..classInit = false,
-          member('is_async')
-          ..doc = 'If true makes script main async'
-          ..classInit = false,
-          member('enums')
-          ..doc = 'Enums for this script'
-          ..type = 'List<Enum>'
-          ..classInit = [],
-          member('classes')
-          ..doc = 'Classes to support this script, included directly in script above main'
-          ..type = 'List<Class>'
-          ..classInit = [],
+                ..classInit = false,
+              member('is_async')
+                ..doc = 'If true makes script main async'
+                ..classInit = false,
+              member('enums')
+                ..doc = 'Enums for this script'
+                ..type = 'List<Enum>'
+                ..classInit = [],
+              member('classes')
+                ..doc =
+                'Classes to support this script, included directly in script above main'
+                ..type = 'List<Class>'
+                ..classInit = [],
+            ],
         ],
-      ],
       part('pub')
-      ..classes = [
-        class_('pub_dependency')
-        ..doc = 'A dependency of the system'
-        ..members = [
-          member('name')
-          ..ctors = ['']
-          ..doc = 'Name of dependency',
-          member('version')
-          ..doc = 'Required version for this dependency'
-          ..classInit = 'any',
-          member('path')
-          ..doc = "Path to package, infers package type for git (git:...), hosted (http:...), path ",
-          member('git_ref')
-          ..doc = "Git reference",
-          member('type')
-          ..doc = "Type for the pub dependency"
-          ..isJsonTransient = true
-          ..type = 'PubDepType'
-          ..access = IA,
-        ],
-        class_('pub_transformer')
-        ..isAbstract = true
-        ..doc = 'Entry in the transformer sections'
-        ..members = [
-          member('name')
-          ..ctors = ['']
-          ..doc = 'Name of transformer'
-        ],
-        class_('polymer_transformer')
-        ..extend = 'PubTransformer'
-        ..doc = 'A polymer transformer entry'
-        ..members = [
-          member('entry_points')
-          ..type = 'List<String>'
-          ..doc = 'List of entry points'
-        ],
-        class_('pub_spec')
-        ..doc = 'Information for the pubspec of the system'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          // In general id is final - but here we want json
-          id_member('pub spec')..isFinal = false,
-          member('version')
-          ..doc = 'Version for this package'
-          ..classInit = '0.0.1',
-          member('name')
-          ..doc = '''
+        ..classes = [
+          class_('pub_dependency')
+            ..doc = 'A dependency of the system'
+            ..members = [
+              member('name')
+                ..ctors = ['']
+                ..doc = 'Name of dependency',
+              member('version')
+                ..doc = 'Required version for this dependency'
+                ..classInit = 'any',
+              member('path')
+                ..doc =
+                "Path to package, infers package type for git (git:...), hosted (http:...), path ",
+              member('git_ref')..doc = "Git reference",
+              member('type')
+                ..doc = "Type for the pub dependency"
+                ..isJsonTransient = true
+                ..type = 'PubDepType'
+                ..access = IA,
+            ],
+          class_('pub_transformer')
+            ..isAbstract = true
+            ..doc = 'Entry in the transformer sections'
+            ..members = [
+              member('name')
+                ..ctors = ['']
+                ..doc = 'Name of transformer'
+            ],
+          class_('polymer_transformer')
+            ..extend = 'PubTransformer'
+            ..doc = 'A polymer transformer entry'
+            ..members = [
+              member('entry_points')
+                ..type = 'List<String>'
+                ..doc = 'List of entry points'
+            ],
+          class_('pub_spec')
+            ..doc = 'Information for the pubspec of the system'
+            ..mixins = ['Entity']
+            ..members = [
+              // In general id is final - but here we want json
+              id_member('pub spec')..isFinal = false,
+              member('version')
+                ..doc = 'Version for this package'
+                ..classInit = '0.0.1',
+              member('name')
+                ..doc = '''
 Name of the project described in spec.
 If not set, id of system is used.
 ''',
-          member('author')
-          ..doc = "Author of the pub package",
-          member('homepage')
-          ..doc = "Homepage of the pub package",
-          member('dependencies')
-          ..type = 'List<PubDependency>'
-          ..classInit = '[]',
-          member('dev_dependencies')
-          ..type = 'List<PubDependency>'
-          ..classInit = '[]',
-          member('pub_transformers')
-          ..type = 'List<PubTransformer>'
-          ..classInit = '[]',
+              member('author')..doc = "Author of the pub package",
+              member('homepage')..doc = "Homepage of the pub package",
+              member('dependencies')
+                ..type = 'List<PubDependency>'
+                ..classInit = '[]',
+              member('dev_dependencies')
+                ..type = 'List<PubDependency>'
+                ..classInit = '[]',
+              member('pub_transformers')
+                ..type = 'List<PubTransformer>'
+                ..classInit = '[]',
+            ],
         ],
-      ],
       part('enum')
-      ..classes = [
-        class_('enum_value')
-        ..doc = 'Define the id and value for an enum value'
-        ..members = [
-          id_member('enum_value'),
-          member('value')
-          ..doc = 'User specified value for enum value'
-          ..type = 'var'
-          ..ctors = [''],
-          doc_member('enum_value'),
-        ],
-        class_('enum')
-        ..doc = '''Defines an enum.
+        ..classes = [
+          class_('enum_value')
+            ..doc = 'Define the id and value for an enum value'
+            ..members = [
+              id_member('enum_value'),
+              member('value')
+                ..doc = 'User specified value for enum value'
+                ..type = 'var'
+                ..ctors = [''],
+              doc_member('enum_value'),
+            ],
+          class_('enum')
+            ..doc = '''Defines an enum.
 
 There are two styles of generation - the language supplied and the original
 *class* paradigm proposed prior to existance of language enums. See
@@ -416,59 +426,62 @@ Prints:
     blue
     }
 '''
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          id_member('enum')..ctors = [],          
-          public_member('enum'),
-          member('values')
-          ..doc = "List of id's naming the values"
-          ..type = 'List<EnumValue>'
-          ..access = RO
-          ..classInit = '[]',
-          member('has_json_support')
-          ..doc = "If true, generate toJson/fromJson on wrapper class"
-          ..classInit = false,
-          member('has_rand_json')
-          ..doc = "If true, generate randJson"
-          ..classInit = false,
-          member('name')
-          ..doc = "Name of the enum class generated sans access prefix"
-          ..access = Access.RO,
-          member('enum_name')
-          ..doc = "Name of the enum class generated with access prefix"
-          ..access = Access.RO,
-          member('has_custom')
-          ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..classInit = false,
-          member('has_library_scoped_values')
-          ..doc = 'If true scopes the enum values to library by assigning to var outside class'
-          ..classInit = false,
-          member('is_snake_string')
-          ..doc = 'If true string value for each entry is snake case (default is shout)'
-          ..classInit = false,
-          member('requires_class')
-          ..doc = '''
+            ..mixins = ['Entity']
+            ..members = [
+              id_member('enum')..ctors = [],
+              public_member('enum'),
+              member('values')
+                ..doc = "List of id's naming the values"
+                ..type = 'List<EnumValue>'
+                ..access = RO
+                ..classInit = '[]',
+              member('has_json_support')
+                ..doc = "If true, generate toJson/fromJson on wrapper class"
+                ..classInit = false,
+              member('has_rand_json')
+                ..doc = "If true, generate randJson"
+                ..classInit = false,
+              member('name')
+                ..doc = "Name of the enum class generated sans access prefix"
+                ..access = Access.RO,
+              member('enum_name')
+                ..doc = "Name of the enum class generated with access prefix"
+                ..access = Access.RO,
+              member('has_custom')
+                ..doc =
+                'If true includes custom block for additional user supplied ctor code'
+                ..classInit = false,
+              member('has_library_scoped_values')
+                ..doc =
+                'If true scopes the enum values to library by assigning to var outside class'
+                ..classInit = false,
+              member('is_snake_string')
+                ..doc =
+                'If true string value for each entry is snake case (default is shout)'
+                ..classInit = false,
+              member('requires_class')
+                ..doc = '''
 Before true enum support enums were emulated with a class containing static
 consts. This had some unique features in terms of ability to generate json
 support as well as some custom functions. Setting this will ensure that
 a class is generated instead of the newer and generally preffered enum.
 '''
-          ..type = 'bool'
-          ..access = Access.WO
+                ..type = 'bool'
+                ..access = Access.WO
+            ],
         ],
-      ],
       part('variable')
-      ..classes = [
-        class_('variable')
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          id_member('variable'),
-          public_member('variable'),
-          member('type')
-          ..doc = 'Type for the variable'
-          ..type = 'String',
-          member('init')
-          ..doc = '''
+        ..classes = [
+          class_('variable')
+            ..mixins = ['Entity']
+            ..members = [
+              id_member('variable'),
+              public_member('variable'),
+              member('type')
+                ..doc = 'Type for the variable'
+                ..type = 'String',
+              member('init')
+                ..doc = '''
 Data used to initialize the variable
 If init is a String and type is not specified, [type] is a String
 
@@ -491,78 +504,79 @@ member('foo')..init = [1,2,3]
   Map foo = [1,2,3];
 
 '''
-          ..type = 'dynamic',
-          member('is_final')
-          ..doc = 'True if the variable is final'
-          ..classInit = false,
-          member('is_const')
-          ..doc = 'True if the variable is const'
-          ..classInit = false,
-          member('is_static')
-          ..doc = 'True if the variable is static'
-          ..classInit = false,
-          member('name')
-          ..doc = "Name of the enum class generated sans access prefix"
-          ..access = Access.RO,
-          member('var_name')
-          ..doc = 'Name of variable - varies depending on public/private'
-          ..access = Access.RO,
+                ..type = 'dynamic',
+              member('is_final')
+                ..doc = 'True if the variable is final'
+                ..classInit = false,
+              member('is_const')
+                ..doc = 'True if the variable is const'
+                ..classInit = false,
+              member('is_static')
+                ..doc = 'True if the variable is static'
+                ..classInit = false,
+              member('name')
+                ..doc = "Name of the enum class generated sans access prefix"
+                ..access = Access.RO,
+              member('var_name')
+                ..doc = 'Name of variable - varies depending on public/private'
+                ..access = Access.RO,
+            ],
         ],
-      ],
       part('class')
-      ..enums = [
-        enum_('json_key_format')
-        ..doc = 'When serializing json, how to name the keys'
-        ..values = [
-          id('camel'), id('cap_camel'), id('snake'),
-        ],
-      ]
-      ..classes = [
-        class_('ctor')
-        ..doc = 'Metadata associated with a constructor'
-        ..mixins = [ 'CustomCodeBlock' ]
-        ..members = [
-          member('class_name')
-          ..doc = "Name of the class of this ctor.",
-          member('name')
-          ..doc = "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
-          member('members')
-          ..doc = 'List of members initialized in this ctor'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('opt_members')
-          ..doc = 'List of optional members initialized in this ctor (i.e. those in [])'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('named_members')
-          ..doc = 'List of optional members initialized in this ctor (i.e. those in {})'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('has_custom')
-          ..doc = 'If true includes custom block for additional user supplied ctor code'
-          ..classInit = false,
-          member('is_const')
-          ..doc = 'True if the variable is const'
-          ..classInit = false,
-          member('calls_init')
-          ..doc = 'If true implementation is `=> _init()`'
-          ..classInit = false,
-        ],
-        class_('member')
-        ..mixins = [ 'Entity' ]
-        ..doc = 'Metadata associated with a member of a Dart class'
-        ..members = [
-          id_member('class member'),
-          member('type')
-          ..doc = 'Type of the member'
-          ..type = 'String'
-          ..classInit = 'String',
-          member('access')
-          ..doc = 'Access level supported for this member'
-          ..type = 'Access',
-          member('class_init')
-          ..type = 'dynamic'
-          ..doc = '''
+        ..enums = [
+          enum_('json_key_format')
+            ..doc = 'When serializing json, how to name the keys'
+            ..values = [id('camel'), id('cap_camel'), id('snake'),],
+        ]
+        ..classes = [
+          class_('ctor')
+            ..doc = 'Metadata associated with a constructor'
+            ..mixins = ['CustomCodeBlock']
+            ..members = [
+              member('class_name')..doc = "Name of the class of this ctor.",
+              member('name')
+                ..doc =
+                "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
+              member('members')
+                ..doc = 'List of members initialized in this ctor'
+                ..type = 'List<Member>'
+                ..classInit = '[]',
+              member('opt_members')
+                ..doc =
+                'List of optional members initialized in this ctor (i.e. those in [])'
+                ..type = 'List<Member>'
+                ..classInit = '[]',
+              member('named_members')
+                ..doc =
+                'List of optional members initialized in this ctor (i.e. those in {})'
+                ..type = 'List<Member>'
+                ..classInit = '[]',
+              member('has_custom')
+                ..doc =
+                'If true includes custom block for additional user supplied ctor code'
+                ..classInit = false,
+              member('is_const')
+                ..doc = 'True if the variable is const'
+                ..classInit = false,
+              member('calls_init')
+                ..doc = 'If true implementation is `=> _init()`'
+                ..classInit = false,
+            ],
+          class_('member')
+            ..mixins = ['Entity']
+            ..doc = 'Metadata associated with a member of a Dart class'
+            ..members = [
+              id_member('class member'),
+              member('type')
+                ..doc = 'Type of the member'
+                ..type = 'String'
+                ..classInit = 'String',
+              member('access')
+                ..doc = 'Access level supported for this member'
+                ..type = 'Access',
+              member('class_init')
+                ..type = 'dynamic'
+                ..doc = '''
 If provided the member will be initialized with value.
 The type of the member can be inferred from the type
 of this value.  Member type is defaulted to String. If
@@ -574,50 +588,56 @@ the type of member will be set to
 classInit.runtimeType.
 
 ''',
-          member('ctor_init')
-          ..doc = '''
+              member('ctor_init')
+                ..doc = '''
 If provided the member will be initialized to this
 text in generated ctor initializers''',
-          member('ctors')
-          ..doc = "List of ctor names to include this member in"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors_opt')
-          ..doc = "List of ctor names to include this member in as optional parameter"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors_named')
-          ..doc = "List of ctor names to include this member in as named optional parameter"
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('is_final')
-          ..doc = 'True if the member is final'
-          ..classInit = false,
-          member('is_const')
-          ..doc = 'True if the member is const'
-          ..classInit = false,
-          member('is_static')
-          ..doc = 'True if the member is static'
-          ..classInit = false,
-          member('is_json_transient')
-          ..doc = 'True if the member should not be serialized if the parent class has hasJsonSupport'
-          ..classInit = false,
-          member('is_observable')
-          ..doc = 'If true annotated with observable'
-          ..classInit = false,
-          member('is_in_comparable')
-          ..doc = 'If true and member is in class that is comparable, it will be included in compareTo method'
-          ..type = 'bool'
-          ..classInit = 'true',
-          member('name')
-          ..doc = "Name of variable for the member, excluding access prefix (i.e. no '_')"
-          ..access = Access.RO,
-          member('var_name')
-          ..doc = 'Name of variable for the member - varies depending on public/private'
-          ..access = Access.RO,
-        ],
-        class_('class')
-        ..doc = '''
+              member('ctors')
+                ..doc = "List of ctor names to include this member in"
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('ctors_opt')
+                ..doc =
+                "List of ctor names to include this member in as optional parameter"
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('ctors_named')
+                ..doc =
+                "List of ctor names to include this member in as named optional parameter"
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('is_final')
+                ..doc = 'True if the member is final'
+                ..classInit = false,
+              member('is_const')
+                ..doc = 'True if the member is const'
+                ..classInit = false,
+              member('is_static')
+                ..doc = 'True if the member is static'
+                ..classInit = false,
+              member('is_json_transient')
+                ..doc =
+                'True if the member should not be serialized if the parent class has hasJsonSupport'
+                ..classInit = false,
+              member('is_observable')
+                ..doc = 'If true annotated with observable'
+                ..classInit = false,
+              member('is_in_comparable')
+                ..doc =
+                'If true and member is in class that is comparable, it will be included in compareTo method'
+                ..type = 'bool'
+                ..classInit = 'true',
+              member('name')
+                ..doc =
+                "Name of variable for the member, excluding access prefix (i.e. no '_')"
+                ..access = Access.RO,
+              member('var_name')
+                ..doc =
+                'Name of variable for the member - varies depending on public/private'
+                ..access = Access.RO,
+            ],
+          class_('class')
+            ..doc = '''
 Metadata associated with a Dart class
 
 A class consists primarily of its [members], but other niceties are provided.
@@ -725,238 +745,245 @@ Prints:
 
 
 '''
-        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
-        ..members = [
-          id_member('Dart class')..ctors = [],
-          public_member('Dart class'),
-          member('mixins')
-          ..doc = 'List of mixins'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('extend')
-          ..doc = 'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
-          ..type = 'String',
-          member('implement')
-          ..doc = 'Any implements (NOTE implement not implements)'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..access = WO
-          ..type = 'Access',
-          member('members')
-          ..doc = 'List of members of this class'
-          ..type = 'List<Member>'
-          ..classInit = '[]',
-          member('ctor_customs')
-          ..doc = 'List of ctors requiring custom block'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctor_const')
-          ..doc = 'List of ctors that should be const'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('ctors')
-          ..doc = 'List of ctors of this class'
-          ..type = 'Map<String,Ctor>'
-          ..classInit = '{}'
-          ..access = Access.RO,
-          member('is_abstract')
-          ..doc = "If true, class is abstract"
-          ..classInit = false,
-          member('has_json_support')
-          ..doc = "If true, generate toJson/fromJson on all members that are not isJsonTransient"
-          ..access = WO
-          ..classInit = false,
-          member('has_rand_json')
-          ..doc = "If true, generate randJson function"
-          ..classInit = false,
-          member('has_op_equals')
-          ..doc = "If true, generate operator== using all members"
-          ..classInit = false,
-          member('is_comparable')
-          ..doc = "If true, implements comparable"
-          ..classInit = false,
-          member('is_polymorphic_comparable')
-          ..doc = "If true, implements comparable with runtimeType check followed by rest"
-          ..classInit = false,
-          member('has_courtesy_ctor')
-          ..doc = """
+            ..mixins = ['CustomCodeBlock', 'Entity']
+            ..members = [
+              id_member('Dart class')..ctors = [],
+              public_member('Dart class'),
+              member('mixins')
+                ..doc = 'List of mixins'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('extend')
+                ..doc =
+                'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
+                ..type = 'String',
+              member('implement')
+                ..doc = 'Any implements (NOTE implement not implements)'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('default_member_access')
+                ..doc = 'Default access for members'
+                ..access = WO
+                ..type = 'Access',
+              member('members')
+                ..doc = 'List of members of this class'
+                ..type = 'List<Member>'
+                ..classInit = '[]',
+              member('ctor_customs')
+                ..doc = 'List of ctors requiring custom block'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('ctor_const')
+                ..doc = 'List of ctors that should be const'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('ctors')
+                ..doc = 'List of ctors of this class'
+                ..type = 'Map<String,Ctor>'
+                ..classInit = '{}'
+                ..access = Access.RO,
+              member('is_abstract')
+                ..doc = "If true, class is abstract"
+                ..classInit = false,
+              member('has_json_support')
+                ..doc =
+                "If true, generate toJson/fromJson on all members that are not isJsonTransient"
+                ..access = WO
+                ..classInit = false,
+              member('has_rand_json')
+                ..doc = "If true, generate randJson function"
+                ..classInit = false,
+              member('has_op_equals')
+                ..doc = "If true, generate operator== using all members"
+                ..classInit = false,
+              member('is_comparable')
+                ..doc = "If true, implements comparable"
+                ..classInit = false,
+              member('is_polymorphic_comparable')
+                ..doc =
+                "If true, implements comparable with runtimeType check followed by rest"
+                ..classInit = false,
+              member('has_courtesy_ctor')
+                ..doc = """
 If true adds '..ctors[''] to all members (i.e. ensures generation of
 empty ctor with all members passed as arguments)
           """
-          ..classInit = false,
-          member('all_members_final')
-          ..doc = "If true adds sets all members to final"
-          ..classInit = false,
-          member('has_default_ctor')
-          ..doc = "If true adds empty default ctor"
-          ..classInit = false,
-          member('is_immutable')
-          ..doc = "If true sets allMembersFinal and hasDefaultCtor to true"
-          ..classInit = false,
-          member('has_ctor_sans_new')
-          ..doc = "If true creates library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..access = WO,
-          member('is_copyable')
-          ..doc = "If true includes a copy function"
-          ..classInit = false,
-          member('name')
-          ..doc = "Name of the class - sans any access prefix (i.e. no '_')"
-          ..access = Access.RO,
-          member('class_name')
-          ..doc = "Name of the class, including access prefix"
-          ..access = Access.RO,
-          member('top_injection')
-          ..doc = 'Additional code included in the class near the top',
-          member('bottom_injection')
-          ..doc = 'Additional code included in the class near the bottom',
-          member('has_builder')
-          ..doc = r"If true includes a ${className}Builder class"
-          ..classInit = false,
-          member('has_json_to_string')
-          ..doc = "If true includes a toString() => prettyJsonMap(toJson())"
-          ..classInit = false,
-          member('cache_hash')
-          ..doc = "If true adds transient hash code and caches the has on first call"
-          ..classInit = false,
-          member('ctor_calls_init')
-          ..doc = 'If true hasCourtesyCtor is `=> _init()`'
-          ..classInit = false,
-          member('json_key_format')
-          ..doc = 'When serializing json, how to format the keys'
-          ..type = 'JsonKeyFormat',
+                ..classInit = false,
+              member('all_members_final')
+                ..doc = "If true adds sets all members to final"
+                ..classInit = false,
+              member('has_default_ctor')
+                ..doc = "If true adds empty default ctor"
+                ..classInit = false,
+              member('is_immutable')
+                ..doc =
+                "If true sets allMembersFinal and hasDefaultCtor to true"
+                ..classInit = false,
+              member('has_ctor_sans_new')
+                ..doc =
+                "If true creates library functions to construct forwarding to ctors"
+                ..type = 'bool'
+                ..access = WO,
+              member('is_copyable')
+                ..doc = "If true includes a copy function"
+                ..classInit = false,
+              member('name')
+                ..doc =
+                "Name of the class - sans any access prefix (i.e. no '_')"
+                ..access = Access.RO,
+              member('class_name')
+                ..doc = "Name of the class, including access prefix"
+                ..access = Access.RO,
+              member('top_injection')
+                ..doc = 'Additional code included in the class near the top',
+              member('bottom_injection')
+                ..doc = 'Additional code included in the class near the bottom',
+              member('has_builder')
+                ..doc = r"If true includes a ${className}Builder class"
+                ..classInit = false,
+              member('has_json_to_string')
+                ..doc =
+                "If true includes a toString() => prettyJsonMap(toJson())"
+                ..classInit = false,
+              member('cache_hash')
+                ..doc =
+                "If true adds transient hash code and caches the has on first call"
+                ..classInit = false,
+              member('ctor_calls_init')
+                ..doc = 'If true hasCourtesyCtor is `=> _init()`'
+                ..classInit = false,
+              member('json_key_format')
+                ..doc = 'When serializing json, how to format the keys'
+                ..type = 'JsonKeyFormat',
+            ],
         ],
-      ],
       part('library')
-      ..classes = [
-        class_('library')
-        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
-        ..doc = "Defines a dart library - a collection of parts"
-        ..members = [
-          id_member('library')..ctors = [],
-          member('imports')
-          ..doc = 'List of imports to be included by this library'
-          ..type = 'List<String>'
-          ..classInit = '[]',
-          member('parts')
-          ..doc = 'List of parts in this library'
-          ..type = 'List<Part>'
-          ..classInit = '[]',
-          member('variables')
-          ..doc = 'List of global variables for this library'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('classes')
-          ..doc = 'Classes defined in this library'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('benchmarks')
-          ..doc = 'Named benchmarks associated with this library'
-          ..type = 'List<Benchmark>'
-          ..classInit = '[]',
-          member('enums')
-          ..doc = 'Enums defined in this library'
-          ..type = 'List<Enum>'
-          ..classInit = '[]',
-          member('name')
-          ..doc = "Name of the library file"
-          ..access = Access.RO,
-          member('qualified_name')
-          ..doc = "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
-          ..access = Access.RO,
-          member('includes_logger')
-          ..doc = 'If true includes logging support and a _logger'
-          ..classInit = false,
-          member('is_test')
-          ..doc = 'If true this library is a test library to appear in test folder'
-          ..access = Access.RO
-          ..classInit = false,
-
-          member('main_custom_block')
-          ..doc = 'Code block inside main for custom code'
-          ..type = 'CodeBlock'
-          ..access = WO,
-
-          member('path')
-          ..doc = 'Set desired if generating just a lib and not a package',
-          member('lib_main')
-          ..doc = 'If set the main function',
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..classInit = 'Access.RW'
-          ..type = 'Access',
-          member('has_ctor_sans_new')
-          ..doc = "If true classes will get library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..classInit = false
+        ..classes = [
+          class_('library')
+            ..mixins = ['CustomCodeBlock', 'Entity']
+            ..doc = "Defines a dart library - a collection of parts"
+            ..members = [
+              id_member('library')..ctors = [],
+              member('imports')
+                ..doc = 'List of imports to be included by this library'
+                ..type = 'List<String>'
+                ..classInit = '[]',
+              member('parts')
+                ..doc = 'List of parts in this library'
+                ..type = 'List<Part>'
+                ..classInit = '[]',
+              member('variables')
+                ..doc = 'List of global variables for this library'
+                ..type = 'List<Variable>'
+                ..classInit = '[]',
+              member('classes')
+                ..doc = 'Classes defined in this library'
+                ..type = 'List<Class>'
+                ..classInit = '[]',
+              member('benchmarks')
+                ..doc = 'Named benchmarks associated with this library'
+                ..type = 'List<Benchmark>'
+                ..classInit = '[]',
+              member('enums')
+                ..doc = 'Enums defined in this library'
+                ..type = 'List<Enum>'
+                ..classInit = '[]',
+              member('name')
+                ..doc = "Name of the library file"
+                ..access = Access.RO,
+              member('qualified_name')
+                ..doc =
+                "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
+                ..access = Access.RO,
+              member('includes_logger')
+                ..doc = 'If true includes logging support and a _logger'
+                ..classInit = false,
+              member('is_test')
+                ..doc =
+                'If true this library is a test library to appear in test folder'
+                ..access = Access.RO
+                ..classInit = false,
+              member('main_custom_block')
+                ..doc = 'Code block inside main for custom code'
+                ..type = 'CodeBlock'
+                ..access = WO,
+              member('path')
+                ..doc =
+                'Set desired if generating just a lib and not a package',
+              member('lib_main')..doc = 'If set the main function',
+              member('default_member_access')
+                ..doc = 'Default access for members'
+                ..classInit = 'Access.RW'
+                ..type = 'Access',
+              member('has_ctor_sans_new')
+                ..doc =
+                "If true classes will get library functions to construct forwarding to ctors"
+                ..type = 'bool'
+                ..classInit = false
+            ],
         ],
-      ],
       part('part')
-      ..classes = [
-        class_('part')
-        ..mixins = [ 'CustomCodeBlock', 'Entity' ]
-        ..doc = "Defines a dart part - as in 'part of' source file"
-        ..members = [
-          id_member('part')..ctors = [],
-          member('classes')
-          ..doc = 'Classes defined in this part of the library'
-          ..type = 'List<Class>'
-          ..classInit = '[]',
-          member('enums')
-          ..doc = 'Enums defined in this part of the library'
-          ..type = 'List<Enum>'
-          ..classInit = '[]',
-          member('name')
-          ..doc = "Name of the part - for use in naming the part file"
-          ..access = Access.RO,
-          member('file_path')
-          ..doc = "Path to the generated part dart file"
-          ..access = Access.RO,
-          member('variables')
-          ..doc = 'List of global variables in this part'
-          ..type = 'List<Variable>'
-          ..classInit = '[]',
-          member('default_member_access')
-          ..doc = 'Default access for members'
-          ..access = WO
-          ..type = 'Access',
-          member('has_ctor_sans_new')
-          ..doc = "If true classes will get library functions to construct forwarding to ctors"
-          ..type = 'bool'
-          ..access = WO
+        ..classes = [
+          class_('part')
+            ..mixins = ['CustomCodeBlock', 'Entity']
+            ..doc = "Defines a dart part - as in 'part of' source file"
+            ..members = [
+              id_member('part')..ctors = [],
+              member('classes')
+                ..doc = 'Classes defined in this part of the library'
+                ..type = 'List<Class>'
+                ..classInit = '[]',
+              member('enums')
+                ..doc = 'Enums defined in this part of the library'
+                ..type = 'List<Enum>'
+                ..classInit = '[]',
+              member('name')
+                ..doc = "Name of the part - for use in naming the part file"
+                ..access = Access.RO,
+              member('file_path')
+                ..doc = "Path to the generated part dart file"
+                ..access = Access.RO,
+              member('variables')
+                ..doc = 'List of global variables in this part'
+                ..type = 'List<Variable>'
+                ..classInit = '[]',
+              member('default_member_access')
+                ..doc = 'Default access for members'
+                ..access = WO
+                ..type = 'Access',
+              member('has_ctor_sans_new')
+                ..doc =
+                "If true classes will get library functions to construct forwarding to ctors"
+                ..type = 'bool'
+                ..access = WO
+            ],
         ],
-      ],
       part('dart_meta')
-      ..variables = [
-        variable('pub_type_re')
-        ..type = 'RegExp'
-        ..isPublic = false
-        ..init = 'new RegExp(r"(git:|http:|[\./.])")'
-      ]
-      ..enums = [
-        enum_('access')
-        ..hasJsonSupport = true
-        ..doc = 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
-        ..values = [
-          id('ia'), id('ro'), id('rw'), id('wo'),
-        ],
-        enum_('pub_dep_type')
-        ..doc = 'Dependency type of a PubDependency'
-        ..hasJsonSupport = true
-        ..values = [
-          id('path'), id('git'), id('hosted')
-        ],
-      ]
-      ..classes = [
-      ]
+        ..variables = [
+          variable('pub_type_re')
+            ..type = 'RegExp'
+            ..isPublic = false
+            ..init = 'new RegExp(r"(git:|http:|[\./.])")'
+        ]
+        ..enums = [
+          enum_('access')
+            ..hasJsonSupport = true
+            ..doc =
+            'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
+            ..values = [id('ia'), id('ro'), id('rw'), id('wo'),],
+          enum_('pub_dep_type')
+            ..doc = 'Dependency type of a PubDependency'
+            ..hasJsonSupport = true
+            ..values = [id('path'), id('git'), id('hosted')],
+        ]
+        ..classes = []
     ];
 
   System ebisu = system('ebisu')
     ..includesReadme = true
     ..includesHop = true
-    ..introduction = 'A library supporting code generation of Dart pub packages and many constituent assets.'
+    ..introduction =
+    'A library supporting code generation of Dart pub packages and many constituent assets.'
     ..purpose = '''
 There are two potentially distinct purposes for this package. First, for those
 wanting to keep consistency across Dart assets being developed, a declarative
@@ -1082,95 +1109,92 @@ library/templates, a message like the following will be output:
 '''
     ..testLibraries = [
       library('setup')
-      ..imports = [
-        'package:ebisu/ebisu_dart_meta.dart',
-        'package:path/path.dart',
-        'io',
-      ]
-      ..variables = [
-        variable('scratch_remove_me_folder')
-        ..isPublic = false
-      ]
-      ..includesMain = false
-      ..includesLogger = true,
-      library('test_dart_meta')..imports = ['package:ebisu/ebisu_dart_meta.dart',],
-      library('test_functions')..imports = [ 'package:ebisu/ebisu.dart', ],
-      library('test_enums')..imports = [ ],
-      library('test_class')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ],
-      library('test_entity')..imports = [ 'package:ebisu/ebisu.dart', 'package:id/id.dart' ]
-      ..classes = [
-        class_('base')
-        ..members = [
-          member('ownership_count')..classInit = 0,
+        ..imports = [
+          'package:ebisu/ebisu_dart_meta.dart',
+          'package:path/path.dart',
+          'io',
+        ]
+        ..variables = [variable('scratch_remove_me_folder')..isPublic = false]
+        ..includesMain = false
+        ..includesLogger = true,
+      library('test_dart_meta')
+        ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
+      library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
+      library('test_enums')..imports = [],
+      library('test_class')
+        ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart'],
+      library('test_entity')
+        ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
+        ..classes = [
+          class_('base')..members = [member('ownership_count')..classInit = 0,],
+          class_('root_entity')
+            ..extend = 'Base'
+            ..mixins = ['Entity']
+            ..members = [
+              member('children')
+                ..type = 'List<ChildEntity>'
+                ..classInit = []
+            ],
+          class_('child_entity')
+            ..extend = 'Base'
+            ..mixins = ['Entity']
+            ..members = [
+              member('grand_children')
+                ..type = 'List<GrandchildEntity>'
+                ..classInit = []
+            ],
+          class_('grandchild_entity')
+            ..extend = 'Base'
+            ..mixins = ['Entity']
+            ..members = [
+              member('great_grand_children')
+                ..type = 'List<GreatGrandchildEntity>'
+                ..classInit = []
+            ],
+          class_('great_grandchild_entity')
+            ..extend = 'Base'
+            ..mixins = ['Entity'],
         ],
-        class_('root_entity')
-        ..extend = 'Base'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          member('children')
-          ..type = 'List<ChildEntity>'..classInit = []
-        ],
-        class_('child_entity')
-        ..extend = 'Base'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          member('grand_children')
-          ..type = 'List<GrandchildEntity>'..classInit = []
-        ],
-        class_('grandchild_entity')
-        ..extend = 'Base'
-        ..mixins = [ 'Entity' ]
-        ..members = [
-          member('great_grand_children')
-          ..type = 'List<GreatGrandchildEntity>'..classInit = []
-        ],
-        class_('great_grandchild_entity')
-        ..extend = 'Base'
-        ..mixins = [ 'Entity' ],
-      ],
       library('test_code_generation')
-      ..imports = [
-        'package:ebisu/ebisu_dart_meta.dart',
-        'setup.dart',
-        'package:path/path.dart',
-        'package:yaml/yaml.dart',
-        'io',
-        'async', ]
-      ..includesLogger = true,
+        ..imports = [
+          'package:ebisu/ebisu_dart_meta.dart',
+          'setup.dart',
+          'package:path/path.dart',
+          'package:yaml/yaml.dart',
+          'io',
+          'async',
+        ]
+        ..includesLogger = true,
       library('expect_basic_class')
-      ..imports = [
-        'scratch_remove_me/lib/basic_class.dart',
-        'package:test/test.dart',
-      ],
+        ..imports = [
+          'scratch_remove_me/lib/basic_class.dart',
+          'package:test/test.dart',
+        ],
       library('expect_various_ctors')
-      ..imports = [
-        'scratch_remove_me/lib/various_ctors.dart',
-        'package:test/test.dart',
-      ],
+        ..imports = [
+          'scratch_remove_me/lib/various_ctors.dart',
+          'package:test/test.dart',
+        ],
       library('expect_multi_parts')
-      ..imports = [
-        'scratch_remove_me/lib/two_parts.dart',
-        'package:test/test.dart'
-      ],
+        ..imports = [
+          'scratch_remove_me/lib/two_parts.dart',
+          'package:test/test.dart'
+        ],
     ]
-    ..todos = [
-      'Add examples'
-    ]
+    ..todos = ['Add examples']
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-        ..version = '0.6.2'
-        ..doc = '''
+      ..version = '0.6.2'
+      ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
 '''
-        ..homepage = 'https://github.com/patefacio/ebisu'
-        ..devDependencies = [
-        ]
-                 )
+      ..homepage = 'https://github.com/patefacio/ebisu'
+      ..devDependencies = [])
     ..libraries = [
       library('ebisu')
-      ..doc = '''
+        ..doc = '''
 Library with common utilities for generating code.
 
 The *ebisu* package has two primary libraries with following focus:
@@ -1179,40 +1203,41 @@ The *ebisu* package has two primary libraries with following focus:
 - *ebisu_dart_meta.dart* Assist in generating *Dart* source code
 
 '''
-      ..imports = [
-        'package:dart_style/dart_style.dart',
-        'package:id/id.dart',
-        'io',
-        'math',
-        '"dart:convert" as convert',
-        '"package:path/path.dart" as path',
-        'package:quiver/iterables.dart',
-      ]
-      ..includesLogger = true
-      ..parts = [
-        part('random_support')
-        ..doc = '''
+        ..imports = [
+          'package:dart_style/dart_style.dart',
+          'package:id/id.dart',
+          'io',
+          'math',
+          '"dart:convert" as convert',
+          '"package:path/path.dart" as path',
+          'package:quiver/iterables.dart',
+        ]
+        ..includesLogger = true
+        ..parts = [
+          part('random_support')
+            ..doc = '''
 Some support for generating random data - sometimes useful for testing
 ''',
-        part('ebisu_variables')
-        ..doc = '''
+          part('ebisu_variables')
+            ..doc = '''
 Variables used by ebisu when generating Dart code.
 '''
-        ..variables = [
-          variable('ebisu_path')
-          ..doc = 'Path to this package - for use until this becomes a pub package'
-          ..isFinal = true
-          ..init = "Platform.environment['EBISU_PATH']",
-          variable('ebisu_author')
-          ..doc = 'Author of the generated code'
-          ..isFinal = true
-          ..init = "Platform.environment['EBISU_AUTHOR']",
-          variable('ebisu_homepage')
-          ..doc = 'Hompage for pubspec'
-          ..isFinal = true
-          ..init = "Platform.environment['EBISU_HOMEPAGE']",
-          variable('ebisu_pub_versions')
-          ..doc = '''
+            ..variables = [
+              variable('ebisu_path')
+                ..doc =
+                'Path to this package - for use until this becomes a pub package'
+                ..isFinal = true
+                ..init = "Platform.environment['EBISU_PATH']",
+              variable('ebisu_author')
+                ..doc = 'Author of the generated code'
+                ..isFinal = true
+                ..init = "Platform.environment['EBISU_AUTHOR']",
+              variable('ebisu_homepage')
+                ..doc = 'Hompage for pubspec'
+                ..isFinal = true
+                ..init = "Platform.environment['EBISU_HOMEPAGE']",
+              variable('ebisu_pub_versions')
+                ..doc = '''
 File containing default pub versions. Dart code generation at times
 generates code that requires packages. For example, generated
 test cases require *test*, generated code can require logging,
@@ -1222,14 +1247,14 @@ the code and into a config file. Then to upgrade multiple packages
 with multiple pubspecs would entail updating the config file and
 regenerating.
 '''
-          ..isFinal = true
-          ..init = '''
+                ..isFinal = true
+                ..init = '''
 (Platform.environment['EBISU_PUB_VERSIONS'] != null) ?
   Platform.environment['EBISU_PUB_VERSIONS'] :
   "\${Platform.environment['HOME']}/.ebisu_pub_versions.json"''',
-          variable('license_map')
-          ..type = 'Map<String,String>'
-          ..init = '''
+              variable('license_map')
+                ..type = 'Map<String,String>'
+                ..init = '''
 {
 
   'boost' : 'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',
@@ -1240,68 +1265,59 @@ regenerating.
   'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
 
 }'''
-
-        ],
-        part('json_support')
-        ..doc = 'Code pulled in when generated Dart needs to serialize json',
-        part('codegen_utils')
-        ..doc = 'Common functions used in the code-generation process',
-
-        part('entity')
-        ..doc = 'Provides support for mixing in recursive design pattern'
-        ..classes = [
-            ///////////////////
-          class_('identifiable')
-          ..isAbstract = true,
-
-          class_('entity')
-          ..isAbstract = true
-          ..implement = [ 'Identifiable' ]
-          ..brief = 'Used to track composition hierarchy of named entities'
-          ..doc = '''
+            ],
+          part('json_support')
+            ..doc =
+            'Code pulled in when generated Dart needs to serialize json',
+          part('codegen_utils')
+            ..doc = 'Common functions used in the code-generation process',
+          part('entity')
+            ..doc = 'Provides support for mixing in recursive design pattern'
+            ..classes = [
+              ///////////////////
+              class_('identifiable')..isAbstract = true,
+              class_('entity')
+                ..isAbstract = true
+                ..implement = ['Identifiable']
+                ..brief =
+                'Used to track composition hierarchy of named entities'
+                ..doc = '''
 Provides support for mixing in recursive design pattern among various
 *Entities*
 '''
-          ..members = [
-
-            member('brief')
-            ..brief = 'Brief description for the entity.'
-            ..doc = '''
+                ..members = [
+                  member('brief')
+                    ..brief = 'Brief description for the entity.'
+                    ..doc = '''
 These items support both a brief comment ([brief]) and a more
 descriptive comment [descr]
 ''',
-
-            member('descr')
-            ..brief = 'Description of entity',
-
-            member('owner')
-            ..brief = 'Owner of this [Entity]'
-            ..doc = '''
+                  member('descr')..brief = 'Description of entity',
+                  member('owner')
+                    ..brief = 'Owner of this [Entity]'
+                    ..doc = '''
 The entity containing this entity (e.g. the [Class] containing the [Member]).
 The top level entity and has the value *null* since it has no owner.
 '''
-            ..access = RO
-            ..type = 'Entity',
+                    ..access = RO
+                    ..type = 'Entity',
+                  member('entity_path')
+                    ..doc = 'Path from root to this entity'
+                    ..type = 'List<Entity>'
+                    ..access = RO
+                    ..classInit = [],
+                ],
 
-            member('entity_path')
-            ..doc = 'Path from root to this entity'
-            ..type = 'List<Entity>'
-            ..access = RO
-            ..classInit = [],
-          ],
-
-            ///////////////////
-        ],
-
-        part('code_block')
-        ..doc = '''
+              ///////////////////
+            ],
+          part('code_block')
+            ..doc = '''
 Support for code blocks - markers for custom hand-written or code
 generation injected code.
 '''
-        ..classes = [
-
-          class_('custom_code_block')
-          ..doc = '''
+            ..classes = [
+              class_('custom_code_block')
+                ..doc = '''
 Mixin to provide a common approach to adding custom code.
 
 *Custom* in this context may be either hand-coded text in a *protection block*
@@ -1312,16 +1328,15 @@ include a single [CodeBlock] allowing support for hand-written code (via the
 *protect block* of [CodeBlock]) or injected code (via the [snippets] list within
 the [CodeBlock]).
 '''
-          ..members = [
-            member('custom_code_block')
-            ..doc = 'A custom code block for a class'
-            ..type = 'CodeBlock'
-            ..access = WO
-            ..classInit = 'new CodeBlock(null)' ,
-          ],
-
-          class_('code_block')
-          ..doc = r'''
+                ..members = [
+                  member('custom_code_block')
+                    ..doc = 'A custom code block for a class'
+                    ..type = 'CodeBlock'
+                    ..access = WO
+                    ..classInit = 'new CodeBlock(null)',
+                ],
+              class_('code_block')
+                ..doc = r'''
 Wraps an optional protection block with optional code injection
 
 [CodeBlock]s have two functions, they provide an opportunity
@@ -1390,52 +1405,53 @@ would give:
     """
 
 '''
-          ..hasCtorSansNew = true
-          ..members = [
-            member('tag')
-            ..doc = 'Tag for protect block. If present includes protect block'
-            ..ctors = [''],
-            member('snippets')
-            ..doc = 'Effecitively a hook to throw in generated text'
-            ..type = 'List<String>'..classInit = [],
-            member('has_snippets_first')
-            ..doc = '''
+                ..hasCtorSansNew = true
+                ..members = [
+                  member('tag')
+                    ..doc =
+                    'Tag for protect block. If present includes protect block'
+                    ..ctors = [''],
+                  member('snippets')
+                    ..doc = 'Effecitively a hook to throw in generated text'
+                    ..type = 'List<String>'
+                    ..classInit = [],
+                  member('has_snippets_first')
+                    ..doc = '''
 Determines whether the injected code snippets come before the
 protection block or after
 '''
-            ..classInit = false,
-          ],
-        ]
-
-      ],
+                    ..classInit = false,
+                ],
+            ]
+        ],
       ebisu_dart_meta,
     ];
 
   ebisu.scripts = [
     script('bootstrap_ebisu')
-    ..imports = [
-      'package:id/id.dart',
-      'package:path/path.dart',
-      "'package:ebisu/ebisu.dart' as ebisu",
-      'package:ebisu/ebisu_dart_meta.dart',
-    ]
-    ..doc = 'Creates an ebisu setup'
-    ..classes = [
-      class_('project')
-      ..hasJsonToString = true
-      ..members = [
-        member('id')..type = 'Id',
-        member('root_path'),
-        member('codegen_path'),
-        member('script_name'),
-        member('ebisu_file_path'),
+      ..imports = [
+        'package:id/id.dart',
+        'package:path/path.dart',
+        "'package:ebisu/ebisu.dart' as ebisu",
+        'package:ebisu/ebisu_dart_meta.dart',
       ]
-    ]
-    ..args = [
-      scriptArg('project_path')
-      ..doc = 'Path to top level of desired ebisu project'
-      ..abbr = 'p',
-    ]
+      ..doc = 'Creates an ebisu setup'
+      ..classes = [
+        class_('project')
+          ..hasJsonToString = true
+          ..members = [
+            member('id')..type = 'Id',
+            member('root_path'),
+            member('codegen_path'),
+            member('script_name'),
+            member('ebisu_file_path'),
+          ]
+      ]
+      ..args = [
+        scriptArg('project_path')
+          ..doc = 'Path to top level of desired ebisu project'
+          ..abbr = 'p',
+      ]
   ];
 
   ebisu.generate();
@@ -1443,5 +1459,5 @@ protection block or after
   print('''
 **** NON GENERATED FILES ****
 ${indentBlock(brCompact(nonGeneratedFiles))}
-''');  
+''');
 }

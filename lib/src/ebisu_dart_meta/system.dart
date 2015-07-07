@@ -45,18 +45,8 @@ class System extends Object with Entity {
 
   // custom <class System>
 
-  _dumpChildren() => print('''
-Children on system invoked:
-** Libs **
- ${brCompact(libraries.map((e) => e.detailedPath))}
-** Test Libs **
- ${brCompact(testLibraries.map((e) => e.detailedPath))}
-** Done **
-''');
-
-  Iterable<Entity> get children {
-    return concat([scripts, libraries, testLibraries, [pubSpec]]);
-  }
+  Iterable<Entity> get children =>
+      concat([scripts, libraries, testLibraries, [pubSpec]]);
 
   /// Create system from the id
   System(Id id)
@@ -297,11 +287,6 @@ ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
   .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
   .join('\n')}
-
-void testCore(Configuration config) {
-  unittestConfiguration = config;
-  main();
-}
 
 main() {
   Logger.root.level = Level.OFF;
