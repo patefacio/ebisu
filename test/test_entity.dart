@@ -136,9 +136,12 @@ main([List<String> args]) {
     });
 
     test('ownershipCount', () {
-      final gcc23 = root.progeny.firstWhere((e) => e.id.toString() == 'ggc23');
-      final gc1 = root.progeny.firstWhere((e) => e.id.toString() == 'gc1');
-      final gc2 = root.progeny.firstWhere((e) => e.id.toString() == 'gc2');
+      final Base gcc23 =
+          root.progeny.firstWhere((e) => e.id.toString() == 'ggc23') as Base;
+      final Base gc1 =
+          root.progeny.firstWhere((e) => e.id.toString() == 'gc1') as Base;
+      final Base gc2 =
+          root.progeny.firstWhere((e) => e.id.toString() == 'gc2') as Base;
       expect(gcc23.ownershipCount, 1);
       expect(gc1.ownershipCount, 1);
       expect(gc2.ownershipCount, 1);
