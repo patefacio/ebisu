@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 // custom <additional imports>
-import 'package:ebisu/ebisu.dart';
 
 // end <additional imports>
 

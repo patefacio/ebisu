@@ -6,7 +6,7 @@ library my_pub_package.multi_part;
 part 'src/multi_part/first_part.dart';
 part 'src/multi_part/second_part.dart';
 
-const List<String> globalVar1 = ["foo", "bar", "goo"];
+const List<String> globalVar1 = const ["foo", "bar", "goo"];
 
 // custom <library multi_part>
 // end <library multi_part>

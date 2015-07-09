@@ -1,6 +1,5 @@
 library my_pub_package.test_it;
 
-import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 

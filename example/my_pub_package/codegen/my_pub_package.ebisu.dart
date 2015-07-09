@@ -57,7 +57,7 @@ Simple example pub package composed of:
         variable('global_var1')
         ..type = 'List<String>'
         ..isConst = true
-        ..init = '["foo", "bar", "goo"]'
+        ..init = 'const ["foo", "bar", "goo"]'
       ]
       ..parts = [
         part('first_part')

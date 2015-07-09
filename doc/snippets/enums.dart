@@ -1,5 +1,4 @@
 import 'package:ebisu/ebisu_dart_meta.dart';
-import 'package:id/id.dart';
 
 main() {
   final colorEnum = enum_('rgb')

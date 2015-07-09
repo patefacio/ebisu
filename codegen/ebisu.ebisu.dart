@@ -1115,14 +1115,13 @@ library/templates, a message like the following will be output:
           'io',
         ]
         ..variables = [variable('scratch_remove_me_folder')..isPublic = false]
-        ..includesMain = false
         ..includesLogger = true,
       library('test_dart_meta')
         ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
       library('test_enums')..imports = [],
       library('test_class')
-        ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart'],
+        ..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
