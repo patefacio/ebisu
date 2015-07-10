@@ -13,7 +13,6 @@ main() {
 
   print(dartFormat(
           (class_('pair')
-              ..includesCustom = false
               ..members = [
                 member('a'),
                 member('b'),
