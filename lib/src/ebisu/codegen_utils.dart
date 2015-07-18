@@ -312,6 +312,10 @@ String smartQuote(String s) =>
 /// Wrap string in double quotes
 String doubleQuote(String s) => '"$s"';
 
+/// Double quote if not already double quoted
+String smartDoubleQuote(String s) =>
+    (s.startsWith('"') && s.endsWith('"')) ? s : doubleQuote(s);
+
 /// Wrap string in triple single tick quotes
 String tripleSingleQuote(String s) => "'''$s'''";
 
