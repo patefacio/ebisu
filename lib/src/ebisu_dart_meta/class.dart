@@ -616,11 +616,24 @@ int compareTo($otherType other) {
   set includesProtectBlock(bool value) =>
       customCodeBlock.tag = value ? 'class $name' : null;
 
-  get defaultMemberAccess => _defaultMemberAccess == null
-      ? (owner != null && owner is Class)
-          ? (owner as Class).defaultMemberAccess
-          : null
-      : _defaultMemberAccess;
+  get _defaultOwnerAccess {
+    var ancestor = owner;
+    while (ancestor != null) {
+      final result = ancestor is Class
+          ? (ancestor as Class).defaultMemberAccess
+          : ancestor is Part
+              ? (ancestor as Part).defaultMemberAccess
+              : ancestor is Library
+                  ? (ancestor as Library).defaultMemberAccess
+                  : null;
+      if (result != null) return result;
+      ancestor = ancestor.owner;
+    }
+    return null;
+  }
+
+  get defaultMemberAccess =>
+      _defaultMemberAccess == null ? _defaultOwnerAccess : _defaultMemberAccess;
 
   setDefaultMemberAccess(Member m) {
     if (m.access == null) m.access = defaultMemberAccess;
