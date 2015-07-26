@@ -957,9 +957,9 @@ ${indentBlock(fromJsonMapImpl())}'''
       final builderClass = class_('${id.snake}_builder')
         ..hasCtorSansNew = true
         ..hasDefaultCtor = true
-        ..members = members.map((m) => member(m.id.snake)
+        ..members = (members.map((m) => member(m.id.snake)
           ..type = m.type
-          ..classInit = m.classInit).toList()
+          ..classInit = m.classInit).toList())
         ..bottomInjection = '''
 ${className} buildInstance() => new ${className}(
 ${indentBlock(
