@@ -71,7 +71,6 @@ class GrandchildEntity extends Base with Entity {
 }
 
 class GreatGrandchildEntity extends Base with Entity {
-
   // custom <class GreatGrandchildEntity>
 
   final Id _id;
@@ -160,5 +159,4 @@ main([List<String> args]) {
   });
 
 // end <main>
-
 }

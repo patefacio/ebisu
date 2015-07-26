@@ -6,8 +6,10 @@ class EnumValue {
 
   /// Id for this enum_value
   Id get id => _id;
+
   /// User specified value for enum value
   var value;
+
   /// Documentation for this enum_value
   String doc;
 
@@ -65,28 +67,37 @@ class EnumValue {
 ///     blue
 ///     }
 class Enum extends Object with Entity {
-
   /// Id for this enum
   Id get id => _id;
+
   /// True if enum is public.
   /// Code generation support will prefix private variables appropriately
   bool isPublic = true;
+
   /// List of id's naming the values
   List<EnumValue> get values => _values;
+
   /// If true, generate toJson/fromJson on wrapper class
   bool hasJsonSupport = false;
+
   /// If true, generate randJson
   bool hasRandJson = false;
+
   /// Name of the enum class generated sans access prefix
   String get name => _name;
+
   /// Name of the enum class generated with access prefix
   String get enumName => _enumName;
+
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
+
   /// If true scopes the enum values to library by assigning to var outside class
   bool hasLibraryScopedValues = false;
+
   /// If true string value for each entry is snake case (default is shout)
   bool isSnakeString = false;
+
   /// Before true enum support enums were emulated with a class containing static
   /// consts. This had some unique features in terms of ability to generate json
   /// support as well as some custom functions. Setting this will ensure that
@@ -108,17 +119,15 @@ class Enum extends Object with Entity {
   _evCheckValue(EnumValue ev, int index) =>
       ev.value == null ? ((new EnumValue(ev.id, index))..doc = ev.doc) : ev;
 
-  set values(List values) =>
-      _values =
-      enumerate(values)
-          .map((IndexedValue iv) => iv.value is String
-              ? new EnumValue(idFromString(iv.value), iv.index)
-              : iv.value is Id
-                  ? new EnumValue(iv.value, iv.index)
-                  : (iv.value is EnumValue)
-                      ? _evCheckValue(iv.value, iv.index)
-                      : throw '${iv.value} not valid type for enum value')
-          .toList();
+  set values(List values) => _values = enumerate(values)
+      .map((IndexedValue iv) => iv.value is String
+          ? new EnumValue(idFromString(iv.value), iv.index)
+          : iv.value is Id
+              ? new EnumValue(iv.value, iv.index)
+              : (iv.value is EnumValue)
+                  ? _evCheckValue(iv.value, iv.index)
+                  : throw '${iv.value} not valid type for enum value')
+      .toList();
 
   onOwnershipEstablished() {
     values = _values;
@@ -141,25 +150,25 @@ ${valueId(v)}'''
 
   get _content => br(requiresClass
       ? [
-    brCompact([chomp(_docComment), _enumClassBegin]),
-    _toString,
-    _fromString,
-    _toJson,
-    _fromJson,
-    _randJson,
-    _custom,
-    _enumClassEnd,
-    _libraryScopedValues,
-  ]
+          brCompact([chomp(_docComment), _enumClassBegin]),
+          _toString,
+          _fromString,
+          _toJson,
+          _fromJson,
+          _randJson,
+          _custom,
+          _enumClassEnd,
+          _libraryScopedValues,
+        ]
       : [
-    brCompact([
-      _docComment,
-      'enum $enumName {',
-      combine(values.map((v) => enumValueEntry(v)), ',\n'),
-      '}',
-      _libraryScopedValues,
-    ])
-  ]);
+          brCompact([
+            _docComment,
+            'enum $enumName {',
+            combine(values.map((v) => enumValueEntry(v)), ',\n'),
+            '}',
+            _libraryScopedValues,
+          ])
+        ]);
 
   get _docComment => doc != null ? dartComment(doc) : '';
 

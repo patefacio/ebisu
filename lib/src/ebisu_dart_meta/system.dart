@@ -2,29 +2,39 @@ part of ebisu.ebisu_dart_meta;
 
 /// Defines a dart system (collection of libraries and apps)
 class System extends Object with Entity {
-
   /// Id for this system
   Id get id => _id;
+
   /// Path to which code is generated
   String rootPath;
+
   /// Scripts in the system
   List<Script> scripts = [];
+
   /// App for this package
   App app;
+
   /// List of test libraries of this app
   List<Library> testLibraries = [];
+
   /// Libraries in the system
   List<Library> libraries = [];
+
   /// Regular and test libraries
   List<Library> allLibraries = [];
+
   /// Information for the pubspec
   PubSpec pubSpec;
+
   /// Map of all classes with hasJsonSupport true
   Map<String, Object> jsonableClasses = {};
+
   /// Set to true on finalize
   bool get finalized => _finalized;
+
   /// If true generate a pubspec.xml file
   bool generatesPubSpec = true;
+
   /// A string indicating the license.
   /// A map of common licenses is looked up and if found a link
   /// to that license is used. The current keys of the map are:
@@ -32,21 +42,30 @@ class System extends Object with Entity {
   /// Otherwise the text is assumed to be the
   /// text to include in the license file.
   String license;
+
   /// If true standard outline for readme provided
   bool includesReadme = false;
+
   /// A brief introduction for this system, included in README.md
   String introduction;
+
   /// Purpose for this system, included in README.md
   String purpose;
+
   /// List of todos included in the readme - If any present includesReadme assumed true
   List<String> todos = [];
+
   /// If true generates tool folder with hop_runner
   bool includesHop = false;
 
   // custom <class System>
 
-  Iterable<Entity> get children =>
-      concat([scripts, libraries, testLibraries, [pubSpec]]);
+  Iterable<Entity> get children => concat([
+        scripts,
+        libraries,
+        testLibraries,
+        [pubSpec]
+      ]);
 
   /// Create system from the id
   System(Id id)
@@ -188,7 +207,8 @@ Only "version" and "path" overrides are supported.
 
     {
       String gitIgnorePath = "${rootPath}/.gitignore";
-      scriptMergeWithFile('''
+      scriptMergeWithFile(
+          '''
 *.~*~
 packages
 build/
@@ -203,7 +223,8 @@ build/
 *.js.deps
 *.js.map
 ${scriptCustomBlock('additional')}
-''', gitIgnorePath);
+''',
+          gitIgnorePath);
     }
 
     if (includesReadme ||
@@ -211,7 +232,8 @@ ${scriptCustomBlock('additional')}
         introduction != null ||
         purpose != null) {
       String readmePath = "${rootPath}/README.md";
-      panDocMergeWithFile('''
+      panDocMergeWithFile(
+          '''
 # ${id.title}
 
 
@@ -230,7 +252,8 @@ ${panDocCustomBlock('examples')}
 
 ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
-''', readmePath);
+''',
+          readmePath);
     }
 
     if (generateHop && includesHop) {
@@ -249,7 +272,8 @@ ${testLibraries
       ]));
 ''';
 
-      mergeWithDartFile('''
+      mergeWithDartFile(
+          '''
 library hop_runner;
 
 import 'dart:async';
@@ -277,10 +301,12 @@ Future<List<String>> _getLibs() {
       .map((File file) => file.path)
       .toList();
 }
-''', hopRunnerPath);
+''',
+          hopRunnerPath);
 
       String testRunnerPath = "${rootPath}/test/runner.dart";
-      mergeWithDartFile('''
+      mergeWithDartFile(
+          '''
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
@@ -299,7 +325,8 @@ ${testLibraries
   .join('\n')}
 }
 
-''', testRunnerPath);
+''',
+          testRunnerPath);
     }
 
     if (testLibraries.length > 0) {

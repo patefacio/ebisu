@@ -12,7 +12,6 @@ part of ebisu.ebisu;
 /// *protect block* of [CodeBlock]) or injected code (via the [snippets] list within
 /// the [CodeBlock]).
 class CustomCodeBlock {
-
   /// A custom code block for a class
   set customCodeBlock(CodeBlock customCodeBlock) =>
       _customCodeBlock = customCodeBlock;
@@ -132,8 +131,10 @@ class CodeBlock {
 
   /// Tag for protect block. If present includes protect block
   String tag;
+
   /// Effecitively a hook to throw in generated text
   List<String> snippets = [];
+
   /// Determines whether the injected code snippets come before the
   /// protection block or after
   bool hasSnippetsFirst = false;

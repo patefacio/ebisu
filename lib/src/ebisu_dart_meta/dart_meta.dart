@@ -155,6 +155,7 @@ String jsonMapValueType(String t) {
   }
   return 'dynamic';
 }
+
 String generalMapKeyType(String t) {
   Match m = _generalMapKeyTypeRe.firstMatch(t);
   if (m != null) {
@@ -162,6 +163,7 @@ String generalMapKeyType(String t) {
   }
   return 'String';
 }
+
 String jsonListValueType(String t) {
   Match m = _jsonListTypeRe.firstMatch(t);
   if (m != null) {
@@ -169,6 +171,7 @@ String jsonListValueType(String t) {
   }
   return 'dynamic';
 }
+
 String templateParameterType(String t) {
   Match m = _templateParameterTypeRe.firstMatch(t);
   if (m != null) {

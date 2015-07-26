@@ -6,10 +6,13 @@ part of ebisu.ebisu;
 
 /// Path to this package - for use until this becomes a pub package
 final String ebisuPath = Platform.environment['EBISU_PATH'];
+
 /// Author of the generated code
 final String ebisuAuthor = Platform.environment['EBISU_AUTHOR'];
+
 /// Hompage for pubspec
 final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
+
 /// File containing default pub versions. Dart code generation at times
 /// generates code that requires packages. For example, generated
 /// test cases require *test*, generated code can require logging,

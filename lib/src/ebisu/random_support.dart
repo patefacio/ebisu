@@ -22,7 +22,10 @@ String randString([Random generator, int maxLen = 10]) {
 /// Creates a Map<String, dynamic> of random length capped at _maxLen_ where
 /// keys are random strings, optionally prefixed with _tag_ and values are built
 /// from the supplied _valueBuilder_.
-dynamic randJsonMap([Random generator, dynamic valueBuilder, String tag = '',
+dynamic randJsonMap(
+    [Random generator,
+    dynamic valueBuilder,
+    String tag = '',
     int maxLen = 10]) {
   Map result = {};
   if (generator == null) generator = _randGenerator;

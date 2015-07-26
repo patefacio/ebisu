@@ -34,5 +34,4 @@ enum Rgb {
   });
 
 // end <main>
-
 }

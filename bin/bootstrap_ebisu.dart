@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 /// Creates an ebisu setup
 import 'dart:io';
 import 'package:args/args.dart';
@@ -17,6 +18,7 @@ Creates an ebisu setup
 ''');
   print(_parser.getUsage());
 }
+
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
 Map _parseArgs(List<String> args) {
@@ -27,19 +29,32 @@ Map _parseArgs(List<String> args) {
   _parser = new ArgParser();
   try {
     /// Fill in expectations of the parser
-    _parser.addFlag('help', help: r'''
+    _parser.addFlag('help',
+        help: r'''
 Display this help screen
-''', abbr: 'h', defaultsTo: false);
+''',
+        abbr: 'h',
+        defaultsTo: false);
 
-    _parser.addOption('project-path', help: r'''
+    _parser.addOption('project-path',
+        help: r'''
 Path to top level of desired ebisu project
-''', defaultsTo: null, allowMultiple: false, abbr: 'p', allowed: null);
-    _parser.addOption('log-level', help: r'''
+''',
+        defaultsTo: null,
+        allowMultiple: false,
+        abbr: 'p',
+        allowed: null);
+    _parser.addOption('log-level',
+        help: r'''
 Select log level from:
 [ all, config, fine, finer, finest, info, levels,
   off, severe, shout, warning ]
 
-''', defaultsTo: null, allowMultiple: false, abbr: null, allowed: null);
+''',
+        defaultsTo: null,
+        allowMultiple: false,
+        abbr: null,
+        allowed: null);
 
     /// Parse the command line options (excluding the script)
     argResults = _parser.parse(args);
@@ -75,7 +90,9 @@ Select log level from:
     throw e;
   }
 }
+
 final _logger = new Logger('bootstrapEbisu');
+
 class Project {
   Project._default();
 
@@ -114,12 +131,12 @@ class Project {
   toString() => '(${runtimeType}) => ${ebisu.prettyJsonMap(toJson())}';
 
   Map toJson() => {
-    "id": ebisu.toJson(id),
-    "rootPath": ebisu.toJson(rootPath),
-    "codegenPath": ebisu.toJson(codegenPath),
-    "scriptName": ebisu.toJson(scriptName),
-    "ebisuFilePath": ebisu.toJson(ebisuFilePath),
-  };
+        "id": ebisu.toJson(id),
+        "rootPath": ebisu.toJson(rootPath),
+        "codegenPath": ebisu.toJson(codegenPath),
+        "scriptName": ebisu.toJson(scriptName),
+        "ebisuFilePath": ebisu.toJson(ebisuFilePath),
+      };
 
   static Project fromJson(Object json) {
     if (json == null) return null;
@@ -138,6 +155,7 @@ class Project {
     ebisuFilePath = jsonMap["ebisuFilePath"];
   }
 }
+
 main(List<String> args) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
@@ -157,7 +175,6 @@ main(List<String> args) {
   project.bootstrap();
 
   // end <bootstrapEbisu main>
-
 }
 
 // custom <bootstrapEbisu global>

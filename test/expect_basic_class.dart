@@ -62,11 +62,16 @@ main([List<String> args]) {
           () => expect(() => classNoInit.mListInt = 42, throws));
       test('mListInt can not assign String',
           () => expect(() => classNoInit.mListInt = 'foo', throws));
-      test('mListInt can assign empty list', () => expect(
-          (classNoInit.mListInt = []).toString() == [].toString(), true));
-      test('mListInt can assign [1,2,3]', () => expect(
-          (classNoInit.mListInt = [1, 2, 3]).toString() == [1, 2, 3].toString(),
-          true));
+      test(
+          'mListInt can assign empty list',
+          () => expect(
+              (classNoInit.mListInt = []).toString() == [].toString(), true));
+      test(
+          'mListInt can assign [1,2,3]',
+          () => expect(
+              (classNoInit.mListInt = [1, 2, 3]).toString() ==
+                  [1, 2, 3].toString(),
+              true));
 
       //////////////////////////////////////////////////////////////////////
       // Following would be nice, but List<int> in checked mode does not
@@ -170,5 +175,4 @@ main([List<String> args]) {
   });
 
 // end <main>
-
 }

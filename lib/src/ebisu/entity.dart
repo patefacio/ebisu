@@ -2,7 +2,6 @@
 part of ebisu.ebisu;
 
 abstract class Identifiable {
-
   // custom <class Identifiable>
 
   Id get id;
@@ -16,19 +15,21 @@ abstract class Identifiable {
 /// Provides support for mixing in recursive design pattern among various
 /// *Entities*
 abstract class Entity implements Identifiable {
-
   /// Brief description for the entity.
   ///
   /// These items support both a brief comment ([brief]) and a more
   /// descriptive comment [descr]
   String brief;
+
   /// Description of entity
   String descr;
+
   /// Owner of this [Entity]
   ///
   /// The entity containing this entity (e.g. the [Class] containing the [Member]).
   /// The top level entity and has the value *null* since it has no owner.
   Entity get owner => _owner;
+
   /// Path from root to this entity
   List<Entity> get entityPath => _entityPath;
 

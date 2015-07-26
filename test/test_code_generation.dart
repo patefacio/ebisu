@@ -23,7 +23,6 @@ var pubHomepage = 'http://confederacy_of_dunces.com';
 var license = 'This is free stuff as in beer';
 
 void generateTestLibraries() {
-
   // First - nothing up the sleeve - remove any preexisting generated code
   destroyTempData();
 
@@ -220,8 +219,10 @@ main([List<String> args]) {
           () => expect(contents.indexOf("import 'dart:io';") >= 0, true));
       test("import recognizes 'async'",
           () => expect(contents.indexOf("import 'dart:async';") >= 0, true));
-      test("import imports 'path'", () => expect(
-          contents.indexOf("import 'package:path/path.dart';") >= 0, true));
+      test(
+          "import imports 'path'",
+          () => expect(
+              contents.indexOf("import 'package:path/path.dart';") >= 0, true));
       test("library defines ClassNoInit",
           () => expect(contents.indexOf("class ClassNoInit") >= 0, true));
       test("library defines ClassWithInit",
@@ -252,8 +253,10 @@ main([List<String> args]) {
     });
     test('.gitignore exists',
         () => expect(exists(join(tempPath, '.gitignore')), true));
-    test('tool/hop_runner.dart exists', () =>
-        expect(exists(joinAll([tempPath, 'tool', 'hop_runner.dart'])), true));
+    test(
+        'tool/hop_runner.dart exists',
+        () => expect(
+            exists(joinAll([tempPath, 'tool', 'hop_runner.dart'])), true));
     test('test/runner.dart exists',
         () => expect(exists(joinAll([tempPath, 'test', 'runner.dart'])), true));
   });
@@ -274,8 +277,7 @@ main([List<String> args]) {
       dartFile = join(testPath, dartFile);
 
       test('$dartFile completed', () {
-        return Process
-            .run(Platform.executable, ['--checked', dartFile])
+        return Process.run(Platform.executable, ['--checked', dartFile])
             .then((ProcessResult processResult) {
           print("Results of running dart subprocess $dartFile");
           print(processResult.stdout);
@@ -291,5 +293,4 @@ main([List<String> args]) {
   });
 
 // end <main>
-
 }

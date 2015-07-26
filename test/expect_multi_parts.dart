@@ -30,5 +30,4 @@ main([List<String> args]) {
   test('multi-parts class P2C2 found', () => expect(new P2C2() is P2C2, true));
 
 // end <main>
-
 }

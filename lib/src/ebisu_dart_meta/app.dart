@@ -6,12 +6,16 @@ class App extends Object with CustomCodeBlock, Entity {
 
   /// Id for this app
   Id get id => _id;
+
   /// Classes defined in this app
   List<Class> classes = [];
+
   /// List of libraries of this app
   List<Library> libraries = [];
+
   /// List of global variables for this library
   List<Variable> variables = [];
+
   /// If true this is a web ui app
   bool isWebUi = false;
 
@@ -28,7 +32,8 @@ class App extends Object with CustomCodeBlock, Entity {
     String appCssPath = "${rootPath}/web/${_id.snake}.css";
     String appBuildPath = "${rootPath}/build.dart";
     mergeWithDartFile(_content, appPath);
-    htmlMergeWithFile('''<!DOCTYPE html>
+    htmlMergeWithFile(
+        '''<!DOCTYPE html>
 
 <html>
   <head>
@@ -43,9 +48,11 @@ ${htmlCustomBlock(id.toString() + ' body')}
     <script src="packages/browser/dart.js"></script>
   </body>
 </html>
-''', appHtmlPath);
+''',
+        appHtmlPath);
 
-    cssMergeWithFile('''
+    cssMergeWithFile(
+        '''
 body {
   background-color: #F8F8F8;
   font-family: 'Open Sans', sans-serif;
@@ -60,27 +67,30 @@ h1, p {
 }
 
 ${cssCustomBlock(id.toString())}
-''', appCssPath);
+''',
+        appCssPath);
 
-    mergeWithDartFile('''
+    mergeWithDartFile(
+        '''
 import 'dart:io';
 import 'package:polymer/component_build.dart';
 
 main() {
   build(Platform.arguments, ['web/${_id.snake}.html']);
 }
-''', appBuildPath);
+''',
+        appBuildPath);
   }
 
   get _content => brCompact([
-    "import 'package:mdv/mdv.dart' as mdv;",
-    brCompact(classes.forEach((c) => c.definition())),
-    '''
+        "import 'package:mdv/mdv.dart' as mdv;",
+        brCompact(classes.forEach((c) => c.definition())),
+        '''
 void main() {
   mdv.initialize();
 }
 '''
-  ]);
+      ]);
 
   // end <class App>
 

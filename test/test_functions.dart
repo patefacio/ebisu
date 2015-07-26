@@ -26,29 +26,40 @@ main([List<String> args]) {
   test('chomp can remove multiple new lines',
       () => expect(chomp("test\n\n\n", true), "test"));
 
-  test('indentBlock indents a block, 2 space default', () => expect(indentBlock(
-      '''
+  test(
+      'indentBlock indents a block, 2 space default',
+      () => expect(
+          indentBlock('''
 class C {
   int x;
 }
-'''), '''
+'''),
+          '''
   class C {
     int x;
   }
 '''));
 
-  test('indentBlock can indent block 4 spaces', () => expect(indentBlock('''
+  test(
+      'indentBlock can indent block 4 spaces',
+      () => expect(
+          indentBlock(
+              '''
 class C {
   int x;
 }
-''', '    '), '''
+''',
+              '    '),
+          '''
     class C {
       int x;
     }
 '''));
 
-  test('prepJoin adds suffix to all but last', () => expect(
-      prepJoin(['a', 'b', 'c']).toString(), ['a,', 'b,', 'c'].toString()));
+  test(
+      'prepJoin adds suffix to all but last',
+      () => expect(
+          prepJoin(['a', 'b', 'c']).toString(), ['a,', 'b,', 'c'].toString()));
 
   test('formatFill joins with spaces by default',
       () => expect(formatFill(['a', 'b', 'c']), 'a b c'));
@@ -56,29 +67,41 @@ class C {
   test('formatFill joins with what you want',
       () => expect(formatFill(['a', 'b', 'c'], sep: ','), 'a,b,c'));
 
-  test('formatFill breaks up long lines', () => expect(formatFill([
-    'void foo(',
-    'GobbledeeGook fingerPaint,',
-    'SpookyCooky fenderBender,',
-    'GlobalThermoNuclearWar ww3',
-    ')'
-  ]), '''void foo( GobbledeeGook fingerPaint, SpookyCooky fenderBender,
+  test(
+      'formatFill breaks up long lines',
+      () => expect(
+          formatFill([
+            'void foo(',
+            'GobbledeeGook fingerPaint,',
+            'SpookyCooky fenderBender,',
+            'GlobalThermoNuclearWar ww3',
+            ')'
+          ]),
+          '''void foo( GobbledeeGook fingerPaint, SpookyCooky fenderBender,
   GlobalThermoNuclearWar ww3 )'''));
 
-  test('formatFill breaks up long lines', () => expect(formatFill([
-    'void foo(Ding ding,',
-    'GobbledeeGook fingerPaint,',
-    'SpookyCooky fenderBender,',
-    'GlobalThermoNuclearWar ww3)',
-  ]), '''
+  test(
+      'formatFill breaks up long lines',
+      () => expect(
+          formatFill([
+            'void foo(Ding ding,',
+            'GobbledeeGook fingerPaint,',
+            'SpookyCooky fenderBender,',
+            'GlobalThermoNuclearWar ww3)',
+          ]),
+          '''
 void foo(Ding ding, GobbledeeGook fingerPaint, SpookyCooky fenderBender,
   GlobalThermoNuclearWar ww3)'''));
 
-  test('codeEquivalent ignores space', () => expect(
-      codeEquivalent('class C { int x; }', 'class C {\nint x;\n}'), true));
+  test(
+      'codeEquivalent ignores space',
+      () => expect(
+          codeEquivalent('class C { int x; }', 'class C {\nint x;\n}'), true));
 
-  test('codeEquivalent returns false on mismatch', () => expect(
-      codeEquivalent('class C { int x; }', 'Klass C {\nint x;\n}'), false));
+  test(
+      'codeEquivalent returns false on mismatch',
+      () => expect(
+          codeEquivalent('class C { int x; }', 'Klass C {\nint x;\n}'), false));
 
   {
     const first = '''
@@ -149,7 +172,19 @@ class C {
     expect(br(['a', 'b', null, null, 'c'], '\n\n'), 'a\n\nb\n\nc\n\n');
 
     expect(
-        br(['a', [null], [['b']], null, ['c', ['d']]]), 'a\n\nb\n\nc\n\nd\n\n');
+        br([
+          'a',
+          [null],
+          [
+            ['b']
+          ],
+          null,
+          [
+            'c',
+            ['d']
+          ]
+        ]),
+        'a\n\nb\n\nc\n\nd\n\n');
 
     expect(combine(['a', 'b', 'c']), 'abc');
     expect(combine(['a', 'b', 'c'], ''), 'abc');
@@ -159,24 +194,47 @@ class C {
     expect(combine([null, 'a', 'b', 'c', null], ''), 'abc');
     expect(combine(['a', 'b', null, null, 'c'], ''), 'abc');
 
-    expect(combine(['a', [null], [['b']], null, ['c', ['d']]]), 'abcd');
+    expect(
+        combine([
+          'a',
+          [null],
+          [
+            ['b']
+          ],
+          null,
+          [
+            'c',
+            ['d']
+          ]
+        ]),
+        'abcd');
     expect(brCompact([null, null, 'a\n\n\n', null, null, 'b']), 'a\nb\n');
   });
 
   test('scriptComment', () {
-    expect(darkSame(scriptComment('''
+    expect(
+        darkSame(
+            scriptComment('''
 this is
-a test'''), '''
+a test'''),
+            '''
 #   this is
 #   a test
-'''), true);
+'''),
+        true);
 
-    expect(darkSame(scriptComment('''
+    expect(
+        darkSame(
+            scriptComment(
+                '''
 this is
-a test''', ' '), '''
+a test''',
+                ' '),
+            '''
 # this is
 # a test
-'''), true);
+'''),
+        true);
   });
 
   test('doubleQuote', () {
@@ -192,5 +250,4 @@ a test''', ' '), '''
   });
 
 // end <main>
-
 }

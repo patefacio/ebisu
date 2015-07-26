@@ -270,10 +270,16 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
 }
 
 bool mergeWithFile(String generated, String destFilePath,
-    [String beginProtect = customBegin, String endProtect = customEnd,
+    [String beginProtect = customBegin,
+    String endProtect = customEnd,
     PostProcessor postProcessor]) {
   return mergeBlocksWithFile(
-      generated, destFilePath, [[beginProtect, endProtect]], postProcessor);
+      generated,
+      destFilePath,
+      [
+        [beginProtect, endProtect]
+      ],
+      postProcessor);
 }
 
 String mergeWithContents(String generated, String currentText,
@@ -281,11 +287,11 @@ String mergeWithContents(String generated, String currentText,
   Map<String, String> captures = {};
   Map<String, String> empties = {};
 
-  RegExp block = new RegExp(
-      '\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
-      '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
-      '${endProtect}\\s+<\\1>', // Require matching end
-      multiLine: true);
+  RegExp block =
+      new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+          '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
+          '${endProtect}\\s+<\\1>', // Require matching end
+          multiLine: true);
 
   block.allMatches(currentText).forEach((m) {
     captures[m.group(1)] = m.group(0);

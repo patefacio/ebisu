@@ -6,10 +6,13 @@ class PubDependency {
 
   /// Name of dependency
   String name;
+
   /// Required version for this dependency
   String version = 'any';
+
   /// Path to package, infers package type for git (git:...), hosted (http:...), path
   String path;
+
   /// Git reference
   String gitRef;
 
@@ -117,7 +120,6 @@ abstract class PubTransformer {
 
 /// A polymer transformer entry
 class PolymerTransformer extends PubTransformer {
-
   /// List of entry points
   List<String> entryPoints;
 
@@ -147,13 +149,17 @@ class PubSpec extends Object with Entity {
 
   /// Id for this pub spec
   Id get id => _id;
+
   /// Version for this package
   String version = '0.0.1';
+
   /// Name of the project described in spec.
   /// If not set, id of system is used.
   String name;
+
   /// Author of the pub package
   String author;
+
   /// Homepage of the pub package
   String homepage;
   List<PubDependency> dependencies = [];
@@ -206,17 +212,17 @@ class PubSpec extends Object with Entity {
           !dependencies.any((d) => d.name == name);
 
   get _content => [
-    _name,
-    _version,
-    _author,
-    _homepage,
-    _description,
-    _dependencies,
-    _devDependencies,
-    _dependencyOverrides,
-    _transformers,
-    _custom,
-  ].where((line) => line != '').join('\n');
+        _name,
+        _version,
+        _author,
+        _homepage,
+        _description,
+        _dependencies,
+        _devDependencies,
+        _dependencyOverrides,
+        _transformers,
+        _custom,
+      ].where((line) => line != '').join('\n');
 
   get _name => 'name: $name';
   get _version => 'version: $version';

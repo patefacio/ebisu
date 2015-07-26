@@ -66,20 +66,28 @@ class ScriptArg extends Object with Entity {
 
   /// Id for this script argument
   Id get id => _id;
+
   /// Name of the the arg (emacs naming convention)
   String get name => _name;
+
   /// If true the argument is required
   bool isRequired = false;
+
   /// If true this argument is a boolean flag (i.e. no option is required)
   bool isFlag = false;
+
   /// If true the argument may be specified mutiple times
   bool isMultiple = false;
+
   /// Used to initialize the value in case not set
   dynamic get defaultsTo => _defaultsTo;
+
   /// A list of allowed values to choose from
   List<String> allowed = [];
+
   /// If not null - holds the position of a positional (i.e. unnamed) argument
   int position;
+
   /// An abbreviation (single character)
   String abbr;
   ArgType type;
@@ -115,20 +123,27 @@ class Script extends Object with CustomCodeBlock, Entity {
 
   /// Id for this script
   Id get id => _id;
+
   /// List of imports to be included by this script
   List<String> imports = [];
+
   /// Where to create the script.
   /// If not present will be determined by parent [System] rootPath
   set scriptPath(String scriptPath) => _scriptPath = scriptPath;
+
   /// Arguments for this script
   List<ScriptArg> args = [];
+
   /// By default a *log-level* argument will be included in the script.
   /// Set this to false to prevent this
   bool noLogLevel = false;
+
   /// If true makes script main async
   bool isAsync = false;
+
   /// Enums for this script
   List<Enum> enums = [];
+
   /// Classes to support this script, included directly in script above main
   List<Class> classes = [];
 
@@ -171,17 +186,18 @@ Select log level from:
   Iterable get requiredArgs => args.where((arg) => arg.isRequired);
 
   get _content => brCompact([
-    _scriptTag,
-    _docComment,
-    _imports,
-    args.isEmpty
-        ? null
-        : brCompact([_argParser, _usage, reduceVerticalWhitespace(_parseArgs)]),
-    _loggerInit,
-    br(enums.map((e) => e.define())),
-    br(classes.map((c) => c.define())),
-    _main,
-  ].where((line) => line != ''));
+        _scriptTag,
+        _docComment,
+        _imports,
+        args.isEmpty
+            ? null
+            : brCompact(
+                [_argParser, _usage, reduceVerticalWhitespace(_parseArgs)]),
+        _loggerInit,
+        br(enums.map((e) => e.define())),
+        br(classes.map((c) => c.define())),
+        _main,
+      ].where((line) => line != ''));
 
   get _scriptTag => '#!/usr/bin/env dart';
   get _docComment => doc != null ? '${dartComment(doc)}\n' : '';
@@ -227,9 +243,7 @@ result['${arg.name}'] = argResults['${arg.name}'] != null?
                   ? _coerced(null, arg)
                   : _coerced(null, arg);
 
-  get _logLevelCode => (noLogLevel
-      ? ''
-      : indentBlock("""
+  get _logLevelCode => (noLogLevel ? '' : indentBlock("""
 if(result['log-level'] != null) {
   const choices = const {
     'all': Level.ALL, 'config': Level.CONFIG, 'fine': Level.FINE, 'finer': Level.FINER,
@@ -286,9 +300,8 @@ ${arg.doc}
       defaultsTo: ${arg.defaultsTo == null? false : arg.defaultsTo}
     );''').join('\n') + '\n';
 
-  get _addOptions => args
-      .where((arg) => !arg.isFlag && arg.position == null)
-      .map((arg) => '''
+  get _addOptions =>
+      args.where((arg) => !arg.isFlag && arg.position == null).map((arg) => '''
     _parser.addOption('${arg.name}',
       help: ${arg.doc == null? "''" : "r\'\'\'\n${arg.doc}\n\'\'\'"},
       defaultsTo: ${_defaultsTo(arg)},
@@ -314,18 +327,18 @@ ${arg.doc}
   get _loggerInit => "final _logger = new Logger('$id');\n";
 
   get _main => brCompact([
-    '''
+        '''
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;''',
-    _argMap,
-    '''
+        _argMap,
+        '''
 ${indentBlock((this..tag = "$id main").blockText)}
 }
 
 ${customBlock("$id global")}'''
-  ]);
+      ]);
 
   get _requiredArgs => indentBlock(requiredArgs.length > 0
       ? '''

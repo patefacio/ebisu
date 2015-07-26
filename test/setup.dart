@@ -46,5 +46,4 @@ main([List<String> args]) {
   test('t', () => expect(1, 1));
 
 // end <main>
-
 }
