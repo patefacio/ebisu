@@ -22,7 +22,7 @@ main([List<String> args]) {
   test('simple enum', () {
     final colorEnum = enum_('rgb')
       ..doc = 'Colors'
-      ..owner = null
+      ..setAsRoot()
       ..values = ['red', 'green', 'blue'];
     expect(darkMatter(colorEnum.define()), darkMatter('''
 /// Colors

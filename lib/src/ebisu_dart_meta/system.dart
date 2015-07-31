@@ -158,7 +158,7 @@ Only "version" and "path" overrides are supported.
 
   /// Generate the code
   void generate({generateHop: true, generateRunner: true}) {
-    owner = null;
+    setAsRoot();
 
     if (rootPath == null) rootPath = '.';
 

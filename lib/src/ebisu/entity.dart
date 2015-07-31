@@ -122,6 +122,10 @@ abstract class Entity implements Identifiable {
     return result;
   }
 
+  /// Call this to make the entity the owner.
+  /// Doing this establishes al owner/child relations
+  setAsRoot() => owner = null;
+
   /// Recursively walks up to root (i.e. Entity with null parent)
   get rootEntity => _owner == null ? this : _owner.root;
 

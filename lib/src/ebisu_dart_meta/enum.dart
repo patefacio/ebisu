@@ -50,7 +50,7 @@ class EnumValue {
 ///
 ///     final colorEnum = enum_('rgb')
 ///       ..doc = 'Colors'
-///       ..owner = null
+///       ..setAsRoot()
 ///       ..values = [
 ///         'red',
 ///         'green',

@@ -112,7 +112,7 @@ main([List<String> args]) {
           ]
       ];
 
-    root.owner = null;
+    root.setAsRoot();
 
     _logger
         .info(brCompact(root.progeny.map((e) => '${e.runtimeType}::${e.id}')));
