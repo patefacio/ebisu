@@ -256,7 +256,7 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
     }
 
     inFile.writeAsStringSync(generated);
-    print('Created $destFilePath');
+    print('Created: $destFilePath');
     fileWritten = true;
   }
 

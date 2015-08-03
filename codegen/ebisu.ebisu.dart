@@ -11,7 +11,6 @@ final _logger = new Logger('ebisu.ebisu');
 bool _enableLogging = false;
 
 void main() {
-
   //////////////////////////////////////////////////////////////////////
   // Uncomment following for logging
   if (_enableLogging) {
@@ -26,14 +25,13 @@ void main() {
 }
 
 generate() {
-
   // The following are commonly used members of the meta data classes
   Member doc_member(String owner) =>
       member('doc')..doc = "Documentation for this $owner";
 
   Member public_member(String owner) => member('is_public')
     ..doc =
-    "True if $owner is public.\nCode generation support will prefix private variables appropriately"
+        "True if $owner is public.\nCode generation support will prefix private variables appropriately"
     ..type = 'bool'
     ..classInit = 'true';
 
@@ -172,12 +170,12 @@ text to include in the license file.
                 ..classInit = false,
               member('introduction')
                 ..doc =
-                'A brief introduction for this system, included in README.md',
+                    'A brief introduction for this system, included in README.md',
               member('purpose')
                 ..doc = 'Purpose for this system, included in README.md',
               member('todos')
                 ..doc =
-                'List of todos included in the readme - If any present includesReadme assumed true'
+                    'List of todos included in the readme - If any present includesReadme assumed true'
                 ..type = 'List<String>'
                 ..classInit = '[]',
               member('includes_hop')
@@ -190,7 +188,7 @@ text to include in the license file.
           class_('app')
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..doc =
-            'Defines a dart *web* application. For non-web console app, use Script'
+                'Defines a dart *web* application. For non-web console app, use Script'
             ..members = [
               id_member('app'),
               member('classes')
@@ -224,17 +222,17 @@ text to include in the license file.
         ],
       part('emacs_support')
         ..doc =
-        'Support for generating emacs functions for accessing generated code'
+            'Support for generating emacs functions for accessing generated code'
         ..classes = [
           class_('installation_walker')
             ..doc =
-            'Walks installation and creates single emacs file with utility functions'
+                'Walks installation and creates single emacs file with utility functions'
         ],
       part('script')
         ..enums = [
           enum_('arg_type')
             ..doc =
-            'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
+                'Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)'
             ..requiresClass = true
             ..values = [
               id('string'),
@@ -259,7 +257,7 @@ text to include in the license file.
                 ..classInit = false,
               member('is_flag')
                 ..doc =
-                'If true this argument is a boolean flag (i.e. no option is required)'
+                    'If true this argument is a boolean flag (i.e. no option is required)'
                 ..classInit = false,
               member('is_multiple')
                 ..doc = 'If true the argument may be specified mutiple times'
@@ -274,14 +272,14 @@ text to include in the license file.
                 ..classInit = '[]',
               member('position')
                 ..doc =
-                'If not null - holds the position of a positional (i.e. unnamed) argument'
+                    'If not null - holds the position of a positional (i.e. unnamed) argument'
                 ..type = 'int',
               member('abbr')..doc = 'An abbreviation (single character)',
               member('type')..type = 'ArgType',
             ],
           class_('script')
             ..doc =
-            'A typical script - (i.e. like a bash/python/ruby script but in dart)'
+                'A typical script - (i.e. like a bash/python/ruby script but in dart)'
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..members = [
               id_member('script'),
@@ -314,7 +312,7 @@ Set this to false to prevent this
                 ..classInit = [],
               member('classes')
                 ..doc =
-                'Classes to support this script, included directly in script above main'
+                    'Classes to support this script, included directly in script above main'
                 ..type = 'List<Class>'
                 ..classInit = [],
             ],
@@ -332,7 +330,7 @@ Set this to false to prevent this
                 ..classInit = 'any',
               member('path')
                 ..doc =
-                "Path to package, infers package type for git (git:...), hosted (http:...), path ",
+                    "Path to package, infers package type for git (git:...), hosted (http:...), path ",
               member('git_ref')..doc = "Git reference",
               member('type')
                 ..doc = "Type for the pub dependency"
@@ -409,7 +407,7 @@ legibility.
 
     final colorEnum = enum_('rgb')
       ..doc = 'Colors'
-      ..owner = null
+      ..setAsRoot()
       ..values = [
         'red',
         'green',
@@ -449,15 +447,15 @@ Prints:
                 ..access = Access.RO,
               member('has_custom')
                 ..doc =
-                'If true includes custom block for additional user supplied ctor code'
+                    'If true includes custom block for additional user supplied ctor code'
                 ..classInit = false,
               member('has_library_scoped_values')
                 ..doc =
-                'If true scopes the enum values to library by assigning to var outside class'
+                    'If true scopes the enum values to library by assigning to var outside class'
                 ..classInit = false,
               member('is_snake_string')
                 ..doc =
-                'If true string value for each entry is snake case (default is shout)'
+                    'If true string value for each entry is snake case (default is shout)'
                 ..classInit = false,
               member('requires_class')
                 ..doc = '''
@@ -536,24 +534,24 @@ member('foo')..init = [1,2,3]
               member('class_name')..doc = "Name of the class of this ctor.",
               member('name')
                 ..doc =
-                "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
+                    "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
               member('members')
                 ..doc = 'List of members initialized in this ctor'
                 ..type = 'List<Member>'
                 ..classInit = '[]',
               member('opt_members')
                 ..doc =
-                'List of optional members initialized in this ctor (i.e. those in [])'
+                    'List of optional members initialized in this ctor (i.e. those in [])'
                 ..type = 'List<Member>'
                 ..classInit = '[]',
               member('named_members')
                 ..doc =
-                'List of optional members initialized in this ctor (i.e. those in {})'
+                    'List of optional members initialized in this ctor (i.e. those in {})'
                 ..type = 'List<Member>'
                 ..classInit = '[]',
               member('has_custom')
                 ..doc =
-                'If true includes custom block for additional user supplied ctor code'
+                    'If true includes custom block for additional user supplied ctor code'
                 ..classInit = false,
               member('is_const')
                 ..doc = 'True if the variable is const'
@@ -598,12 +596,12 @@ text in generated ctor initializers''',
                 ..classInit = '[]',
               member('ctors_opt')
                 ..doc =
-                "List of ctor names to include this member in as optional parameter"
+                    "List of ctor names to include this member in as optional parameter"
                 ..type = 'List<String>'
                 ..classInit = '[]',
               member('ctors_named')
                 ..doc =
-                "List of ctor names to include this member in as named optional parameter"
+                    "List of ctor names to include this member in as named optional parameter"
                 ..type = 'List<String>'
                 ..classInit = '[]',
               member('is_final')
@@ -617,23 +615,23 @@ text in generated ctor initializers''',
                 ..classInit = false,
               member('is_json_transient')
                 ..doc =
-                'True if the member should not be serialized if the parent class has hasJsonSupport'
+                    'True if the member should not be serialized if the parent class has hasJsonSupport'
                 ..classInit = false,
               member('is_observable')
                 ..doc = 'If true annotated with observable'
                 ..classInit = false,
               member('is_in_comparable')
                 ..doc =
-                'If true and member is in class that is comparable, it will be included in compareTo method'
+                    'If true and member is in class that is comparable, it will be included in compareTo method'
                 ..type = 'bool'
                 ..classInit = 'true',
               member('name')
                 ..doc =
-                "Name of variable for the member, excluding access prefix (i.e. no '_')"
+                    "Name of variable for the member, excluding access prefix (i.e. no '_')"
                 ..access = Access.RO,
               member('var_name')
                 ..doc =
-                'Name of variable for the member - varies depending on public/private'
+                    'Name of variable for the member - varies depending on public/private'
                 ..access = Access.RO,
             ],
           class_('class')
@@ -755,7 +753,7 @@ Prints:
                 ..classInit = '[]',
               member('extend')
                 ..doc =
-                'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
+                    'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
                 ..type = 'String',
               member('implement')
                 ..doc = 'Any implements (NOTE implement not implements)'
@@ -787,7 +785,7 @@ Prints:
                 ..classInit = false,
               member('has_json_support')
                 ..doc =
-                "If true, generate toJson/fromJson on all members that are not isJsonTransient"
+                    "If true, generate toJson/fromJson on all members that are not isJsonTransient"
                 ..access = WO
                 ..classInit = false,
               member('has_rand_json')
@@ -801,7 +799,7 @@ Prints:
                 ..classInit = false,
               member('is_polymorphic_comparable')
                 ..doc =
-                "If true, implements comparable with runtimeType check followed by rest"
+                    "If true, implements comparable with runtimeType check followed by rest"
                 ..classInit = false,
               member('has_courtesy_ctor')
                 ..doc = """
@@ -817,11 +815,11 @@ empty ctor with all members passed as arguments)
                 ..classInit = false,
               member('is_immutable')
                 ..doc =
-                "If true sets allMembersFinal and hasDefaultCtor to true"
+                    "If true sets allMembersFinal and hasDefaultCtor to true"
                 ..classInit = false,
               member('has_ctor_sans_new')
                 ..doc =
-                "If true creates library functions to construct forwarding to ctors"
+                    "If true creates library functions to construct forwarding to ctors"
                 ..type = 'bool'
                 ..access = WO,
               member('is_copyable')
@@ -829,7 +827,7 @@ empty ctor with all members passed as arguments)
                 ..classInit = false,
               member('name')
                 ..doc =
-                "Name of the class - sans any access prefix (i.e. no '_')"
+                    "Name of the class - sans any access prefix (i.e. no '_')"
                 ..access = Access.RO,
               member('class_name')
                 ..doc = "Name of the class, including access prefix"
@@ -843,11 +841,11 @@ empty ctor with all members passed as arguments)
                 ..classInit = false,
               member('has_json_to_string')
                 ..doc =
-                "If true includes a toString() => prettyJsonMap(toJson())"
+                    "If true includes a toString() => prettyJsonMap(toJson())"
                 ..classInit = false,
               member('cache_hash')
                 ..doc =
-                "If true adds transient hash code and caches the has on first call"
+                    "If true adds transient hash code and caches the has on first call"
                 ..classInit = false,
               member('ctor_calls_init')
                 ..doc = 'If true hasCourtesyCtor is `=> _init()`'
@@ -893,14 +891,14 @@ empty ctor with all members passed as arguments)
                 ..access = Access.RO,
               member('qualified_name')
                 ..doc =
-                "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
+                    "Qualified name of the library used inside library and library parts - qualified to reduce collisions"
                 ..access = Access.RO,
               member('includes_logger')
                 ..doc = 'If true includes logging support and a _logger'
                 ..classInit = false,
               member('is_test')
                 ..doc =
-                'If true this library is a test library to appear in test folder'
+                    'If true this library is a test library to appear in test folder'
                 ..access = Access.RO
                 ..classInit = false,
               member('main_custom_block')
@@ -909,7 +907,7 @@ empty ctor with all members passed as arguments)
                 ..access = WO,
               member('path')
                 ..doc =
-                'Set desired if generating just a lib and not a package',
+                    'Set desired if generating just a lib and not a package',
               member('lib_main')..doc = 'If set the main function',
               member('default_member_access')
                 ..doc = 'Default access for members'
@@ -917,7 +915,7 @@ empty ctor with all members passed as arguments)
                 ..type = 'Access',
               member('has_ctor_sans_new')
                 ..doc =
-                "If true classes will get library functions to construct forwarding to ctors"
+                    "If true classes will get library functions to construct forwarding to ctors"
                 ..type = 'bool'
                 ..classInit = false
             ],
@@ -953,7 +951,7 @@ empty ctor with all members passed as arguments)
                 ..type = 'Access',
               member('has_ctor_sans_new')
                 ..doc =
-                "If true classes will get library functions to construct forwarding to ctors"
+                    "If true classes will get library functions to construct forwarding to ctors"
                 ..type = 'bool'
                 ..access = WO
             ],
@@ -969,7 +967,7 @@ empty ctor with all members passed as arguments)
           enum_('access')
             ..hasJsonSupport = true
             ..doc =
-            'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
+                'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
             ..values = [id('ia'), id('ro'), id('rw'), id('wo'),],
           enum_('pub_dep_type')
             ..doc = 'Dependency type of a PubDependency'
@@ -983,7 +981,7 @@ empty ctor with all members passed as arguments)
     ..includesReadme = true
     ..includesHop = true
     ..introduction =
-    'A library supporting code generation of Dart pub packages and many constituent assets.'
+        'A library supporting code generation of Dart pub packages and many constituent assets.'
     ..purpose = '''
 There are two potentially distinct purposes for this package. First, for those
 wanting to keep consistency across Dart assets being developed, a declarative
@@ -1120,8 +1118,7 @@ library/templates, a message like the following will be output:
         ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
       library('test_enums')..imports = [],
-      library('test_class')
-        ..imports = ['package:ebisu/ebisu.dart'],
+      library('test_class')..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
@@ -1224,7 +1221,7 @@ Variables used by ebisu when generating Dart code.
             ..variables = [
               variable('ebisu_path')
                 ..doc =
-                'Path to this package - for use until this becomes a pub package'
+                    'Path to this package - for use until this becomes a pub package'
                 ..isFinal = true
                 ..init = "Platform.environment['EBISU_PATH']",
               variable('ebisu_author')
@@ -1267,7 +1264,7 @@ regenerating.
             ],
           part('json_support')
             ..doc =
-            'Code pulled in when generated Dart needs to serialize json',
+                'Code pulled in when generated Dart needs to serialize json',
           part('codegen_utils')
             ..doc = 'Common functions used in the code-generation process',
           part('entity')
@@ -1279,7 +1276,7 @@ regenerating.
                 ..isAbstract = true
                 ..implement = ['Identifiable']
                 ..brief =
-                'Used to track composition hierarchy of named entities'
+                    'Used to track composition hierarchy of named entities'
                 ..doc = '''
 Provides support for mixing in recursive design pattern among various
 *Entities*
@@ -1408,7 +1405,7 @@ would give:
                 ..members = [
                   member('tag')
                     ..doc =
-                    'Tag for protect block. If present includes protect block'
+                        'Tag for protect block. If present includes protect block'
                     ..ctors = [''],
                   member('snippets')
                     ..doc = 'Effecitively a hook to throw in generated text'
