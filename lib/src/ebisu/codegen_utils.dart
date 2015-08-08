@@ -288,10 +288,11 @@ String mergeWithContents(String generated, String currentText,
   Map<String, String> empties = {};
 
   RegExp block =
-      new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
-          '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
-          '${endProtect}\\s+<\\1>', // Require matching end
-          multiLine: true);
+    new RegExp(
+      '\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+      '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
+      '${endProtect}\\s+<\\1>', // Require matching end
+      multiLine: true);
 
   block.allMatches(currentText).forEach((m) {
     captures[m.group(1)] = m.group(0);
@@ -480,6 +481,11 @@ Id addSuffixToId(suffix, id, [preventDupe = true]) {
   return (preventDupe && id.snake.endsWith('_${suffix.snake}'))
       ? id
       : idFromString('${id.snake}_${suffix.snake}');
+}
+
+String substringWithEllipsis(String s, int length) {
+  final sLength = s.length;
+  return sLength > length ? '${s.substring(0, length-3)}...' : s;
 }
 
 // end <part codegen_utils>

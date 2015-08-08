@@ -249,5 +249,11 @@ a test''',
     expect(tripleSingleQuote('foo'), "'''foo'''");
   });
 
+  test('substringWithEllipsis', () {
+    expect(substringWithEllipsis('foobargoo', 5), 'fo...');
+    expect(substringWithEllipsis('foo', 5), 'foo');
+    expect(substringWithEllipsis('foo', 3), 'foo');
+  });
+
 // end <main>
 }
