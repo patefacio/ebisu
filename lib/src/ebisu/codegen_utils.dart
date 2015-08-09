@@ -483,6 +483,8 @@ Id addSuffixToId(suffix, id, [preventDupe = true]) {
       : idFromString('${id.snake}_${suffix.snake}');
 }
 
+/// Returns [s] unchanged if its length is less than or equal to [length] and
+/// returns [s] capped to length [length] with and including a trailing ellipsis
 String substringWithEllipsis(String s, int length) {
   final sLength = s.length;
   return sLength > length ? '${s.substring(0, length-3)}...' : s;
