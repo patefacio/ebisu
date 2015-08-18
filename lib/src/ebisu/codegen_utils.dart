@@ -190,16 +190,18 @@ const List _defaultProtections = const [_defaultProtectionPair];
 /// generated text prior to writing it to a target file
 typedef String PostProcessor(String);
 
-final _generatedFiles = new Set();
-
 /// The set of all generated files, whether *created*, *overwritten*,
 /// or *unchanged*
-Set<String> get generatedFiles => _generatedFiles;
+final _generatedFiles = new Set();
 
 /// All directories into which code was targeted
 Iterable<String> get targetedDirectories => new Set<String>.from(
-    generatedFiles.map((String filePath) => path.dirname(filePath)));
+    _generatedFiles.map((String filePath) => path.dirname(filePath)));
 
+/// The set of all files within [targetedDirectories].
+///
+/// This can be used to determine files in [targetedDirectories] that were not
+/// generated
 Set<String> get potentialTargetFiles => new Set<String>.from(concat(
     targetedDirectories.map((String dir) => new Directory(dir)
         .listSync()
@@ -209,10 +211,10 @@ Set<String> get potentialTargetFiles => new Set<String>.from(concat(
 /// For every path of every generated file, lists all files in those
 /// paths that were not generated
 Set<String> get nonGeneratedFiles =>
-    potentialTargetFiles.difference(generatedFiles);
+    potentialTargetFiles.difference(_generatedFiles);
 
-/// Take [generated] text and merge with contents of [destFilePath] taking care
-/// to preserve any *protect blocks*.
+/// Take [generated] text and merge with contents of [destFilePath]
+/// taking care to preserve any *protect blocks*.
 ///
 /// returns: true iff file written
 ///
@@ -269,6 +271,17 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
   return fileWritten;
 }
 
+/// Take [generated] text and merge with contents of [destFilePath]
+/// taking are to preserve any *protect blocks*.
+///
+/// returns: true iff file written
+///
+/// [beginProtect] and [endProtect] are used to idenfity the style of
+/// protection block tags protecting the text.
+///
+/// [postProcessor] An optional postProcessor function that may be run
+/// on merged contents prior to being written. An example usage is
+/// running merged text through a formatter.
 bool mergeWithFile(String generated, String destFilePath,
     [String beginProtect = customBegin,
     String endProtect = customEnd,
@@ -282,17 +295,23 @@ bool mergeWithFile(String generated, String destFilePath,
       postProcessor);
 }
 
+/// Take [generated] text and merge with contents of [currentText]
+/// taking are to preserve any *protect blocks*.
+///
+/// returns: string with the merged text
+///
+/// [beginProtect] and [endProtect] are used to idenfity the style of
+/// protection block tags protecting the text.
 String mergeWithContents(String generated, String currentText,
     String beginProtect, String endProtect) {
   Map<String, String> captures = {};
   Map<String, String> empties = {};
 
   RegExp block =
-    new RegExp(
-      '\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
-      '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
-      '${endProtect}\\s+<\\1>', // Require matching end
-      multiLine: true);
+      new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+          '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
+          '${endProtect}\\s+<\\1>', // Require matching end
+          multiLine: true);
 
   block.allMatches(currentText).forEach((m) {
     captures[m.group(1)] = m.group(0);
@@ -334,9 +353,14 @@ var _blockCommentRe =
     new RegExp(r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/', multiLine: true);
 var _lineCommentRe = new RegExp(r'//.*');
 
+/// Return [s] with block and line comments removed
 decomment(String s) =>
     s.replaceAll(_blockCommentRe, '').replaceAll(_lineCommentRe, '');
 
+/// Returns true iff [s1] and [s2] are *code equivalent*, which just
+/// means internal white space is ignored.
+///
+/// [stripComments] will ignore comments before comparison
 bool codeEquivalent(String s1, String s2, {bool stripComments: false}) {
   if (stripComments) {
     s1 = decomment(s1);
@@ -435,6 +459,11 @@ set formatPrunes(List<RegExp> v) => _formatPrunes
   ..addAll(v);
 get formatPrunes => _formatPrunes;
 
+/// Take [generated] text and merge with contents of [destFilePath]
+///
+/// [useFormatter] if provided will format code using dart style
+///
+/// returns: true if file was written
 bool mergeWithDartFile(String generated, String destFilePath,
     {bool useFormatter}) {
   if (useFormatter == null) useFormatter = _useDartFormatter;
