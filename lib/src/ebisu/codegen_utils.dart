@@ -178,8 +178,11 @@ String chomp(String s, [bool multiple = false]) {
 
 /// Removes left side white space
 String leftTrim(String s) => s.replaceFirst(_leadingWhiteSpace, '');
+
+/// Removes right side white space
 String rightTrim(String s) => s.replaceFirst(_trailingWhiteSpace, '');
 
+/// Replace more than 2 consecutive new lines with 2 new lines
 String reduceVerticalWhitespace(String s) =>
     s.replaceAll(_multipleNewlines, '\n\n');
 
@@ -307,11 +310,11 @@ String mergeWithContents(String generated, String currentText,
   Map<String, String> captures = {};
   Map<String, String> empties = {};
 
-  RegExp block =
-      new RegExp('\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
-          '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
-          '${endProtect}\\s+<\\1>', // Require matching end
-          multiLine: true);
+  RegExp block = new RegExp(
+      '\\n?[^\\S\\r\\n]*?${beginProtect}' // Look for begin
+      '\\s+<(.*?)>(?:.|\\r?\\n)*?' // Eat - non-greedy
+      '${endProtect}\\s+<\\1>', // Require matching end
+      multiLine: true);
 
   block.allMatches(currentText).forEach((m) {
     captures[m.group(1)] = m.group(0);
