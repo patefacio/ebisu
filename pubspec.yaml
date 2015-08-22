@@ -16,6 +16,7 @@ dependencies:
   id: "^1.0.11"
   dart_style: "^0.2.0-rc.2"
   collection: "^1.1.0"
+  stack_trace: "^1.4.1"
 
 # end <ebisu dependencies>
 

@@ -14,6 +14,7 @@ import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:quiver/iterables.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 // custom <additional imports>
 

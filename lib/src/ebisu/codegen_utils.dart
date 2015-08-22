@@ -522,4 +522,33 @@ String substringWithEllipsis(String s, int length) {
   return sLength > length ? '${s.substring(0, length-3)}...' : s;
 }
 
+/// Return a stack trace object
+Trace getStackTrace() {
+  try {
+    throw null;
+  } catch (_, stackTrace) {
+    return new Trace.from(stackTrace);
+  }
+}
+
+String tagGeneratedContent(String txt) => '''
+////////////////////////////////////////////////////////////////////////////////
+/// This file was generated - see bottom of file for details
+////////////////////////////////////////////////////////////////////////////////
+$txt
+
+////////////////////////////////////////////////////////////////////////////////
+/// Stack trace associated with generated code. Useful for determining what
+/// code generated this file
+////////////////////////////////////////////////////////////////////////////////
+${
+blockComment(
+  chomp(
+    brCompact(
+      getStackTrace()
+      .frames
+      .skip(3)
+      .takeWhile((f) => !f.member.contains('_startIsolate'))
+      .map((f) => '${f.library}:${f.line}\n  ${f.member}'))))}''';
+
 // end <part codegen_utils>

@@ -1201,6 +1201,7 @@ The *ebisu* package has two primary libraries with following focus:
 '''
         ..imports = [
           'package:dart_style/dart_style.dart',
+          'package:stack_trace/stack_trace.dart',
           'package:id/id.dart',
           'io',
           'math',
