@@ -2,12 +2,7 @@
 
 
 A library supporting code generation of Dart pub packages and many constituent assets.
-<!--- custom <introduction> --->
-
 [![Build Status](https://drone.io/github.com/patefacio/ebisu/status.png)](https://drone.io/github.com/patefacio/ebisu/latest)
-
-<!--- end <introduction> -->
-
 
 # Purpose
 There are two potentially distinct purposes for this package. First, for those
@@ -132,12 +127,6 @@ library/templates, a message like the following will be output:
     Wrote: .../library/foo.dart
 
 
-<!--- custom <purpose> --->
-<!--- end <purpose> -->
-
-
-<!--- custom <body> --->
-
 ### Json Support
 
 One of the benefits of code generation is it allows for easy addition
@@ -230,12 +219,8 @@ referenced by environment variable _EBISU\_PUB\_VERSIONS_ then those
 overrides will take effect and any generated puspecs will have those
 versions if present.
 
-<!--- end <body> -->
-
 
 # Examples
-
-<!--- custom <examples> --->
 
 ## A Toy Example
 
@@ -338,13 +323,5 @@ For example the _pubspec.yaml_ looks something like:
     # end <json_schema dev dependencies>
 
 
-<!--- end <examples> -->
-
-
-# Todos
-
-- Add examples
-<!--- custom <todos> --->
-<!--- end <todos> -->
 
 
