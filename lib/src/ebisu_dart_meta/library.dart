@@ -8,6 +8,9 @@ class Library extends Object with CustomCodeBlock, Entity {
   /// List of imports to be included by this library
   List<String> imports = [];
 
+  /// List of exports to be included by this library
+  List<String> exports = [];
+
   /// List of parts in this library
   List<Part> parts = [];
 
@@ -143,7 +146,8 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   get _content => br([
         brCompact([this.docComment, _libraryStatement]),
-        brCompact(_clensedImports),
+        brCompact(_cleansedImports),
+        brCompact(_exportStatements),
         _additionalImports,
         brCompact(_parts),
         _loggerInit,
@@ -154,8 +158,9 @@ class Library extends Object with CustomCodeBlock, Entity {
         _libraryMain,
       ]);
 
-  get _clensedImports =>
+  get _cleansedImports =>
       cleanImports(imports.map((i) => importStatement(i)).toList());
+  get _exportStatements => exports.map((e) => "export '$e';");
   get _libraryStatement => 'library $qualifiedName;\n';
   get _additionalImports => customBlock('additional imports');
   get _parts => parts.length > 0 ? ([]

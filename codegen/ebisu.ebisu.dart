@@ -866,6 +866,10 @@ empty ctor with all members passed as arguments)
                 ..doc = 'List of imports to be included by this library'
                 ..type = 'List<String>'
                 ..classInit = '[]',
+              member('exports')
+                ..doc = 'List of exports to be included by this library'
+                ..type = 'List<String>'
+                ..classInit = '[]',
               member('parts')
                 ..doc = 'List of parts in this library'
                 ..type = 'List<Part>'
@@ -991,6 +995,7 @@ empty ctor with all members passed as arguments)
       library('test_dart_meta')
         ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
       library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
+      library('test_library')..imports = [],
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
