@@ -65,6 +65,7 @@ class System extends Object with Entity {
 
   Iterable<Entity> get children => concat([
         scripts,
+        libraryGroups,
         libraries,
         testLibraries,
         [pubSpec]

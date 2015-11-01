@@ -35,9 +35,11 @@ main([List<String> args]) {
 
     s.setAsRoot();
     final lg = s.libraryGroups.first;
+    final cleanLib = lg.externalLibraries.first;
+    final detailsLib = lg.internalLibraries.first;
 
-    lg.externalLibraries.forEach((l) => print(l.tar));
-    lg.internalLibraries.forEach((l) => print(l.tar));
+    expect(cleanLib.path, 'null/lib');
+    expect(detailsLib.path, 'null/lib/src/feature_set');
   });
 
 // end <main>

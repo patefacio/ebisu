@@ -27,9 +27,21 @@ class LibraryGroup extends Object with Entity {
   Iterable<Entity> get children =>
       concat([externalLibraries, internalLibraries]);
 
-  onOwnershipEstablished() {}
+  onOwnershipEstablished() {
+    for(Library lib in externalLibraries) {
+      lib.path = '$rootPath/lib';
+    }
+    for(Library lib in internalLibraries) {
+      lib.path = '$rootPath/lib/src/${id.snake}';
+    }
+  }
 
-  void generate() {}
+  void generate() {
+    externalLibraries.forEach((l) => l.generate());
+    internalLibraries.forEach((l) => l.generate());
+  }
+
+  String get rootPath => (rootEntity as System).rootPath;
 
   // end <class LibraryGroup>
 
