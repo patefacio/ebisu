@@ -1,5 +1,41 @@
 part of ebisu.ebisu_dart_meta;
 
+/// List of libraries supporting a feature set.
+///
+/// Some large features are best implemented as a collection of
+/// libraries. Decomposition of large functionality can be achieved with a single
+/// library with multiple *parts*. But this has drawbacks.  [see also why parts are
+/// not ideal](https://groups.google.com/a/dartlang.org/d/msg/misc/Q7loz93GKf8/jsBLCSSJAQAJ)
+/// A better approach is to develop libraries keeping boundaries and managing
+/// dependencies, rather than the all-or-nothing nature of parts.
+///
+/// It may be the best way to expose that functionality is a single library.
+class LibraryGroup extends Object with Entity {
+  /// Id for this library_group
+  Id get id => _id;
+
+  /// Libraries exposed to the client
+  List<Library> externalLibraries = [];
+
+  /// Implementation libraries
+  List<Library> internalLibraries = [];
+
+  // custom <class LibraryGroup>
+
+  LibraryGroup(this._id);
+
+  Iterable<Entity> get children =>
+      concat([externalLibraries, internalLibraries]);
+
+  onOwnershipEstablished() {}
+
+  void generate() {}
+
+  // end <class LibraryGroup>
+
+  final Id _id;
+}
+
 /// Defines a dart library - a collection of parts
 class Library extends Object with CustomCodeBlock, Entity {
   /// Id for this library
@@ -10,6 +46,11 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   /// List of exports to be included by this library
   List<String> exports = [];
+
+  /// If not null this library is generated in *lib/src/${internalGroup}* folder.
+  ///
+  /// This is an intended as a replacement for *parts*.
+  String get libraryGroup => _libraryGroup;
 
   /// List of parts in this library
   List<Part> parts = [];
@@ -270,6 +311,7 @@ $_initLogger${_mainCustomText}
   // end <class Library>
 
   final Id _id;
+  String _libraryGroup;
   String _name;
   String _qualifiedName;
   bool _isTest = false;

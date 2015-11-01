@@ -17,6 +17,9 @@ class System extends Object with Entity {
   /// List of test libraries of this app
   List<Library> testLibraries = [];
 
+  /// LibraryGroups in the system
+  List<LibraryGroup> libraryGroups = [];
+
   /// Libraries in the system
   List<Library> libraries = [];
 

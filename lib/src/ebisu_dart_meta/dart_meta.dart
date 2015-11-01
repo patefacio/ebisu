@@ -119,6 +119,7 @@ Enum enum_(_id) => new Enum(makeId(_id));
 System system(_id) => new System(makeId(_id));
 App app(_id) => new App(makeId(_id));
 Library library(_id) => new Library(makeId(_id));
+LibraryGroup libraryGroup(_id) => new LibraryGroup(makeId(_id));
 Variable variable(_id) => new Variable(makeId(_id));
 Part part(_id) => new Part(makeId(_id));
 Class class_(_id) => new Class(makeId(_id));

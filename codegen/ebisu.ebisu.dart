@@ -133,6 +133,10 @@ classes with JSON support.
                 ..doc = 'List of test libraries of this app'
                 ..type = 'List<Library>'
                 ..classInit = '[]',
+              member('library_groups')
+                ..doc = 'LibraryGroups in the system'
+                ..type = 'List<LibraryGroup>'
+                ..classInit = [],
               member('libraries')
                 ..doc = 'Libraries in the system'
                 ..type = 'List<Library>'
@@ -857,6 +861,31 @@ empty ctor with all members passed as arguments)
         ],
       part('library')
         ..classes = [
+          class_('library_group')
+            ..mixins = ['Entity']
+            ..doc = '''
+List of libraries supporting a feature set.
+
+Some large features are best implemented as a collection of
+libraries. Decomposition of large functionality can be achieved with a single
+library with multiple *parts*. But this has drawbacks.  [see also why parts are
+not ideal](https://groups.google.com/a/dartlang.org/d/msg/misc/Q7loz93GKf8/jsBLCSSJAQAJ)
+A better approach is to develop libraries keeping boundaries and managing
+dependencies, rather than the all-or-nothing nature of parts.
+
+It may be the best way to expose that functionality is a single library.
+'''
+            ..members = [
+              id_member('library_group')..ctors = [],
+              member('external_libraries')
+                ..doc = 'Libraries exposed to the client'
+                ..type = 'List<Library>'
+                ..classInit = [],
+              member('internal_libraries')
+                ..doc = 'Implementation libraries'
+                ..type = 'List<Library>'
+                ..classInit = [],
+            ],
           class_('library')
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..doc = "Defines a dart library - a collection of parts"
@@ -870,6 +899,14 @@ empty ctor with all members passed as arguments)
                 ..doc = 'List of exports to be included by this library'
                 ..type = 'List<String>'
                 ..classInit = '[]',
+              member('library_group')
+                ..doc = r'''
+If not null this library is generated in *lib/src/${internalGroup}* folder.
+
+This is an intended as a replacement for *parts*.
+
+'''
+                ..access = Access.RO,
               member('parts')
                 ..doc = 'List of parts in this library'
                 ..type = 'List<Part>'

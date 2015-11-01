@@ -21,11 +21,23 @@ main([List<String> args]) {
 // custom <main>
 
   test('export statement', () {
-    final l = library('has_exports')
-      ..exports = [
-        'src/details.dart',
-      ];
+    final l = library('has_exports')..exports = ['src/details.dart',];
     expect(l.tar.contains("export 'src/details.dart';"), true);
+  });
+
+  test('library group', () {
+    final s = system('sys')
+      ..libraryGroups = [
+        libraryGroup('feature_set')
+        ..externalLibraries = [library('clean'),]
+        ..internalLibraries = [library('details'),]
+      ];
+
+    s.setAsRoot();
+    final lg = s.libraryGroups.first;
+
+    lg.externalLibraries.forEach((l) => print(l.tar));
+    lg.internalLibraries.forEach((l) => print(l.tar));
   });
 
 // end <main>
