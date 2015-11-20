@@ -553,26 +553,31 @@ blockComment(
 
 scrubPubFilesFromRoot(String packageRoot) {
   final rootDirectory = new Directory(packageRoot);
-  final moribunds = ['packages', '.packages', '.pub'];
+  final moribunds = ['packages', '.pub'];
   moribunds.forEach((var dir) {
     final moribund = new Directory(path.join(packageRoot, dir));
     if (moribund.existsSync()) {
       _logger.info('Removing *$dir* path $moribund');
-      //packagePath.deleteSync(recursive: true);
+      moribund.deleteSync(recursive: true);
     }
   });
 
   {
-    final moribund = new File(path.join(packageRoot, 'pubspec.lock'));
-    if (moribund.existsSync()) {
-      _logger.info('Removing *pubspec.lock* path $moribund');
-    }
+    final moribunds = ['.packages', 'pubspec.lock'];
+    moribunds.forEach((var file) {
+      final moribund = new File(path.join(packageRoot, file));
+      if (moribund.existsSync()) {
+        _logger.info('Removing *pubspec.lock* path $moribund');
+        moribund.deleteSync();
+      }
+    });
   }
 
   rootDirectory.listSync(recursive: true).forEach((FileSystemEntity entry) {
     final basename = path.basename(entry.path);
     if (FileSystemEntity.isLinkSync(entry.path) && basename == 'packages') {
       _logger.info('Removing *packages* softlink $entry');
+      entry.deleteSync();
     }
   });
 }

@@ -1097,7 +1097,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.5'
+      ..version = '0.6.6'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1368,8 +1368,6 @@ protection block or after
   ];
 
   ebisu.generate();
-
-  //ebisu.scrubPubFiles();
 
   print('''
 **** NON GENERATED FILES ****
