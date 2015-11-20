@@ -28,10 +28,10 @@ class LibraryGroup extends Object with Entity {
       concat([externalLibraries, internalLibraries]);
 
   onOwnershipEstablished() {
-    for(Library lib in externalLibraries) {
+    for (Library lib in externalLibraries) {
       lib.path = '$rootPath/lib';
     }
-    for(Library lib in internalLibraries) {
+    for (Library lib in internalLibraries) {
       lib.path = '$rootPath/lib/src/${id.snake}';
     }
   }

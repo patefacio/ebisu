@@ -1,5 +1,6 @@
 part of ebisu.ebisu_dart_meta;
 
+/// Variable with an [id] and [type]
 class Variable extends Object with Entity {
   Variable(this._id);
 

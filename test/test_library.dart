@@ -29,8 +29,8 @@ main([List<String> args]) {
     final s = system('sys')
       ..libraryGroups = [
         libraryGroup('feature_set')
-        ..externalLibraries = [library('clean'),]
-        ..internalLibraries = [library('details'),]
+          ..externalLibraries = [library('clean'),]
+          ..internalLibraries = [library('details'),]
       ];
 
     s.setAsRoot();

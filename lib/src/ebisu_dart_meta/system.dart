@@ -338,6 +338,8 @@ ${testLibraries
     }
   }
 
+  scrubPubFiles() => scrubPubFilesFromRoot(rootPath);
+
   // end <class System>
 
   Id _id;

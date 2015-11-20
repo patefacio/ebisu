@@ -475,6 +475,7 @@ a class is generated instead of the newer and generally preffered enum.
       part('variable')
         ..classes = [
           class_('variable')
+            ..doc = 'Variable with an [id] and [type]'
             ..mixins = ['Entity']
             ..members = [
               id_member('variable'),
@@ -1367,6 +1368,8 @@ protection block or after
   ];
 
   ebisu.generate();
+
+  //ebisu.scrubPubFiles();
 
   print('''
 **** NON GENERATED FILES ****

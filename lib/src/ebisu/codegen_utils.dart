@@ -551,4 +551,30 @@ blockComment(
       .takeWhile((f) => !f.member.contains('_startIsolate'))
       .map((f) => '${f.library}:${f.line}\n  ${f.member}'))))}''';
 
+scrubPubFilesFromRoot(String packageRoot) {
+  final rootDirectory = new Directory(packageRoot);
+  final moribunds = ['packages', '.packages', '.pub'];
+  moribunds.forEach((var dir) {
+    final moribund = new Directory(path.join(packageRoot, dir));
+    if (moribund.existsSync()) {
+      _logger.info('Removing *$dir* path $moribund');
+      //packagePath.deleteSync(recursive: true);
+    }
+  });
+
+  {
+    final moribund = new File(path.join(packageRoot, 'pubspec.lock'));
+    if (moribund.existsSync()) {
+      _logger.info('Removing *pubspec.lock* path $moribund');
+    }
+  }
+
+  rootDirectory.listSync(recursive: true).forEach((FileSystemEntity entry) {
+    final basename = path.basename(entry.path);
+    if (FileSystemEntity.isLinkSync(entry.path) && basename == 'packages') {
+      _logger.info('Removing *packages* softlink $entry');
+    }
+  });
+}
+
 // end <part codegen_utils>
