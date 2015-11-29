@@ -189,6 +189,9 @@ Only "version" and "path" overrides are supported.
       if (pubSpec.depNotFound('hop')) {
         pubSpec.addDevDependency(new PubDependency('hop'));
       }
+      if (pubSpec.depNotFound('hop_docgen')) {
+        pubSpec.addDevDependency(new PubDependency('hop_docgen'));
+      }
     }
 
     allLibraries.forEach((lib) => lib.generate());
