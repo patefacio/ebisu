@@ -348,6 +348,7 @@ $_processArgs
 } on ArgumentError catch(e) {
   print(e);
   _usage();
+  exit(-1);
 }
 '''
       : '');
