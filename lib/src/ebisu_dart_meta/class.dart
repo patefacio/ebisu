@@ -473,6 +473,8 @@ class Class extends Object with CustomCodeBlock, Entity {
 
   Iterable<Entity> get children => concat([members]);
 
+  withClass(f(Class c)) => f(this);
+
   bool get hasCtorSansNew => _hasCtorSansNew == null
       ? ((owner is Library) ? (owner as Library).hasCtorSansNew : false)
       : _hasCtorSansNew;
