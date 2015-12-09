@@ -9,6 +9,8 @@ import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 
+// custom <additional imports>
+// end <additional imports>
 //! The parser for this script
 ArgParser _parser;
 //! The comment and usage associated with this script

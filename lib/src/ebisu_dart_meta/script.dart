@@ -189,6 +189,7 @@ Select log level from:
         _scriptTag,
         _docComment,
         _imports,
+        customBlock('additional imports'),
         args.isEmpty
             ? null
             : brCompact(
