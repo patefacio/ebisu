@@ -630,6 +630,11 @@ text in generated ctor initializers''',
                     'If true and member is in class that is comparable, it will be included in compareTo method'
                 ..type = 'bool'
                 ..classInit = 'true',
+              member('is_in_hash_code')
+                ..doc =
+                    'If true and class hashCode this member will be included in the hashCode'
+                ..type = 'bool'
+                ..classInit = 'true',
               member('name')
                 ..doc =
                     "Name of variable for the member, excluding access prefix (i.e. no '_')"
@@ -1097,7 +1102,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.9'
+      ..version = '0.6.10'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

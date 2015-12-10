@@ -193,6 +193,9 @@ class Member extends Object with Entity {
   /// If true and member is in class that is comparable, it will be included in compareTo method
   bool isInComparable = true;
 
+  /// If true and class hashCode this member will be included in the hashCode
+  bool isInHashCode = true;
+
   /// Name of variable for the member, excluding access prefix (i.e. no '_')
   String get name => _name;
 
@@ -494,6 +497,10 @@ class Class extends Object with CustomCodeBlock, Entity {
   List<Member> get nonTransientMembers =>
       nonStaticMembers.where((member) => !member.isJsonTransient).toList();
 
+  List<Member> get hashableMembers => nonStaticMembers
+      .where((member) => !member.isJsonTransient && member.isInHashCode)
+      .toList();
+
   List<Member> get transientMembers =>
       nonStaticMembers.where((member) => member.isJsonTransient).toList();
 
@@ -535,7 +542,7 @@ return new ${_className}()
   String get overrideHashCode {
     String result;
     var parts = [];
-    parts.addAll(nonTransientMembers.map((Member m) {
+    parts.addAll(hashableMembers.map((Member m) {
       if (m.isList) {
         return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName})';
       } else if (m.isMap) {
@@ -545,7 +552,7 @@ return new ${_className}()
       }
     }));
 
-    int numMembers = nonTransientMembers.length;
+    int numMembers = hashableMembers.length;
     if (numMembers == 1) {
       result = '${parts.first}.hashCode';
     } else if (numMembers == 2) {
