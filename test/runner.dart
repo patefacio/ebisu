@@ -6,6 +6,7 @@ import 'test_enums.dart' as test_enums;
 import 'test_class.dart' as test_class;
 import 'test_entity.dart' as test_entity;
 import 'test_code_generation.dart' as test_code_generation;
+import 'test_ebisu_project.dart' as test_ebisu_project;
 
 main() {
   Logger.root.level = Level.OFF;
@@ -20,4 +21,5 @@ main() {
   test_class.main();
   test_entity.main();
   test_code_generation.main();
+  test_ebisu_project.main();
 }

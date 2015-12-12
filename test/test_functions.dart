@@ -5,7 +5,9 @@ import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 // custom <additional imports>
+
 import 'package:id/id.dart';
+import 'package:path/path.dart';
 
 // end <additional imports>
 
@@ -253,6 +255,14 @@ a test''',
     expect(substringWithEllipsis('foobargoo', 5), 'fo...');
     expect(substringWithEllipsis('foo', 5), 'foo');
     expect(substringWithEllipsis('foo', 3), 'foo');
+  });
+
+
+  test('findParentPath', () {
+    expect(findParentPath('/this/is/a/test', (d) => basename(d) == 'is'), '/this/is');
+    expect(findParentPath('/this/is/a/test', (d) => basename(d) == 'oops'), null);
+    expect(findParentPath('this/is/a/test', (d) => basename(d) == 'oops'), null);
+    expect(findParentPath('this/is/a/test', (d) => basename(d) == 'is') != null, true);
   });
 
 // end <main>
