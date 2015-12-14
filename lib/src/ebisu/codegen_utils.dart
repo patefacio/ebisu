@@ -582,11 +582,10 @@ scrubPubFilesFromRoot(String packageRoot) {
   });
 }
 
-
 /// Searches up directories of [startPath] until [dirTest] is true or root is
 /// reached
 String findParentPath(String startPath, dirTest(String)) {
-  if(!path.isAbsolute(startPath)) {
+  if (!path.isAbsolute(startPath)) {
     startPath = path.join(Directory.current.path, startPath);
   }
   if (dirTest(startPath)) {
@@ -608,6 +607,5 @@ String findGitRepo(String filePath) => findParentPath(
     (String p) => new Directory(p)
         .listSync()
         .any((fse) => fse is Directory && path.basename(fse.path) == '.git'));
-
 
 // end <part codegen_utils>

@@ -257,12 +257,15 @@ a test''',
     expect(substringWithEllipsis('foo', 3), 'foo');
   });
 
-
   test('findParentPath', () {
-    expect(findParentPath('/this/is/a/test', (d) => basename(d) == 'is'), '/this/is');
-    expect(findParentPath('/this/is/a/test', (d) => basename(d) == 'oops'), null);
-    expect(findParentPath('this/is/a/test', (d) => basename(d) == 'oops'), null);
-    expect(findParentPath('this/is/a/test', (d) => basename(d) == 'is') != null, true);
+    expect(findParentPath('/this/is/a/test', (d) => basename(d) == 'is'),
+        '/this/is');
+    expect(
+        findParentPath('/this/is/a/test', (d) => basename(d) == 'oops'), null);
+    expect(
+        findParentPath('this/is/a/test', (d) => basename(d) == 'oops'), null);
+    expect(findParentPath('this/is/a/test', (d) => basename(d) == 'is') != null,
+        true);
   });
 
 // end <main>

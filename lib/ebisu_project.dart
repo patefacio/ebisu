@@ -75,6 +75,7 @@ class EbisuProject {
   _readFiles() {
     _codegenScripts = _codegenScriptFiles.map((s) => s.path).toList();
     _binScripts = _binScriptFiles.map((s) => s.path).toList();
+    _testScripts = _testScriptFiles.map((s) => s.path).toList();
   }
 
   toString() => brCompact([
@@ -84,6 +85,16 @@ class EbisuProject {
         '  ------------------ Codegen Scripts ------------------',
         indentBlock(brCompact(_codegenScripts.map((p) => basename(p)))),
       ]);
+
+  runTests() {
+    final runner = new File(join(testPath, 'runner.dart'));
+    if (!runner.existsSync()) {
+      throw 'Could not run tests - $runner does not exist';
+    }
+    print('Running tests $runner');
+    final result = Process.runSync('dart', [runner.path]);
+    print(result.stdout);
+  }
 
   // end <class EbisuProject>
 

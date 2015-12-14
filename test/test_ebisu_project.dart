@@ -27,7 +27,18 @@ main([List<String> args]) {
 
   test('read current ebisu project', () {
     final project = new EbisuProject.fromPath(root);
-    print(project);
+    expect(project.codegenScripts.map((f) => basename(f)).toList(),
+        ['ebisu.ebisu.dart']);
+    expect(
+        project.testScripts
+            .map((f) => basename(f))
+            .contains('test_ebisu_project.dart'),
+        true);
+    expect(
+        project.binScripts
+            .map((f) => basename(f))
+            .contains('project_tasks.dart'),
+        true);
   });
 
 // end <main>
