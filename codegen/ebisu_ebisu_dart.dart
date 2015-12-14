@@ -1428,31 +1428,6 @@ If no paths are specified the proejct of the current directory is assumed.
       ..abbr = 'g'
       ..isFlag = true,
     ],
-
-    script('bootstrap_ebisu')
-      ..imports = [
-        'package:id/id.dart',
-        'package:path/path.dart',
-        "'package:ebisu/ebisu.dart' as ebisu",
-        'package:ebisu/ebisu_dart_meta.dart',
-      ]
-      ..doc = 'Creates an ebisu setup'
-      ..classes = [
-        class_('project')
-          ..hasJsonToString = true
-          ..members = [
-            member('id')..type = 'Id',
-            member('root_path'),
-            member('codegen_path'),
-            member('script_name'),
-            member('ebisu_file_path'),
-          ]
-      ]
-      ..args = [
-        scriptArg('project_path')
-          ..doc = 'Path to top level of desired ebisu project'
-          ..abbr = 'p',
-      ]
   ];
 
   ebisu.generate();
