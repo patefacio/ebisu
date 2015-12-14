@@ -53,6 +53,12 @@ Regenerate the code
 ''',
         abbr: 'g',
         defaultsTo: false);
+    _parser.addFlag('regen-project',
+        help: r'''
+Regenerate the project itself
+''',
+        abbr: null,
+        defaultsTo: false);
     _parser.addFlag('help',
         help: r'''
 Display this help screen
@@ -92,6 +98,7 @@ Select log level from:
     result['git-status'] = argResults['git-status'];
     result['run-tests'] = argResults['run-tests'];
     result['codegen'] = argResults['codegen'];
+    result['regen-project'] = argResults['regen-project'];
     result['help'] = argResults['help'];
     result['log-level'] = argResults['log-level'];
 
@@ -121,6 +128,7 @@ Select log level from:
 }
 
 final _logger = new Logger('projectTasks');
+
 main(List<String> args) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
@@ -153,6 +161,12 @@ main(List<String> args) {
       print(
           '------------------ Running (${ebisuProject.title}) codegen -----------------');
       ebisuProject.runGitStatus();
+    }
+
+    if (options['regen-project']) {
+      print(
+          '------------------ Regenning (${ebisuProject.title}) -----------------');
+      ebisuProject.regenProject();
     }
   }
 

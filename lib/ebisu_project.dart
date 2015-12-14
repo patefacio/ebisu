@@ -3,6 +3,7 @@ library ebisu.ebisu_project;
 
 import 'dart:io';
 import 'package:ebisu/ebisu.dart';
+import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:id/id.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
@@ -85,6 +86,7 @@ class EbisuProject {
     var pubspec =
         loadYaml(new File(join(repoPath, 'pubspec.yaml')).readAsStringSync());
     _version = pubspec['version'];
+    _readLanguages();
   }
 
   get title => '$id(version=$version)';
@@ -113,10 +115,42 @@ class EbisuProject {
     }
   }
 
+  regenProject() {
+    for (var language in languages) {
+      print('Regening $language codegen script');
+      final codegenScript = script(id.snake + '_ebisu_dart')
+        ..scriptPath = join(repoPath, 'codegen')
+        ..customCodeBlock.hasSnippetsFirst = true
+        ..customCodeBlock.snippets.add('''
+useDartFormatter = true;
+String here = absolute(Platform.script.toFilePath());
+''')
+        ..imports.addAll([
+          'package:ebisu/ebisu.dart',
+          'package:ebisu/ebisu_dart_meta.dart',
+          'package:path/path.dart',
+        ])
+        ..generate();
+    }
+  }
+
   runGitStatus() {
     final result = Process.runSync('git',
         ['--git-dir=${repoPath}/.git', '--work-tree=${repoPath}', 'status']);
     print(result.stdout);
+  }
+
+  _readLanguages() {
+    for (var codegenScript in codegenScripts) {
+      final script = basename(codegenScript);
+      if (script.endsWith('ebisu_dart.dart')) {
+        _languages.add(EbisuLanguage.ebisuDart);
+      } else if (script.endsWith('ebisu_py.dart')) {
+        _languages.add(EbisuLanguage.ebisuPy);
+      } else if (script.endsWith('ebisu_cpp.dart')) {
+        _languages.add(EbisuLanguage.ebisuCpp);
+      }
+    }
   }
 
   // end <class EbisuProject>

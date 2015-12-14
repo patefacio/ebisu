@@ -1,28 +1,31 @@
-import "dart:io";
-import "package:path/path.dart" as path;
-import "package:ebisu/ebisu.dart";
-import "package:ebisu/ebisu_dart_meta.dart";
-import "package:logging/logging.dart";
+#!/usr/bin/env dart
+import 'dart:io';
+import 'package:args/args.dart';
+import 'package:ebisu/ebisu.dart';
+import 'package:ebisu/ebisu_dart_meta.dart';
+import 'package:logging/logging.dart';
+import 'package:path/path.dart';
+// custom <additional imports>
+// end <additional imports>
+final _logger = new Logger('ebisuEbisuDart');
 
-String _topDir;
-
-final _logger = new Logger('ebisu.ebisu');
-
-bool _enableLogging = false;
-
-void main() {
-  //////////////////////////////////////////////////////////////////////
-  // Uncomment following for logging
-  if (_enableLogging) {
-    Logger.root.onRecord.listen(
-        (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
-  }
-
+main(List<String> args) {
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.level = Level.OFF;
   useDartFormatter = true;
-  String here = path.absolute(Platform.script.toFilePath());
-  _topDir = path.dirname(path.dirname(here));
+  String here = absolute(Platform.script.toFilePath());
+  // custom <ebisuEbisuDart main>
+
+  _topDir = dirname(dirname(here));
   generate();
+
+  // end <ebisuEbisuDart main>
 }
+
+// custom <ebisuEbisuDart global>
+String _topDir;
+bool _enableLogging = false;
 
 generate() {
   // The following are commonly used members of the meta data classes
@@ -1117,6 +1120,7 @@ other languages like D) using a fairly declarative aproach.
         'dart:io',
         'package:id/id.dart',
         'package:ebisu/ebisu.dart',
+        'package:ebisu/ebisu_dart_meta.dart',
         'package:path/path.dart',
         'package:yaml/yaml.dart',
       ]
@@ -1427,6 +1431,9 @@ If no paths are specified the proejct of the current directory is assumed.
       ..doc = 'Regenerate the code'
       ..abbr = 'g'
       ..isFlag = true,
+      scriptArg('regen_project')
+      ..doc = 'Regenerate the project itself'
+      ..isFlag = true,
     ],
   ];
 
@@ -1437,3 +1444,4 @@ If no paths are specified the proejct of the current directory is assumed.
 ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
+// end <ebisuEbisuDart global>

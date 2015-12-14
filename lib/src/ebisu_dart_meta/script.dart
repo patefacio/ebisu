@@ -329,13 +329,14 @@ ${arg.doc}
 
   get _main => brCompact([
         '''
+
 main(List<String> args) ${isAsync? 'async ':''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;''',
         _argMap,
         '''
-${indentBlock((this..tag = "$id main").blockText)}
+${chomp(indentBlock((this..tag = "$id main").blockText))}
 }
 
 ${customBlock("$id global")}'''
