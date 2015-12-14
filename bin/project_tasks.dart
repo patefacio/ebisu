@@ -1,15 +1,12 @@
 #!/usr/bin/env dart
 
-/// This script goes through ebisu projects and performs some useful tasks:
-///
-/// - report project git status
-/// - run all project tests
-/// - regenerate code
-///
+/// This script performs tasks (e.g. run tests, regenerate code) on specified ebisu
+/// projects
 ///
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:ebisu/ebisu.dart';
+import 'package:ebisu/ebisu_project.dart';
 import 'package:id/id.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
@@ -21,12 +18,8 @@ ArgParser _parser;
 //! The comment and usage associated with this script
 void _usage() {
   print(r'''
-This script goes through ebisu projects and performs some useful tasks:
-
-- report project git status
-- run all project tests
-- regenerate code
-
+This script performs tasks (e.g. run tests, regenerate code) on specified ebisu
+projects
 
 ''');
   print(_parser.getUsage());
@@ -42,6 +35,24 @@ Map _parseArgs(List<String> args) {
   _parser = new ArgParser();
   try {
     /// Fill in expectations of the parser
+    _parser.addFlag('git-status',
+        help: r'''
+Run *git status* on all the projects
+''',
+        abbr: 's',
+        defaultsTo: false);
+    _parser.addFlag('run-tests',
+        help: r'''
+Run tests on the projects
+''',
+        abbr: 't',
+        defaultsTo: false);
+    _parser.addFlag('codegen',
+        help: r'''
+Regenerate the code
+''',
+        abbr: 'g',
+        defaultsTo: false);
     _parser.addFlag('help',
         help: r'''
 Display this help screen
@@ -49,37 +60,15 @@ Display this help screen
         abbr: 'h',
         defaultsTo: false);
 
-    _parser.addOption('git-status',
+    _parser.addOption('project-path',
         help: r'''
-Run *git status* on all the projects
+Path to a file or directory within a project.
+If no paths are specified the proejct of the current directory is assumed.
+
 ''',
         defaultsTo: null,
-        allowMultiple: false,
-        abbr: null,
-        allowed: null);
-    _parser.addOption('report-version',
-        help: r'''
-Run *git status* on all the projects
-''',
-        defaultsTo: null,
-        allowMultiple: false,
-        abbr: null,
-        allowed: null);
-    _parser.addOption('run-tests',
-        help: r'''
-Run *git status* on all the projects
-''',
-        defaultsTo: null,
-        allowMultiple: false,
-        abbr: null,
-        allowed: null);
-    _parser.addOption('codegen',
-        help: r'''
-Regenerate the code
-''',
-        defaultsTo: null,
-        allowMultiple: false,
-        abbr: null,
+        allowMultiple: true,
+        abbr: 'p',
         allowed: null);
     _parser.addOption('log-level',
         help: r'''
@@ -99,8 +88,8 @@ Select log level from:
       _usage();
       exit(0);
     }
+    result['project-path'] = argResults['project-path'];
     result['git-status'] = argResults['git-status'];
-    result['report-version'] = argResults['report-version'];
     result['run-tests'] = argResults['run-tests'];
     result['codegen'] = argResults['codegen'];
     result['help'] = argResults['help'];
@@ -140,6 +129,33 @@ main(List<String> args) {
   Map options = argResults['options'];
   List positionals = argResults['rest'];
   // custom <projectTasks main>
+
+  List projectPaths = options['project-path'].isEmpty
+      ? [Directory.current.path]
+      : options['project-path'];
+
+  for (var path in projectPaths) {
+    final ebisuProject = new EbisuProject.fromPath(path);
+
+    if (options['run-tests']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) tests -----------------');
+      ebisuProject.runTests();
+    }
+
+    if (options['codegen']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) codegen -----------------');
+      ebisuProject.runCodegen();
+    }
+
+    if (options['git-status']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) codegen -----------------');
+      ebisuProject.runGitStatus();
+    }
+  }
+
   // end <projectTasks main>
 }
 

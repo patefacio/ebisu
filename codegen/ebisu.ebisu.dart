@@ -1118,6 +1118,7 @@ other languages like D) using a fairly declarative aproach.
         'package:id/id.dart',
         'package:ebisu/ebisu.dart',
         'package:path/path.dart',
+        'package:yaml/yaml.dart',
       ]
       ..doc = 'Provide consistency to creation of and dealing with ebisu project'
       ..enums = [
@@ -1126,13 +1127,14 @@ other languages like D) using a fairly declarative aproach.
       ]
       ..classes = [
         class_('ebisu_project')
+        ..doc = 'Represents an ebisu project'
         ..defaultMemberAccess = RO
         ..members = [
           member('id')
           ..doc = 'Id of the package'
           ..type = 'Id',
-          member('path')
-          ..doc = 'Path to project',
+          member('version')
+          ..doc = 'Pubspec version of the package',
           member('languages')
           ..doc = 'Languages the project has ebisu scripts for'
           ..type = 'List<EbisuLanguage>'
@@ -1395,32 +1397,36 @@ protection block or after
 
     script('project_tasks')
     ..doc = '''
-This script goes through ebisu projects and performs some useful tasks:
-
-- report project git status
-- run all project tests
-- regenerate code
-
+This script performs tasks (e.g. run tests, regenerate code) on specified ebisu
+projects
 '''
     ..imports = [
       'dart:io',
       'package:id/id.dart',
       'package:path/path.dart',
       'package:ebisu/ebisu.dart',
+      'package:ebisu/ebisu_project.dart',
     ]
     ..args = [
+      scriptArg('project_path')
+      ..doc = '''
+Path to a file or directory within a project.
+If no paths are specified the proejct of the current directory is assumed.
+'''
+      ..abbr = 'p'
+      ..isMultiple = true,
       scriptArg('git_status')
       ..doc = 'Run *git status* on all the projects'
-      ..isFlag = false,
-      scriptArg('report_version')
-      ..doc = 'Run *git status* on all the projects'
-      ..isFlag = false,
+      ..abbr = 's'
+      ..isFlag = true,
       scriptArg('run_tests')
-      ..doc = 'Run *git status* on all the projects'
-      ..isFlag = false,
+      ..doc = 'Run tests on the projects'
+      ..abbr = 't'
+      ..isFlag = true,
       scriptArg('codegen')
       ..doc = 'Regenerate the code'
-      ..isFlag = false,
+      ..abbr = 'g'
+      ..isFlag = true,
     ],
 
     script('bootstrap_ebisu')
