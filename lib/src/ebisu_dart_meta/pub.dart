@@ -211,7 +211,7 @@ class PubSpec extends Object with Entity {
       !devDependencies.any((d) => d.name == name) &&
           !dependencies.any((d) => d.name == name);
 
-  get _content => [
+  get content => [
         _name,
         _version,
         _author,

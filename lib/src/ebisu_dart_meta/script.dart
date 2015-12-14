@@ -180,12 +180,12 @@ Select log level from:
     imports = cleanImports(imports.map((i) => importStatement(i)).toList());
     String scriptName = _id.snake;
     String dartPath = join(scriptPath, '${scriptName}.dart');
-    mergeWithDartFile('${_content}\n', dartPath);
+    mergeWithDartFile('${content}\n', dartPath);
   }
 
   Iterable get requiredArgs => args.where((arg) => arg.isRequired);
 
-  get _content => brCompact([
+  get content => brCompact([
         _scriptTag,
         _docComment,
         _imports,

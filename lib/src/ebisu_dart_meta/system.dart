@@ -199,7 +199,7 @@ Only "version" and "path" overrides are supported.
     if (pubSpec != null && generatesPubSpec) {
       overridePubs();
       String pubSpecPath = "${rootPath}/pubspec.yaml";
-      scriptMergeWithFile('${pubSpec._content}\n', pubSpecPath);
+      scriptMergeWithFile('${pubSpec.content}\n', pubSpecPath);
     }
 
     if (license != null) {

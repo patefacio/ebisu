@@ -1435,6 +1435,33 @@ If no paths are specified the proejct of the current directory is assumed.
       ..doc = 'Regenerate the project itself'
       ..isFlag = true,
     ],
+
+    script('create_ebisu_project')
+    ..doc = 'Bootstrap new ebisu project'
+    ..imports = [
+      'dart:io',
+      'package:id/id.dart',
+      'package:path/path.dart',
+      'package:ebisu/ebisu.dart',
+      'package:ebisu/ebisu_project.dart',
+    ]
+    ..args = [
+      scriptArg('parent_path')
+      ..doc = 'Path to directory into which project directory will be created'
+      ..isRequired = true,
+      scriptArg('project_id')
+      ..doc = 'Id for the project'
+      ..isRequired = true,
+      scriptArg('dart')
+      ..doc = 'Include dart codegen script'
+      ..isFlag = true,
+      scriptArg('cpp')
+      ..doc = 'Include cpp codegen script'
+      ..isFlag = true,
+      scriptArg('py')
+      ..doc = 'Include python codegen script'
+      ..isFlag = true,
+    ]
   ];
 
   ebisu.generate();

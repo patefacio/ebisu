@@ -42,7 +42,28 @@ class EbisuProject {
   // custom <class EbisuProject>
 
   /// Bootstrap this project into the [path] specified
-  EbisuProject.bootstrap(this._id, this._languages, this._path) {}
+  EbisuProject.bootstrap(this._id, this._languages, path) {
+    _repoPath = join(path, id.snake);
+    regenProject();
+    final hasGit = findGitRepo(repoPath);
+    if(hasGit == null) {
+      print('Doing git init on $repoPath');
+      final stash = Directory.current;
+      Directory.current = repoPath;
+      final result = Process.runSync('git', ['init']);
+      print('Result(${result.exitCode}): ${result.stdout}');
+      Directory.current = stash;
+    }
+
+    final pubspecFile = new File(join(repoPath, 'pubspec.yaml'));
+    if(!pubspecFile.existsSync()) {
+      pubspecFile.writeAsStringSync(
+          (new PubSpec(id)
+              ..name = id.snake
+              ..version = '0.0.0')
+          .content);
+    }
+  }
 
   /// Construct the project from one existing at specified path
   EbisuProject.fromPath(path) {
@@ -116,8 +137,9 @@ class EbisuProject {
   }
 
   regenProject() {
-    for (var language in languages) {
-      print('Regening $language codegen script');
+    if (languages.contains(EbisuLanguage.ebisuDart)) {
+      print('Regening Dart codegen script');
+
       final codegenScript = script(id.snake + '_ebisu_dart')
         ..scriptPath = join(repoPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
@@ -128,6 +150,24 @@ String here = absolute(Platform.script.toFilePath());
         ..imports.addAll([
           'package:ebisu/ebisu.dart',
           'package:ebisu/ebisu_dart_meta.dart',
+          'package:path/path.dart',
+        ])
+        ..generate();
+    }
+
+    if (languages.contains(EbisuLanguage.ebisuCpp)) {
+      print('Regening C++ codegen script');
+
+      final codegenScript = script(id.snake + '_ebisu_cpp')
+        ..scriptPath = join(repoPath, 'codegen')
+        ..customCodeBlock.hasSnippetsFirst = true
+        ..customCodeBlock.snippets.add('''
+useDartFormatter = true;
+String here = absolute(Platform.script.toFilePath());
+''')
+        ..imports.addAll([
+          'package:ebisu/ebisu.dart',
+          'package:ebisu_cpp/ebisu_cpp.dart',
           'package:path/path.dart',
         ])
         ..generate();
