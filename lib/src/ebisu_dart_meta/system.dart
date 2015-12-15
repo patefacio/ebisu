@@ -214,6 +214,7 @@ Only "version" and "path" overrides are supported.
       scriptMergeWithFile(
           '''
 *.~*~
+.packages
 packages
 build/
 .pub/

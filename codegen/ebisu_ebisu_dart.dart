@@ -1472,3 +1472,4 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
+
