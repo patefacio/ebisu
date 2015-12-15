@@ -50,16 +50,18 @@ contents, the layout of a class, ...etc)
 
 For a small taste:
 
-        class_('schema_node')
-        ..doc = 'Represents one node in the schema diagram'
-        ..members = [
-          member('schema')
-          ..doc = 'Referenced schema this node portrays'
-          ..type = 'Schema',
-          member('links')
-          ..doc = 'List of links (resulting in graph edge) from this node to another'
-          ..type = 'List<String>'
-        ]
+```dart
+ class_('schema_node')
+ ..doc = 'Represents one node in the schema diagram'
+ ..members = [
+   member('schema')
+   ..doc = 'Referenced schema this node portrays'
+   ..type = 'Schema',
+   member('links')
+   ..doc = 'List of links (resulting in graph edge) from this node to another'
+   ..type = 'List<String>'
+ ];
+```
 
 That declaration snippet will define a class called _SchemNode_ with two members
 _schema_ of type _Schema_ and _links_ of type _List_. The _doc_ attribute is a
@@ -102,9 +104,11 @@ user supplied code and have it mixin with what is generated. This is
 accomplished with code protection blocks. Pretty much all *text* that appears
 between blocks are protected.
 
+```dart
     // custom <TAG>
        ... Custom text here ...
     // end <TAG>
+```    
 
 All other code will be rewritten on code generation. Keep in mind that the
 protection blocks are predefined in the libraries and templates, so the user
@@ -118,14 +122,17 @@ on disk. It first does the merge of generated and custom text in memory and then
 compares that to the full contents on disk. If there is no change in the
 contents of the file, a message like the following will be output:
 
+```bash
     No change: .../library/foo.dart
+```    
 
 If the regeneration results in a change, due to new *code assets* having been
 added to the definition or less frequently due to changes in the ebisu
 library/templates, a message like the following will be output:
 
+```bash
     Wrote: .../library/foo.dart
-
+```    
 
 ### Json Support
 
@@ -137,40 +144,43 @@ mirrors and is a rather heavy weight solution.
 
 So, adding _hasJsonSupport = true_ in the following ebisu declaration:
 
-        class_('point')
-        ..hasJsonSupport = true
-        ..members = [
-          member('x')..classInit = 0.0,
-          member('y')..classInit = 0.0,      
-        ],
-
+```dart
+ class_('point')
+ ..hasJsonSupport = true
+ ..members = [
+   member('x')..classInit = 0.0,
+   member('y')..classInit = 0.0,      
+ ],
+```
 
 will generate these additional methods for the _Point_ class:
 
-      Map toJson() {
-        return {
-        "x": ebisu.toJson(x),
-        "y": ebisu.toJson(y),
-        };
-      }
-    
-      static Point fromJson(String json) {
-        Map jsonMap = convert.JSON.decode(json);
-        Point result = new Point();
-        result._fromJsonMapImpl(jsonMap);
-        return result;
-      }
-    
-      static Point fromJsonMap(Map jsonMap) {
-        Point result = new Point();
-        result._fromJsonMapImpl(jsonMap);
-        return result;
-      }
-    
-      void _fromJsonMapImpl(Map jsonMap) {
-        x = jsonMap["x"];
-        y = jsonMap["y"];
-      }
+```dart
+ Map toJson() {
+   return {
+   "x": ebisu.toJson(x),
+   "y": ebisu.toJson(y),
+   };
+ }
+
+ static Point fromJson(String json) {
+   Map jsonMap = convert.JSON.decode(json);
+   Point result = new Point();
+   result._fromJsonMapImpl(jsonMap);
+   return result;
+ }
+
+ static Point fromJsonMap(Map jsonMap) {
+   Point result = new Point();
+   result._fromJsonMapImpl(jsonMap);
+   return result;
+ }
+
+ void _fromJsonMapImpl(Map jsonMap) {
+   x = jsonMap["x"];
+   y = jsonMap["y"];
+ }
+```
 
 ### Special Environment Variables
 
@@ -200,19 +210,21 @@ object must be the name of a package to override, and the value must
 be an object with an entry that is either a "_path_" or "_version_"
 specification. An example override file is:
 
-    {
-      "versions" : {
-        "id" : { "path" : "/Users/dbdavidson/dev/open_source/id" },
-        "ebisu" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu" },
-        "ebisu_web_ui" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu_web_ui" },
-        "json_schema" : { "version" : ">=0.0.2" },
-        "hop" : { "version" : ">=0.24.4" },
-        "logging" : { "version" : ">=0.7.1" },
-        "args" : { "version": ">=0.7.1" },
-        "unittest" : { "version": ">=0.7.1" },
-        "path" : { "version" : ">=0.7.1" }
-      }
-    }
+```json
+ {
+   "versions" : {
+     "id" : { "path" : "/Users/dbdavidson/dev/open_source/id" },
+     "ebisu" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu" },
+     "ebisu_web_ui" : { "path" : "/Users/dbdavidson/dev/open_source/ebisu_web_ui" },
+     "json_schema" : { "version" : ">=0.0.2" },
+     "hop" : { "version" : ">=0.24.4" },
+     "logging" : { "version" : ">=0.7.1" },
+     "args" : { "version": ">=0.7.1" },
+     "unittest" : { "version": ">=0.7.1" },
+     "path" : { "version" : ">=0.7.1" }
+   }
+ }
+```    
 
 If this file exists as _~/.ebisu\_pub\_versions.json_ or in a file
 referenced by environment variable _EBISU\_PUB\_VERSIONS_ then those
@@ -265,6 +277,7 @@ An example use of _ebisu_ to generate code structure can be found at
 
 When this script is run it produces:
 
+```bash
     Running: dart --checked --package-root=/Users/dbdavidson/dev/dart_packages/packages/ /Users/dbdavidson/dev/open_source/json_schema/codegen/json_schema.ebisu.dart
     No change: /Users/dbdavidson/dev/open_source/json_schema/bin/schemadot.dart
     No change: /Users/dbdavidson/dev/open_source/json_schema/lib/schema_dot.dart
@@ -278,6 +291,7 @@ When this script is run it produces:
     No change: /Users/dbdavidson/dev/open_source/json_schema/tool/hop_runner.dart
     No change: /Users/dbdavidson/dev/open_source/json_schema/test/utils.dart
     No change: /Users/dbdavidson/dev/open_source/json_schema/test/runner.dart
+```    
 
 This script generates the following assets:
 

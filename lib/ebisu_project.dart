@@ -46,7 +46,7 @@ class EbisuProject {
     _repoPath = join(path, id.snake);
     regenProject();
     final hasGit = findGitRepo(repoPath);
-    if(hasGit == null) {
+    if (hasGit == null) {
       print('Doing git init on $repoPath');
       final stash = Directory.current;
       Directory.current = repoPath;
@@ -56,12 +56,10 @@ class EbisuProject {
     }
 
     final pubspecFile = new File(join(repoPath, 'pubspec.yaml'));
-    if(!pubspecFile.existsSync()) {
-      pubspecFile.writeAsStringSync(
-          (new PubSpec(id)
-              ..name = id.snake
-              ..version = '0.0.0')
-          .content);
+    if (!pubspecFile.existsSync()) {
+      pubspecFile.writeAsStringSync((new PubSpec(id)
+        ..name = id.snake
+        ..version = '0.0.0').content);
     }
   }
 
