@@ -147,6 +147,9 @@ class Script extends Object with CustomCodeBlock, Entity {
   /// Classes to support this script, included directly in script above main
   List<Class> classes = [];
 
+  /// Provide user ability to override basename of script
+  String basename;
+
   // custom <class Script>
 
   Iterable<Entity> get children => concat([args, classes]);
@@ -178,8 +181,8 @@ Select log level from:
     imports.add('package:args/args.dart');
     imports.add('package:logging/logging.dart');
     imports = cleanImports(imports.map((i) => importStatement(i)).toList());
-    String scriptName = _id.snake;
-    String dartPath = join(scriptPath, '${scriptName}.dart');
+    String scriptName = basename == null ? '${_id.snake}.dart' : basename;
+    String dartPath = join(scriptPath, scriptName);
     mergeWithDartFile('${content}\n', dartPath);
   }
 

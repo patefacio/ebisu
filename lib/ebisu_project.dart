@@ -139,6 +139,7 @@ class EbisuProject {
       print('Regening Dart codegen script');
 
       final codegenScript = script(id.snake + '_ebisu_dart')
+        ..basename = '${id.snake}.ebisu_dart.dart'
         ..scriptPath = join(repoPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
         ..customCodeBlock.snippets.add('''
@@ -157,6 +158,7 @@ String here = absolute(Platform.script.toFilePath());
       print('Regening C++ codegen script');
 
       final codegenScript = script(id.snake + '_ebisu_cpp')
+        ..basename = '${id.snake}.ebisu_cpp.dart'
         ..scriptPath = join(repoPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
         ..customCodeBlock.snippets.add('''
@@ -173,8 +175,12 @@ String here = absolute(Platform.script.toFilePath());
   }
 
   runGitStatus() {
-    final result = Process.runSync('git',
-        ['--git-dir=${repoPath}/.git', '--work-tree=${repoPath}', 'status']);
+    final result = Process.runSync('git', [
+      '--git-dir=${repoPath}/.git',
+      '--work-tree=${repoPath}',
+      'status',
+      '-s'
+    ]);
     print(result.stdout);
   }
 

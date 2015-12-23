@@ -322,6 +322,8 @@ Set this to false to prevent this
                     'Classes to support this script, included directly in script above main'
                 ..type = 'List<Class>'
                 ..classInit = [],
+              member('basename')
+              ..doc = 'Provide user ability to override basename of script',
             ],
         ],
       part('pub')

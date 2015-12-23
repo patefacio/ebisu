@@ -145,18 +145,6 @@ main(List<String> args) {
   for (var path in projectPaths) {
     final ebisuProject = new EbisuProject.fromPath(path);
 
-    if (options['run-tests']) {
-      print(
-          '------------------ Running (${ebisuProject.title}) tests -----------------');
-      ebisuProject.runTests();
-    }
-
-    if (options['codegen']) {
-      print(
-          '------------------ Running (${ebisuProject.title}) codegen -----------------');
-      ebisuProject.runCodegen();
-    }
-
     if (options['git-status']) {
       print(
           '------------------ Running (${ebisuProject.title}) codegen -----------------');
@@ -167,6 +155,18 @@ main(List<String> args) {
       print(
           '------------------ Regenning (${ebisuProject.title}) -----------------');
       ebisuProject.regenProject();
+    }
+
+    if (options['codegen']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) codegen -----------------');
+      ebisuProject.runCodegen();
+    }
+
+    if (options['run-tests']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) tests -----------------');
+      ebisuProject.runTests();
     }
   }
 
