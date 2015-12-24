@@ -380,6 +380,9 @@ class Class extends Object with CustomCodeBlock, Entity {
   /// List of mixins
   List<String> mixins = [];
 
+  /// List of class annotations
+  List<Annotation> annotations = [];
+
   /// Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin
   String extend;
 
@@ -929,7 +932,8 @@ ${
       ].where((line) => line != ''));
 
   get _abstractTag => isAbstract ? 'abstract ' : '';
-  get _classOpener => '$_classWithExtends${implementsClause}{';
+  get _annotationTxt => brCompact(annotations);
+  get _classOpener => '$_annotationTxt$_classWithExtends${implementsClause}{';
   get _extendClass => (mixins.length > 0 && extend == null) ? 'Object' : extend;
   get _classWithExtends => mixins.length > 0
       ? ('''

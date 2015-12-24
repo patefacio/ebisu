@@ -4,6 +4,7 @@ import 'test_functions.dart' as test_functions;
 import 'test_library.dart' as test_library;
 import 'test_enums.dart' as test_enums;
 import 'test_class.dart' as test_class;
+import 'test_annotation.dart' as test_annotation;
 import 'test_entity.dart' as test_entity;
 import 'test_code_generation.dart' as test_code_generation;
 import 'test_ebisu_project.dart' as test_ebisu_project;
@@ -19,6 +20,7 @@ main() {
   test_library.main();
   test_enums.main();
   test_class.main();
+  test_annotation.main();
   test_entity.main();
   test_code_generation.main();
   test_ebisu_project.main();

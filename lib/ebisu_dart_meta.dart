@@ -55,6 +55,7 @@ import 'package:quiver/iterables.dart';
 // custom <additional imports>
 // end <additional imports>
 
+part 'src/ebisu_dart_meta/annotation.dart';
 part 'src/ebisu_dart_meta/app.dart';
 part 'src/ebisu_dart_meta/benchmark.dart';
 part 'src/ebisu_dart_meta/class.dart';

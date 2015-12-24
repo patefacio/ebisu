@@ -5,13 +5,14 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -117,6 +118,10 @@ classes with JSON support.
     ]
     ..includesLogger = true
     ..parts = [
+      part('annotation')
+        ..classes = [
+          class_('annotation')..members = [member('text')..access = RO,]
+        ],
       part('system')
         ..classes = [
           class_('system')
@@ -323,7 +328,7 @@ Set this to false to prevent this
                 ..type = 'List<Class>'
                 ..classInit = [],
               member('basename')
-              ..doc = 'Provide user ability to override basename of script',
+                ..doc = 'Provide user ability to override basename of script',
             ],
         ],
       part('pub')
@@ -766,6 +771,10 @@ Prints:
                 ..doc = 'List of mixins'
                 ..type = 'List<String>'
                 ..classInit = '[]',
+              member('annotations')
+                ..doc = 'List of class annotations'
+                ..type = 'List<Annotation>'
+                ..classInit = [],
               member('extend')
                 ..doc =
                     'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
@@ -1046,6 +1055,7 @@ This is an intended as a replacement for *parts*.
       library('test_library')..imports = [],
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
+      library('test_annotation')..imports = [ 'package:ebisu/ebisu.dart' ],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
@@ -1089,21 +1099,12 @@ This is an intended as a replacement for *parts*.
         ]
         ..includesLogger = true,
       library('expect_basic_class')
-        ..imports = [
-          'scratch_remove_me/lib/basic_class.dart',
-        ],
+        ..imports = ['scratch_remove_me/lib/basic_class.dart',],
       library('expect_various_ctors')
-        ..imports = [
-          'scratch_remove_me/lib/various_ctors.dart',
-        ],
+        ..imports = ['scratch_remove_me/lib/various_ctors.dart',],
       library('expect_multi_parts')
-        ..imports = [
-          'scratch_remove_me/lib/two_parts.dart',
-        ],
-      library('test_ebisu_project')
-      ..imports = [
-        'package:ebisu/ebisu.dart',
-      ]
+        ..imports = ['scratch_remove_me/lib/two_parts.dart',],
+      library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',]
     ]
     ..license = 'boost'
     ..rootPath = _topDir
@@ -1116,54 +1117,51 @@ other languages like D) using a fairly declarative aproach.
       ..homepage = 'https://github.com/patefacio/ebisu'
       ..devDependencies = [])
     ..libraries = [
-
       library('ebisu_project')
-      ..imports = [
-        'dart:io',
-        'package:id/id.dart',
-        'package:ebisu/ebisu.dart',
-        'package:ebisu/ebisu_dart_meta.dart',
-        'package:path/path.dart',
-        'package:yaml/yaml.dart',
-      ]
-      ..doc = 'Provide consistency to creation of and dealing with ebisu project'
-      ..enums = [
-        enum_('ebisu_language')
-        ..values = [ 'ebisu_cpp', 'ebisu_py', 'ebisu_dart' ],
-      ]
-      ..classes = [
-        class_('ebisu_project')
-        ..doc = 'Represents an ebisu project'
-        ..defaultMemberAccess = RO
-        ..members = [
-          member('id')
-          ..doc = 'Id of the package'
-          ..type = 'Id',
-          member('version')
-          ..doc = 'Pubspec version of the package',
-          member('languages')
-          ..doc = 'Languages the project has ebisu scripts for'
-          ..type = 'List<EbisuLanguage>'
-          ..classInit = [],
-          member('codegen_scripts')
-          ..doc = 'Scripts found in the codegen directory'
-          ..type = 'List<String>'
-          ..classInit = [],
-          member('bin_scripts')
-          ..doc = 'Scripts found in the bin directory'
-          ..type = 'List<String>'
-          ..classInit = [],
-          member('test_scripts')
-          ..doc = 'Scripts found in the test directory'
-          ..type = 'List<String>'
-          ..classInit = [],
-          member('repo_path')
-          ..doc = 'Path to repo - should be same as project path',
-          member('pubspec')
-          ..doc = 'The contents of the pubspec file',
+        ..imports = [
+          'dart:io',
+          'package:id/id.dart',
+          'package:ebisu/ebisu.dart',
+          'package:ebisu/ebisu_dart_meta.dart',
+          'package:path/path.dart',
+          'package:yaml/yaml.dart',
         ]
-      ],
-
+        ..doc =
+            'Provide consistency to creation of and dealing with ebisu project'
+        ..enums = [
+          enum_('ebisu_language')
+            ..values = ['ebisu_cpp', 'ebisu_py', 'ebisu_dart'],
+        ]
+        ..classes = [
+          class_('ebisu_project')
+            ..doc = 'Represents an ebisu project'
+            ..defaultMemberAccess = RO
+            ..members = [
+              member('id')
+                ..doc = 'Id of the package'
+                ..type = 'Id',
+              member('version')..doc = 'Pubspec version of the package',
+              member('languages')
+                ..doc = 'Languages the project has ebisu scripts for'
+                ..type = 'List<EbisuLanguage>'
+                ..classInit = [],
+              member('codegen_scripts')
+                ..doc = 'Scripts found in the codegen directory'
+                ..type = 'List<String>'
+                ..classInit = [],
+              member('bin_scripts')
+                ..doc = 'Scripts found in the bin directory'
+                ..type = 'List<String>'
+                ..classInit = [],
+              member('test_scripts')
+                ..doc = 'Scripts found in the test directory'
+                ..type = 'List<String>'
+                ..classInit = [],
+              member('repo_path')
+                ..doc = 'Path to repo - should be same as project path',
+              member('pubspec')..doc = 'The contents of the pubspec file',
+            ]
+        ],
       library('ebisu')
         ..doc = '''
 Library with common utilities for generating code.
@@ -1400,70 +1398,69 @@ protection block or after
     ];
 
   ebisu.scripts = [
-
     script('project_tasks')
-    ..doc = '''
+      ..doc = '''
 This script performs tasks (e.g. run tests, regenerate code) on specified ebisu
 projects
 '''
-    ..imports = [
-      'dart:io',
-      'package:id/id.dart',
-      'package:path/path.dart',
-      'package:ebisu/ebisu.dart',
-      'package:ebisu/ebisu_project.dart',
-    ]
-    ..args = [
-      scriptArg('project_path')
-      ..doc = '''
+      ..imports = [
+        'dart:io',
+        'package:id/id.dart',
+        'package:path/path.dart',
+        'package:ebisu/ebisu.dart',
+        'package:ebisu/ebisu_project.dart',
+      ]
+      ..args = [
+        scriptArg('project_path')
+          ..doc = '''
 Path to a file or directory within a project.
 If no paths are specified the proejct of the current directory is assumed.
 '''
-      ..abbr = 'p'
-      ..isMultiple = true,
-      scriptArg('git_status')
-      ..doc = 'Run *git status* on all the projects'
-      ..abbr = 's'
-      ..isFlag = true,
-      scriptArg('run_tests')
-      ..doc = 'Run tests on the projects'
-      ..abbr = 't'
-      ..isFlag = true,
-      scriptArg('codegen')
-      ..doc = 'Regenerate the code'
-      ..abbr = 'g'
-      ..isFlag = true,
-      scriptArg('regen_project')
-      ..doc = 'Regenerate the project itself'
-      ..isFlag = true,
-    ],
-
+          ..abbr = 'p'
+          ..isMultiple = true,
+        scriptArg('git_status')
+          ..doc = 'Run *git status* on all the projects'
+          ..abbr = 's'
+          ..isFlag = true,
+        scriptArg('run_tests')
+          ..doc = 'Run tests on the projects'
+          ..abbr = 't'
+          ..isFlag = true,
+        scriptArg('codegen')
+          ..doc = 'Regenerate the code'
+          ..abbr = 'g'
+          ..isFlag = true,
+        scriptArg('regen_project')
+          ..doc = 'Regenerate the project itself'
+          ..isFlag = true,
+      ],
     script('create_ebisu_project')
-    ..doc = 'Bootstrap new ebisu project'
-    ..imports = [
-      'dart:io',
-      'package:id/id.dart',
-      'package:path/path.dart',
-      'package:ebisu/ebisu.dart',
-      'package:ebisu/ebisu_project.dart',
-    ]
-    ..args = [
-      scriptArg('parent_path')
-      ..doc = 'Path to directory into which project directory will be created'
-      ..isRequired = true,
-      scriptArg('project_id')
-      ..doc = 'Id for the project'
-      ..isRequired = true,
-      scriptArg('dart')
-      ..doc = 'Include dart codegen script'
-      ..isFlag = true,
-      scriptArg('cpp')
-      ..doc = 'Include cpp codegen script'
-      ..isFlag = true,
-      scriptArg('py')
-      ..doc = 'Include python codegen script'
-      ..isFlag = true,
-    ]
+      ..doc = 'Bootstrap new ebisu project'
+      ..imports = [
+        'dart:io',
+        'package:id/id.dart',
+        'package:path/path.dart',
+        'package:ebisu/ebisu.dart',
+        'package:ebisu/ebisu_project.dart',
+      ]
+      ..args = [
+        scriptArg('parent_path')
+          ..doc =
+              'Path to directory into which project directory will be created'
+          ..isRequired = true,
+        scriptArg('project_id')
+          ..doc = 'Id for the project'
+          ..isRequired = true,
+        scriptArg('dart')
+          ..doc = 'Include dart codegen script'
+          ..isFlag = true,
+        scriptArg('cpp')
+          ..doc = 'Include cpp codegen script'
+          ..isFlag = true,
+        scriptArg('py')
+          ..doc = 'Include python codegen script'
+          ..isFlag = true,
+      ]
   ];
 
   ebisu.generate();
@@ -1474,4 +1471,3 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
-
