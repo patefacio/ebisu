@@ -28,7 +28,7 @@ main([List<String> args]) {
   test('read current ebisu project', () {
     final project = new EbisuProject.fromPath(root);
     expect(project.codegenScripts.map((f) => basename(f)).toList(),
-        ['ebisu_ebisu_dart.dart']);
+        ['ebisu.ebisu_dart.dart']);
     expect(
         project.testScripts
             .map((f) => basename(f))
