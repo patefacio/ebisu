@@ -1392,6 +1392,11 @@ protection block or after
 '''
                     ..classInit = false,
                 ],
+
+              class_('script_code_block')
+              ..doc = 'Same as code block but uses script style protection block'
+              ..extend = 'CodeBlock',
+
             ]
         ],
       ebisu_dart_meta,

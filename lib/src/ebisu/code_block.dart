@@ -163,5 +163,24 @@ class CodeBlock {
 /// Create a CodeBlock sans new, for more declarative construction
 CodeBlock codeBlock([String tag]) => new CodeBlock(tag);
 
+/// Same as code block but uses script style protection block
+class ScriptCodeBlock extends CodeBlock {
+  // custom <class ScriptCodeBlock>
+
+  ScriptCodeBlock(tag) : super(tag);
+
+  String toString() {
+    if (hasTag) {
+      return hasSnippetsFirst
+          ? brCompact([snippets, scriptCustomBlock(tag)])
+          : br([scriptCustomBlock(tag)]..add(brCompact(snippets)));
+    }
+    return combine(snippets);
+  }
+
+  // end <class ScriptCodeBlock>
+
+}
+
 // custom <part code_block>
 // end <part code_block>

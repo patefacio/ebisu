@@ -21,13 +21,10 @@ main([List<String> args]) {
 // custom <main>
 
   test('class annotations', () {
-
     final cls = class_('goo')
       ..includesProtectBlock = false
-      ..annotations = [
-        annotation('@deprecated'), annotation('@proxy')
-      ]
-      ..members = [ member('str') ];
+      ..annotations = [annotation('@deprecated'), annotation('@proxy')]
+      ..members = [member('str')];
 
     expect(darkMatter(cls.definition), darkMatter('''
 @deprecated @proxy class Goo { String str; }
