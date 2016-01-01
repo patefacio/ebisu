@@ -190,8 +190,9 @@ class PubSpec extends Object with Entity {
     if (depNotFound(dep.name)) {
       dependencies.add(dep);
     } else {
-      if (!ignoreIfPresent) throw new ArgumentError(
-          "${dep.name} is already a dependency of ${_id}");
+      if (!ignoreIfPresent)
+        throw new ArgumentError(
+            "${dep.name} is already a dependency of ${_id}");
     }
   }
 
@@ -199,8 +200,9 @@ class PubSpec extends Object with Entity {
     if (depNotFound(dep.name)) {
       devDependencies.add(dep);
     } else {
-      if (!ignoreIfPresent) throw new ArgumentError(
-          "${dep.name} is already a dev dependency of ${_id}");
+      if (!ignoreIfPresent)
+        throw new ArgumentError(
+            "${dep.name} is already a dev dependency of ${_id}");
     }
   }
 
@@ -209,7 +211,7 @@ class PubSpec extends Object with Entity {
 
   bool depNotFound(String name) =>
       !devDependencies.any((d) => d.name == name) &&
-          !dependencies.any((d) => d.name == name);
+      !dependencies.any((d) => d.name == name);
 
   get content => [
         _name,

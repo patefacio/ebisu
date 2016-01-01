@@ -58,8 +58,9 @@ class EbisuProject {
     final pubspecFile = new File(join(repoPath, 'pubspec.yaml'));
     if (!pubspecFile.existsSync()) {
       pubspecFile.writeAsStringSync((new PubSpec(id)
-        ..name = id.snake
-        ..version = '0.0.0').content);
+            ..name = id.snake
+            ..version = '0.0.0')
+          .content);
     }
   }
 

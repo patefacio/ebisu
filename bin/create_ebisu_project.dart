@@ -133,10 +133,10 @@ main(List<String> args) {
   Map options = argResults['options'];
   List positionals = argResults['rest'];
   try {
-    if (options["parent-path"] ==
-        null) throw new ArgumentError("option: parent-path is required");
-    if (options["project-id"] ==
-        null) throw new ArgumentError("option: project-id is required");
+    if (options["parent-path"] == null)
+      throw new ArgumentError("option: parent-path is required");
+    if (options["project-id"] == null)
+      throw new ArgumentError("option: project-id is required");
   } on ArgumentError catch (e) {
     print(e);
     _usage();

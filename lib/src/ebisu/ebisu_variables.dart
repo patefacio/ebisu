@@ -22,10 +22,10 @@ final String ebisuHomepage = Platform.environment['EBISU_HOMEPAGE'];
 /// with multiple pubspecs would entail updating the config file and
 /// regenerating.
 ///
-final String ebisuPubVersions = (Platform.environment['EBISU_PUB_VERSIONS'] !=
-        null)
-    ? Platform.environment['EBISU_PUB_VERSIONS']
-    : "${Platform.environment['HOME']}/.ebisu_pub_versions.json";
+final String ebisuPubVersions =
+    (Platform.environment['EBISU_PUB_VERSIONS'] != null)
+        ? Platform.environment['EBISU_PUB_VERSIONS']
+        : "${Platform.environment['HOME']}/.ebisu_pub_versions.json";
 Map<String, String> licenseMap = {
   'boost':
       'License: <a href="http://www.boost.org/LICENSE_1_0.txt">Boost License 1.0</a>',

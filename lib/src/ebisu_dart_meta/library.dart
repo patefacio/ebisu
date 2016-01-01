@@ -216,9 +216,11 @@ class Library extends Object with CustomCodeBlock, Entity {
   get _exportStatements => exports.map((e) => "export '$e';");
   get _libraryStatement => 'library $qualifiedName;\n';
   get _additionalImports => customBlock('additional imports');
-  get _parts => parts.length > 0 ? ([]
-    ..addAll(parts.map((p) => "part 'src/$name/${p.name}.dart';\n"))
-    ..sort()) : '';
+  get _parts => parts.length > 0
+      ? ([]
+        ..addAll(parts.map((p) => "part 'src/$name/${p.name}.dart';\n"))
+        ..sort())
+      : '';
   get _loggerInit =>
       includesLogger ? "final _logger = new Logger('$name');\n" : '';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');

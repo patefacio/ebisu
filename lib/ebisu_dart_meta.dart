@@ -89,8 +89,8 @@ List<String> _nonJsonableTypes = [
 /// to json
 bool isClassJsonable(String className) =>
     !_nonJsonableTypes.contains(className) &&
-        !className.startsWith('Map<') &&
-        !className.startsWith('List<');
+    !className.startsWith('Map<') &&
+    !className.startsWith('List<');
 
 /// Given a list of [dirtyImports], cleans them up and removes duplicates
 ///

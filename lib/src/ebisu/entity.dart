@@ -101,9 +101,11 @@ abstract class Entity implements Identifiable {
   void onOwnershipEstablished() {}
 
   /// Returns a list of all children recursively
-  List<Entity> get progeny => children.fold([], (all, child) => all
-    ..add(child)
-    ..addAll(child.progeny));
+  List<Entity> get progeny => children.fold(
+      [],
+      (all, child) => all
+        ..add(child)
+        ..addAll(child.progeny));
 
   /// Returns all enity ancestors where [predicate] is true
   findAncestorWhere(predicate) => predicate(this)

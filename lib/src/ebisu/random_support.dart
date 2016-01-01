@@ -81,7 +81,8 @@ dynamic randJson(Random generator, var obj, [final dynamic type]) {
         return 0 == (generator.nextInt(_maxRandInt) % 2);
       case DateTime:
         return new DateTime(1900 + generator.nextInt(150),
-            generator.nextInt(12) + 1, generator.nextInt(31) + 1).toString();
+                generator.nextInt(12) + 1, generator.nextInt(31) + 1)
+            .toString();
       default:
         {
           return obj.randJson();

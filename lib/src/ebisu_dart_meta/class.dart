@@ -234,8 +234,8 @@ class Member extends Object with Entity {
   String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreClassInit =>
       (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
-          (owner as Class).hasCourtesyCtor &&
-          !isJsonTransient;
+      (owner as Class).hasCourtesyCtor &&
+      !isJsonTransient;
 
   String get decl => (_ignoreClassInit || classInit == null)
       ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};"
@@ -252,8 +252,8 @@ class Member extends Object with Entity {
 
   String get privateCode {
     var result = [];
-    if (doc != null && !hasPublicCode) result
-        .add('${dartComment(rightTrim(doc))}');
+    if (doc != null && !hasPublicCode)
+      result.add('${dartComment(rightTrim(doc))}');
     if (!isPublic) result.add(decl);
     return result.join('\n');
   }
@@ -725,9 +725,12 @@ int compareTo($otherType other) {
       allMembersFinal = true;
     }
 
-    if (hasDefaultCtor) _ctors.putIfAbsent('', () => new Ctor()
-      ..name = ''
-      ..className = _className);
+    if (hasDefaultCtor)
+      _ctors.putIfAbsent(
+          '',
+          () => new Ctor()
+            ..name = ''
+            ..className = _className);
 
     if (allMembersFinal) nonTransientMembers.forEach((m) => m.isFinal = true);
 
@@ -1022,9 +1025,11 @@ ${indentBlock(fromJsonMapImpl())}'''
       final builderClass = class_('${id.snake}_builder')
         ..hasCtorSansNew = true
         ..hasDefaultCtor = true
-        ..members = (members.map((m) => member(m.id.snake)
-          ..type = m.type
-          ..classInit = m.classInit).toList())
+        ..members = (members
+            .map((m) => member(m.id.snake)
+              ..type = m.type
+              ..classInit = m.classInit)
+            .toList())
         ..bottomInjection = '''
 ${className} buildInstance() => new ${className}(
 ${indentBlock(

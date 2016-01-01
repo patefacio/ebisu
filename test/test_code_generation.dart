@@ -277,8 +277,8 @@ main([List<String> args]) {
       dartFile = join(testPath, dartFile);
 
       test('$dartFile completed', () {
-        return Process.run(Platform.executable, ['--checked', dartFile])
-            .then((ProcessResult processResult) {
+        return Process.run(Platform.executable, ['--checked', dartFile]).then(
+            (ProcessResult processResult) {
           print("Results of running dart subprocess $dartFile");
           print(processResult.stdout);
           if (processResult.stderr.length > 0) {

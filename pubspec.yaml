@@ -1,5 +1,5 @@
 name: ebisu
-version: 0.6.11
+version: 0.6.12
 author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: https://github.com/patefacio/ebisu
 description: >
@@ -14,7 +14,7 @@ dependencies:
   logging: ">=0.9.3<0.12.0"
   quiver: ">=0.21.0<0.22.0"  
   id: "^1.0.11"
-  dart_style: "^0.2.0"
+  dart_style: "^0.2.2"
   collection: "^1.1.0"
   stack_trace: "^1.4.1"
 
