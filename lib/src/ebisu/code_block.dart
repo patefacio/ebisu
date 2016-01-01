@@ -147,6 +147,7 @@ class CodeBlock {
   /// Returns true if [hasTag] or has snippets content
   bool get hasContent => hasTag || snippets.isNotEmpty;
 
+  /// Returns [CodeBlock] text suitable for protection on regeneration
   String toString() {
     if (hasTag) {
       return hasSnippetsFirst
@@ -169,6 +170,8 @@ class ScriptCodeBlock extends CodeBlock {
 
   ScriptCodeBlock(tag) : super(tag);
 
+  /// Returns [CodeBlock] text suitable for protection on regeneration using
+  /// script style protection block
   String toString() {
     if (hasTag) {
       return hasSnippetsFirst
