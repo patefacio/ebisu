@@ -2,7 +2,7 @@
 
 
 A library supporting code generation of Dart pub packages and many constituent assets.
-[![Build Status](https://drone.io/github.com/patefacio/ebisu/status.png)](https://drone.io/github.com/patefacio/ebisu/latest)
+[![Build Status](https://travis-ci.org/patefacio/ebisu.svg)
 
 # Purpose
 There are two potentially distinct purposes for this package. First, for those
