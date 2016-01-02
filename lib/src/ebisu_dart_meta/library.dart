@@ -114,15 +114,19 @@ class Library extends Object with CustomCodeBlock, Entity {
     includesProtectBlock = true;
   }
 
+  /// Returns children entities of the library, including [parts], [variables],
+  /// [classes], etc...
   Iterable<Entity> get children =>
       concat([parts, variables, classes, benchmarks, enums]);
 
+  /// Returns all classes from all library stub and all constituent parts
   List<Class> get allClasses {
     List<Class> result = new List.from(classes);
     parts.forEach((part) => result.addAll(part.classes));
     return result;
   }
 
+  /// If true ensures main and logging functionality is provided as well as imports
   set isTest(bool t) {
     if (t) {
       _isTest = true;
@@ -132,6 +136,91 @@ class Library extends Object with CustomCodeBlock, Entity {
           .addAll(['package:logging/logging.dart', 'package:test/test.dart',]);
     }
   }
+
+  /// Returns this library as it would appear in an import statement
+  String get asImport => 'package:$_packageName/${id.snake}.dart';
+
+  /// Called when all declarative work is done and the [Entity] tree is complete.
+  ///
+  /// Provides [Entity] instances an opportunity to perform work before
+  /// code generation
+  onOwnershipEstablished() {
+    _qualifiedName =
+        _qualifiedName == null ? _makeQualifiedName() : _qualifiedName;
+
+    if (allClasses.any((c) => c.hasOpEquals)) {
+      imports.add('package:quiver/core.dart');
+    }
+    if (allClasses.any((c) => c.hasJsonSupport)) {
+      imports.add('"package:ebisu/ebisu.dart" as ebisu');
+      imports.add('"dart:convert" as convert');
+    }
+    if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {
+      imports.add('package:collection/equality.dart');
+    }
+    if (includesLogger) {
+      imports.add("package:logging/logging.dart");
+    }
+  }
+
+  /// Returns path to the library
+  String get libStubPath => path != null
+      ? "${path}/${id.snake}.dart"
+      : (isTest
+          ? "$rootPath/test/${id.snake}.dart"
+          : "$rootPath/lib/${id.snake}.dart");
+
+  /// Generate all artifiacts within the library
+  void generate() {
+    _ensureOwner();
+    mergeWithDartFile('${_content}\n', libStubPath);
+    parts.forEach((part) => part.generate());
+    benchmarks.forEach((benchmark) => benchmark.generate());
+  }
+
+  /// Returns a string with all contents concatenated together
+  get tar {
+    _ensureOwner();
+    return combine([_content, parts.map((p) => p._content)]);
+  }
+
+  /// Provide for modification of the [mainCustomBlock]
+  withMainCustomBlock(f(CodeBlock cb)) => f(mainCustomBlock);
+
+  /// Returns true if this library includes a *main*
+  get includesMain => _mainCustomBlock != null;
+
+  /// If true initializes a [mainCustomBlock] else removes one if set
+  set includesMain(bool im) =>
+      _mainCustomBlock = (im && _mainCustomBlock == null)
+          ? new CodeBlock(null)
+          : im ? _mainCustomBlock : null;
+
+  /// Returns the [uri] with quotes as required by a dart import statement
+  static String importUri(String uri) {
+    if (null == _hasQuotes.firstMatch(uri)) {
+      return '"${uri}"';
+    } else {
+      return '${uri}';
+    }
+  }
+
+  /// Returns [theImport] as an import statement
+  ///
+  ///     importStatement('io') => 'import "dart:io"';
+  ///
+  static String importStatement(String theImport) {
+    if (_standardImports.contains(theImport)) {
+      return 'import "dart:$theImport";';
+    } else if (_standardPackageImports.contains(theImport)) {
+      return 'import "package:$theImport";';
+    } else {
+      return 'import ${importUri(theImport)};';
+    }
+  }
+
+  /// Returns the root path of this [Library]
+  String get rootPath => (rootEntity as System).rootPath;
 
   String get _additionalPathParts {
     List relPath = split(relative(dirname(libStubPath), from: rootPath));
@@ -153,48 +242,10 @@ class Library extends Object with CustomCodeBlock, Entity {
     return result;
   }
 
-  onOwnershipEstablished() {
-    _qualifiedName =
-        _qualifiedName == null ? _makeQualifiedName() : _qualifiedName;
-
-    if (allClasses.any((c) => c.hasOpEquals)) {
-      imports.add('package:quiver/core.dart');
-    }
-    if (allClasses.any((c) => c.hasJsonSupport)) {
-      imports.add('"package:ebisu/ebisu.dart" as ebisu');
-      imports.add('"dart:convert" as convert');
-    }
-    if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {
-      imports.add('package:collection/equality.dart');
-    }
-    if (includesLogger) {
-      imports.add("package:logging/logging.dart");
-    }
-  }
-
   _ensureOwner() {
     if (owner == null) {
       owner = system('ignored');
     }
-  }
-
-  String get libStubPath => path != null
-      ? "${path}/${id.snake}.dart"
-      : (isTest
-          ? "$rootPath/test/${id.snake}.dart"
-          : "$rootPath/lib/${id.snake}.dart");
-
-  void generate() {
-    _ensureOwner();
-    mergeWithDartFile('${_content}\n', libStubPath);
-    parts.forEach((part) => part.generate());
-    benchmarks.forEach((benchmark) => benchmark.generate());
-  }
-
-  /// Returns a string with all contents concatenated together
-  get tar {
-    _ensureOwner();
-    return combine([_content, parts.map((p) => p._content)]);
   }
 
   get _content => br([
@@ -242,15 +293,6 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   get mainCustomBlock => _mainCustomBlock =
       _mainCustomBlock == null ? new CodeBlock(null) : _mainCustomBlock;
-
-  withMainCustomBlock(f(CodeBlock cb)) => f(mainCustomBlock);
-
-  get includesMain => _mainCustomBlock != null;
-
-  set includesMain(bool im) =>
-      _mainCustomBlock = (im && _mainCustomBlock == null)
-          ? new CodeBlock(null)
-          : im ? _mainCustomBlock : null;
 
   get _mainCustomText => _mainCustomBlock != null
       ? (_mainCustomBlock..tag = 'main').toString()
@@ -301,26 +343,6 @@ $_initLogger${_mainCustomText}
   ]);
 
   static final RegExp _hasQuotes = new RegExp(r'''[\'"]''');
-
-  static String importUri(String uri) {
-    if (null == _hasQuotes.firstMatch(uri)) {
-      return '"${uri}"';
-    } else {
-      return '${uri}';
-    }
-  }
-
-  static String importStatement(String i) {
-    if (_standardImports.contains(i)) {
-      return 'import "dart:$i";';
-    } else if (_standardPackageImports.contains(i)) {
-      return 'import "package:$i";';
-    } else {
-      return 'import ${importUri(i)};';
-    }
-  }
-
-  String get rootPath => (rootEntity as System).rootPath;
 
   // end <class Library>
 
