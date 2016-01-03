@@ -1,8 +1,8 @@
 # Ebisu
 
+![Build Status](https://travis-ci.org/patefacio/ebisu.svg)
 
 A library supporting code generation of Dart pub packages and many constituent assets.
-[![Build Status](https://travis-ci.org/patefacio/ebisu.svg)
 
 # Purpose
 There are two potentially distinct purposes for this package. First, for those

@@ -36,14 +36,21 @@ class EbisuProject {
   /// Path to repo - should be same as project path
   String get repoPath => _repoPath;
 
+  /// Path to project within repo
+  String get projectPath => _projectPath;
+
   /// The contents of the pubspec file
   String get pubspec => _pubspec;
 
   // custom <class EbisuProject>
 
   /// Bootstrap this project into the [path] specified
-  EbisuProject.bootstrap(this._id, this._languages, path) {
-    _repoPath = join(path, id.snake);
+  EbisuProject.bootstrap(this._id, this._languages, String path) {
+    _projectPath = join(path, id.snake);
+    _repoPath = findGitRepo(_projectPath);
+    if (_repoPath == null) {
+      _repoPath = _projectPath;
+    }
     regenProject();
     final hasGit = findGitRepo(repoPath);
     if (hasGit == null) {
@@ -55,7 +62,7 @@ class EbisuProject {
       Directory.current = stash;
     }
 
-    final pubspecFile = new File(join(repoPath, 'pubspec.yaml'));
+    final pubspecFile = new File(join(projectPath, 'pubspec.yaml'));
     if (!pubspecFile.existsSync()) {
       pubspecFile.writeAsStringSync((new PubSpec(id)
             ..name = id.snake
@@ -65,9 +72,9 @@ class EbisuProject {
   }
 
   /// Construct the project from one existing at specified path
-  EbisuProject.fromPath(path) {
-    _repoPath = findGitRepo(path);
-    final projectName = basename(_repoPath);
+  EbisuProject.fromPath(this._projectPath) {
+    _repoPath = findGitRepo(_projectPath);
+    final projectName = basename(_projectPath);
     _id = makeId(projectName);
     _readFiles();
     if (codegenScripts.isEmpty) {
@@ -76,13 +83,13 @@ class EbisuProject {
     }
   }
 
-  get codegenPath => join(_repoPath, 'codegen');
+  get codegenPath => join(_projectPath, 'codegen');
   get codegenDir => new Directory(codegenPath);
-  get binPath => join(_repoPath, 'bin');
+  get binPath => join(_projectPath, 'bin');
   get binDir => new Directory(binPath);
-  get testPath => join(_repoPath, 'test');
+  get testPath => join(_projectPath, 'test');
   get testDir => new Directory(testPath);
-  get libPath => join(_repoPath, 'lib');
+  get libPath => join(_projectPath, 'lib');
   get libDIr => new Directory(libPath);
 
   get _binScriptFiles => binDir.existsSync()
@@ -103,8 +110,8 @@ class EbisuProject {
     _codegenScripts = _codegenScriptFiles.map((s) => s.path).toList();
     _binScripts = _binScriptFiles.map((s) => s.path).toList();
     _testScripts = _testScriptFiles.map((s) => s.path).toList();
-    var pubspec =
-        loadYaml(new File(join(repoPath, 'pubspec.yaml')).readAsStringSync());
+    var pubspec = loadYaml(
+        new File(join(projectPath, 'pubspec.yaml')).readAsStringSync());
     _version = pubspec['version'];
     _readLanguages();
   }
@@ -141,7 +148,7 @@ class EbisuProject {
 
       final codegenScript = script(id.snake + '_ebisu_dart')
         ..basename = '${id.snake}.ebisu_dart.dart'
-        ..scriptPath = join(repoPath, 'codegen')
+        ..scriptPath = join(projectPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
         ..customCodeBlock.snippets.add('''
 useDartFormatter = true;
@@ -160,7 +167,7 @@ String here = absolute(Platform.script.toFilePath());
 
       final codegenScript = script(id.snake + '_ebisu_cpp')
         ..basename = '${id.snake}.ebisu_cpp.dart'
-        ..scriptPath = join(repoPath, 'codegen')
+        ..scriptPath = join(projectPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
         ..customCodeBlock.snippets.add('''
 useDartFormatter = true;
@@ -207,6 +214,7 @@ String here = absolute(Platform.script.toFilePath());
   List<String> _binScripts = [];
   List<String> _testScripts = [];
   String _repoPath;
+  String _projectPath;
   String _pubspec;
 }
 

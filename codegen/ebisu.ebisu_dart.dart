@@ -5,14 +5,13 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
-
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen(
-      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -1159,6 +1158,8 @@ other languages like D) using a fairly declarative aproach.
                 ..classInit = [],
               member('repo_path')
                 ..doc = 'Path to repo - should be same as project path',
+              member('project_path')
+                ..doc = 'Path to project within repo',
               member('pubspec')..doc = 'The contents of the pubspec file',
             ]
         ],
@@ -1476,3 +1477,4 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
+
