@@ -138,7 +138,7 @@ class Enum extends Object with Entity {
   get requiresClass =>
       _requiresClass == null ? (hasJsonSupport || hasCustom) : _requiresClass;
 
-  String valueAsString(value) => isSnakeString ? value.snake : value.capCamel;
+  String valueAsString(value) => isSnakeString ? value.shout : value.capCamel;
 
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
 
