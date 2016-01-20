@@ -493,7 +493,7 @@ Id makeId(id) => id is Id
     ? id
     : id is String
         ? idFromString(id)
-        : throw '*makeId(id)* requires an [Id] or [String]';
+        : throw '*makeId(id)* requires an [Id] or [String], given ${id.runtimeType}';
 
 /// Given [prefix] and [id], both of which may be [String] or [Id] returns the
 /// [id] prefixed by [prefix]
