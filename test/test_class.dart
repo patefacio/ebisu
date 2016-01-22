@@ -35,5 +35,37 @@ class A {}
 '''));
   });
 
+  test('basic hasOpEquals', () {
+    expect(
+        darkMatter((class_('a')
+                  ..members = [member('a'), member('b')]
+                  ..hasOpEquals = true)
+                .definition)
+            .contains(darkMatter('''
+  bool operator==(A other) =>
+    identical(this, other) ||
+    a == other.a &&
+    b == other.b;
+''')),
+        true);
+
+    print((class_('a')
+          ..members = [member('a'), member('b')]
+          ..hasUntypedOpEquals = true)
+        .definition);
+    expect(
+        darkMatter((class_('a')
+                  ..members = [member('a'), member('b')]
+                  ..hasUntypedOpEquals = true)
+                .definition)
+            .contains(darkMatter('''
+  bool operator==(other) =>
+    identical(this, other) || (runtimeType == other.runtimeType &&
+    a == other.a &&
+    b == other.b);
+''')),
+        true);
+  });
+
 // end <main>
 }

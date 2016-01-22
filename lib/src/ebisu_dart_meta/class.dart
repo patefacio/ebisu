@@ -415,7 +415,18 @@ class Class extends Object with CustomCodeBlock, Entity {
   bool hasRandJson = false;
 
   /// If true, generate operator== using all members
-  bool hasOpEquals = false;
+  set hasOpEquals(bool hasOpEquals) => _hasOpEquals = hasOpEquals;
+
+  /// If true, generate `operator==` using all members.
+  ///
+  /// Rather than type the argument to the method the argument is untyped (`bool
+  /// operator==(value)`) but a runtimeType comparison is made. This allows types in a
+  /// hierarchy to be compared without exceptions in checked mode.
+  ///
+  /// Note: Since this only provides different *specialized* implementation for
+  /// `operator==` hasOpEquals returns true if either [hasOpEquals] or
+  /// `_hasUntypedOpEquals` is true.
+  bool hasUntypedOpEquals = false;
 
   /// If true, implements comparable
   bool isComparable = false;
@@ -487,6 +498,8 @@ class Class extends Object with CustomCodeBlock, Entity {
 
   bool get hasJsonSupport =>
       _hasJsonSupport || hasJsonToString || jsonKeyFormat != null;
+
+  bool get hasOpEquals => _hasOpEquals || hasUntypedOpEquals;
 
   List<Member> get publicMembers =>
       members.where((member) => member.isPublic).toList();
@@ -575,7 +588,18 @@ _hashCode != null? _hashCode :
     return result;
   }
 
-  String get hasOpEqualsMethod => '''
+  String get hasOpEqualsMethod => hasUntypedOpEquals
+      ? '''
+bool operator==(other) =>
+  identical(this, other) || (runtimeType == other.runtimeType &&
+${nonTransientMembers
+  .where((m) => m.id.id != 'hash_code')
+  .map((m) => memberCompare(m))
+    .join(' &&\n')});
+
+int get hashCode => ${overrideHashCode};
+'''
+      : '''
 bool operator==($_className other) =>
   identical(this, other) ||
 ${nonTransientMembers
@@ -1056,6 +1080,7 @@ ${className}Builder._copyImpl(${className} _) :
   Access _defaultMemberAccess;
   Map<String, Ctor> _ctors = {};
   bool _hasJsonSupport = false;
+  bool _hasOpEquals = false;
   bool _hasCtorSansNew;
   String _name;
   String _className;

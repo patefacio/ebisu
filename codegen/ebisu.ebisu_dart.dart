@@ -816,6 +816,20 @@ Prints:
                 ..classInit = false,
               member('has_op_equals')
                 ..doc = "If true, generate operator== using all members"
+                ..access = WO
+                ..classInit = false,
+              member('has_untyped_op_equals')
+                ..doc = '''
+If true, generate `operator==` using all members.
+
+Rather than type the argument to the method the argument is untyped (`bool
+operator==(value)`) but a runtimeType comparison is made. This allows types in a
+hierarchy to be compared without exceptions in checked mode.
+
+Note: Since this only provides different *specialized* implementation for
+`operator==` hasOpEquals returns true if either [hasOpEquals] or
+`_hasUntypedOpEquals` is true.
+'''
                 ..classInit = false,
               member('is_comparable')
                 ..doc = "If true, implements comparable"
@@ -1108,7 +1122,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.13'
+      ..version = '0.6.14'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1477,4 +1491,3 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
-
