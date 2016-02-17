@@ -42,16 +42,18 @@ Drudge(\$here)
   testPath: \$testPath
 ''');
 
+  final runTests = command('run_tests', 'dart', [ join(testPath, 'runner.dart') ]);
   driver([
     fileSystemEventRunner(
         changeSpec(FileSystemEvent.ALL, [ebisuScript]),
         recipe('regenerate', [
           command('regenerate', 'dart', [ ebisuScript ]),
+          runTests
         ])),
     fileSystemEventRunner(
         changeSpec(FileSystemEvent.ALL, [ libPath ]),
         recipe('run_tests', [
-          command('run_tests', 'dart', [ join(testPath, 'runner.dart') ]),
+          runTests
         ]))
   ]).run();
 
