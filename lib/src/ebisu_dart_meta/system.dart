@@ -161,7 +161,8 @@ Only "version" and "path" overrides are supported.
   }
 
   /// Generate the code
-  void generate({generateHop: true, generateRunner: true}) {
+  void generate(
+      {generateHop: true, generateRunner: true, generateDrudge: true}) {
     setAsRoot();
 
     if (rootPath == null) rootPath = '.';
@@ -179,7 +180,13 @@ Only "version" and "path" overrides are supported.
       ..addDevDependency(new PubDependency('yaml'))
       ..addDevDependency(new PubDependency('browser'), true);
 
+    if (generateDrudge) {
+      final drudgeScript = join(rootPath, 'bin', 'drudge.${id.snake}.dart');
+      mergeWithFile(new DrudgeScriptGenerator(this).contents, drudgeScript);
+    }
+
     finalize();
+
     scripts.forEach((script) => script.generate());
     if (app != null) {
       app.generate();
@@ -309,9 +316,10 @@ Future<List<String>> _getLibs() {
 ''',
           hopRunnerPath);
 
-      String testRunnerPath = "${rootPath}/test/runner.dart";
-      mergeWithDartFile(
-          '''
+      if (generateRunner) {
+        String testRunnerPath = "${rootPath}/test/runner.dart";
+        mergeWithDartFile(
+            '''
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
@@ -331,7 +339,8 @@ ${testLibraries
 }
 
 ''',
-          testRunnerPath);
+            testRunnerPath);
+      }
     }
 
     if (testLibraries.length > 0) {

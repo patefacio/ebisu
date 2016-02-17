@@ -5,13 +5,14 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -230,6 +231,13 @@ text to include in the license file.
                 ..type = 'List<Class>'
                 ..classInit = '[]',
             ]
+        ],
+      part('drudge_support')
+        ..doc =
+            'Support for generating a drudge script to auto-run codegen files'
+        ..classes = [
+          class_('drudge_script_generator')
+            ..members = [member('system')..type = 'System'..access = RO]
         ],
       part('emacs_support')
         ..doc =
@@ -1068,7 +1076,7 @@ This is an intended as a replacement for *parts*.
       library('test_library')..imports = [],
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_annotation')..imports = [ 'package:ebisu/ebisu.dart' ],
+      library('test_annotation')..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
@@ -1101,6 +1109,10 @@ This is an intended as a replacement for *parts*.
             ..extend = 'Base'
             ..mixins = ['Entity'],
         ],
+      library('test_drudge_script')
+      ..imports = [
+        'package:drudge/drudge.dart',
+      ],
       library('test_code_generation')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
@@ -1172,8 +1184,7 @@ other languages like D) using a fairly declarative aproach.
                 ..classInit = [],
               member('repo_path')
                 ..doc = 'Path to repo - should be same as project path',
-              member('project_path')
-                ..doc = 'Path to project within repo',
+              member('project_path')..doc = 'Path to project within repo',
               member('pubspec')..doc = 'The contents of the pubspec file',
             ]
         ],
@@ -1407,11 +1418,10 @@ protection block or after
 '''
                     ..classInit = false,
                 ],
-
               class_('script_code_block')
-              ..doc = 'Same as code block but uses script style protection block'
-              ..extend = 'CodeBlock',
-
+                ..doc =
+                    'Same as code block but uses script style protection block'
+                ..extend = 'CodeBlock',
             ]
         ],
       ebisu_dart_meta,
