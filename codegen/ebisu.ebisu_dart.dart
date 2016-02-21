@@ -1488,7 +1488,7 @@ If no paths are specified the proejct of the current directory is assumed.
           ..doc = 'Include cpp codegen script'
           ..isFlag = true,
         scriptArg('py')
-          ..doc = 'Include python codegen script!'
+          ..doc = 'Include python codegen script'
           ..isFlag = true,
       ]
   ];
