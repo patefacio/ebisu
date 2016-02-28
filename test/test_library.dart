@@ -42,5 +42,20 @@ main([List<String> args]) {
     expect(detailsLib.path, 'null/lib/src/feature_set');
   });
 
+  test('library path', () {
+    final sys = system('sys')
+      ..rootPath = '/goo'
+      ..libraries = [
+        library('normal_lib'),
+        library('private_lib')..isPrivate = true,
+        library('placed_lib')..path = '/wherever/foo/boo',
+      ]
+      ..setAsRoot();
+
+    expect(sys.libraries.first.libStubPath, '/goo/lib/normal_lib.dart');
+    expect(sys.libraries[1].libStubPath, '/goo/lib/src/private_lib.dart');
+    expect(sys.libraries.last.libStubPath, '/wherever/foo/boo/placed_lib.dart');
+  });
+
 // end <main>
 }

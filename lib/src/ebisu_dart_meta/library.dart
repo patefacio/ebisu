@@ -107,6 +107,9 @@ class Library extends Object with CustomCodeBlock, Entity {
   /// If true classes will get library functions to construct forwarding to ctors
   bool hasCtorSansNew = false;
 
+  /// If true the library is placed under .../lib/src
+  bool isPrivate = false;
+
   // custom <class Library>
 
   Library(this._id) {
@@ -163,12 +166,21 @@ class Library extends Object with CustomCodeBlock, Entity {
     }
   }
 
+  importAndExport(lib) {
+    imports.add(lib);
+    exports.add(lib);
+  }
+
+  importAndExportAll(Iterable libs) =>
+      libs.forEach((lib) => importAndExport(lib));
+
   /// Returns path to the library
-  String get libStubPath => path != null
-      ? "${path}/${id.snake}.dart"
-      : (isTest
-          ? "$rootPath/test/${id.snake}.dart"
-          : "$rootPath/lib/${id.snake}.dart");
+  String get libStubPath => join(
+      (path ??
+          (isPrivate
+              ? join(rootPath, 'lib', 'src')
+              : (isTest ? join(rootPath, 'test') : join(rootPath, 'lib')))),
+      '${id.snake}.dart');
 
   /// Generate all artifiacts within the library
   void generate() {
@@ -220,7 +232,7 @@ class Library extends Object with CustomCodeBlock, Entity {
   }
 
   /// Returns the root path of this [Library]
-  String get rootPath => (rootEntity as System).rootPath;
+  String get rootPath => (rootEntity as System).rootPath ?? '/tmp';
 
   String get _additionalPathParts {
     List relPath = split(relative(dirname(libStubPath), from: rootPath));

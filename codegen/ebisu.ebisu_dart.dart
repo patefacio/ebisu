@@ -5,14 +5,13 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
-
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen(
-      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen((LogRecord r) =>
+      print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -237,7 +236,11 @@ text to include in the license file.
             'Support for generating a drudge script to auto-run codegen files'
         ..classes = [
           class_('drudge_script_generator')
-            ..members = [member('system')..type = 'System'..access = RO]
+            ..members = [
+              member('system')
+                ..type = 'System'
+                ..access = RO
+            ]
         ],
       part('emacs_support')
         ..doc =
@@ -547,6 +550,22 @@ member('foo')..init = [1,2,3]
           enum_('json_key_format')
             ..doc = 'When serializing json, how to name the keys'
             ..values = [id('camel'), id('cap_camel'), id('snake'),],
+          enum_('default_ctor_style')
+            ..doc = '''Select various styles for default generated ctor.
+
+- [ requiredParms ]: Default ctor with all members required
+
+- [ namedParms ]: Default ctor with all members optional named parms
+
+- [ positionalParms ]: Default ctor with all members optional positional parms
+
+'''
+          ..hasLibraryScopedValues = true
+            ..values = [
+              id('required_parms'),
+              id('named_parms'),
+              id('positional_parms')
+            ]
         ]
         ..classes = [
           class_('ctor')
@@ -846,12 +865,13 @@ Note: Since this only provides different *specialized* implementation for
                 ..doc =
                     "If true, implements comparable with runtimeType check followed by rest"
                 ..classInit = false,
-              member('has_courtesy_ctor')
+              member('default_ctor_style')
                 ..doc = """
-If true adds '..ctors[''] to all members (i.e. ensures generation of
-empty ctor with all members passed as arguments)
+Specifies style of default ctor.
+
+null implies no generated default ctor
           """
-                ..classInit = false,
+                ..type = 'DefaultCtorStyle',
               member('all_members_final')
                 ..doc = "If true adds sets all members to final"
                 ..classInit = false,
@@ -999,6 +1019,9 @@ This is an intended as a replacement for *parts*.
                 ..doc =
                     "If true classes will get library functions to construct forwarding to ctors"
                 ..type = 'bool'
+                ..classInit = false,
+              member('is_private')
+                ..doc = 'If true the library is placed under .../lib/src'
                 ..classInit = false
             ],
         ],
@@ -1109,10 +1132,7 @@ This is an intended as a replacement for *parts*.
             ..extend = 'Base'
             ..mixins = ['Entity'],
         ],
-      library('test_drudge_script')
-      ..imports = [
-        'package:drudge/drudge.dart',
-      ],
+      library('test_drudge_script')..imports = ['package:drudge/drudge.dart',],
       library('test_code_generation')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
@@ -1501,3 +1521,4 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
+

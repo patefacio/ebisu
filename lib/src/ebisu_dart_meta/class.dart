@@ -3,6 +3,29 @@ part of ebisu.ebisu_dart_meta;
 /// When serializing json, how to name the keys
 enum JsonKeyFormat { camel, capCamel, snake }
 
+/// Select various styles for default generated ctor.
+///
+/// - [ requiredParms ]: Default ctor with all members required
+///
+/// - [ namedParms ]: Default ctor with all members optional named parms
+///
+/// - [ positionalParms ]: Default ctor with all members optional positional parms
+///
+///
+enum DefaultCtorStyle { requiredParms, namedParms, positionalParms }
+
+/// Convenient access to DefaultCtorStyle.requiredParms with *requiredParms* see [DefaultCtorStyle].
+///
+const DefaultCtorStyle requiredParms = DefaultCtorStyle.requiredParms;
+
+/// Convenient access to DefaultCtorStyle.namedParms with *namedParms* see [DefaultCtorStyle].
+///
+const DefaultCtorStyle namedParms = DefaultCtorStyle.namedParms;
+
+/// Convenient access to DefaultCtorStyle.positionalParms with *positionalParms* see [DefaultCtorStyle].
+///
+const DefaultCtorStyle positionalParms = DefaultCtorStyle.positionalParms;
+
 /// Metadata associated with a constructor
 class Ctor extends Object with CustomCodeBlock {
   /// Name of the class of this ctor.
@@ -434,10 +457,11 @@ class Class extends Object with CustomCodeBlock, Entity {
   /// If true, implements comparable with runtimeType check followed by rest
   bool isPolymorphicComparable = false;
 
-  /// If true adds '..ctors[''] to all members (i.e. ensures generation of
-  /// empty ctor with all members passed as arguments)
+  /// Specifies style of default ctor.
   ///
-  bool hasCourtesyCtor = false;
+  /// null implies no generated default ctor
+  ///
+  DefaultCtorStyle defaultCtorStyle;
 
   /// If true adds sets all members to final
   bool allMembersFinal = false;
@@ -491,6 +515,15 @@ class Class extends Object with CustomCodeBlock, Entity {
   Iterable<Entity> get children => concat([members]);
 
   withClass(f(Class c)) => f(this);
+
+  /// *Deprecated* If true adds '..ctors[''] to all members (i.e. ensures
+  /// generation of empty ctor with all members passed as arguments)
+  @deprecated
+  bool get hasCourtesyCtor => defaultCtorStyle != null;
+
+  /// *Deprecated* If set to true adds default ctor with style requiredParms
+  @deprecated
+  set hasCourtesyCtor(bool hasCourtesyCtor) => defaultCtorStyle = requiredParms;
 
   bool get hasCtorSansNew => _hasCtorSansNew == null
       ? ((owner is Library) ? (owner as Library).hasCtorSansNew : false)
