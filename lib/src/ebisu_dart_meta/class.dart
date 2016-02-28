@@ -111,39 +111,53 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
   get _memberSig =>
       brCompact(['(', members.map((m) => 'this.${m.varName}').join(','), ')']);
 
-  get _optMemberSig => brCompact(
-      ['([', optMembers.map((m) => 'this.${m.varName}').join(','), '])',]);
+  get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
+      .where((m) =>
+          m.ctorInit != null || (namedMembers.contains(m) && !m.isPublic))
+      .map(_assignMemberVar)
+      .join(','));
 
-  get _namedMemberSig {
-    final privateMembers = namedMembers.where((m) => !m.isPublic);
-    final hasPrivateMembers = privateMembers.isNotEmpty;
+  _assignMemberVar(m) => brCompact([
+        '${m.varName} = ${m.name}',
+        (m.ctorInit != null) ? ' ?? ${m.ctorInit}' : null
+      ]);
 
-    assignMemberVar(m) => brCompact([
-      '${m.varName} = ${m.name}',
-      (m.classInit != null) ? ' ?? ${m.classInit}' : null ]);
+  _memberParm(m) => m.init == null ? 'this.${m.varName}' : m.name;
+
+  get _optMemberSig {
+    var memberAssignments = _assignMemberVars;
 
     return brCompact([
-      '({',
-      namedMembers
-          .map((m) => m.isPublic ? 'this.${m.varName}' : m.name)
-          .join(','),
+      '(',
+      members.map(_memberParm),
+      members.isNotEmpty ? ',' : '',
+      '[',
+      optMembers.map(_memberParm).join(','),
+      '])',
+      memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
+    ]);
+  }
+
+  get _namedMemberSig {
+    var memberAssignments = _assignMemberVars;
+
+    return brCompact([
+      '(',
+      members.map(_memberParm),
+      members.isNotEmpty ? ',' : '',
+      '{',
+      namedMembers.map((m) => !m.isPublic ? m.name : _memberParm(m)).join(','),
       '})',
-      hasPrivateMembers
-          ? brCompact([
-              ':',
-              privateMembers.map(assignMemberVar).join(',')
-            ])
-          : null,
+      memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
     ]);
   }
 
   get _ctorSig => brCompact([
-        qualifiedName,
-        _hasMembers
-            ? _memberSig
-            : _hasOptMembers
-                ? _optMemberSig
-                : _hasNamedMembers ? _namedMemberSig : null,
+        _hasOptMembers
+            ? _optMemberSig
+            : _hasNamedMembers
+                ? _namedMemberSig
+                : _hasMembers ? _memberSig : '()',
       ]);
 
   String get ctorText {
@@ -159,11 +173,8 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
 ${chomp(cb, true)}
 }''';
 
-    return brCompact([
-      isConst && !callsInit? 'const' : '',
-      _ctorSig,
-      body
-    ]);
+    return brCompact(
+        [isConst && !callsInit ? 'const' : '', qualifiedName, _ctorSig, body]);
   }
 
   /*
@@ -209,11 +220,12 @@ class Member extends Object with Entity {
   /// and the type of member is String (which is default)
   /// the type of member will be set to
   /// classInit.runtimeType.
-  dynamic classInit;
+  set init(dynamic init) => _init = init;
 
-  /// If provided the member will be initialized to this
-  /// text in generated ctor initializers
-  String ctorInit;
+  /// If provided the member will be initialized to this text in generated
+  /// ctor initializers. If this is null defaulted ctor args will be
+  /// initialized to [classInit].
+  set ctorInit(String ctorInit) => _ctorInit = ctorInit;
 
   /// List of ctor names to include this member in
   List<String> ctors = [];
@@ -265,14 +277,22 @@ class Member extends Object with Entity {
   bool get isList => isListType(type);
   bool get isMapOrList => isMap || isList;
 
+  @deprecated
+  get classInit => init;
+
+  @deprecated
+  set classInit(classInit) => _init = classInit;
+
+  get ctorInit => _ctorInit ?? classInit;
+
+  get init => _init;
+
   onOwnershipEstablished() {
     _name = id.camel;
     if (type == 'String' && (classInit != null) && (classInit is! String)) {
       type = '${classInit.runtimeType}';
       if (type.contains('LinkedHashMap')) type = 'Map';
     }
-    //    if (access == null) access = Access.RW;
-    print('Naming ${owner.id}:s ${id} $isPublic with $access');
     _varName = isPublic ? _name : "_$_name";
   }
 
@@ -315,6 +335,8 @@ class Member extends Object with Entity {
 
   final Id _id;
   Access _access;
+  dynamic _init;
+  String _ctorInit;
   String _name;
   String _varName;
 }

@@ -614,8 +614,8 @@ member('foo')..init = [1,2,3]
                 ..doc = 'Access level supported for this member'
                 ..type = 'Access'
                 ..access = WO,
-              member('class_init')
-                ..type = 'dynamic'
+              member('init')
+              ..type = 'dynamic'
                 ..doc = '''
 If provided the member will be initialized with value.
 The type of the member can be inferred from the type
@@ -627,11 +627,15 @@ and the type of member is String (which is default)
 the type of member will be set to
 classInit.runtimeType.
 
-''',
+'''
+              ..access = WO,
               member('ctor_init')
                 ..doc = '''
-If provided the member will be initialized to this
-text in generated ctor initializers''',
+If provided the member will be initialized to this text in generated
+ctor initializers. If this is null defaulted ctor args will be
+initialized to [classInit].
+'''
+              ..access = WO,
               member('ctors')
                 ..doc = "List of ctor names to include this member in"
                 ..type = 'List<String>'

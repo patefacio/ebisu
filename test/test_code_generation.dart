@@ -10,6 +10,9 @@ import 'package:yaml/yaml.dart';
 import 'setup.dart';
 
 // custom <additional imports>
+
+import 'package:ebisu/ebisu.dart';
+
 // end <additional imports>
 
 final _logger = new Logger('test_code_generation');
@@ -149,6 +152,7 @@ void generateTestLibraries() {
             ]
         ],
       library('various_ctors')
+        ..includesMain = true
         ..classes = [
           class_('various_ctors')
             ..members = [
@@ -170,6 +174,10 @@ void generateTestLibraries() {
                 ..classInit = 2
                 ..ctorInit = '5'
                 ..ctorsOpt = ['fromFive'],
+              member('six')..ctorsOpt = [''],
+              member('seven')
+                ..access = RO
+                ..ctorsOpt = [''],
             ]
         ],
       library('two_parts')
@@ -192,6 +200,7 @@ void generateTestLibraries() {
         ]
     ];
 
+  useDartFormatter = true;
   testSystem.generate();
 }
 
