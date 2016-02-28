@@ -104,36 +104,53 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
   new ${qualifiedName}(${leftTrim(chomp(indentBlock(argText, '    ')))});''';
   }
 
-  String get ctorText {
-    List<String> result = [];
-    if (members.length > 0) {
-      List<String> required = [];
-      members.forEach((m) => required.add('this.${m.varName}'));
-      result.addAll(prepJoin(required));
-    }
-    if (optMembers.length > 0) {
-      if (result.length > 0) result[result.length - 1] += ',';
-      result.add('[');
-      List<String> optional = [];
-      optMembers.forEach((m) => optional.add('this.${m.varName}' +
-          ((m.ctorInit == null) ? '' : ' = ${m.ctorInit}')));
-      result.addAll(prepJoin(optional));
-      result.add(']');
-    }
-    if (namedMembers.length > 0) {
-      if (result.length > 0) result[result.length - 1] += ',';
-      result.add('{');
-      List<String> named = [];
-      namedMembers.forEach((m) => named.add('this.${m.varName}' +
-          ((m.ctorInit == null) ? '' : ' : ${m.ctorInit}')));
-      result.addAll(prepJoin(named));
-      result.add('}');
-    }
+  get _hasMembers => members.isNotEmpty;
+  get _hasOptMembers => optMembers.isNotEmpty;
+  get _hasNamedMembers => namedMembers.isNotEmpty;
 
+  get _memberSig =>
+      brCompact(['(', members.map((m) => 'this.${m.varName}').join(','), ')']);
+
+  get _optMemberSig => brCompact(
+      ['([', optMembers.map((m) => 'this.${m.varName}').join(','), '])',]);
+
+  get _namedMemberSig {
+    final privateMembers = namedMembers.where((m) => !m.isPublic);
+    final hasPrivateMembers = privateMembers.isNotEmpty;
+
+    assignMemberVar(m) => brCompact([
+      '${m.varName} = ${m.name}',
+      (m.classInit != null) ? ' ?? ${m.classInit}' : null ]);
+
+    return brCompact([
+      '({',
+      namedMembers
+          .map((m) => m.isPublic ? 'this.${m.varName}' : m.name)
+          .join(','),
+      '})',
+      hasPrivateMembers
+          ? brCompact([
+              ':',
+              privateMembers.map(assignMemberVar).join(',')
+            ])
+          : null,
+    ]);
+  }
+
+  get _ctorSig => brCompact([
+        qualifiedName,
+        _hasMembers
+            ? _memberSig
+            : _hasOptMembers
+                ? _optMemberSig
+                : _hasNamedMembers ? _namedMemberSig : null,
+      ]);
+
+  String get ctorText {
     String cb = hasCustom
         ? indentBlock(rightTrim(customBlock('${qualifiedName}')))
         : '';
-    String constTag = isConst && !callsInit ? 'const ' : '';
+
     String body = callsInit
         ? ' { _init(); }'
         : (isConst || !hasCustom)
@@ -142,6 +159,14 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
 ${chomp(cb, true)}
 }''';
 
+    return brCompact([
+      isConst && !callsInit? 'const' : '',
+      _ctorSig,
+      body
+    ]);
+  }
+
+  /*
     List decl = [];
     var method = '${constTag}${qualifiedName}(';
     if (result.length > 0) {
@@ -156,6 +181,7 @@ ${chomp(cb, true)}
 ${formatFill(decl)})${body}
 ''';
   }
+    */
 
   // end <class Ctor>
 
@@ -172,7 +198,7 @@ class Member extends Object with Entity {
   String type = 'String';
 
   /// Access level supported for this member
-  Access access;
+  set access(Access access) => _access = access;
 
   /// If provided the member will be initialized with value.
   /// The type of the member can be inferred from the type
@@ -232,6 +258,9 @@ class Member extends Object with Entity {
 
   bool get isPublic => access == Access.RW;
 
+  get access =>
+      _access ?? owner?.defaultMemberAccess ?? ebisuDefaultMemberAccess;
+
   bool get isMap => isMapType(type);
   bool get isList => isListType(type);
   bool get isMapOrList => isMap || isList;
@@ -242,7 +271,8 @@ class Member extends Object with Entity {
       type = '${classInit.runtimeType}';
       if (type.contains('LinkedHashMap')) type = 'Map';
     }
-    if (access == null) access = Access.RW;
+    //    if (access == null) access = Access.RW;
+    print('Naming ${owner.id}:s ${id} $isPublic with $access');
     _varName = isPublic ? _name : "_$_name";
   }
 
@@ -284,6 +314,7 @@ class Member extends Object with Entity {
   // end <class Member>
 
   final Id _id;
+  Access _access;
   String _name;
   String _varName;
 }
@@ -753,11 +784,16 @@ int compareTo($otherType other) {
     return null;
   }
 
-  get defaultMemberAccess =>
-      _defaultMemberAccess == null ? _defaultOwnerAccess : _defaultMemberAccess;
-
-  setDefaultMemberAccess(Member m) {
-    if (m.access == null) m.access = defaultMemberAccess;
+  get defaultMemberAccess {
+    if (_defaultMemberAccess == null) {
+      if (owner is Library) {
+        return (owner as Library).defaultMemberAccess;
+      } else if (owner is Part) {
+        return (owner as Part).defaultMemberAccess;
+      }
+      return ebisuDefaultMemberAccess;
+    }
+    return _defaultMemberAccess;
   }
 
   onOwnershipEstablished() {
@@ -801,35 +837,11 @@ int compareTo($otherType other) {
       }
     }
 
-    defaultCtorParms() =>
-        members.where((m) => !m.ctors.contains('') && !m.isJsonTransient);
-
-    switch (defaultCtorStyle) {
-      case requiredParms:
-        {
-          defaultCtorParms().forEach((m) => m.ctors.add(''));
-          break;
-        }
-      case namedParms:
-        {
-          defaultCtorParms()
-              .where((m) => !m.hasGetter)
-              .forEach((m) => m.ctorsNamed.add(''));
-          break;
-        }
-      case positionalParms:
-        {
-          defaultCtorParms().forEach((m) => m.ctorsOpt.add(''));
-          break;
-        }
-    }
+    members.forEach((m) => m.owner = this);
+    _addMemberToDefaultCtor();
 
     // Iterate on all members and create the appropriate ctors
     members.forEach((m) {
-      setDefaultMemberAccess(m);
-
-      m.owner = this;
-
       makeCtorName(ctorName) {
         if (ctorName == '') return '';
         bool isPrivate = ctorName.startsWith('_');
@@ -882,6 +894,30 @@ int compareTo($otherType other) {
 
     if (ctorCallsInit) {
       _ctors[''].callsInit = true;
+    }
+  }
+
+  _addMemberToDefaultCtor() {
+    /// Get iterator of the eligible members
+    defaultCtorParms() =>
+        members.where((m) => !m.ctors.contains('') && !m.isJsonTransient);
+
+    switch (defaultCtorStyle) {
+      case requiredParms:
+        {
+          defaultCtorParms().forEach((m) => m.ctors.add(''));
+          break;
+        }
+      case namedParms:
+        {
+          defaultCtorParms().forEach((m) => m.ctorsNamed.add(''));
+          break;
+        }
+      case positionalParms:
+        {
+          defaultCtorParms().forEach((m) => m.ctorsOpt.add(''));
+          break;
+        }
     }
   }
 
@@ -1141,5 +1177,10 @@ ${className}Builder._copyImpl(${className} _) :
 final snake = JsonKeyFormat.snake;
 final capCamel = JsonKeyFormat.capCamel;
 final camel = JsonKeyFormat.camel;
+
+Access _ebisuDefaultMemberAccess = Access.RW;
+Access get ebisuDefaultMemberAccess => _ebisuDefaultMemberAccess;
+set ebisuDefaultMemberAccess(Access access) =>
+    _ebisuDefaultMemberAccess = access;
 
 // end <part class>

@@ -102,7 +102,8 @@ class Library extends Object with CustomCodeBlock, Entity {
   String libMain;
 
   /// Default access for members
-  Access defaultMemberAccess = Access.RW;
+  set defaultMemberAccess(Access defaultMemberAccess) =>
+      _defaultMemberAccess = defaultMemberAccess;
 
   /// If true classes will get library functions to construct forwarding to ctors
   bool hasCtorSansNew = false;
@@ -116,6 +117,8 @@ class Library extends Object with CustomCodeBlock, Entity {
     _name = _id.snake;
     includesProtectBlock = true;
   }
+
+  get defaultMemberAccess => _defaultMemberAccess ?? ebisuDefaultMemberAccess;
 
   /// Returns children entities of the library, including [parts], [variables],
   /// [classes], etc...
@@ -364,6 +367,7 @@ $_initLogger${_mainCustomText}
   String _qualifiedName;
   bool _isTest = false;
   CodeBlock _mainCustomBlock;
+  Access _defaultMemberAccess;
 }
 
 // custom <part library>

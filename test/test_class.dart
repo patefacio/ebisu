@@ -69,17 +69,18 @@ class A {}
 
     expect(
         darkMatter((makeClass()..defaultCtorStyle = requiredParms).definition)
-        .contains(darkMatter('DefCtor(this.a, this._b);')),
+            .contains(darkMatter('DefCtor(this.a, this._b);')),
         true);
 
     expect(
         darkMatter((makeClass()..defaultCtorStyle = namedParms).definition)
-        .contains(darkMatter('DefCtor({ this.a });')), true);
-
+            .contains(darkMatter('DefCtor({ this.a });')),
+        true);
 
     expect(
         darkMatter((makeClass()..defaultCtorStyle = positionalParms).definition)
-        .contains(darkMatter('DefCtor([ this.a, this._b ]);')), true);
+            .contains(darkMatter('DefCtor([ this.a, this._b ]);')),
+        true);
   });
 
 // end <main>

@@ -612,7 +612,8 @@ member('foo')..init = [1,2,3]
                 ..classInit = 'String',
               member('access')
                 ..doc = 'Access level supported for this member'
-                ..type = 'Access',
+                ..type = 'Access'
+                ..access = WO,
               member('class_init')
                 ..type = 'dynamic'
                 ..doc = '''
@@ -1013,7 +1014,7 @@ This is an intended as a replacement for *parts*.
               member('lib_main')..doc = 'If set the main function',
               member('default_member_access')
                 ..doc = 'Default access for members'
-                ..classInit = 'Access.RW'
+                ..access = WO
                 ..type = 'Access',
               member('has_ctor_sans_new')
                 ..doc =

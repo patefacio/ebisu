@@ -36,9 +36,9 @@ class Part extends Object with CustomCodeBlock, Entity {
 
   Iterable<Entity> get children => concat([classes, enums, variables]);
 
-  get defaultMemberAccess => _defaultMemberAccess == null
-      ? _owningLibrary.defaultMemberAccess
-      : _defaultMemberAccess;
+  get defaultMemberAccess =>
+      _defaultMemberAccess ??
+      (_owningLibrary.defaultMemberAccess ?? ebisuDefaultMemberAccess);
 
   onOwnershipEstablished() {}
 
