@@ -801,10 +801,27 @@ int compareTo($otherType other) {
       }
     }
 
-    if (hasCourtesyCtor) {
-      members.forEach((m) {
-        if (!m.ctors.contains('') && !m.isJsonTransient) m.ctors.add('');
-      });
+    defaultCtorParms() =>
+        members.where((m) => !m.ctors.contains('') && !m.isJsonTransient);
+
+    switch (defaultCtorStyle) {
+      case requiredParms:
+        {
+          defaultCtorParms().forEach((m) => m.ctors.add(''));
+          break;
+        }
+      case namedParms:
+        {
+          defaultCtorParms()
+              .where((m) => !m.hasGetter)
+              .forEach((m) => m.ctorsNamed.add(''));
+          break;
+        }
+      case positionalParms:
+        {
+          defaultCtorParms().forEach((m) => m.ctorsOpt.add(''));
+          break;
+        }
     }
 
     // Iterate on all members and create the appropriate ctors

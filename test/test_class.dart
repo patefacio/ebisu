@@ -49,10 +49,6 @@ class A {}
 ''')),
         true);
 
-    print((class_('a')
-          ..members = [member('a'), member('b')]
-          ..hasUntypedOpEquals = true)
-        .definition);
     expect(
         darkMatter((class_('a')
                   ..members = [member('a'), member('b')]
@@ -65,6 +61,25 @@ class A {}
     b == other.b);
 ''')),
         true);
+  });
+
+  test('courtesy ctor required parms', () {
+    makeClass() => class_('def_ctor')
+      ..members = [member('a')..classInit = 3, member('b')..access = RO];
+
+    expect(
+        darkMatter((makeClass()..defaultCtorStyle = requiredParms).definition)
+        .contains(darkMatter('DefCtor(this.a, this._b);')),
+        true);
+
+    expect(
+        darkMatter((makeClass()..defaultCtorStyle = namedParms).definition)
+        .contains(darkMatter('DefCtor({ this.a });')), true);
+
+
+    expect(
+        darkMatter((makeClass()..defaultCtorStyle = positionalParms).definition)
+        .contains(darkMatter('DefCtor([ this.a, this._b ]);')), true);
   });
 
 // end <main>
