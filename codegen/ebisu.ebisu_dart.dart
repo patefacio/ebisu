@@ -1159,7 +1159,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.15'
+      ..version = '0.6.16'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1526,4 +1526,3 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
-
