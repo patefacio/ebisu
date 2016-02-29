@@ -122,14 +122,16 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
         (m.ctorInit != null) ? ' ?? ${m.ctorInit}' : null
       ]);
 
-  _memberParm(m) => m.init == null ? 'this.${m.varName}' : m.name;
+  _memberParm(m) {
+    return m.ctorInit == null ? 'this.${m.varName}' : m.name;
+  }
 
   get _optMemberSig {
     var memberAssignments = _assignMemberVars;
 
     return brCompact([
       '(',
-      members.map(_memberParm),
+      members.map(_memberParm).join(','),
       members.isNotEmpty ? ',' : '',
       '[',
       optMembers.map(_memberParm).join(','),
@@ -143,7 +145,7 @@ ${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
 
     return brCompact([
       '(',
-      members.map(_memberParm),
+      members.map(_memberParm).join(','),
       members.isNotEmpty ? ',' : '',
       '{',
       namedMembers.map((m) => !m.isPublic ? m.name : _memberParm(m)).join(','),
@@ -176,23 +178,6 @@ ${chomp(cb, true)}
     return brCompact(
         [isConst && !callsInit ? 'const' : '', qualifiedName, _ctorSig, body]);
   }
-
-  /*
-    List decl = [];
-    var method = '${constTag}${qualifiedName}(';
-    if (result.length > 0) {
-      decl
-        ..add('$method${result.removeAt(0)}')
-        ..addAll(result);
-    } else {
-      decl.add(method);
-    }
-
-    return '''
-${formatFill(decl)})${body}
-''';
-  }
-    */
 
   // end <class Ctor>
 
