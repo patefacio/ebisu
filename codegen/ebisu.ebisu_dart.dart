@@ -547,6 +547,14 @@ member('foo')..init = [1,2,3]
         ],
       part('class')
         ..enums = [
+
+          enum_('ctor_arg_composition')
+          ..values = [
+            'standard_members',
+            'named_members',
+            'positional_members',
+          ],
+
           enum_('json_key_format')
             ..doc = 'When serializing json, how to name the keys'
             ..values = [id('camel'), id('cap_camel'), id('snake'),],
@@ -1159,7 +1167,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.16'
+      ..version = '0.6.17'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

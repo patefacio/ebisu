@@ -527,12 +527,17 @@ Trace getStackTrace() {
   }
 }
 
+/// Includes a generated comment before the [txt]
 String tagGeneratedContent(String txt) => '''
 ////////////////////////////////////////////////////////////////////////////////
 /// This file was generated - see bottom of file for details
 ////////////////////////////////////////////////////////////////////////////////
 $txt
+''';
 
+/// Includes a stack trace after the [txt]
+String commentStackTrace(String txt, [bool showLine = true]) => '''
+$txt
 ////////////////////////////////////////////////////////////////////////////////
 /// Stack trace associated with generated code. Useful for determining what
 /// code generated this file
@@ -545,7 +550,7 @@ blockComment(
       .frames
       .skip(3)
       .takeWhile((f) => !f.member.contains('_startIsolate'))
-      .map((f) => '${f.library}:${f.line}\n  ${f.member}'))))}''';
+      .map((f) => '${f.library}:${showLine?f.line:""}\n  ${f.member}'))))}''';
 
 scrubPubFilesFromRoot(String packageRoot) {
   final rootDirectory = new Directory(packageRoot);
