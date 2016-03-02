@@ -111,6 +111,15 @@ class Library extends Object with CustomCodeBlock, Entity {
   /// If true the library is placed under .../lib/src
   bool isPrivate = false;
 
+  /// If true includes comment about code being generated.
+  set includeGeneratedPrologue(bool includeGeneratedPrologue) =>
+      _includeGeneratedPrologue = includeGeneratedPrologue;
+
+  /// If true includes comment containing stack trace to help find the dart code that
+  /// generated the source.
+  set includeStackTrace(bool includeStackTrace) =>
+      _includeStackTrace = includeStackTrace;
+
   // custom <class Library>
 
   Library(this._id) {
@@ -185,10 +194,19 @@ class Library extends Object with CustomCodeBlock, Entity {
               : (isTest ? join(rootPath, 'test') : join(rootPath, 'lib')))),
       '${id.snake}.dart');
 
+  get includeGeneratedPrologue =>
+      (rootEntity as System)?.includeGeneratedPrologue ?? false;
+  get includeStackTrace => (rootEntity as System)?.includeStackTrace ?? false;
+
   /// Generate all artifiacts within the library
   void generate() {
     _ensureOwner();
-    mergeWithDartFile('${_content}\n', libStubPath);
+    final content = _content;
+    final withPrologue =
+        includeGeneratedPrologue ? tagGeneratedContent(content) : content;
+    final withStackTrace =
+        includeStackTrace ? commentStackTrace(withPrologue) : withPrologue;
+    mergeWithDartFile('${withStackTrace}\n', libStubPath);
     parts.forEach((part) => part.generate());
     benchmarks.forEach((benchmark) => benchmark.generate());
   }
@@ -368,6 +386,8 @@ $_initLogger${_mainCustomText}
   bool _isTest = false;
   CodeBlock _mainCustomBlock;
   Access _defaultMemberAccess;
+  bool _includeGeneratedPrologue;
+  bool _includeStackTrace;
 }
 
 // custom <part library>

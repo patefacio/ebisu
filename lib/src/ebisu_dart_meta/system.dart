@@ -61,6 +61,13 @@ class System extends Object with Entity {
   /// If true generates tool folder with hop_runner
   bool includesHop = false;
 
+  /// If true includes comment about code being generated.
+  bool includeGeneratedPrologue = false;
+
+  /// If true includes comment containing stack trace to help find the dart code that
+  /// generated the source.
+  bool includeStackTrace = false;
+
   // custom <class System>
 
   Iterable<Entity> get children => concat([

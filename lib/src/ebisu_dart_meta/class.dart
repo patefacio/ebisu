@@ -1,5 +1,7 @@
 part of ebisu.ebisu_dart_meta;
 
+enum CtorArgComposition { standardMembers, namedMembers, positionalMembers }
+
 /// When serializing json, how to name the keys
 enum JsonKeyFormat { camel, capCamel, snake }
 
@@ -59,8 +61,16 @@ class Ctor extends Object with CustomCodeBlock {
   String get qualifiedName =>
       (name == 'default' || name == '') ? className : '${className}.${name}';
 
+  get classId => idFromString(className);
+
+  get id => (name == 'default' || name == '')
+      ? classId
+      : ((name == '_default')
+          ? idFromString('${classId.snake}_default')
+          : new Id('${classId.snake}_${idFromString(name).snake}'));
+
   String get ctorSansNew {
-    var classId = idFromString(className);
+    final classId = this.classId;
     var id = (name == 'default' || name == '')
         ? classId
         : ((name == '_default')

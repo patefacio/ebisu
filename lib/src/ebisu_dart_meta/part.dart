@@ -27,6 +27,15 @@ class Part extends Object with CustomCodeBlock, Entity {
   /// If true classes will get library functions to construct forwarding to ctors
   set hasCtorSansNew(bool hasCtorSansNew) => _hasCtorSansNew = hasCtorSansNew;
 
+  /// If true includes comment about code being generated.
+  set includeGeneratedPrologue(bool includeGeneratedPrologue) =>
+      _includeGeneratedPrologue = includeGeneratedPrologue;
+
+  /// If true includes comment containing stack trace to help find the dart code that
+  /// generated the source.
+  set includeStackTrace(bool includeStackTrace) =>
+      _includeStackTrace = includeStackTrace;
+
   // custom <class Part>
 
   Part(this._id) {
@@ -42,11 +51,20 @@ class Part extends Object with CustomCodeBlock, Entity {
 
   onOwnershipEstablished() {}
 
+  get includeGeneratedPrologue =>
+      (rootEntity as System)?.includeGeneratedPrologue ?? false;
+  get includeStackTrace => (rootEntity as System)?.includeStackTrace ?? false;
+
   void generate() {
+    final content = _content;
+    final withPrologue =
+        includeGeneratedPrologue ? tagGeneratedContent(content) : content;
+    final withStackTrace =
+        includeStackTrace ? commentStackTrace(withPrologue) : withPrologue;
     _filePath = _owningLibrary.isTest
         ? "${rootPath}/test/src/${_owningLibrary.name}/${_name}.dart"
         : "${rootPath}/lib/src/${_owningLibrary.name}/${_name}.dart";
-    mergeWithDartFile('${chomp(_content)}\n', _filePath);
+    mergeWithDartFile('${chomp(withStackTrace)}\n', _filePath);
   }
 
   String get rootPath => (rootEntity as System).rootPath;
@@ -81,6 +99,8 @@ class Part extends Object with CustomCodeBlock, Entity {
   String _filePath;
   Access _defaultMemberAccess;
   bool _hasCtorSansNew;
+  bool _includeGeneratedPrologue;
+  bool _includeStackTrace;
 }
 
 // custom <part part>

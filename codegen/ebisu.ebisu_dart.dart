@@ -5,13 +5,14 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -191,6 +192,17 @@ text to include in the license file.
                 ..classInit = '[]',
               member('includes_hop')
                 ..doc = 'If true generates tool folder with hop_runner'
+                ..classInit = false,
+              member('include_generated_prologue')
+                ..doc = '''
+If true includes comment about code being generated.
+'''
+                ..classInit = false,
+              member('include_stack_trace')
+                ..doc = '''
+If true includes comment containing stack trace to help find the dart code that
+generated the source.
+'''
                 ..classInit = false,
             ],
         ],
@@ -547,14 +559,12 @@ member('foo')..init = [1,2,3]
         ],
       part('class')
         ..enums = [
-
           enum_('ctor_arg_composition')
-          ..values = [
-            'standard_members',
-            'named_members',
-            'positional_members',
-          ],
-
+            ..values = [
+              'standard_members',
+              'named_members',
+              'positional_members',
+            ],
           enum_('json_key_format')
             ..doc = 'When serializing json, how to name the keys'
             ..values = [id('camel'), id('cap_camel'), id('snake'),],
@@ -568,7 +578,7 @@ member('foo')..init = [1,2,3]
 - [ positionalParms ]: Default ctor with all members optional positional parms
 
 '''
-          ..hasLibraryScopedValues = true
+            ..hasLibraryScopedValues = true
             ..values = [
               id('required_parms'),
               id('named_parms'),
@@ -623,7 +633,7 @@ member('foo')..init = [1,2,3]
                 ..type = 'Access'
                 ..access = WO,
               member('init')
-              ..type = 'dynamic'
+                ..type = 'dynamic'
                 ..doc = '''
 If provided the member will be initialized with value.
 The type of the member can be inferred from the type
@@ -636,14 +646,14 @@ the type of member will be set to
 classInit.runtimeType.
 
 '''
-              ..access = WO,
+                ..access = WO,
               member('ctor_init')
                 ..doc = '''
 If provided the member will be initialized to this text in generated
 ctor initializers. If this is null defaulted ctor args will be
 initialized to [classInit].
 '''
-              ..access = WO,
+                ..access = WO,
               member('ctors')
                 ..doc = "List of ctor names to include this member in"
                 ..type = 'List<String>'
@@ -1035,7 +1045,20 @@ This is an intended as a replacement for *parts*.
                 ..classInit = false,
               member('is_private')
                 ..doc = 'If true the library is placed under .../lib/src'
-                ..classInit = false
+                ..classInit = false,
+              member('include_generated_prologue')
+                ..doc = '''
+If true includes comment about code being generated.
+'''
+                ..access = WO
+                ..type = 'bool',
+              member('include_stack_trace')
+                ..doc = '''
+If true includes comment containing stack trace to help find the dart code that
+generated the source.
+'''
+                ..access = WO
+                ..type = 'bool',
             ],
         ],
       part('part')
@@ -1071,7 +1094,20 @@ This is an intended as a replacement for *parts*.
                 ..doc =
                     "If true classes will get library functions to construct forwarding to ctors"
                 ..type = 'bool'
+                ..access = WO,
+              member('include_generated_prologue')
+                ..doc = '''
+If true includes comment about code being generated.
+'''
                 ..access = WO
+                ..type = 'bool',
+              member('include_stack_trace')
+                ..doc = '''
+If true includes comment containing stack trace to help find the dart code that
+generated the source.
+'''
+                ..access = WO
+                ..type = 'bool',
             ],
         ],
       part('dart_meta')
@@ -1167,7 +1203,7 @@ This is an intended as a replacement for *parts*.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.17'
+      ..version = '0.6.18'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
