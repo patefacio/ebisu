@@ -8,8 +8,11 @@ class DrudgeScriptGenerator {
 
   DrudgeScriptGenerator(this._system);
 
-  get _ebisuDartScript => relative(absolute(Platform.script.toFilePath()),
-      from: join(_system.rootPath, 'bin'));
+  get _ebisuDartScriptRelative =>
+      relative(absolute(Platform.script.toFilePath()),
+          from: join(_system.rootPath, 'bin'));
+
+  get _ebisuDartScript => absolute(Platform.script.toFilePath());
 
   get _libPath =>
       relative(join(_system.rootPath, 'lib'), from: dirname(_ebisuDartScript));
@@ -27,7 +30,7 @@ import 'dart:io';
 final _logger = new Logger('drudge_${system.id.snake}');
 
 main() {
-  String ebisuScript = '$_ebisuDartScript';
+  String ebisuScript = '$_ebisuDartScriptRelative';
   String libPath = '$_libPath';
   String testPath = '$_testPath';
   String here = absolute(Platform.script.toFilePath());
