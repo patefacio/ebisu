@@ -62,6 +62,9 @@ class Ctor extends Object with CustomCodeBlock {
       (name == 'default' || name == '') ? className : '${className}.${name}';
 
   get classId => idFromString(className);
+  get _hasMembers => members.isNotEmpty;
+  get _hasOptMembers => optMembers.isNotEmpty;
+  get _hasNamedMembers => namedMembers.isNotEmpty;
 
   get id => (name == 'default' || name == '')
       ? classId
@@ -69,54 +72,31 @@ class Ctor extends Object with CustomCodeBlock {
           ? idFromString('${classId.snake}_default')
           : new Id('${classId.snake}_${idFromString(name).snake}'));
 
-  String get ctorSansNew {
-    final classId = this.classId;
-    var id = (name == 'default' || name == '')
-        ? classId
-        : ((name == '_default')
-            ? idFromString('${classId.snake}_default')
-            : new Id('${classId.snake}_${idFromString(name).snake}'));
+  get _optionalMembersDecl => _hasOptMembers
+      ? brCompact(
+          ['[', optMembers.map((m) => m.annotatedPublic).join(','), ']',])
+      : '';
 
-    List<String> parms = [];
-    List<String> args = [];
-    if (members.length > 0) {
-      List<String> required = [];
-      members.forEach((m) => required.add('${m.type} ${m.varName}'));
-      parms.add("${required.join(',\n')}");
-      args.add(members.map((m) => '  ${m.varName}').join(',\n'));
-    }
-    if (optMembers.length > 0) {
-      List<String> optional = [];
-      optMembers.forEach((m) => optional.add('    ${m.type} ${m.varName}' +
-          ((m.ctorInit == null) ? '' : ' = ${m.ctorInit}')));
-      parms.add("  [\n${optional.join(',\n')}\n  ]");
-      args.add(optMembers.map((m) => '  ${m.varName}').join(',\n'));
-    }
-    if (namedMembers.length > 0) {
-      List<String> named = [];
-      namedMembers.forEach((m) => named.add('    ${m.type} ${m.varName}' +
-          ((m.ctorInit == null) ? '' : ' : ${m.ctorInit}')));
-      parms.add("  {\n${named.join(',\n')}\n  }");
-      args.add(
-          namedMembers.map((m) => '  ${m.varName}:${m.varName}').join(',\n'));
-    }
-    String parmText = parms.join(',\n');
-    String argText = args.join(',\n');
-    bool hasParms = parms.length > 0;
-    bool allowAllOptional = optMembers.length == 0 && namedMembers.length == 0;
+  get _namedMembersDecl => _hasNamedMembers
+      ? brCompact(
+          ['{', namedMembers.map((m) => m.annotatedPublic).join(','), '}',])
+      : '';
 
-    var lb = hasParms && allowAllOptional ? '[' : '';
-    var rb = hasParms && allowAllOptional ? ']' : '';
-    return '''
-/// Create a ${className} sans new, for more declarative construction
-${className}
-${id.camel}($lb${leftTrim(chomp(indentBlock(parmText, '  ')))}$rb) =>
-  new ${qualifiedName}(${leftTrim(chomp(indentBlock(argText, '    ')))});''';
-  }
-
-  get _hasMembers => members.isNotEmpty;
-  get _hasOptMembers => optMembers.isNotEmpty;
-  get _hasNamedMembers => namedMembers.isNotEmpty;
+  String get ctorSansNew => brCompact([
+        '/// Create $className without new, for more declarative construction',
+        '$className ${classId.camel} (',
+        [
+          members.map((m) => m.annotatedPublic).join(','),
+          _optionalMembersDecl,
+          _namedMembersDecl,
+        ].where((part) => part.isNotEmpty).join(','),
+        ') => new $qualifiedName(',
+        concat([members, optMembers, namedMembers])
+            .map((m) =>
+                namedMembers.contains(m) ? '${m.name}:${m.name}' : m.name)
+            .join(', '),
+        ');'
+      ]);
 
   get _memberSig =>
       brCompact(['(', members.map((m) => 'this.${m.varName}').join(','), ')']);
@@ -305,11 +285,23 @@ class Member extends Object with Entity {
       (owner as Class).hasCourtesyCtor &&
       !isJsonTransient;
 
-  String get decl => (_ignoreClassInit || classInit == null)
-      ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName};"
-      : ((type == 'String')
-          ? "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${smartQuote(classInit)};"
-          : "${observableDecl}${staticDecl}${finalDecl}${type} ${varName} = ${classInit};");
+  /// returns the member annotated, suitable for decl or parm in function
+  String get annotated =>
+      '${observableDecl}${staticDecl}${finalDecl}${type} ${varName}';
+
+  /// returns the member annotated named without private
+  String get annotatedPublic =>
+      '${observableDecl}${staticDecl}${finalDecl}${type} ${name}';
+
+  /// returns the declaration
+  String get decl => brCompact([
+        annotated,
+        (_ignoreClassInit || classInit == null)
+            ? ';'
+            : (type == 'String')
+                ? ' = ${smartQuote(classInit)};'
+                : ' = $classInit;'
+      ]);
 
   String get publicCode => brCompact([
         this.docComment,

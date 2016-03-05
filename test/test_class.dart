@@ -83,5 +83,66 @@ class A {}
         true);
   });
 
+  test('ctor sans new', () {
+    makeClass() => class_('some_class')
+      ..hasCtorSansNew = true
+      ..members = [
+        member('a')..classInit = 3,
+        member('b')
+          ..access = RO
+          ..ctors = ['']
+      ];
+
+    expect(
+        darkMatter((makeClass()
+              ..members.add(member('c')
+                ..type = 'Point'
+                ..init = 'new Point()'
+                ..ctorsOpt = ['']))
+            .definition),
+        darkMatter('''
+class SomeClass {
+  SomeClass(this._b, [c]) : c = c ?? new Point();
+
+  int a = 3;
+  String get b => _b;
+  Point c = new Point();
+
+  // custom <class SomeClass>
+  // end <class SomeClass>
+
+  String _b;
+}
+
+/// Create SomeClass without new, for more declarative construction
+SomeClass someClass(String b, [Point c]) => new SomeClass(b, c);
+'''));
+
+    expect(
+        darkMatter((makeClass()
+              ..members.add(member('c')
+                ..type = 'Point'
+                ..init = 'new Point()'
+                ..ctorsNamed = ['']))
+            .definition),
+        darkMatter('''
+class SomeClass {
+  SomeClass(this._b, {c}) : c = c ?? new Point();
+
+  int a = 3;
+  String get b => _b;
+  Point c = new Point();
+
+  // custom <class SomeClass>
+  // end <class SomeClass>
+
+  String _b;
+}
+
+/// Create SomeClass without new, for more declarative construction
+SomeClass someClass(String b, {Point c}) => new SomeClass(b, c:c);
+'''));
+  });
+
 // end <main>
 }

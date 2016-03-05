@@ -118,7 +118,7 @@ class CustomCodeBlock {
 ///
 ///     """
 ///     class Imaginary {
-///       versionId = "0.1.21";
+///       versionId = "0.1.22";
 ///       /// custom begin top
 ///       /// custom end top
 ///     ...
@@ -161,8 +161,8 @@ class CodeBlock {
 
 }
 
-/// Create a CodeBlock sans new, for more declarative construction
-CodeBlock codeBlock([String tag]) => new CodeBlock(tag);
+/// Create CodeBlock without new, for more declarative construction
+CodeBlock codeBlock(String tag) => new CodeBlock(tag);
 
 /// Same as code block but uses script style protection block
 class ScriptCodeBlock extends CodeBlock {
