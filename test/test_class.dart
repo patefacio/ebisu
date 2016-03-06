@@ -144,5 +144,41 @@ SomeClass someClass(String b, {Point c}) => new SomeClass(b, c:c);
 '''));
   });
 
+  test('withCtor', () {
+    final c = class_('some_class')
+      ..withCtor(
+          'xx',
+          (Ctor ctor) => ctor
+            ..tag = 'boooya'
+            ..snippets.add('// boing'))
+      ..members = [
+        member('a')..classInit = 3,
+        member('b')
+          ..access = RO
+          ..ctors = ['']
+      ];
+
+    expect(darkMatter(c.definition), darkMatter('''
+class SomeClass {
+  SomeClass(this._b);
+
+  SomeClass.xx() {
+    // custom <boooya>
+    // end <boooya>
+
+    // boing
+  }
+
+  int a = 3;
+  String get b => _b;
+
+  // custom <class SomeClass>
+  // end <class SomeClass>
+
+  String _b;
+}
+'''));
+  });
+
 // end <main>
 }

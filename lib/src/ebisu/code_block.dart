@@ -37,8 +37,7 @@ class CustomCodeBlock {
   withCustomBlock(f(CodeBlock)) => f(customCodeBlock);
 
   /// The text associated with the [CodeBlock] if iniialized, null otherwise
-  get blockText =>
-      _customCodeBlock == null ? null : _customCodeBlock.toString();
+  get blockText => _customCodeBlock?.toString();
 
   /// Set the tag associated with the custom block
   ///
@@ -46,14 +45,13 @@ class CustomCodeBlock {
   set tag(String protectBlockTag) => customCodeBlock.tag = protectBlockTag;
 
   /// The tag associated with the [CodeBlock] if initialized, null otherwise
-  get tag => _customCodeBlock == null ? tag : _customCodeBlock.tag;
+  get tag => _customCodeBlock?.tag;
 
-  CodeBlock _initCustomBlock() {
-    if (_customCodeBlock == null) {
-      _customCodeBlock = new CodeBlock(null);
-    }
-    return _customCodeBlock;
-  }
+  get hasContent => _customCodeBlock?.hasContent ?? false;
+
+  get snippets => _initCustomBlock().snippets;
+
+  CodeBlock _initCustomBlock() => _customCodeBlock ??= new CodeBlock(null);
 
   // end <class CustomCodeBlock>
 

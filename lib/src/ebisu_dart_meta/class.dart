@@ -152,17 +152,20 @@ class Ctor extends Object with CustomCodeBlock {
                 : _hasMembers ? _memberSig : '()',
       ]);
 
+  get _customBlockTag => qualifiedName + (tag == null ? '' : ' $tag');
+
+  get hasContent => hasCustom || super.hasContent;
+
   String get ctorText {
-    String cb = hasCustom
-        ? indentBlock(rightTrim(customBlock('${qualifiedName}')))
-        : '';
+    // Prefix any user supplied tag with the qualified name
+    if (hasContent) tag = _customBlockTag;
 
     String body = callsInit
         ? ' { _init(); }'
-        : (isConst || !hasCustom)
+        : (isConst || !hasContent)
             ? ';'
-            : ''' {
-${chomp(cb, true)}
+            : '''{
+$blockText
 }''';
 
     return brCompact(
@@ -556,6 +559,9 @@ class Class extends Object with CustomCodeBlock, Entity {
 
   withClass(f(Class c)) => f(this);
 
+  withCtor(ctorName, f(Ctor ctor)) =>
+      f(_ctors.putIfAbsent(ctorName, () => new Ctor())..name = ctorName);
+
   /// *Deprecated* If true adds '..ctors[''] to all members (i.e. ensures
   /// generation of empty ctor with all members passed as arguments)
   @deprecated
@@ -807,7 +813,6 @@ int compareTo($otherType other) {
 
   onOwnershipEstablished() {
     _className = isPublic ? _name : "_$_name";
-    _ctors.clear();
 
     if (hasDefaultCtor && hasCourtesyCtor) {
       throw new ArgumentError(
@@ -827,12 +832,9 @@ int compareTo($otherType other) {
       allMembersFinal = true;
     }
 
-    if (hasDefaultCtor)
-      _ctors.putIfAbsent(
-          '',
-          () => new Ctor()
-            ..name = ''
-            ..className = _className);
+    if (hasDefaultCtor) _ctors.putIfAbsent('', () => new Ctor()..name = '');
+
+    ctors.values.forEach((ctor) => ctor.className = _className);
 
     if (allMembersFinal) nonTransientMembers.forEach((m) => m.isFinal = true);
 
