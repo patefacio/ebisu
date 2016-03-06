@@ -152,14 +152,9 @@ class Ctor extends Object with CustomCodeBlock {
                 : _hasMembers ? _memberSig : '()',
       ]);
 
-  get _customBlockTag => qualifiedName + (tag == null ? '' : ' $tag');
-
   get hasContent => hasCustom || super.hasContent;
 
   String get ctorText {
-    // Prefix any user supplied tag with the qualified name
-    if (hasContent) tag = _customBlockTag;
-
     String body = callsInit
         ? ' { _init(); }'
         : (isConst || !hasContent)
@@ -863,33 +858,32 @@ int compareTo($otherType other) {
         }
       }
 
-      m.ctors.forEach((ctorName) {
-        ctorName = makeCtorName(ctorName);
-        ctors.putIfAbsent(ctorName, () => new Ctor())
-          ..name = ctorName
-          ..hasCustom = ctorCustoms.contains(ctorName)
-          ..isConst = ctorConst.contains(ctorName)
-          ..className = _className
-          ..members.add(m);
-      });
-      m.ctorsOpt.forEach((ctorName) {
-        ctorName = makeCtorName(ctorName);
-        ctors.putIfAbsent(ctorName, () => new Ctor())
-          ..name = ctorName
-          ..hasCustom = ctorCustoms.contains(ctorName)
-          ..isConst = ctorConst.contains(ctorName)
-          ..className = _className
-          ..optMembers.add(m);
-      });
-      m.ctorsNamed.forEach((ctorName) {
-        ctorName = makeCtorName(ctorName);
-        _ctors.putIfAbsent(ctorName, () => new Ctor())
-          ..name = ctorName
-          ..hasCustom = ctorCustoms.contains(ctorName)
-          ..isConst = ctorConst.contains(ctorName)
-          ..className = _className
-          ..namedMembers.add(m);
-      });
+      addCtor(ctorName) {
+        var ctor = ctors[ctorName];
+        if(ctor == null) {
+          ctor = new Ctor()
+            ..name = ctorName
+            ..hasCustom = ctorCustoms.contains(ctorName)
+            ..isConst = ctorConst.contains(ctorName)
+            ..className = _className;
+
+          if(ctor.hasContent && ctor.tag == null) {
+            ctor.tag = _className;
+          }
+
+          ctors[ctorName] = ctor;
+        }
+        return ctor;
+      }
+
+      m.ctors.forEach(
+          (ctorName) => addCtor(makeCtorName(ctorName))..members.add(m));
+
+      m.ctorsOpt.forEach(
+          (ctorName) => addCtor(makeCtorName(ctorName))..optMembers.add(m));
+
+      m.ctorsNamed.forEach(
+          (ctorName) => addCtor(makeCtorName(ctorName))..namedMembers.add(m));
     });
 
     // To deserialize or copy a default ctor is needed
