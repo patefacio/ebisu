@@ -47,8 +47,13 @@ class CustomCodeBlock {
   /// The tag associated with the [CodeBlock] if initialized, null otherwise
   get tag => _customCodeBlock?.tag;
 
+  /// Returns true if the [CustomCodeBlock] has content which is true if the
+  /// [CodeBlock] has been tagged or there is data in the [snippets]
   get hasContent => _customCodeBlock?.hasContent ?? false;
 
+  /// Returns the list of snippets in the [CustomCodeBlock]
+  ///
+  /// Initializes the [CodeBlock] if not yet initialized
   get snippets => _initCustomBlock().snippets;
 
   CodeBlock _initCustomBlock() => _customCodeBlock ??= new CodeBlock(null);

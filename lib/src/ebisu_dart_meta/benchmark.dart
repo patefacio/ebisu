@@ -15,6 +15,7 @@ class Benchmark extends Object with Entity {
 
   onOwnershipEstablished() {}
 
+  /// Generates the benchmark
   void generate() {
     final idStr = _id.snake;
     final dir = join(root.rootPath, 'benchmarks');

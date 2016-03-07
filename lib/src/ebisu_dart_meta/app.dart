@@ -21,10 +21,15 @@ class App extends Object with CustomCodeBlock, Entity {
 
   // custom <class App>
 
+  /// Returns the children, including contained _classes_, _libraries_,
+  /// _variables_ and any of their children recursively
   Iterable<Entity> get children => concat([classes, libraries, variables]);
 
+  /// Returns the root path corresponding to the folder with the _pubspec.yaml_
+  /// file
   String get rootPath => (rootEntity as System).rootPath;
 
+  /// Generates the dart application
   void generate() {
     libraries.forEach((lib) => lib.generate());
     String appPath = "${rootPath}/web/${_id.snake}.dart";

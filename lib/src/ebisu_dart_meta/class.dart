@@ -860,14 +860,14 @@ int compareTo($otherType other) {
 
       addCtor(ctorName) {
         var ctor = ctors[ctorName];
-        if(ctor == null) {
+        if (ctor == null) {
           ctor = new Ctor()
             ..name = ctorName
             ..hasCustom = ctorCustoms.contains(ctorName)
             ..isConst = ctorConst.contains(ctorName)
             ..className = _className;
 
-          if(ctor.hasContent && ctor.tag == null) {
+          if (ctor.hasContent && ctor.tag == null) {
             ctor.tag = _className;
           }
 

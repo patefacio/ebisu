@@ -133,8 +133,13 @@ class Enum extends Object with Entity {
     values = _values;
   }
 
+  /// Returns the enum definition
   String define() => _content;
 
+  /// Returns true if this enum should use old-style class idiom for similar
+  /// supporting the enumeration type. Using a class to get the same effect can
+  /// be helpful in cases where you want to provide additional functionality,
+  /// like json support, or custom methods on the enumeration type.
   get requiresClass =>
       _requiresClass == null ? (hasJsonSupport || hasCustom) : _requiresClass;
 
