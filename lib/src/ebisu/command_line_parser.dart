@@ -130,7 +130,7 @@ class CommandLineParser {
 
   toString() => brCompact([
         _argDetails.isNotEmpty ? '------ argDetails ------' : null,
-        indentBlock(brCompact(_argDetails))
+        indentBlock(brCompact(_argDetails)),
       ]);
 
   // end <class CommandLineParser>

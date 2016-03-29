@@ -557,6 +557,9 @@ class Class extends Object with CustomCodeBlock, Entity {
   withCtor(ctorName, f(Ctor ctor)) =>
       f(_ctors.putIfAbsent(ctorName, () => new Ctor())..name = ctorName);
 
+  tagCtor(String ctorName, String tag) =>
+    withCtor(ctorName, ((ctor) => ctor.tag = tag));
+
   /// *Deprecated* If true adds '..ctors[''] to all members (i.e. ensures
   /// generation of empty ctor with all members passed as arguments)
   @deprecated
@@ -911,18 +914,19 @@ int compareTo($otherType other) {
       case requiredParms:
         {
           defaultCtorParms().forEach((m) => m.ctors.add(''));
-          break;
         }
+        break;
+
       case namedParms:
         {
           defaultCtorParms().forEach((m) => m.ctorsNamed.add(''));
-          break;
         }
+        break;
       case positionalParms:
         {
           defaultCtorParms().forEach((m) => m.ctorsOpt.add(''));
-          break;
         }
+        break;
     }
   }
 

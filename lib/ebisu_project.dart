@@ -79,7 +79,7 @@ class EbisuProject {
     _readFiles();
     if (codegenScripts.isEmpty) {
       throw new ArgumentError(
-          '$path does not look like an ebisu project - no codegen scripts');
+          '$_projectPath does not look like an ebisu project - no codegen scripts');
     }
   }
 
