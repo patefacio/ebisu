@@ -11,5 +11,7 @@ dart test/runner.dart
 
 # Run the build.dart file - just to make sure it works
 dart tool/hop_runner.dart analyze_lib
-/usr/lib/dart/bin/dartanalyzer lib/*.dart test/*.dart
+
+#### Not found in travis
+#/usr/lib/dart/bin/dartanalyzer lib/*.dart test/*.dart
 
