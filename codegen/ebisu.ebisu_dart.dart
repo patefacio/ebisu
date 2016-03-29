@@ -5,13 +5,14 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
 
 main(List<String> args) {
-  Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
+  Logger.root.onRecord.listen(
+      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
   useDartFormatter = true;
   String here = absolute(Platform.script.toFilePath());
@@ -1197,12 +1198,14 @@ generated the source.
         ..imports = ['scratch_remove_me/lib/various_ctors.dart',],
       library('expect_multi_parts')
         ..imports = ['scratch_remove_me/lib/two_parts.dart',],
-      library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',]
+      library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',],
+      library('test_command_line_parser')
+        ..imports = ['package:ebisu/ebisu.dart',],
     ]
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.6.19'
+      ..version = '0.6.20'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.
@@ -1329,6 +1332,48 @@ regenerating.
   'mozilla-2.0' : 'License: <a href="http://opensource.org/licenses/MPL-2.0">Mozilla Public License 2.0 </a>',
 
 }'''
+            ],
+          part('command_line_parser')
+            ..classes = [
+              class_('parsed_option')
+                ..isImmutable = true
+                ..hasOpEquals = true
+                ..members = [member('name'), member('value'),],
+              class_('arg_details')
+                ..defaultCtorStyle = namedParms
+                ..defaultMemberAccess = RO
+                ..hasOpEquals = true
+                ..members = [
+                  member('index')
+                    ..type = 'int'
+                    ..ctors = [''],
+                  member('option_indices')
+                    ..doc = 'List of related indices comprising the option'
+                    ..type = 'List<int>'
+                    ..init = [],
+                  member('parsed_option')..type = 'ParsedOption',
+                ],
+              class_('command_line_parser')
+                ..doc = '''
+Given a command line that is assumed correct, with no up-front knowledge of
+flags/options available, parses the command line and infers all options.
+'''
+                ..defaultMemberAccess = RO
+                ..members = [
+                  member('command_line')..doc = 'Command line to be parsed',
+                  member('args')
+                    ..doc = 'Args determined by whitespace'
+                    ..type = 'List<String>'
+                    ..init = [],
+                  member('last_option_index')
+                    ..doc =
+                        'Index into args of last argument resembling an option/flag'
+                    ..init = 0,
+                  member('arg_details')
+                    ..doc = 'Inferred details of each arg'
+                    ..type = 'List<ArgDetails>'
+                    ..init = [],
+                ],
             ],
           part('json_support')
             ..doc =
@@ -1519,6 +1564,10 @@ If no paths are specified the proejct of the current directory is assumed.
         scriptArg('git_status')
           ..doc = 'Run *git status* on all the projects'
           ..abbr = 's'
+          ..isFlag = true,
+        scriptArg('git_ls_files')
+          ..doc = 'Run *git ls-files* on all the projects'
+          ..abbr = 'l'
           ..isFlag = true,
         scriptArg('run_tests')
           ..doc = 'Run tests on the projects'

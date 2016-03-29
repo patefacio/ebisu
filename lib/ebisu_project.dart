@@ -192,6 +192,12 @@ String here = absolute(Platform.script.toFilePath());
     print(result.stdout);
   }
 
+  runGitLsFiles() {
+    final result = Process.runSync('git',
+        ['--git-dir=${repoPath}/.git', '--work-tree=${repoPath}', 'ls-files',]);
+    print(result.stdout.split('\n').map((l) => join(repoPath, l)).join('\n'));
+  }
+
   _readLanguages() {
     for (var codegenScript in codegenScripts) {
       final script = basename(codegenScript);

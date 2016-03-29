@@ -9,6 +9,7 @@ import 'test_entity.dart' as test_entity;
 import 'test_drudge_script.dart' as test_drudge_script;
 import 'test_code_generation.dart' as test_code_generation;
 import 'test_ebisu_project.dart' as test_ebisu_project;
+import 'test_command_line_parser.dart' as test_command_line_parser;
 
 main() {
   Logger.root.level = Level.OFF;
@@ -26,4 +27,5 @@ main() {
   test_drudge_script.main();
   test_code_generation.main();
   test_ebisu_project.main();
+  test_command_line_parser.main();
 }

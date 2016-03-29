@@ -41,6 +41,12 @@ Run *git status* on all the projects
 ''',
         abbr: 's',
         defaultsTo: false);
+    _parser.addFlag('git-ls-files',
+        help: r'''
+Run *git ls-files* on all the projects
+''',
+        abbr: 'l',
+        defaultsTo: false);
     _parser.addFlag('run-tests',
         help: r'''
 Run tests on the projects
@@ -96,6 +102,7 @@ Select log level from:
     }
     result['project-path'] = argResults['project-path'];
     result['git-status'] = argResults['git-status'];
+    result['git-ls-files'] = argResults['git-ls-files'];
     result['run-tests'] = argResults['run-tests'];
     result['codegen'] = argResults['codegen'];
     result['regen-project'] = argResults['regen-project'];
@@ -149,6 +156,12 @@ main(List<String> args) {
       print(
           '------------------ Running (${ebisuProject.title}) codegen -----------------');
       ebisuProject.runGitStatus();
+    }
+
+    if (options['git-ls-files']) {
+      print(
+          '------------------ Running (${ebisuProject.title}) git ls-files -----------------');
+      ebisuProject.runGitLsFiles();
     }
 
     if (options['regen-project']) {

@@ -25,7 +25,8 @@ void main(List<String> args) {
         "test/test_entity.dart",
         "test/test_drudge_script.dart",
         "test/test_code_generation.dart",
-        "test/test_ebisu_project.dart"
+        "test/test_ebisu_project.dart",
+        "test/test_command_line_parser.dart"
       ]));
 
   runHop(args);
