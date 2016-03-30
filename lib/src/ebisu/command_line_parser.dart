@@ -91,7 +91,7 @@ class CommandLineParser {
 
         if (_looksLikeLongFormOption(arg)) {
           if (arg.contains('=')) {
-            final match = _longFormWithEqualsRe.firstMatch(arg);
+            final match = _optionWithEqualsRe.firstMatch(arg);
             assert(match != null);
             final optionName = match.group(1);
             final optionValue = match.group(2);
@@ -100,12 +100,23 @@ class CommandLineParser {
                 parsedOption: new ParsedOption(optionName, optionValue)));
 
             _logger.fine('assigned long-name arg $optionName -> $optionValue');
-
             currentOption = null;
           }
         } else {
           _logger.fine('short-form arg $arg');
-          if (i == _args.length - 1) {
+
+          if (arg.contains('=')) {
+            final match = _optionWithEqualsRe.firstMatch(arg);
+            assert(match != null);
+            final optionName = match.group(1);
+            final optionValue = match.group(2);
+
+            _argDetails.add(new ArgDetails(i,
+                parsedOption: new ParsedOption(optionName, optionValue)));
+
+            _logger.fine('assigned short-name arg $optionName -> $optionValue');
+            currentOption = null;
+          } else if (i == _args.length - 1) {
             _argDetails.add(
                 new ArgDetails(i, parsedOption: new ParsedOption(arg, null)));
             currentOption = null;
@@ -149,6 +160,6 @@ _looksLikeOption(s) => s.startsWith('-');
 _looksLikeShortFormOption(s) => _shortFormOptionRe.hasMatch(s);
 _looksLikeLongFormOption(s) => s.startsWith('--');
 
-final _longFormWithEqualsRe = new RegExp(r'([^=]+)=(.*)');
+final _optionWithEqualsRe = new RegExp(r'([^=]+)=(.*)');
 
 // end <part command_line_parser>
