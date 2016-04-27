@@ -41,17 +41,24 @@ main([List<String> args]) {
       final clp = new CommandLineParser(
           '--long-arg=foo --long-arg again -x --another-long-arg stuff --final-long-arg no-equals foo');
 
-      expect(clp.argDetails[0],
-          new ArgDetails(0, parsedOption: new ParsedOption('--long-arg', 'foo')));
-      expect(clp.argDetails[1],
-          new ArgDetails(1, parsedOption: new ParsedOption('--long-arg', 'again')));
+      expect(
+          clp.argDetails[0],
+          new ArgDetails(0,
+              parsedOption: new ParsedOption('--long-arg', 'foo')));
+      expect(
+          clp.argDetails[1],
+          new ArgDetails(1,
+              parsedOption: new ParsedOption('--long-arg', 'again')));
       expect(clp.argDetails[2],
           new ArgDetails(3, parsedOption: new ParsedOption('-x', null)));
-      expect(clp.argDetails[3],
-          new ArgDetails(4, parsedOption: new ParsedOption('--another-long-arg', 'stuff')));
-      expect(clp.argDetails[4],
-          new ArgDetails(6, parsedOption: new ParsedOption('--final-long-arg', 'no-equals')));
-
+      expect(
+          clp.argDetails[3],
+          new ArgDetails(4,
+              parsedOption: new ParsedOption('--another-long-arg', 'stuff')));
+      expect(
+          clp.argDetails[4],
+          new ArgDetails(6,
+              parsedOption: new ParsedOption('--final-long-arg', 'no-equals')));
     });
   });
 

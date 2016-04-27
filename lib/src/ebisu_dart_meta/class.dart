@@ -558,7 +558,7 @@ class Class extends Object with CustomCodeBlock, Entity {
       f(_ctors.putIfAbsent(ctorName, () => new Ctor())..name = ctorName);
 
   tagCtor(String ctorName, String tag) =>
-    withCtor(ctorName, ((ctor) => ctor.tag = tag));
+      withCtor(ctorName, ((ctor) => ctor.tag = tag));
 
   /// *Deprecated* If true adds '..ctors[''] to all members (i.e. ensures
   /// generation of empty ctor with all members passed as arguments)
