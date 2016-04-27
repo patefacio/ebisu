@@ -187,17 +187,17 @@ class Member extends Object with Entity {
   /// If provided the member will be initialized with value.
   /// The type of the member can be inferred from the type
   /// of this value.  Member type is defaulted to String. If
-  /// the type of classInit is a String and type of the
+  /// the type of init is a String and type of the
   /// member is String, the text will be quoted if it is not
-  /// already. If the type of classInit is other than string
+  /// already. If the type of init is other than string
   /// and the type of member is String (which is default)
   /// the type of member will be set to
-  /// classInit.runtimeType.
+  /// init.runtimeType.
   set init(dynamic init) => _init = init;
 
   /// If provided the member will be initialized to this text in generated
   /// ctor initializers. If this is null defaulted ctor args will be
-  /// initialized to [classInit].
+  /// initialized to [init].
   set ctorInit(String ctorInit) => _ctorInit = ctorInit;
 
   /// List of ctor names to include this member in
@@ -256,14 +256,14 @@ class Member extends Object with Entity {
   @deprecated
   set classInit(classInit) => _init = classInit;
 
-  get ctorInit => _ctorInit ?? classInit;
+  get ctorInit => _ctorInit ?? init;
 
   get init => _init;
 
   onOwnershipEstablished() {
     _name = id.camel;
-    if (type == 'String' && (classInit != null) && (classInit is! String)) {
-      type = '${classInit.runtimeType}';
+    if (type == 'String' && (init != null) && (init is! String)) {
+      type = '${init.runtimeType}';
       if (type.contains('LinkedHashMap')) type = 'Map';
     }
     _varName = isPublic ? _name : "_$_name";
@@ -278,7 +278,7 @@ class Member extends Object with Entity {
   String get finalDecl => isFinal ? 'final ' : '';
   String get observableDecl => isObservable ? '@observable ' : '';
   String get staticDecl => isStatic ? 'static ' : '';
-  bool get _ignoreClassInit =>
+  bool get _ignoreinit =>
       (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
       (owner as Class).hasCourtesyCtor &&
       !isJsonTransient;
@@ -294,11 +294,9 @@ class Member extends Object with Entity {
   /// returns the declaration
   String get decl => brCompact([
         annotated,
-        (_ignoreClassInit || classInit == null)
+        (_ignoreinit || init == null)
             ? ';'
-            : (type == 'String')
-                ? ' = ${smartQuote(classInit)};'
-                : ' = $classInit;'
+            : (type == 'String') ? ' = ${smartQuote(init)};' : ' = $init;'
       ]);
 
   String get publicCode => brCompact([
@@ -1147,7 +1145,7 @@ ${indentBlock(fromJsonMapImpl())}'''
         ..members = (members
             .map((m) => member(m.id.snake)
               ..type = m.type
-              ..classInit = m.classInit)
+              ..init = m.init)
             .toList())
         ..bottomInjection = '''
 ${className} buildInstance() => new ${className}(
