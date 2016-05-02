@@ -639,12 +639,12 @@ member('foo')..init = [1,2,3]
 If provided the member will be initialized with value.
 The type of the member can be inferred from the type
 of this value.  Member type is defaulted to String. If
-the type of classInit is a String and type of the
+the type of init is a String and type of the
 member is String, the text will be quoted if it is not
-already. If the type of classInit is other than string
+already. If the type of init is other than string
 and the type of member is String (which is default)
 the type of member will be set to
-classInit.runtimeType.
+init.runtimeType.
 
 '''
                 ..access = WO,
@@ -652,7 +652,7 @@ classInit.runtimeType.
                 ..doc = '''
 If provided the member will be initialized to this text in generated
 ctor initializers. If this is null defaulted ctor args will be
-initialized to [classInit].
+initialized to [init].
 '''
                 ..access = WO,
               member('ctors')
