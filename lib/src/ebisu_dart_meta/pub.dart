@@ -165,6 +165,7 @@ class PubSpec extends Object with Entity {
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];
   List<PubTransformer> pubTransformers = [];
+  String sdk = '>=1.8.2 <2.0.0';
 
   // custom <class PubSpec>
 
@@ -219,6 +220,7 @@ class PubSpec extends Object with Entity {
         _author,
         _homepage,
         _description,
+        _sdk,
         _dependencies,
         _devDependencies,
         _dependencyOverrides,
@@ -226,6 +228,10 @@ class PubSpec extends Object with Entity {
         _custom,
       ].where((line) => line != '').join('\n');
 
+  get _sdk => '''
+environment:
+  sdk: ${smartQuote(sdk)}
+''';
   get _name => 'name: $name';
   get _version => 'version: $version';
   get _author => author != null ? 'author: $author' : '';

@@ -36,7 +36,7 @@ generate() {
     ..doc =
         "True if $owner is public.\nCode generation support will prefix private variables appropriately"
     ..type = 'bool'
-    ..classInit = 'true';
+    ..init = 'true';
 
   Member id_member(String owner) => member('id')
     ..doc = "Id for this $owner"
@@ -132,41 +132,41 @@ classes with JSON support.
               member('scripts')
                 ..doc = 'Scripts in the system'
                 ..type = 'List<Script>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('app')
                 ..doc = 'App for this package'
                 ..type = 'App',
               member('test_libraries')
                 ..doc = 'List of test libraries of this app'
                 ..type = 'List<Library>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('library_groups')
                 ..doc = 'LibraryGroups in the system'
                 ..type = 'List<LibraryGroup>'
-                ..classInit = [],
+                ..init = [],
               member('libraries')
                 ..doc = 'Libraries in the system'
                 ..type = 'List<Library>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('all_libraries')
                 ..doc = 'Regular and test libraries'
                 ..type = 'List<Library>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('pub_spec')
                 ..doc = 'Information for the pubspec'
                 ..type = 'PubSpec',
               member('jsonable_classes')
                 ..doc = 'Map of all classes with hasJsonSupport true'
                 ..type = 'Map<String,Object>'
-                ..classInit = '{}',
+                ..init = '{}',
               member('finalized')
                 ..doc = 'Set to true on finalize'
                 ..access = Access.RO
-                ..classInit = false,
+                ..init = false,
               member('generates_pub_spec')
                 ..doc = 'If true generate a pubspec.xml file'
                 ..type = 'bool'
-                ..classInit = 'true',
+                ..init = 'true',
               member('license')
                 ..doc = '''
 A string indicating the license.
@@ -178,7 +178,7 @@ text to include in the license file.
 ''',
               member('includes_readme')
                 ..doc = 'If true standard outline for readme provided'
-                ..classInit = false,
+                ..init = false,
               member('introduction')
                 ..doc =
                     'A brief introduction for this system, included in README.md',
@@ -188,21 +188,21 @@ text to include in the license file.
                 ..doc =
                     'List of todos included in the readme - If any present includesReadme assumed true'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('includes_hop')
                 ..doc = 'If true generates tool folder with hop_runner'
-                ..classInit = false,
+                ..init = false,
               member('include_generated_prologue')
                 ..doc = '''
 If true includes comment about code being generated.
 '''
-                ..classInit = false,
+                ..init = false,
               member('include_stack_trace')
                 ..doc = '''
 If true includes comment containing stack trace to help find the dart code that
 generated the source.
 '''
-                ..classInit = false,
+                ..init = false,
             ],
         ],
       part('app')
@@ -216,18 +216,18 @@ generated the source.
               member('classes')
                 ..doc = 'Classes defined in this app'
                 ..type = 'List<Class>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('libraries')
                 ..doc = 'List of libraries of this app'
                 ..type = 'List<Library>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('variables')
                 ..doc = 'List of global variables for this library'
                 ..type = 'List<Variable>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('is_web_ui')
                 ..doc = 'If true this is a web ui app'
-                ..classInit = false,
+                ..init = false,
             ],
         ],
       part('benchmark')
@@ -239,7 +239,7 @@ generated the source.
               member('classes')
                 ..doc = 'Additional classes in the benchmark library'
                 ..type = 'List<Class>'
-                ..classInit = '[]',
+                ..init = '[]',
             ]
         ],
       part('drudge_support')
@@ -287,14 +287,14 @@ generated the source.
                 ..access = Access.RO,
               member('is_required')
                 ..doc = 'If true the argument is required'
-                ..classInit = false,
+                ..init = false,
               member('is_flag')
                 ..doc =
                     'If true this argument is a boolean flag (i.e. no option is required)'
-                ..classInit = false,
+                ..init = false,
               member('is_multiple')
                 ..doc = 'If true the argument may be specified mutiple times'
-                ..classInit = false,
+                ..init = false,
               member('defaults_to')
                 ..doc = 'Used to initialize the value in case not set'
                 ..type = 'dynamic'
@@ -302,7 +302,7 @@ generated the source.
               member('allowed')
                 ..doc = 'A list of allowed values to choose from'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('position')
                 ..doc =
                     'If not null - holds the position of a positional (i.e. unnamed) argument'
@@ -319,7 +319,7 @@ generated the source.
               member('imports')
                 ..doc = 'List of imports to be included by this script'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('script_path')
                 ..doc = '''
 Where to create the script.
@@ -329,25 +329,25 @@ If not present will be determined by parent [System] rootPath
               member('args')
                 ..doc = 'Arguments for this script'
                 ..type = 'List<ScriptArg>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('no_log_level')
                 ..doc = '''
 By default a *log-level* argument will be included in the script.
 Set this to false to prevent this
 '''
-                ..classInit = false,
+                ..init = false,
               member('is_async')
                 ..doc = 'If true makes script main async'
-                ..classInit = false,
+                ..init = false,
               member('enums')
                 ..doc = 'Enums for this script'
                 ..type = 'List<Enum>'
-                ..classInit = [],
+                ..init = [],
               member('classes')
                 ..doc =
                     'Classes to support this script, included directly in script above main'
                 ..type = 'List<Class>'
-                ..classInit = [],
+                ..init = [],
               member('basename')
                 ..doc = 'Provide user ability to override basename of script',
             ],
@@ -362,7 +362,7 @@ Set this to false to prevent this
                 ..doc = 'Name of dependency',
               member('version')
                 ..doc = 'Required version for this dependency'
-                ..classInit = 'any',
+                ..init = 'any',
               member('path')
                 ..doc =
                     "Path to package, infers package type for git (git:...), hosted (http:...), path ",
@@ -397,7 +397,7 @@ Set this to false to prevent this
               id_member('pub spec')..isFinal = false,
               member('version')
                 ..doc = 'Version for this package'
-                ..classInit = '0.0.1',
+                ..init = '0.0.1',
               member('name')
                 ..doc = '''
 Name of the project described in spec.
@@ -407,13 +407,15 @@ If not set, id of system is used.
               member('homepage')..doc = "Homepage of the pub package",
               member('dependencies')
                 ..type = 'List<PubDependency>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('dev_dependencies')
                 ..type = 'List<PubDependency>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('pub_transformers')
                 ..type = 'List<PubTransformer>'
-                ..classInit = '[]',
+                ..init = '[]',
+              member('sdk')
+              ..init = '>=1.8.2 <2.0.0',
             ],
         ],
       part('enum')
@@ -467,13 +469,13 @@ Prints:
                 ..doc = "List of id's naming the values"
                 ..type = 'List<EnumValue>'
                 ..access = RO
-                ..classInit = '[]',
+                ..init = '[]',
               member('has_json_support')
                 ..doc = "If true, generate toJson/fromJson on wrapper class"
-                ..classInit = false,
+                ..init = false,
               member('has_rand_json')
                 ..doc = "If true, generate randJson"
-                ..classInit = false,
+                ..init = false,
               member('name')
                 ..doc = "Name of the enum class generated sans access prefix"
                 ..access = Access.RO,
@@ -483,15 +485,15 @@ Prints:
               member('has_custom')
                 ..doc =
                     'If true includes custom block for additional user supplied ctor code'
-                ..classInit = false,
+                ..init = false,
               member('has_library_scoped_values')
                 ..doc =
                     'If true scopes the enum values to library by assigning to var outside class'
-                ..classInit = false,
+                ..init = false,
               member('is_snake_string')
                 ..doc =
                     'If true string value for each entry is snake case (default is shout)'
-                ..classInit = false,
+                ..init = false,
               member('requires_class')
                 ..doc = '''
 Before true enum support enums were emulated with a class containing static
@@ -541,13 +543,13 @@ member('foo')..init = [1,2,3]
                 ..type = 'dynamic',
               member('is_final')
                 ..doc = 'True if the variable is final'
-                ..classInit = false,
+                ..init = false,
               member('is_const')
                 ..doc = 'True if the variable is const'
-                ..classInit = false,
+                ..init = false,
               member('is_static')
                 ..doc = 'True if the variable is static'
-                ..classInit = false,
+                ..init = false,
               member('name')
                 ..doc = "Name of the enum class generated sans access prefix"
                 ..access = Access.RO,
@@ -596,27 +598,27 @@ member('foo')..init = [1,2,3]
               member('members')
                 ..doc = 'List of members initialized in this ctor'
                 ..type = 'List<Member>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('opt_members')
                 ..doc =
                     'List of optional members initialized in this ctor (i.e. those in [])'
                 ..type = 'List<Member>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('named_members')
                 ..doc =
                     'List of optional members initialized in this ctor (i.e. those in {})'
                 ..type = 'List<Member>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('has_custom')
                 ..doc =
                     'If true includes custom block for additional user supplied ctor code'
-                ..classInit = false,
+                ..init = false,
               member('is_const')
                 ..doc = 'True if the variable is const'
-                ..classInit = false,
+                ..init = false,
               member('calls_init')
                 ..doc = 'If true implementation is `=> _init()`'
-                ..classInit = false,
+                ..init = false,
             ],
           class_('member')
             ..mixins = ['Entity']
@@ -626,7 +628,7 @@ member('foo')..init = [1,2,3]
               member('type')
                 ..doc = 'Type of the member'
                 ..type = 'String'
-                ..classInit = 'String',
+                ..init = 'String',
               member('access')
                 ..doc = 'Access level supported for this member'
                 ..type = 'Access'
@@ -656,43 +658,43 @@ initialized to [classInit].
               member('ctors')
                 ..doc = "List of ctor names to include this member in"
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('ctors_opt')
                 ..doc =
                     "List of ctor names to include this member in as optional parameter"
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('ctors_named')
                 ..doc =
                     "List of ctor names to include this member in as named optional parameter"
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('is_final')
                 ..doc = 'True if the member is final'
-                ..classInit = false,
+                ..init = false,
               member('is_const')
                 ..doc = 'True if the member is const'
-                ..classInit = false,
+                ..init = false,
               member('is_static')
                 ..doc = 'True if the member is static'
-                ..classInit = false,
+                ..init = false,
               member('is_json_transient')
                 ..doc =
                     'True if the member should not be serialized if the parent class has hasJsonSupport'
-                ..classInit = false,
+                ..init = false,
               member('is_observable')
                 ..doc = 'If true annotated with observable'
-                ..classInit = false,
+                ..init = false,
               member('is_in_comparable')
                 ..doc =
                     'If true and member is in class that is comparable, it will be included in compareTo method'
                 ..type = 'bool'
-                ..classInit = 'true',
+                ..init = 'true',
               member('is_in_hash_code')
                 ..doc =
                     'If true and class hashCode this member will be included in the hashCode'
                 ..type = 'bool'
-                ..classInit = 'true',
+                ..init = 'true',
               member('name')
                 ..doc =
                     "Name of variable for the member, excluding access prefix (i.e. no '_')"
@@ -818,11 +820,11 @@ Prints:
               member('mixins')
                 ..doc = 'List of mixins'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('annotations')
                 ..doc = 'List of class annotations'
                 ..type = 'List<Annotation>'
-                ..classInit = [],
+                ..init = [],
               member('extend')
                 ..doc =
                     'Any extends (NOTE extend not extends) declaration for the class - conflicts with mixin'
@@ -830,7 +832,7 @@ Prints:
               member('implement')
                 ..doc = 'Any implements (NOTE implement not implements)'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('default_member_access')
                 ..doc = 'Default access for members'
                 ..access = WO
@@ -838,35 +840,35 @@ Prints:
               member('members')
                 ..doc = 'List of members of this class'
                 ..type = 'List<Member>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('ctor_customs')
                 ..doc = 'List of ctors requiring custom block'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('ctor_const')
                 ..doc = 'List of ctors that should be const'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('ctors')
                 ..doc = 'List of ctors of this class'
                 ..type = 'Map<String,Ctor>'
-                ..classInit = '{}'
+                ..init = '{}'
                 ..access = Access.RO,
               member('is_abstract')
                 ..doc = "If true, class is abstract"
-                ..classInit = false,
+                ..init = false,
               member('has_json_support')
                 ..doc =
                     "If true, generate toJson/fromJson on all members that are not isJsonTransient"
                 ..access = WO
-                ..classInit = false,
+                ..init = false,
               member('has_rand_json')
                 ..doc = "If true, generate randJson function"
-                ..classInit = false,
+                ..init = false,
               member('has_op_equals')
                 ..doc = "If true, generate operator== using all members"
                 ..access = WO
-                ..classInit = false,
+                ..init = false,
               member('has_untyped_op_equals')
                 ..doc = '''
 If true, generate `operator==` using all members.
@@ -879,14 +881,14 @@ Note: Since this only provides different *specialized* implementation for
 `operator==` hasOpEquals returns true if either [hasOpEquals] or
 `_hasUntypedOpEquals` is true.
 '''
-                ..classInit = false,
+                ..init = false,
               member('is_comparable')
                 ..doc = "If true, implements comparable"
-                ..classInit = false,
+                ..init = false,
               member('is_polymorphic_comparable')
                 ..doc =
                     "If true, implements comparable with runtimeType check followed by rest"
-                ..classInit = false,
+                ..init = false,
               member('default_ctor_style')
                 ..doc = """
 Specifies style of default ctor.
@@ -896,14 +898,14 @@ null implies no generated default ctor
                 ..type = 'DefaultCtorStyle',
               member('all_members_final')
                 ..doc = "If true adds sets all members to final"
-                ..classInit = false,
+                ..init = false,
               member('has_default_ctor')
                 ..doc = "If true adds empty default ctor"
-                ..classInit = false,
+                ..init = false,
               member('is_immutable')
                 ..doc =
                     "If true sets allMembersFinal and hasDefaultCtor to true"
-                ..classInit = false,
+                ..init = false,
               member('has_ctor_sans_new')
                 ..doc =
                     "If true creates library functions to construct forwarding to ctors"
@@ -911,7 +913,7 @@ null implies no generated default ctor
                 ..access = WO,
               member('is_copyable')
                 ..doc = "If true includes a copy function"
-                ..classInit = false,
+                ..init = false,
               member('name')
                 ..doc =
                     "Name of the class - sans any access prefix (i.e. no '_')"
@@ -925,18 +927,18 @@ null implies no generated default ctor
                 ..doc = 'Additional code included in the class near the bottom',
               member('has_builder')
                 ..doc = r"If true includes a ${className}Builder class"
-                ..classInit = false,
+                ..init = false,
               member('has_json_to_string')
                 ..doc =
                     "If true includes a toString() => prettyJsonMap(toJson())"
-                ..classInit = false,
+                ..init = false,
               member('cache_hash')
                 ..doc =
                     "If true adds transient hash code and caches the has on first call"
-                ..classInit = false,
+                ..init = false,
               member('ctor_calls_init')
                 ..doc = 'If true hasCourtesyCtor is `=> _init()`'
-                ..classInit = false,
+                ..init = false,
               member('json_key_format')
                 ..doc = 'When serializing json, how to format the keys'
                 ..type = 'JsonKeyFormat',
@@ -963,11 +965,11 @@ It may be the best way to expose that functionality is a single library.
               member('external_libraries')
                 ..doc = 'Libraries exposed to the client'
                 ..type = 'List<Library>'
-                ..classInit = [],
+                ..init = [],
               member('internal_libraries')
                 ..doc = 'Implementation libraries'
                 ..type = 'List<Library>'
-                ..classInit = [],
+                ..init = [],
             ],
           class_('library')
             ..mixins = ['CustomCodeBlock', 'Entity']
@@ -977,11 +979,11 @@ It may be the best way to expose that functionality is a single library.
               member('imports')
                 ..doc = 'List of imports to be included by this library'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('exports')
                 ..doc = 'List of exports to be included by this library'
                 ..type = 'List<String>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('library_group')
                 ..doc = r'''
 If not null this library is generated in *lib/src/${internalGroup}* folder.
@@ -993,23 +995,23 @@ This is an intended as a replacement for *parts*.
               member('parts')
                 ..doc = 'List of parts in this library'
                 ..type = 'List<Part>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('variables')
                 ..doc = 'List of global variables for this library'
                 ..type = 'List<Variable>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('classes')
                 ..doc = 'Classes defined in this library'
                 ..type = 'List<Class>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('benchmarks')
                 ..doc = 'Named benchmarks associated with this library'
                 ..type = 'List<Benchmark>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('enums')
                 ..doc = 'Enums defined in this library'
                 ..type = 'List<Enum>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('name')
                 ..doc = "Name of the library file"
                 ..access = Access.RO,
@@ -1019,12 +1021,12 @@ This is an intended as a replacement for *parts*.
                 ..access = Access.RO,
               member('includes_logger')
                 ..doc = 'If true includes logging support and a _logger'
-                ..classInit = false,
+                ..init = false,
               member('is_test')
                 ..doc =
                     'If true this library is a test library to appear in test folder'
                 ..access = Access.RO
-                ..classInit = false,
+                ..init = false,
               member('main_custom_block')
                 ..doc = 'Code block inside main for custom code'
                 ..type = 'CodeBlock'
@@ -1041,10 +1043,10 @@ This is an intended as a replacement for *parts*.
                 ..doc =
                     "If true classes will get library functions to construct forwarding to ctors"
                 ..type = 'bool'
-                ..classInit = false,
+                ..init = false,
               member('is_private')
                 ..doc = 'If true the library is placed under .../lib/src'
-                ..classInit = false,
+                ..init = false,
               member('include_generated_prologue')
                 ..doc = '''
 If true includes comment about code being generated.
@@ -1070,11 +1072,11 @@ generated the source.
               member('classes')
                 ..doc = 'Classes defined in this part of the library'
                 ..type = 'List<Class>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('enums')
                 ..doc = 'Enums defined in this part of the library'
                 ..type = 'List<Enum>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('name')
                 ..doc = "Name of the part - for use in naming the part file"
                 ..access = Access.RO,
@@ -1084,7 +1086,7 @@ generated the source.
               member('variables')
                 ..doc = 'List of global variables in this part'
                 ..type = 'List<Variable>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('default_member_access')
                 ..doc = 'Default access for members'
                 ..access = WO
@@ -1151,14 +1153,14 @@ generated the source.
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
-          class_('base')..members = [member('ownership_count')..classInit = 0,],
+          class_('base')..members = [member('ownership_count')..init = 0,],
           class_('root_entity')
             ..extend = 'Base'
             ..mixins = ['Entity']
             ..members = [
               member('children')
                 ..type = 'List<ChildEntity>'
-                ..classInit = []
+                ..init = []
             ],
           class_('child_entity')
             ..extend = 'Base'
@@ -1166,7 +1168,7 @@ generated the source.
             ..members = [
               member('grand_children')
                 ..type = 'List<GrandchildEntity>'
-                ..classInit = []
+                ..init = []
             ],
           class_('grandchild_entity')
             ..extend = 'Base'
@@ -1174,7 +1176,7 @@ generated the source.
             ..members = [
               member('great_grand_children')
                 ..type = 'List<GreatGrandchildEntity>'
-                ..classInit = []
+                ..init = []
             ],
           class_('great_grandchild_entity')
             ..extend = 'Base'
@@ -1239,19 +1241,19 @@ other languages like D) using a fairly declarative aproach.
               member('languages')
                 ..doc = 'Languages the project has ebisu scripts for'
                 ..type = 'List<EbisuLanguage>'
-                ..classInit = [],
+                ..init = [],
               member('codegen_scripts')
                 ..doc = 'Scripts found in the codegen directory'
                 ..type = 'List<String>'
-                ..classInit = [],
+                ..init = [],
               member('bin_scripts')
                 ..doc = 'Scripts found in the bin directory'
                 ..type = 'List<String>'
-                ..classInit = [],
+                ..init = [],
               member('test_scripts')
                 ..doc = 'Scripts found in the test directory'
                 ..type = 'List<String>'
-                ..classInit = [],
+                ..init = [],
               member('repo_path')
                 ..doc = 'Path to repo - should be same as project path',
               member('project_path')..doc = 'Path to project within repo',
@@ -1413,7 +1415,7 @@ The top level entity and has the value *null* since it has no owner.
                     ..doc = 'Path from root to this entity'
                     ..type = 'List<Entity>'
                     ..access = RO
-                    ..classInit = [],
+                    ..init = [],
                 ],
 
               ///////////////////
@@ -1441,7 +1443,7 @@ the [CodeBlock]).
                     ..doc = 'A custom code block for a class'
                     ..type = 'CodeBlock'
                     ..access = WO
-                    ..classInit = 'new CodeBlock(null)',
+                    ..init = 'new CodeBlock(null)',
                 ],
               class_('code_block')
                 ..doc = r'''
@@ -1522,13 +1524,13 @@ would give:
                   member('snippets')
                     ..doc = 'Effecitively a hook to throw in generated text'
                     ..type = 'List<String>'
-                    ..classInit = [],
+                    ..init = [],
                   member('has_snippets_first')
                     ..doc = '''
 Determines whether the injected code snippets come before the
 protection block or after
 '''
-                    ..classInit = false,
+                    ..init = false,
                 ],
               class_('script_code_block')
                 ..doc =
@@ -1617,4 +1619,3 @@ ${indentBlock(brCompact(nonGeneratedFiles))}
 ''');
 }
 // end <ebisuEbisuDart global>
-
