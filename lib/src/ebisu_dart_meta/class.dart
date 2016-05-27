@@ -51,6 +51,9 @@ class Ctor extends Object with CustomCodeBlock {
   /// Parms that come after all member parms
   List<String> backParms = [];
 
+  /// Arguments to super ctor invocation
+  List<String> superArgs = [];
+
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
 
@@ -108,7 +111,8 @@ class Ctor extends Object with CustomCodeBlock {
         '(',
         concat([frontParms, members.map((m) => 'this.${m.varName}'), backParms])
             .join(', '),
-        ')'
+        ')',
+        superArgs.isNotEmpty ? ': super(${superArgs.join(", ")})' : null,
       ]);
 
   get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
@@ -126,10 +130,19 @@ class Ctor extends Object with CustomCodeBlock {
     return m.ctorInit == null ? 'this.${m.varName}' : m.name;
   }
 
+  get _superArgsAndAssignments {
+    var memberAssignments = _assignMemberVars;
+    List result = [];
+    if (superArgs.isNotEmpty) {
+      result.add('super(${superArgs.join(", ")})');
+    }
+    if (memberAssignments.isNotEmpty) {
+      result.add(memberAssignments);
+    }
+    return result.isEmpty ? '' : ':' + result.join(', ');
+  }
 
   get _optMemberSig {
-    var memberAssignments = _assignMemberVars;
-
     return brCompact([
       '(',
       concat([
@@ -146,10 +159,7 @@ class Ctor extends Object with CustomCodeBlock {
             '[',
 
             /// opt parms plus back parms
-            concat([
-              optMembers.map(_memberParm),
-              backParms
-            ]).join(','),
+            concat([optMembers.map(_memberParm), backParms]).join(','),
 
             /// close optionals
             ']'
@@ -157,14 +167,11 @@ class Ctor extends Object with CustomCodeBlock {
         ]
       ]).join(', '),
       ')',
-      memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
+      _superArgsAndAssignments
     ]);
-
   }
 
   get _namedMemberSig {
-    var memberAssignments = _assignMemberVars;
-
     return brCompact([
       '(',
       concat([
@@ -192,10 +199,9 @@ class Ctor extends Object with CustomCodeBlock {
         ]
       ]).join(', '),
       ')',
-      memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
+      _superArgsAndAssignments
     ]);
   }
-
 
   get _ctorSig => brCompact([
         _hasOptMembers

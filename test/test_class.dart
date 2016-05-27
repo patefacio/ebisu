@@ -108,8 +108,7 @@ class A {}
         true);
 
     expect(
-        darkMatter((makeClassWithCtorParms()
-                  ..defaultCtorStyle = namedParms)
+        darkMatter((makeClassWithCtorParms()..defaultCtorStyle = namedParms)
                 .definition)
             .contains(darkMatter('''
   DefCtor(int a, String b, { m1, m2, int y, String z })
@@ -117,6 +116,17 @@ class A {}
 ''')),
         true);
 
+    /// test with superArgs
+    expect(
+        darkMatter((makeClassWithCtorParms()
+                  ..defaultCtorStyle = namedParms
+                  ..withDefaultCtor((ctor) => ctor..superArgs = ['m1', 'm2']))
+                .definition)
+            .contains(darkMatter('''
+  DefCtor(int a, String b, { m1, m2, int y, String z })
+  : super(m1, m2), m1 = m1 ?? 3, _m2 = m2
+''')),
+        true);
   });
 
   test('ctor sans new', () {
