@@ -133,7 +133,7 @@ class A {}
     makeClass() => class_('some_class')
       ..hasCtorSansNew = true
       ..members = [
-        member('a')..classInit = 3,
+        member('a')..init = 3,
         member('b')
           ..access = RO
           ..ctors = ['']
@@ -141,6 +141,9 @@ class A {}
 
     expect(
         darkMatter((makeClass()
+              ..withDefaultCtor((ctor) => ctor
+                ..frontParms = ['int a']
+                ..backParms = ['String z'])
               ..members.add(member('c')
                 ..type = 'Point'
                 ..init = 'new Point()'
@@ -148,7 +151,7 @@ class A {}
             .definition),
         darkMatter('''
 class SomeClass {
-  SomeClass(this._b, [c]) : c = c ?? new Point();
+  SomeClass(int a, this._b, [c, String z]) : c = c ?? new Point();
 
   int a = 3;
   String get b => _b;
@@ -161,7 +164,7 @@ class SomeClass {
 }
 
 /// Create SomeClass without new, for more declarative construction
-SomeClass someClass(String b, [Point c]) => new SomeClass(b, c);
+SomeClass someClass(int a, String b, [Point c, String z]) => new SomeClass(a, b, c, z);
 '''));
 
     expect(

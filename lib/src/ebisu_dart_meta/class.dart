@@ -82,28 +82,38 @@ class Ctor extends Object with CustomCodeBlock {
           : new Id('${classId.snake}_${idFromString(name).snake}'));
 
   get _optionalMembersDecl => _hasOptMembers
-      ? brCompact(
-          ['[', optMembers.map((m) => m.annotatedPublic).join(','), ']',])
+      ? brCompact([
+          '[',
+          concat([optMembers.map((m) => m.annotatedPublic), backParms])
+              .join(','),
+          ']',
+        ])
       : '';
 
   get _namedMembersDecl => _hasNamedMembers
-      ? brCompact(
-          ['{', namedMembers.map((m) => m.annotatedPublic).join(','), '}',])
+      ? brCompact([
+          '{',
+          concat([namedMembers.map((m) => m.annotatedPublic), backParms])
+              .join(','),
+          '}',
+        ])
       : '';
 
   String get ctorSansNew => brCompact([
         '/// Create $className without new, for more declarative construction',
         '$className ${classId.camel} (',
         [
-          members.map((m) => m.annotatedPublic).join(','),
+          concat([frontParms, members.map((m) => m.annotatedPublic)]).join(','),
           _optionalMembersDecl,
           _namedMembersDecl,
         ].where((part) => part.isNotEmpty).join(','),
         ') => new $qualifiedName(',
-        concat([members, optMembers, namedMembers])
-            .map((m) =>
-                namedMembers.contains(m) ? '${m.name}:${m.name}' : m.name)
-            .join(', '),
+        concat([
+          frontParms.map(_parmArgName),
+          concat([members, optMembers, namedMembers]).map(
+              (m) => namedMembers.contains(m) ? '${m.name}:${m.name}' : m.name),
+          backParms.map(_parmArgName),
+        ]).join(', '),
         ');'
       ]);
 
@@ -1248,5 +1258,8 @@ Access _ebisuDefaultMemberAccess = Access.RW;
 Access get ebisuDefaultMemberAccess => _ebisuDefaultMemberAccess;
 set ebisuDefaultMemberAccess(Access access) =>
     _ebisuDefaultMemberAccess = access;
+
+final _ws = new RegExp(r'\s+');
+_parmArgName(String s) => s.split(_ws).last;
 
 // end <part class>
