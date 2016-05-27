@@ -45,6 +45,12 @@ class Ctor extends Object with CustomCodeBlock {
   /// List of optional members initialized in this ctor (i.e. those in {})
   List<Member> namedMembers = [];
 
+  /// Parms that come before member parms
+  List<String> frontParms = [];
+
+  /// Parms that come after all member parms
+  List<String> backParms = [];
+
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
 
@@ -98,8 +104,12 @@ class Ctor extends Object with CustomCodeBlock {
         ');'
       ]);
 
-  get _memberSig =>
-      brCompact(['(', members.map((m) => 'this.${m.varName}').join(','), ')']);
+  get _memberSig => brCompact([
+        '(',
+        concat([frontParms, members.map((m) => 'this.${m.varName}'), backParms])
+            .join(', '),
+        ')'
+      ]);
 
   get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
       .where((m) =>
@@ -116,18 +126,40 @@ class Ctor extends Object with CustomCodeBlock {
     return m.ctorInit == null ? 'this.${m.varName}' : m.name;
   }
 
+
   get _optMemberSig {
     var memberAssignments = _assignMemberVars;
 
     return brCompact([
       '(',
-      members.map(_memberParm).join(','),
-      members.isNotEmpty ? ',' : '',
-      '[',
-      optMembers.map(_memberParm).join(','),
-      '])',
+      concat([
+        /// include front parms
+        frontParms,
+
+        /// include regular members
+        members.map(_memberParm),
+
+        /// include optional members[
+        [
+          brCompact([
+            /// open optionals
+            '[',
+
+            /// opt parms plus back parms
+            concat([
+              optMembers.map(_memberParm),
+              backParms
+            ]).join(','),
+
+            /// close optionals
+            ']'
+          ])
+        ]
+      ]).join(', '),
+      ')',
       memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
     ]);
+
   }
 
   get _namedMemberSig {
@@ -135,21 +167,40 @@ class Ctor extends Object with CustomCodeBlock {
 
     return brCompact([
       '(',
-      members.map(_memberParm).join(','),
-      members.isNotEmpty ? ',' : '',
-      '{',
-      namedMembers.map((m) => !m.isPublic ? m.name : _memberParm(m)).join(','),
-      '})',
+      concat([
+        /// include front parms
+        frontParms,
+
+        /// include regular members
+        members.map(_memberParm),
+
+        /// include optional members[
+        [
+          brCompact([
+            /// open named
+            '{',
+
+            /// named parms plus back parms
+            concat([
+              namedMembers.map((m) => !m.isPublic ? m.name : _memberParm(m)),
+              backParms
+            ]).join(','),
+
+            /// close named
+            '}'
+          ])
+        ]
+      ]).join(', '),
+      ')',
       memberAssignments.isNotEmpty ? ': $memberAssignments ' : ''
     ]);
   }
 
+
   get _ctorSig => brCompact([
         _hasOptMembers
             ? _optMemberSig
-            : _hasNamedMembers
-                ? _namedMemberSig
-                : _hasMembers ? _memberSig : '()',
+            : _hasNamedMembers ? _namedMemberSig : _memberSig,
       ]);
 
   get hasContent => hasCustom || super.hasContent;
@@ -554,6 +605,8 @@ class Class extends Object with CustomCodeBlock, Entity {
 
   withCtor(ctorName, f(Ctor ctor)) =>
       f(_ctors.putIfAbsent(ctorName, () => new Ctor())..name = ctorName);
+
+  withDefaultCtor(f(Ctor ctor)) => withCtor('', f);
 
   tagCtor(String ctorName, String tag) =>
       withCtor(ctorName, ((ctor) => ctor.tag = tag));

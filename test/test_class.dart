@@ -81,6 +81,42 @@ class A {}
         darkMatter((makeClass()..defaultCtorStyle = positionalParms).definition)
             .contains(darkMatter('DefCtor([ a, this._b ]) : a = a ?? 3;')),
         true);
+
+    // with front and back parms
+    makeClassWithCtorParms() => class_('def_ctor')
+      ..members = [member('m1')..classInit = 3, member('m2')..access = RO]
+      ..withDefaultCtor((Ctor ctor) => ctor
+        ..frontParms = ['int a', 'String b']
+        ..backParms = ['int y', 'String z']);
+
+    expect(
+        darkMatter((makeClassWithCtorParms()..defaultCtorStyle = requiredParms)
+                .definition)
+            .contains(darkMatter('''
+  DefCtor(int a, String b, this.m1, this._m2, int y, String z);
+''')),
+        true);
+
+    expect(
+        darkMatter((makeClassWithCtorParms()
+                  ..defaultCtorStyle = positionalParms)
+                .definition)
+            .contains(darkMatter('''
+  DefCtor(int a, String b, [ m1, this._m2, int y,String z ])
+  : m1 = m1 ?? 3
+''')),
+        true);
+
+    expect(
+        darkMatter((makeClassWithCtorParms()
+                  ..defaultCtorStyle = namedParms)
+                .definition)
+            .contains(darkMatter('''
+  DefCtor(int a, String b, { m1, m2, int y, String z })
+  : m1 = m1 ?? 3, _m2 = m2
+''')),
+        true);
+
   });
 
   test('ctor sans new', () {

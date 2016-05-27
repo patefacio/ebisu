@@ -5,6 +5,7 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
+
 // custom <additional imports>
 // end <additional imports>
 final _logger = new Logger('ebisuEbisuDart');
@@ -30,7 +31,8 @@ bool _enableLogging = false;
 generate() {
   // The following are commonly used members of the meta data classes
   Member doc_member(String owner) =>
-      member('doc')..doc = "Documentation for this $owner";
+      member('doc')
+        ..doc = "Documentation for this $owner";
 
   Member public_member(String owner) => member('is_public')
     ..doc =
@@ -119,7 +121,10 @@ classes with JSON support.
     ..parts = [
       part('annotation')
         ..classes = [
-          class_('annotation')..members = [member('text')..access = RO,]
+          class_('annotation')
+            ..members = [member('text')
+              ..access = RO,
+            ]
         ],
       part('system')
         ..classes = [
@@ -128,7 +133,8 @@ classes with JSON support.
             ..mixins = ['Entity']
             ..members = [
               non_final_id_member('system'),
-              member('root_path')..doc = 'Path to which code is generated',
+              member('root_path')
+                ..doc = 'Path to which code is generated',
               member('scripts')
                 ..doc = 'Scripts in the system'
                 ..type = 'List<Script>'
@@ -307,8 +313,10 @@ generated the source.
                 ..doc =
                     'If not null - holds the position of a positional (i.e. unnamed) argument'
                 ..type = 'int',
-              member('abbr')..doc = 'An abbreviation (single character)',
-              member('type')..type = 'ArgType',
+              member('abbr')
+                ..doc = 'An abbreviation (single character)',
+              member('type')
+                ..type = 'ArgType',
             ],
           class_('script')
             ..doc =
@@ -366,7 +374,8 @@ Set this to false to prevent this
               member('path')
                 ..doc =
                     "Path to package, infers package type for git (git:...), hosted (http:...), path ",
-              member('git_ref')..doc = "Git reference",
+              member('git_ref')
+                ..doc = "Git reference",
               member('type')
                 ..doc = "Type for the pub dependency"
                 ..isJsonTransient = true
@@ -394,7 +403,8 @@ Set this to false to prevent this
             ..mixins = ['Entity']
             ..members = [
               // In general id is final - but here we want json
-              id_member('pub spec')..isFinal = false,
+              id_member('pub spec')
+                ..isFinal = false,
               member('version')
                 ..doc = 'Version for this package'
                 ..init = '0.0.1',
@@ -403,8 +413,10 @@ Set this to false to prevent this
 Name of the project described in spec.
 If not set, id of system is used.
 ''',
-              member('author')..doc = "Author of the pub package",
-              member('homepage')..doc = "Homepage of the pub package",
+              member('author')
+                ..doc = "Author of the pub package",
+              member('homepage')
+                ..doc = "Homepage of the pub package",
               member('dependencies')
                 ..type = 'List<PubDependency>'
                 ..init = '[]',
@@ -415,7 +427,7 @@ If not set, id of system is used.
                 ..type = 'List<PubTransformer>'
                 ..init = '[]',
               member('sdk')
-              ..init = '>=1.8.2 <2.0.0',
+                ..init = '>=1.8.2 <2.0.0',
             ],
         ],
       part('enum')
@@ -463,7 +475,8 @@ Prints:
 '''
             ..mixins = ['Entity']
             ..members = [
-              id_member('enum')..ctors = [],
+              id_member('enum')
+                ..ctors = [],
               public_member('enum'),
               member('values')
                 ..doc = "List of id's naming the values"
@@ -591,7 +604,8 @@ member('foo')..init = [1,2,3]
             ..doc = 'Metadata associated with a constructor'
             ..mixins = ['CustomCodeBlock']
             ..members = [
-              member('class_name')..doc = "Name of the class of this ctor.",
+              member('class_name')
+                ..doc = "Name of the class of this ctor.",
               member('name')
                 ..doc =
                     "Name of the ctor. If 'default' generated as name of class, otherwise as CLASS.NAME()",
@@ -609,6 +623,14 @@ member('foo')..init = [1,2,3]
                     'List of optional members initialized in this ctor (i.e. those in {})'
                 ..type = 'List<Member>'
                 ..init = '[]',
+              member('front_parms')
+                ..doc = 'Parms that come before member parms'
+                ..type = 'List<String>'
+                ..init = [],
+              member('back_parms')
+                ..doc = 'Parms that come after all member parms'
+                ..type = 'List<String>'
+                ..init = [],
               member('has_custom')
                 ..doc =
                     'If true includes custom block for additional user supplied ctor code'
@@ -815,7 +837,8 @@ Prints:
 '''
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..members = [
-              id_member('Dart class')..ctors = [],
+              id_member('Dart class')
+                ..ctors = [],
               public_member('Dart class'),
               member('mixins')
                 ..doc = 'List of mixins'
@@ -961,7 +984,8 @@ dependencies, rather than the all-or-nothing nature of parts.
 It may be the best way to expose that functionality is a single library.
 '''
             ..members = [
-              id_member('library_group')..ctors = [],
+              id_member('library_group')
+                ..ctors = [],
               member('external_libraries')
                 ..doc = 'Libraries exposed to the client'
                 ..type = 'List<Library>'
@@ -975,7 +999,8 @@ It may be the best way to expose that functionality is a single library.
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..doc = "Defines a dart library - a collection of parts"
             ..members = [
-              id_member('library')..ctors = [],
+              id_member('library')
+                ..ctors = [],
               member('imports')
                 ..doc = 'List of imports to be included by this library'
                 ..type = 'List<String>'
@@ -1034,7 +1059,8 @@ This is an intended as a replacement for *parts*.
               member('path')
                 ..doc =
                     'Set desired if generating just a lib and not a package',
-              member('lib_main')..doc = 'If set the main function',
+              member('lib_main')
+                ..doc = 'If set the main function',
               member('default_member_access')
                 ..doc = 'Default access for members'
                 ..access = WO
@@ -1068,7 +1094,8 @@ generated the source.
             ..mixins = ['CustomCodeBlock', 'Entity']
             ..doc = "Defines a dart part - as in 'part of' source file"
             ..members = [
-              id_member('part')..ctors = [],
+              id_member('part')
+                ..ctors = [],
               member('classes')
                 ..doc = 'Classes defined in this part of the library'
                 ..type = 'List<Class>'
@@ -1141,19 +1168,29 @@ generated the source.
           'package:path/path.dart',
           'io',
         ]
-        ..variables = [variable('scratch_remove_me_folder')..isPublic = false]
+        ..variables = [variable('scratch_remove_me_folder')
+          ..isPublic = false
+        ]
         ..includesLogger = true,
       library('test_dart_meta')
         ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
-      library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
-      library('test_library')..imports = [],
-      library('test_enums')..imports = [],
-      library('test_class')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_annotation')..imports = ['package:ebisu/ebisu.dart'],
+      library('test_functions')
+        ..imports = ['package:ebisu/ebisu.dart',],
+      library('test_library')
+        ..imports = [],
+      library('test_enums')
+        ..imports = [],
+      library('test_class')
+        ..imports = ['package:ebisu/ebisu.dart'],
+      library('test_annotation')
+        ..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
-          class_('base')..members = [member('ownership_count')..init = 0,],
+          class_('base')
+            ..members = [member('ownership_count')
+              ..init = 0,
+            ],
           class_('root_entity')
             ..extend = 'Base'
             ..mixins = ['Entity']
@@ -1182,7 +1219,8 @@ generated the source.
             ..extend = 'Base'
             ..mixins = ['Entity'],
         ],
-      library('test_drudge_script')..imports = ['package:drudge/drudge.dart',],
+      library('test_drudge_script')
+        ..imports = ['package:drudge/drudge.dart',],
       library('test_code_generation')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
@@ -1199,7 +1237,8 @@ generated the source.
         ..imports = ['scratch_remove_me/lib/various_ctors.dart',],
       library('expect_multi_parts')
         ..imports = ['scratch_remove_me/lib/two_parts.dart',],
-      library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',],
+      library('test_ebisu_project')
+        ..imports = ['package:ebisu/ebisu.dart',],
       library('test_command_line_parser')
         ..imports = ['package:ebisu/ebisu.dart',],
     ]
@@ -1237,7 +1276,8 @@ other languages like D) using a fairly declarative aproach.
               member('id')
                 ..doc = 'Id of the package'
                 ..type = 'Id',
-              member('version')..doc = 'Pubspec version of the package',
+              member('version')
+                ..doc = 'Pubspec version of the package',
               member('languages')
                 ..doc = 'Languages the project has ebisu scripts for'
                 ..type = 'List<EbisuLanguage>'
@@ -1256,8 +1296,10 @@ other languages like D) using a fairly declarative aproach.
                 ..init = [],
               member('repo_path')
                 ..doc = 'Path to repo - should be same as project path',
-              member('project_path')..doc = 'Path to project within repo',
-              member('pubspec')..doc = 'The contents of the pubspec file',
+              member('project_path')
+                ..doc = 'Path to project within repo',
+              member('pubspec')
+                ..doc = 'The contents of the pubspec file',
             ]
         ],
       library('ebisu')
@@ -1352,7 +1394,8 @@ regenerating.
                     ..doc = 'List of related indices comprising the option'
                     ..type = 'List<int>'
                     ..init = [],
-                  member('parsed_option')..type = 'ParsedOption',
+                  member('parsed_option')
+                    ..type = 'ParsedOption',
                 ],
               class_('command_line_parser')
                 ..doc = '''
@@ -1361,7 +1404,8 @@ flags/options available, parses the command line and infers all options.
 '''
                 ..defaultMemberAccess = RO
                 ..members = [
-                  member('command_line')..doc = 'Command line to be parsed',
+                  member('command_line')
+                    ..doc = 'Command line to be parsed',
                   member('args')
                     ..doc = 'Args determined by whitespace'
                     ..type = 'List<String>'
@@ -1385,7 +1429,8 @@ flags/options available, parses the command line and infers all options.
             ..doc = 'Provides support for mixing in recursive design pattern'
             ..classes = [
               ///////////////////
-              class_('identifiable')..isAbstract = true,
+              class_('identifiable')
+                ..isAbstract = true,
               class_('entity')
                 ..isAbstract = true
                 ..implement = ['Identifiable']
@@ -1402,7 +1447,8 @@ Provides support for mixing in recursive design pattern among various
 These items support both a brief comment ([brief]) and a more
 descriptive comment [descr]
 ''',
-                  member('descr')..brief = 'Description of entity',
+                  member('descr')
+                    ..brief = 'Description of entity',
                   member('owner')
                     ..brief = 'Owner of this [Entity]'
                     ..doc = '''
