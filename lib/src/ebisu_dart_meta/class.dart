@@ -71,7 +71,6 @@ class Ctor extends Object with CustomCodeBlock {
       (name == 'default' || name == '') ? className : '${className}.${name}';
 
   get classId => idFromString(className);
-  get _hasMembers => members.isNotEmpty;
   get _hasOptMembers => optMembers.isNotEmpty;
   get _hasNamedMembers => namedMembers.isNotEmpty;
 
@@ -117,12 +116,16 @@ class Ctor extends Object with CustomCodeBlock {
         ');'
       ]);
 
+  get _badSuperArgs => 'superArgs must be List<String> or Map<String,String>';
+
+  get _superArgs => 'super(${(superArgs is List? superArgs : superArgs is Map? superArgs.keys : throw _badSuperArgs).join(", ")})';
+
   get _memberSig => brCompact([
         '(',
         concat([frontParms, members.map((m) => 'this.${m.varName}'), backParms])
             .join(', '),
         ')',
-        superArgs.isNotEmpty ? ': super(${superArgs.join(", ")})' : null,
+        superArgs.isNotEmpty ? ': $_superArgs' : null,
       ]);
 
   get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
@@ -143,7 +146,7 @@ class Ctor extends Object with CustomCodeBlock {
   get _superArgsTransformed =>
       superArgs is List? 'super(${superArgs.join(", ")})' :
       superArgs is Map? 'super(${superArgs.values.join(", ")})' :
-      throw 'superArgs must be List<String> or Map<String,String>';
+      throw _badSuperArgs;
 
   get _superArgsAndAssignments {
     var memberAssignments = _assignMemberVars;
@@ -316,7 +319,7 @@ class Member extends Object with Entity {
   bool get isPublic => access == Access.RW;
 
   get access =>
-      _access ?? owner?.defaultMemberAccess ?? ebisuDefaultMemberAccess;
+      _access ?? (owner as Class)?.defaultMemberAccess ?? ebisuDefaultMemberAccess;
 
   bool get isMap => isMapType(type);
   bool get isList => isListType(type);
@@ -352,7 +355,7 @@ class Member extends Object with Entity {
   String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreinit =>
       (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
-      (owner as Class).hasCourtesyCtor &&
+      (owner as Class).defaultCtorStyle != null &&
       !isJsonTransient;
 
   /// returns the member annotated, suitable for decl or parm in function
@@ -678,7 +681,7 @@ class Class extends Object with CustomCodeBlock, Entity {
       hasOpEquals && members.any((m) => m.isMapOrList);
 
   String get jsonCtor {
-    if (hasCourtesyCtor) {
+    if (defaultCtorStyle != null) {
       return '''
 return new ${_className}._fromJsonMapImpl(json);''';
     } else if (_ctors.containsKey('_default')) {
@@ -798,7 +801,7 @@ $varname == null? null :
   }
 
   String get copyMethod {
-    if (hasCourtesyCtor) {
+    if (defaultCtorStyle != null) {
       return 'copy() => new ${className}._copy(this);';
     } else {
       var terms = [];
@@ -811,7 +814,7 @@ $varname == null? null :
     }
   }
 
-  String get _copyCtor => hasCourtesyCtor && (hasJsonSupport || isCopyable)
+  String get _copyCtor => defaultCtorStyle != null && (hasJsonSupport || isCopyable)
       ? indentBlock(
           '''
 ${className}._copy(${className} other) :
@@ -853,22 +856,6 @@ int compareTo($otherType other) {
   set includesProtectBlock(bool value) =>
       customCodeBlock.tag = value ? 'class $name' : null;
 
-  get _defaultOwnerAccess {
-    var ancestor = owner;
-    while (ancestor != null) {
-      final result = ancestor is Class
-          ? (ancestor as Class).defaultMemberAccess
-          : ancestor is Part
-              ? (ancestor as Part).defaultMemberAccess
-              : ancestor is Library
-                  ? (ancestor as Library).defaultMemberAccess
-                  : null;
-      if (result != null) return result;
-      ancestor = ancestor.owner;
-    }
-    return null;
-  }
-
   get defaultMemberAccess {
     if (_defaultMemberAccess == null) {
       if (owner is Library) {
@@ -884,7 +871,7 @@ int compareTo($otherType other) {
   onOwnershipEstablished() {
     _className = isPublic ? _name : "_$_name";
 
-    if (hasDefaultCtor && hasCourtesyCtor) {
+    if (hasDefaultCtor && defaultCtorStyle != null) {
       throw new ArgumentError(
           '$_name can not have hasDefaultCtor and hasCourtesyCtor both set to true');
     }
@@ -898,7 +885,7 @@ int compareTo($otherType other) {
     }
 
     if (isImmutable) {
-      hasCourtesyCtor = true;
+      defaultCtorStyle ??= requiredParms;
       allMembersFinal = true;
     }
 
@@ -968,7 +955,7 @@ int compareTo($otherType other) {
         ..className = _name;
     }
 
-    if (hasCourtesyCtor && allMembersFinal && transientMembers.length == 0) {
+    if (defaultCtorStyle != null && allMembersFinal && transientMembers.length == 0) {
       _ctors[''].isConst = true;
     }
 
@@ -1003,7 +990,7 @@ int compareTo($otherType other) {
   }
 
   bool get _hasPrivateDefaultCtor =>
-      (!hasCourtesyCtor && (isCopyable || hasJsonSupport)) && !hasDefaultCtor;
+      (defaultCtorStyle != null && (isCopyable || hasJsonSupport)) && !hasDefaultCtor;
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
@@ -1072,7 +1059,7 @@ $lhs = ebisu
     return result;
   }
 
-  String fromJsonMapImpl() => hasCourtesyCtor
+  String fromJsonMapImpl() => defaultCtorStyle != null
       ? '''
 $className._fromJsonMapImpl(Map jsonMap) :
 ${
