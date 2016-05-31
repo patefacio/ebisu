@@ -619,7 +619,7 @@ member('foo')..init = [1,2,3]
                 ..init = [],
               member('super_args')
                 ..doc = 'Arguments to super ctor invocation - List<String> or Map<String,String>'
-                ..type = 'dynamic'
+                ..type = 'List<String>'
                 ..init = [],
               member('has_custom')
                 ..doc =

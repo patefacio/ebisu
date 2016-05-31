@@ -52,7 +52,7 @@ class Ctor extends Object with CustomCodeBlock {
   List<String> backParms = [];
 
   /// Arguments to super ctor invocation - List<String> or Map<String,String>
-  dynamic superArgs = [];
+  List<String> superArgs = [];
 
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
@@ -116,16 +116,12 @@ class Ctor extends Object with CustomCodeBlock {
         ');'
       ]);
 
-  get _badSuperArgs => 'superArgs must be List<String> or Map<String,String>';
-
-  get _superArgs => 'super(${(superArgs is List? superArgs : superArgs is Map? superArgs.keys : throw _badSuperArgs).join(", ")})';
-
   get _memberSig => brCompact([
         '(',
         concat([frontParms, members.map((m) => 'this.${m.varName}'), backParms])
             .join(', '),
         ')',
-        superArgs.isNotEmpty ? ': $_superArgs' : null,
+        superArgs.isNotEmpty ? ': super(${superArgs.join(", ")})' : null,
       ]);
 
   get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
@@ -143,16 +139,11 @@ class Ctor extends Object with CustomCodeBlock {
     return m.ctorInit == null ? 'this.${m.varName}' : m.name;
   }
 
-  get _superArgsTransformed =>
-      superArgs is List? 'super(${superArgs.join(", ")})' :
-      superArgs is Map? 'super(${superArgs.values.join(", ")})' :
-      throw _badSuperArgs;
-
   get _superArgsAndAssignments {
     var memberAssignments = _assignMemberVars;
     List result = [];
     if (superArgs.isNotEmpty) {
-      result.add(_superArgsTransformed);
+      result.add('super(${superArgs.join(", ")})');
     }
     if (memberAssignments.isNotEmpty) {
       result.add(memberAssignments);
@@ -319,7 +310,9 @@ class Member extends Object with Entity {
   bool get isPublic => access == Access.RW;
 
   get access =>
-      _access ?? (owner as Class)?.defaultMemberAccess ?? ebisuDefaultMemberAccess;
+      _access ??
+      (owner as Class)?.defaultMemberAccess ??
+      ebisuDefaultMemberAccess;
 
   bool get isMap => isMapType(type);
   bool get isList => isListType(type);
@@ -814,9 +807,10 @@ $varname == null? null :
     }
   }
 
-  String get _copyCtor => defaultCtorStyle != null && (hasJsonSupport || isCopyable)
-      ? indentBlock(
-          '''
+  String get _copyCtor =>
+      defaultCtorStyle != null && (hasJsonSupport || isCopyable)
+          ? indentBlock(
+              '''
 ${className}._copy(${className} other) :
 ${
   indentBlock(members
@@ -824,8 +818,8 @@ ${
     .join(',\n'), '  ')
 };
 ''',
-          '  ')
-      : '';
+              '  ')
+          : '';
 
   String get comparableMethod {
     var comparableMembers = members.where((m) => m.isInComparable).toList();
@@ -955,7 +949,9 @@ int compareTo($otherType other) {
         ..className = _name;
     }
 
-    if (defaultCtorStyle != null && allMembersFinal && transientMembers.length == 0) {
+    if (defaultCtorStyle != null &&
+        allMembersFinal &&
+        transientMembers.length == 0) {
       _ctors[''].isConst = true;
     }
 
@@ -990,7 +986,8 @@ int compareTo($otherType other) {
   }
 
   bool get _hasPrivateDefaultCtor =>
-      (defaultCtorStyle != null && (isCopyable || hasJsonSupport)) && !hasDefaultCtor;
+      (defaultCtorStyle != null && (isCopyable || hasJsonSupport)) &&
+      !hasDefaultCtor;
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
