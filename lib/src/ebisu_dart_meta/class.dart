@@ -51,8 +51,8 @@ class Ctor extends Object with CustomCodeBlock {
   /// Parms that come after all member parms
   List<String> backParms = [];
 
-  /// Arguments to super ctor invocation
-  List<String> superArgs = [];
+  /// Arguments to super ctor invocation - List<String> or Map<String,String>
+  dynamic superArgs = [];
 
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
@@ -140,11 +140,16 @@ class Ctor extends Object with CustomCodeBlock {
     return m.ctorInit == null ? 'this.${m.varName}' : m.name;
   }
 
+  get _superArgsTransformed =>
+      superArgs is List? 'super(${superArgs.join(", ")})' :
+      superArgs is Map? 'super(${superArgs.values.join(", ")})' :
+      throw 'superArgs must be List<String> or Map<String,String>';
+
   get _superArgsAndAssignments {
     var memberAssignments = _assignMemberVars;
     List result = [];
     if (superArgs.isNotEmpty) {
-      result.add('super(${superArgs.join(", ")})');
+      result.add(_superArgsTransformed);
     }
     if (memberAssignments.isNotEmpty) {
       result.add(memberAssignments);
