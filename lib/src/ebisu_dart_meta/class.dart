@@ -68,13 +68,15 @@ class Ctor extends Object with CustomCodeBlock {
   Ctor();
 
   String get qualifiedName =>
-      (name == 'default' || name == '') ? className : '${className}.${name}';
+      _isDefaultCtor ? className : '${className}.${name}';
 
   get classId => idFromString(className);
   get _hasOptMembers => optMembers.isNotEmpty;
   get _hasNamedMembers => namedMembers.isNotEmpty;
 
-  get id => (name == 'default' || name == '')
+  get _isDefaultCtor => name == 'default' || name == '';
+
+  get id => _isDefaultCtor
       ? classId
       : ((name == '_default')
           ? idFromString('${classId.snake}_default')
@@ -116,19 +118,30 @@ class Ctor extends Object with CustomCodeBlock {
         ');'
       ]);
 
+  get _filteredMembers =>
+      members.where((Member m) => !_isDefaultCtor || m.isInDefaultCtor);
+  get _filteredOptMembers =>
+      optMembers.where((m) => !_isDefaultCtor || m.isInDefaultCtor);
+  get _filteredNamedMembers =>
+      namedMembers.where((m) => !_isDefaultCtor || m.isInDefaultCtor);
+
   get _memberSig => brCompact([
         '(',
-        concat([frontParms, members.map((m) => 'this.${m.varName}'), backParms])
-            .join(', '),
+        concat([
+          frontParms,
+          _filteredMembers.map((m) => 'this.${m.varName}'),
+          backParms
+        ]).join(', '),
         ')',
         superArgs.isNotEmpty ? ': super(${superArgs.join(", ")})' : null,
       ]);
 
-  get _assignMemberVars => brCompact(concat([members, optMembers, namedMembers])
-      .where((m) =>
-          m.ctorInit != null || (namedMembers.contains(m) && !m.isPublic))
-      .map(_assignMemberVar)
-      .join(','));
+  get _assignMemberVars => brCompact(
+      concat([_filteredMembers, _filteredOptMembers, _filteredNamedMembers])
+          .where((m) =>
+              m.ctorInit != null || (namedMembers.contains(m) && !m.isPublic))
+          .map(_assignMemberVar)
+          .join(','));
 
   _assignMemberVar(m) => brCompact([
         '${m.varName} = ${m.name}',
@@ -159,7 +172,7 @@ class Ctor extends Object with CustomCodeBlock {
         frontParms,
 
         /// include regular members
-        members.map(_memberParm),
+        _filteredMembers.map(_memberParm),
 
         /// include optional members[
         [
@@ -168,7 +181,7 @@ class Ctor extends Object with CustomCodeBlock {
             '[',
 
             /// opt parms plus back parms
-            concat([optMembers.map(_memberParm), backParms]).join(','),
+            concat([_filteredOptMembers.map(_memberParm), backParms]).join(','),
 
             /// close optionals
             ']'
@@ -188,7 +201,7 @@ class Ctor extends Object with CustomCodeBlock {
         frontParms,
 
         /// include regular members
-        members.map(_memberParm),
+        _filteredMembers.map(_memberParm),
 
         /// include optional members[
         [
@@ -198,7 +211,8 @@ class Ctor extends Object with CustomCodeBlock {
 
             /// named parms plus back parms
             concat([
-              namedMembers.map((m) => !m.isPublic ? m.name : _memberParm(m)),
+              _filteredNamedMembers
+                  .map((m) => !m.isPublic ? m.name : _memberParm(m)),
               backParms
             ]).join(','),
 
@@ -301,6 +315,9 @@ class Member extends Object with Entity {
 
   /// Name of variable for the member - varies depending on public/private
   String get varName => _varName;
+
+  /// Member will be included from parms of default ctor
+  bool isInDefaultCtor = true;
 
   // custom <class Member>
 

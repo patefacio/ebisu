@@ -715,6 +715,10 @@ initialized to [init].
                 ..doc =
                     'Name of variable for the member - varies depending on public/private'
                 ..access = Access.RO,
+              member('is_in_default_ctor')
+                ..doc =
+                    'Member will be included from parms of default ctor'
+                ..init = true,
             ],
           class_('class')
             ..doc = '''
