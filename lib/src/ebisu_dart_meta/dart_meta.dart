@@ -125,12 +125,12 @@ Part part(_id) => new Part(makeId(_id));
 Class class_(_id) => new Class(makeId(_id));
 
 /// Create new member from snake case id
-Member member(String _id) => new Member(id(_id));
-PubSpec pubspec(String _id) => new PubSpec(id(_id));
+Member member(_id) => new Member(makeId(_id));
+PubSpec pubspec(_id) => new PubSpec(makeId(_id));
 PubDependency pubdep(String name) => new PubDependency(name);
-Script script(String _id) => new Script(id(_id));
-ScriptArg scriptArg(String _id) => new ScriptArg(id(_id));
-Benchmark benchmark(String _id) => new Benchmark(id(_id));
+Script script(_id) => new Script(makeId(_id));
+ScriptArg scriptArg(_id) => new ScriptArg(makeId(_id));
+Benchmark benchmark(_id) => new Benchmark(makeId(_id));
 
 final RegExp _jsonableTypeRe =
     new RegExp(r"\b(?:int|double|num|String|bool|DateTime)\b");

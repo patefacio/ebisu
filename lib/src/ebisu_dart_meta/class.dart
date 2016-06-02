@@ -85,7 +85,7 @@ class Ctor extends Object with CustomCodeBlock {
   get _optionalMembersDecl => _hasOptMembers
       ? brCompact([
           '[',
-          concat([optMembers.map((m) => m.annotatedPublic), backParms])
+          concat([_filteredOptMembers.map((m) => m.annotatedPublic), backParms])
               .join(','),
           ']',
         ])
@@ -94,7 +94,7 @@ class Ctor extends Object with CustomCodeBlock {
   get _namedMembersDecl => _hasNamedMembers
       ? brCompact([
           '{',
-          concat([namedMembers.map((m) => m.annotatedPublic), backParms])
+          concat([_filteredNamedMembers.map((m) => m.annotatedPublic), backParms])
               .join(','),
           '}',
         ])
@@ -104,14 +104,14 @@ class Ctor extends Object with CustomCodeBlock {
         '/// Create $className without new, for more declarative construction',
         '$className ${classId.camel} (',
         [
-          concat([frontParms, members.map((m) => m.annotatedPublic)]).join(','),
+          concat([frontParms, _filteredMembers.map((m) => m.annotatedPublic)]).join(','),
           _optionalMembersDecl,
           _namedMembersDecl,
         ].where((part) => part.isNotEmpty).join(','),
         ') => new $qualifiedName(',
         concat([
           frontParms.map(_parmArgName),
-          concat([members, optMembers, namedMembers]).map(
+          concat([members, _filteredOptMembers, _filteredNamedMembers]).map(
               (m) => namedMembers.contains(m) ? '${m.name}:${m.name}' : m.name),
           backParms.map(_parmArgName),
         ]).join(', '),
