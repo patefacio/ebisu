@@ -618,7 +618,8 @@ member('foo')..init = [1,2,3]
                 ..type = 'List<String>'
                 ..init = [],
               member('super_args')
-                ..doc = 'Arguments to super ctor invocation - List<String> or Map<String,String>'
+                ..doc =
+                    'Arguments to super ctor invocation - List<String> or Map<String,String>'
                 ..type = 'List<String>'
                 ..init = [],
               member('has_custom')
@@ -716,8 +717,7 @@ initialized to [init].
                     'Name of variable for the member - varies depending on public/private'
                 ..access = Access.RO,
               member('is_in_default_ctor')
-                ..doc =
-                    'Member will be included from parms of default ctor'
+                ..doc = 'Member will be included from parms of default ctor'
                 ..init = true,
             ],
           class_('class')

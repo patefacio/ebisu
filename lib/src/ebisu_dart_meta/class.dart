@@ -94,8 +94,10 @@ class Ctor extends Object with CustomCodeBlock {
   get _namedMembersDecl => _hasNamedMembers
       ? brCompact([
           '{',
-          concat([_filteredNamedMembers.map((m) => m.annotatedPublic), backParms])
-              .join(','),
+          concat([
+            _filteredNamedMembers.map((m) => m.annotatedPublic),
+            backParms
+          ]).join(','),
           '}',
         ])
       : '';
@@ -104,7 +106,8 @@ class Ctor extends Object with CustomCodeBlock {
         '/// Create $className without new, for more declarative construction',
         '$className ${classId.camel} (',
         [
-          concat([frontParms, _filteredMembers.map((m) => m.annotatedPublic)]).join(','),
+          concat([frontParms, _filteredMembers.map((m) => m.annotatedPublic)])
+              .join(','),
           _optionalMembersDecl,
           _namedMembersDecl,
         ].where((part) => part.isNotEmpty).join(','),
@@ -785,7 +788,7 @@ valueApply($varname, (v) =>
       final elementType = templateParameterType(type);
       //      return 'ebisu.deepCopySplayTreeSet($varname)';
       return '''
-$varname == null? null :
+$varname ??
   (new $type()
   ..addAll(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
@@ -793,7 +796,7 @@ $varname == null? null :
       final elementType = templateParameterType(type);
       //return 'ebisu.deepCopySet($varname)';
       return '''
-$varname == null? null :
+$varname ??
   (new Set.from(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
     } else if (isListType(type)) {
@@ -802,12 +805,12 @@ $varname == null? null :
         return '$varname == null? null: new List.from($varname)';
       } else {
         return '''
-$varname == null? null :
+$varname ??
   (new List.from(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
       }
     }
-    return '${varname} == null? null : ${varname}.copy()';
+    return '${varname}?.copy()';
   }
 
   String get copyMethod {

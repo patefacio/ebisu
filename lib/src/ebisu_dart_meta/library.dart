@@ -302,6 +302,7 @@ class Library extends Object with CustomCodeBlock, Entity {
     final unique = new Set();
     return _exportStatements.where((e) => unique.add(e)).toList()..sort();
   }
+
   get _libraryStatement => 'library $qualifiedName;\n';
   get _additionalImports => customBlock('additional imports');
   get _parts => parts.length > 0
