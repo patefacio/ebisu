@@ -284,7 +284,7 @@ class Library extends Object with CustomCodeBlock, Entity {
   get _content => br([
         brCompact([this.docComment, _libraryStatement]),
         brCompact(_cleansedImports),
-        brCompact(_exportStatements),
+        brCompact(_cleansedExports),
         _additionalImports,
         brCompact(_parts),
         _loggerInit,
@@ -298,6 +298,10 @@ class Library extends Object with CustomCodeBlock, Entity {
   get _cleansedImports =>
       cleanImports(imports.map((i) => importStatement(i)).toList());
   get _exportStatements => exports.map((e) => "export '$e';");
+  get _cleansedExports {
+    final unique = new Set();
+    return _exportStatements.where((e) => unique.add(e)).toList()..sort();
+  }
   get _libraryStatement => 'library $qualifiedName;\n';
   get _additionalImports => customBlock('additional imports');
   get _parts => parts.length > 0
