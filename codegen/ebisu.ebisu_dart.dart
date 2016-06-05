@@ -190,9 +190,6 @@ text to include in the license file.
                     'List of todos included in the readme - If any present includesReadme assumed true'
                 ..type = 'List<String>'
                 ..init = '[]',
-              member('includes_hop')
-                ..doc = 'If true generates tool folder with hop_runner'
-                ..init = false,
               member('include_generated_prologue')
                 ..doc = '''
 If true includes comment about code being generated.
@@ -1149,7 +1146,6 @@ generated the source.
     ];
 
   System ebisu = system('ebisu')
-    ..includesHop = true
     ..testLibraries = [
       library('setup')
         ..imports = [
@@ -1323,13 +1319,7 @@ Variables used by ebisu when generating Dart code.
               variable('ebisu_pub_versions')
                 ..doc = '''
 File containing default pub versions. Dart code generation at times
-generates code that requires packages. For example, generated
-test cases require *test*, generated code can require logging,
-hop support requries hop. Since the pubspec yaml is generated
-the idea here is to pull the versions of these packages out of
-the code and into a config file. Then to upgrade multiple packages
-with multiple pubspecs would entail updating the config file and
-regenerating.
+generates code that requires packages.
 '''
                 ..isFinal = true
                 ..init = '''

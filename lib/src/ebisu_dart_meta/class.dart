@@ -883,6 +883,9 @@ int compareTo($otherType other) {
   }
 
   onOwnershipEstablished() {
+    /// prevent multiple invocations
+    if (_className != null) return;
+
     _className = isPublic ? _name : "_$_name";
 
     if (hasDefaultCtor && defaultCtorStyle != null) {

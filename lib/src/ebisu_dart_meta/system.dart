@@ -58,9 +58,6 @@ class System extends Object with Entity {
   /// List of todos included in the readme - If any present includesReadme assumed true
   List<String> todos = [];
 
-  /// If true generates tool folder with hop_runner
-  bool includesHop = false;
-
   /// If true includes comment about code being generated.
   bool includeGeneratedPrologue = false;
 
@@ -168,8 +165,7 @@ Only "version" and "path" overrides are supported.
   }
 
   /// Generate the code
-  void generate(
-      {generateHop: true, generateRunner: true, generateDrudge: true}) {
+  void generate({generateRunner: true, generateDrudge: true}) {
     setAsRoot();
 
     if (rootPath == null) rootPath = '.';
@@ -197,15 +193,6 @@ Only "version" and "path" overrides are supported.
     scripts.forEach((script) => script.generate());
     if (app != null) {
       app.generate();
-    }
-
-    if (includesHop) {
-      if (pubSpec.depNotFound('hop')) {
-        pubSpec.addDevDependency(new PubDependency('hop'));
-      }
-      if (pubSpec.depNotFound('hop_docgen')) {
-        pubSpec.addDevDependency(new PubDependency('hop_docgen'));
-      }
     }
 
     allLibraries.forEach((lib) => lib.generate());
@@ -275,58 +262,10 @@ ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('t
           readmePath);
     }
 
-    if (generateHop && includesHop) {
-      String hopRunnerPath = "${rootPath}/tool/hop_runner.dart";
-      String i = '        ';
-      String analyzeTests = testLibraries.length == 0
-          ? ''
-          : '''
-  addTask('analyze_test',
-      createAnalyzerTask([
-${testLibraries
-  .where((tl) => tl.id.snake.startsWith('test_'))
-  .map((tl) => '$i"test/${tl.name}.dart"')
-  .toList()
-  .join(',\n')}
-      ]));
-''';
-
+    if (generateRunner) {
+      String testRunnerPath = "${rootPath}/test/runner.dart";
       mergeWithDartFile(
           '''
-library hop_runner;
-
-import 'dart:async';
-import 'dart:io';
-import 'package:hop/hop.dart';
-import 'package:hop/hop_tasks.dart';
-import 'package:hop_docgen/hop_docgen.dart';
-import 'package:path/path.dart' as path;
-import '../test/runner.dart' as runner;
-
-void main(List<String> args) {
-
-  Directory.current = path.dirname(path.dirname(Platform.script.toFilePath()));
-
-  addTask('analyze_lib', createAnalyzerTask(_getLibs));
-  //TODO: Figure this out: addTask('docs', createDocGenTask(_getLibs));
-${analyzeTests}
-
-  runHop(args);
-}
-
-Future<List<String>> _getLibs() {
-  return new Directory('lib').list()
-      .where((FileSystemEntity fse) => fse is File)
-      .map((File file) => file.path)
-      .toList();
-}
-''',
-          hopRunnerPath);
-
-      if (generateRunner) {
-        String testRunnerPath = "${rootPath}/test/runner.dart";
-        mergeWithDartFile(
-            '''
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
@@ -346,8 +285,7 @@ ${testLibraries
 }
 
 ''',
-            testRunnerPath);
-      }
+          testRunnerPath);
     }
 
     if (testLibraries.length > 0) {
