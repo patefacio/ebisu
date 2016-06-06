@@ -31,7 +31,6 @@ void generateTestLibraries() {
 
   var testSystem = tempSystem('test_code_generation')
     ..license = license
-    ..includesHop = true
     ..pubSpec.doc = pubDoc
     ..pubSpec.author = author
     ..pubSpec.version = pubVersion
@@ -251,8 +250,6 @@ main([List<String> args]) {
       test('pubspec author', () => expect(yaml['author'], author));
       test('pubspec version', () => expect(yaml['version'], pubVersion));
       test('pubspec doc', () => expect(yaml['description'].trim(), pubDoc));
-      test('pubspec hop',
-          () => expect(yaml['dev_dependencies']['hop'] != null, true));
       test('pubspec homepage',
           () => expect(yaml['homepage'].trim(), pubHomepage));
       test('pubspec dep quiver',
@@ -262,10 +259,6 @@ main([List<String> args]) {
     });
     test('.gitignore exists',
         () => expect(exists(join(tempPath, '.gitignore')), true));
-    test(
-        'tool/hop_runner.dart exists',
-        () => expect(
-            exists(joinAll([tempPath, 'tool', 'hop_runner.dart'])), true));
     test('test/runner.dart exists',
         () => expect(exists(joinAll([tempPath, 'test', 'runner.dart'])), true));
   });
