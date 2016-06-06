@@ -788,7 +788,7 @@ valueApply($varname, (v) =>
       final elementType = templateParameterType(type);
       //      return 'ebisu.deepCopySplayTreeSet($varname)';
       return '''
-$varname ??
+$varname == null ? null :
   (new $type()
   ..addAll(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
@@ -796,7 +796,7 @@ $varname ??
       final elementType = templateParameterType(type);
       //return 'ebisu.deepCopySet($varname)';
       return '''
-$varname ??
+$varname == null ? null :
   (new Set.from(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
     } else if (isListType(type)) {
@@ -805,7 +805,7 @@ $varname ??
         return '$varname == null? null: new List.from($varname)';
       } else {
         return '''
-$varname ??
+$varname == null ? null :
   (new List.from(${varname}.map((e) =>
     ${_assignCopy(elementType, "e")})))''';
       }
@@ -965,17 +965,17 @@ int compareTo($otherType other) {
           (ctorName) => addCtor(makeCtorName(ctorName))..namedMembers.add(m));
     });
 
-    // To deserialize or copy a default ctor is needed
-    if (_hasPrivateDefaultCtor) {
-      _ctors.putIfAbsent('_default', () => new Ctor())
-        ..name = '_default'
-        ..className = _name;
-    }
-
     if (defaultCtorStyle != null &&
         allMembersFinal &&
         transientMembers.length == 0) {
       _ctors[''].isConst = true;
+    }
+
+    // To deserialize or copy a default ctor is needed
+    if (_requiresPrivateDefaultCtor) {
+      _ctors.putIfAbsent('_default', () => new Ctor())
+        ..name = '_default'
+        ..className = _name;
     }
 
     if (ctorCallsInit) {
@@ -1008,9 +1008,12 @@ int compareTo($otherType other) {
     }
   }
 
-  bool get _hasPrivateDefaultCtor =>
-      (defaultCtorStyle != null && (isCopyable || hasJsonSupport)) &&
-      !hasDefaultCtor;
+  Ctor get _defaultCtor => _ctors[''];
+
+  bool get _requiresPrivateDefaultCtor =>
+      (isCopyable || hasJsonSupport) &&
+      (_defaultCtor == null ||
+          (_defaultCtor != null && _defaultCtor.members.isNotEmpty));
 
   List get orderedCtors {
     var keys = _ctors.keys.toList();
