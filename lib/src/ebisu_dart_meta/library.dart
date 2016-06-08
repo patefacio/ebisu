@@ -171,7 +171,7 @@ class Library extends Object with CustomCodeBlock, Entity {
       imports.add('"dart:convert" as convert');
     }
     if (allClasses.any((c) => c.requiresEqualityHelpers == true)) {
-      imports.add('package:collection/equality.dart');
+      imports.add('package:collection/collection.dart');
     }
     if (includesLogger) {
       imports.add("package:logging/logging.dart");
