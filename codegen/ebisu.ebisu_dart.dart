@@ -1065,14 +1065,14 @@ This is an intended as a replacement for *parts*.
 If true includes comment about code being generated.
 '''
                 ..access = WO
-                ..type = 'bool',
+                ..init = false,
               member('include_stack_trace')
                 ..doc = '''
 If true includes comment containing stack trace to help find the dart code that
 generated the source.
 '''
                 ..access = WO
-                ..type = 'bool',
+                ..init = false,
             ],
         ],
       part('part')

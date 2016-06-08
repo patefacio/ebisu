@@ -195,8 +195,11 @@ class Library extends Object with CustomCodeBlock, Entity {
       '${id.snake}.dart');
 
   get includeGeneratedPrologue =>
-      (rootEntity as System)?.includeGeneratedPrologue ?? false;
-  get includeStackTrace => (rootEntity as System)?.includeStackTrace ?? false;
+      (rootEntity as System)?.includeGeneratedPrologue ??
+      _includeGeneratedPrologue;
+
+  get includeStackTrace =>
+      (rootEntity as System)?.includeStackTrace ?? _includeStackTrace;
 
   /// Generate all artifiacts within the library
   void generate() {
@@ -391,8 +394,8 @@ $_initLogger${_mainCustomText}
   bool _isTest = false;
   CodeBlock _mainCustomBlock;
   Access _defaultMemberAccess;
-  bool _includeGeneratedPrologue;
-  bool _includeStackTrace;
+  bool _includeGeneratedPrologue = false;
+  bool _includeStackTrace = false;
 }
 
 // custom <part library>

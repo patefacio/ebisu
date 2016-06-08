@@ -146,7 +146,7 @@ class EbisuProject {
     if (languages.contains(EbisuLanguage.ebisuDart)) {
       print('Regening Dart codegen script');
 
-      final codegenScript = script(id.snake + '_ebisu_dart')
+      script(id.snake + '_ebisu_dart')
         ..basename = '${id.snake}.ebisu_dart.dart'
         ..scriptPath = join(projectPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true
@@ -165,7 +165,7 @@ String here = absolute(Platform.script.toFilePath());
     if (languages.contains(EbisuLanguage.ebisuCpp)) {
       print('Regening C++ codegen script');
 
-      final codegenScript = script(id.snake + '_ebisu_cpp')
+      script(id.snake + '_ebisu_cpp')
         ..basename = '${id.snake}.ebisu_cpp.dart'
         ..scriptPath = join(projectPath, 'codegen')
         ..customCodeBlock.hasSnippetsFirst = true

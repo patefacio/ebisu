@@ -54,91 +54,96 @@ void generateTestLibraries() {
               member('m_bool')..type = 'bool',
               member('m_list_int')..type = 'List<int>',
               member('m_string_string')..type = 'Map<String,String>',
-            ],
+            ]
+            ..customCodeBlock.snippets.add('''
+bool fooExists() async => (await new File("foo").exists());
+Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
+''')
+          ,
           class_('class_with_init')
             ..members = [
-              member('m_string')..classInit = 'foo',
+              member('m_string')..init = 'foo',
               member('m_int')
                 ..type = 'int'
-                ..classInit = '0',
+                ..init = '0',
               member('m_double')
                 ..type = 'double'
-                ..classInit = '0.0',
+                ..init = '0.0',
               member('m_num')
                 ..type = 'num'
-                ..classInit = 3.14,
+                ..init = 3.14,
               member('m_bool')
                 ..type = 'bool'
-                ..classInit = 'false',
+                ..init = 'false',
               member('m_list_int')
                 ..type = 'List<int>'
-                ..classInit = '[]',
+                ..init = '[]',
               member('m_string_string')
                 ..type = 'Map<String,String>'
-                ..classInit = '{}'
+                ..init = '{}'
             ],
           class_('class_with_inferred_type')
             ..members = [
-              member('m_string')..classInit = 'foo',
-              member('m_int')..classInit = 0,
-              member('m_double')..classInit = 1.0,
-              member('m_bool')..classInit = false,
-              member('m_list')..classInit = [],
-              member('m_map')..classInit = {},
+              member('m_string')..init = 'foo',
+              member('m_int')..init = 0,
+              member('m_double')..init = 1.0,
+              member('m_bool')..init = false,
+              member('m_list')..init = [],
+              member('m_map')..init = {},
             ],
           class_('class_read_only')
             ..defaultMemberAccess = RO
             ..members = [
-              member('m_string')..classInit = 'foo',
-              member('m_int')..classInit = 3,
-              member('m_double')..classInit = 3.14,
-              member('m_bool')..classInit = false,
-              member('m_list')..classInit = [1, 2, 3],
-              member('m_map')..classInit = {1: 2},
+              member('m_string')..init = 'foo',
+              member('m_int')..init = 3,
+              member('m_double')..init = 3.14,
+              member('m_bool')..init = false,
+              member('m_list')..init = [1, 2, 3],
+              member('m_map')..init = {1: 2},
             ],
           class_('class_inaccessible')
             ..defaultMemberAccess = IA
             ..members = [
-              member('m_string')..classInit = 'foo',
-              member('m_int')..classInit = 3,
-              member('m_double')..classInit = 3.14,
-              member('m_bool')..classInit = false,
-              member('m_list')..classInit = [1, 2, 3],
-              member('m_map')..classInit = {1: 2},
+              member('m_string')..init = 'foo',
+              member('m_int')..init = 3,
+              member('m_double')..init = 3.14,
+              member('m_bool')..init = false,
+              member('m_list')..init = [1, 2, 3],
+              member('m_map')..init = {1: 2},
             ],
           class_('simple_json')
             ..hasDefaultCtor = true
             ..hasJsonSupport = true
-            ..members = [member('m_string')..classInit = 'whoop'],
+            ..members = [member('m_string')..init = 'whoop'],
           class_('courtesy_ctor')
-            ..hasCourtesyCtor = true
+            ..defaultCtorStyle = requiredParms
             ..members = [
-              member('m_string')..classInit = 'whoop',
-              member('m_secret')..classInit = 42,
+              member('m_string')..init = 'whoop',
+              member('m_secret')..init = 42,
             ],
           class_('class_json')
             ..defaultMemberAccess = RO
             ..hasDefaultCtor = true
             ..hasJsonSupport = true
             ..members = [
-              member('m_string')..classInit = 'foo',
-              member('m_int')..classInit = 3,
-              member('m_double')..classInit = 3.14,
-              member('m_bool')..classInit = false,
-              member('m_list')..classInit = [1, 2, 3],
-              member('m_map')..classInit = {1: 2},
+              member('m_string')..init = 'foo',
+              member('m_int')..init = 3,
+              member('m_double')..init = 3.14,
+              member('m_bool')..init = false,
+              member('m_list')..init = [1, 2, 3],
+              member('m_map')..init = {1: 2},
               member('m_enum')
                 ..type = 'Color'
-                ..classInit = 'Color.GREEN',
+                ..init = 'Color.GREEN',
               member('m_color_map')
                 ..type = 'Map<Color,String>'
-                ..classInit = '{ Color.GREEN: "olive" }',
+                ..init = '{ Color.GREEN: "olive" }',
               member('m_color_color_map')
                 ..type = 'Map<Color,Color>'
-                ..classInit = '{ Color.GREEN: Color.RED }',
+                ..init = '{ Color.GREEN: Color.RED }',
               member('m_string_simple_map')
                 ..type = 'Map<String,SimpleJson>'
-                ..classInit = '{ "foo" : new SimpleJson() }',
+                ..init = '{ "foo" : new SimpleJson() }',
             ],
           class_('class_json_outer')
             ..defaultMemberAccess = RO
@@ -147,7 +152,7 @@ void generateTestLibraries() {
             ..members = [
               member('m_nested')
                 ..type = 'ClassJson'
-                ..classInit = 'new ClassJson()',
+                ..init = 'new ClassJson()',
             ]
         ],
       library('various_ctors')
@@ -156,21 +161,21 @@ void generateTestLibraries() {
           class_('various_ctors')
             ..members = [
               member('one')
-                ..classInit = 1.00001
+                ..init = 1.00001
                 ..ctors = [''],
               member('two')
-                ..classInit = 'two'
+                ..init = 'two'
                 ..ctorsOpt = [''],
               member('three')
-                ..classInit = 3
+                ..init = 3
                 ..ctors = ['fromThreeAndFour']
                 ..ctorsOpt = [''],
               member('four')
-                ..classInit = 4
+                ..init = 4
                 ..ctorInit = '90'
                 ..ctorsNamed = ['fromThreeAndFour'],
               member('five')
-                ..classInit = 2
+                ..init = 2
                 ..ctorInit = '5'
                 ..ctorsOpt = ['fromFive'],
               member('six')..ctorsOpt = [''],

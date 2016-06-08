@@ -65,7 +65,7 @@ class A {}
 
   test('courtesy ctor required parms', () {
     makeClass() => class_('def_ctor')
-      ..members = [member('a')..classInit = 3, member('b')..access = RO];
+      ..members = [member('a')..init = 3, member('b')..access = RO];
 
     expect(
         darkMatter((makeClass()..defaultCtorStyle = requiredParms).definition)
@@ -84,7 +84,7 @@ class A {}
 
     // with front and back parms
     makeClassWithCtorParms() => class_('def_ctor')
-      ..members = [member('m1')..classInit = 3, member('m2')..access = RO]
+      ..members = [member('m1')..init = 3, member('m2')..access = RO]
       ..withDefaultCtor((Ctor ctor) => ctor
         ..frontParms = ['int a', 'String b']
         ..backParms = ['int y', 'String z']);
@@ -201,7 +201,7 @@ SomeClass someClass(String b, {Point c}) => new SomeClass(b, c:c);
             ..tag = 'boooya'
             ..snippets.add('// boing'))
       ..members = [
-        member('a')..classInit = 3,
+        member('a')..init = 3,
         member('b')
           ..access = RO
           ..ctors = ['']

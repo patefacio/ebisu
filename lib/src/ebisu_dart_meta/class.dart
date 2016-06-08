@@ -976,13 +976,6 @@ int compareTo($otherType other) {
     }
   }
 
-  Ctor get _defaultCtor => _ctors[''];
-
-  bool get _requiresPrivateDefaultCtor =>
-      (isCopyable || hasJsonSupport) &&
-      (_defaultCtor == null ||
-          (_defaultCtor != null && _defaultCtor.members.isNotEmpty));
-
   List get orderedCtors {
     var keys = _ctors.keys.toList();
     bool hasDefault = keys.remove('');
