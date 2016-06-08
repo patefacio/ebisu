@@ -693,20 +693,7 @@ class Class extends Object with CustomCodeBlock, Entity {
   bool get requiresEqualityHelpers =>
       hasOpEquals && members.any((m) => m.isMapOrList);
 
-  String get jsonCtor {
-    if (defaultCtorStyle != null) {
-      return '''
-return new ${_className}._fromJsonMapImpl(json);''';
-    } else if (_ctors.containsKey('_default')) {
-      return '''
-return new ${_className}._default()
-  .._fromJsonMapImpl(json);''';
-    } else {
-      return '''
-return new ${_className}()
-  .._fromJsonMapImpl(json);''';
-    }
-  }
+  String get jsonCtor => 'return new ${_className}._fromJsonMapImpl(json);';
 
   static String memberCompare(m) {
     final myName = m.varName == 'other' ? 'this.other' : m.varName;
@@ -814,24 +801,11 @@ $varname == null ? null :
     return '${varname}?.copy()';
   }
 
-  String get copyMethod {
-    if (defaultCtorStyle != null) {
-      return 'copy() => new ${className}._copy(this);';
-    } else {
-      var terms = [];
-      members.forEach((m) {
-        final rhs = _assignCopy(m.type, m.varName);
-        terms.add('\n  ..${m.varName} = $rhs');
-      });
-      var ctorName = hasDefaultCtor ? _className : '${_className}._default';
-      return 'copy() => new ${ctorName}()${terms.join()};\n';
-    }
-  }
+  String get copyMethod => 'copy() => new ${className}._copy(this);';
 
-  String get _copyCtor =>
-      defaultCtorStyle != null && (hasJsonSupport || isCopyable)
-          ? indentBlock(
-              '''
+  String get _copyCtor => isCopyable
+      ? indentBlock(
+          '''
 ${className}._copy(${className} other) :
 ${
   indentBlock(members
@@ -839,8 +813,8 @@ ${
     .join(',\n'), '  ')
 };
 ''',
-              '  ')
-          : '';
+          '  ')
+      : '';
 
   String get comparableMethod {
     var comparableMembers = members.where((m) => m.isInComparable).toList();
@@ -972,13 +946,6 @@ int compareTo($otherType other) {
       _ctors[''].isConst = true;
     }
 
-    // To deserialize or copy a default ctor is needed
-    if (_requiresPrivateDefaultCtor) {
-      _ctors.putIfAbsent('_default', () => new Ctor())
-        ..name = '_default'
-        ..className = _name;
-    }
-
     if (ctorCallsInit) {
       _ctors[''].callsInit = true;
     }
@@ -1083,8 +1050,7 @@ $lhs = ebisu
     return result;
   }
 
-  String fromJsonMapImpl() => defaultCtorStyle != null
-      ? '''
+  String fromJsonMapImpl() => '''
 $className._fromJsonMapImpl(Map jsonMap) :
 ${
    chomp(indentBlock(
@@ -1092,16 +1058,7 @@ ${
        .where((m) => !m.isJsonTransient)
        .map((m) => chomp(_fromJsonMapMember(m)))
        .join(',\n')))};
-'''
-      : '''
-void _fromJsonMapImpl(Map jsonMap) {
-${
-   indentBlock(
-     members
-       .where((m) => !m.isJsonTransient)
-       .map((m) => _fromJsonMapMember(m))
-       .join(';\n'))};
-}''';
+''';
 
   get definition => define();
 
