@@ -489,7 +489,11 @@ Prints:
                 ..init = false,
               member('is_snake_string')
                 ..doc =
-                    'If true string value for each entry is snake case (default is shout)'
+                    'If true string value for each entry is snake case'
+                ..init = false,
+              member('is_shout_string')
+                ..doc =
+                    'If true string value for each entry is shout'
                 ..init = false,
               member('requires_class')
                 ..doc = '''
@@ -1218,7 +1222,7 @@ generated the source.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.7.2'
+      ..version = '0.7.3'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

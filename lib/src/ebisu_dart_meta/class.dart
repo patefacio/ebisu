@@ -922,7 +922,7 @@ int compareTo($otherType other) {
             ..className = _className;
 
           if (ctor.hasContent && ctor.tag == null) {
-            ctor.tag = _className;
+            ctor.tag = ctor.qualifiedName;
           }
 
           ctors[ctorName] = ctor;

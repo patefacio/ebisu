@@ -58,8 +58,7 @@ void generateTestLibraries() {
             ..customCodeBlock.snippets.add('''
 bool fooExists() async => (await new File("foo").exists());
 Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
-''')
-          ,
+'''),
           class_('class_with_init')
             ..members = [
               member('m_string')..init = 'foo',

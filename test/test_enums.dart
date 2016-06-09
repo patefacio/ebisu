@@ -33,5 +33,63 @@ enum Rgb {
 }'''));
   });
 
+  test('string casing', () {
+    expect(
+        darkMatter((enum_('rgb')
+                  ..hasCustom = true
+                  ..isShoutString = true
+                  ..values = ['red', 'green', 'blue'])
+                .define())
+            .contains(darkMatter('''
+  String toString() {
+    switch(this) {
+      case RED: return "RED";
+      case GREEN: return "GREEN";
+      case BLUE: return "BLUE";
+    }
+    return null;
+  }
+
+  static Rgb fromString(String s) {
+    if(s == null) return null;
+    switch(s) {
+      case "RED": return RED;
+      case "GREEN": return GREEN;
+      case "BLUE": return BLUE;
+      default: return null;
+    }
+  }
+''')),
+        true);
+
+    expect(
+        darkMatter((enum_('rgb')
+                  ..hasCustom = true
+                  ..isSnakeString = true
+                  ..values = ['red', 'green', 'blue'])
+                .define())
+            .contains(darkMatter('''
+  String toString() {
+    switch(this) {
+      case RED: return "red";
+      case GREEN: return "green";
+      case BLUE: return "blue";
+    }
+    return null;
+  }
+
+  static Rgb fromString(String s) {
+    if(s == null) return null;
+    switch(s) {
+      case "red": return RED;
+      case "green": return GREEN;
+      case "blue": return BLUE;
+      default: return null;
+    }
+  }
+''')),
+        true);
+  });
+
 // end <main>
 }

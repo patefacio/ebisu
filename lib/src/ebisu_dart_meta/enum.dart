@@ -95,8 +95,11 @@ class Enum extends Object with Entity {
   /// If true scopes the enum values to library by assigning to var outside class
   bool hasLibraryScopedValues = false;
 
-  /// If true string value for each entry is snake case (default is shout)
+  /// If true string value for each entry is snake case
   bool isSnakeString = false;
+
+  /// If true string value for each entry is shout
+  bool isShoutString = false;
 
   /// Before true enum support enums were emulated with a class containing static
   /// consts. This had some unique features in terms of ability to generate json
@@ -143,7 +146,9 @@ class Enum extends Object with Entity {
   get requiresClass =>
       _requiresClass == null ? (hasJsonSupport || hasCustom) : _requiresClass;
 
-  String valueAsString(value) => isSnakeString ? value.shout : value.capCamel;
+  String valueAsString(value) => isShoutString
+      ? value.shout
+      : isSnakeString ? value.snake : value.capCamel;
 
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
 
