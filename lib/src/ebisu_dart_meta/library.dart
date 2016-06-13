@@ -314,7 +314,7 @@ class Library extends Object with CustomCodeBlock, Entity {
         ..sort())
       : '';
   get _loggerInit =>
-      includesLogger ? "final _logger = new Logger('$name');\n" : '';
+      includesLogger ? "final Logger _logger = new Logger('$name');\n" : '';
   get _enums => enums.map((e) => '${chomp(e.define())}\n').join('\n');
   get _classes => classes.map((c) => '${chomp(c.define())}\n').join('\n');
   get _variables => variables.map((v) => chomp(v.define())).join('\n');
@@ -341,7 +341,7 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   get _libraryMain => includesMain
       ? '''
-main([List<String> args]) {
+void main([List<String> args]) {
 $_initLogger${_mainCustomText}
 }'''
       : (libMain != null) ? libMain : '';

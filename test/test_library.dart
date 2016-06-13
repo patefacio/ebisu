@@ -9,12 +9,12 @@ import 'package:ebisu/ebisu_dart_meta.dart';
 
 // end <additional imports>
 
-final _logger = new Logger('test_library');
+final Logger _logger = new Logger('test_library');
 
 // custom <library test_library>
 // end <library test_library>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

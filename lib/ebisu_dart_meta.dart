@@ -70,7 +70,7 @@ part 'src/ebisu_dart_meta/script.dart';
 part 'src/ebisu_dart_meta/system.dart';
 part 'src/ebisu_dart_meta/variable.dart';
 
-final _logger = new Logger('ebisu_dart_meta');
+final Logger _logger = new Logger('ebisu_dart_meta');
 
 List<String> _nonJsonableTypes = [
   'String',

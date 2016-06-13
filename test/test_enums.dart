@@ -8,12 +8,12 @@ import 'package:ebisu/ebisu.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 // end <additional imports>
 
-final _logger = new Logger('test_enums');
+final Logger _logger = new Logger('test_enums');
 
 // custom <library test_enums>
 // end <library test_enums>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

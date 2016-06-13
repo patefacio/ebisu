@@ -11,12 +11,12 @@ import 'package:path/path.dart';
 
 // end <additional imports>
 
-final _logger = new Logger('test_functions');
+final Logger _logger = new Logger('test_functions');
 
 // custom <library test_functions>
 // end <library test_functions>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

@@ -15,7 +15,7 @@ import 'package:ebisu/ebisu.dart';
 
 // end <additional imports>
 
-final _logger = new Logger('test_code_generation');
+final Logger _logger = new Logger('test_code_generation');
 
 // custom <library test_code_generation>
 
@@ -209,7 +209,7 @@ Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
 
 // end <library test_code_generation>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

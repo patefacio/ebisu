@@ -720,6 +720,9 @@ initialized to [init].
               member('is_in_default_ctor')
                 ..doc = 'Member will be included from parms of default ctor'
                 ..init = true,
+              member('is_override')
+                ..doc = 'Adds [@override] annotation if true'
+                ..init = false
             ],
           class_('class')
             ..doc = '''
@@ -1166,6 +1169,7 @@ generated the source.
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
       library('test_annotation')..imports = ['package:ebisu/ebisu.dart'],
+      library('test_member')..imports = ['package:ebisu/ebisu.dart'],
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [

@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 // custom <additional imports>
 // end <additional imports>
 
-final _logger = new Logger('setup');
+final Logger _logger = new Logger('setup');
 
 String _scratchRemoveMeFolder;
 
@@ -37,7 +37,7 @@ void destroyTempData() {
 
 // end <library setup>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

@@ -5,6 +5,7 @@ import 'test_library.dart' as test_library;
 import 'test_enums.dart' as test_enums;
 import 'test_class.dart' as test_class;
 import 'test_annotation.dart' as test_annotation;
+import 'test_member.dart' as test_member;
 import 'test_entity.dart' as test_entity;
 import 'test_drudge_script.dart' as test_drudge_script;
 import 'test_code_generation.dart' as test_code_generation;
@@ -23,6 +24,7 @@ main() {
   test_enums.main();
   test_class.main();
   test_annotation.main();
+  test_member.main();
   test_entity.main();
   test_drudge_script.main();
   test_code_generation.main();

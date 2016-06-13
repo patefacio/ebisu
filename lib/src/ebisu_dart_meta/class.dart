@@ -322,6 +322,9 @@ class Member extends Object with Entity {
   /// Member will be included from parms of default ctor
   bool isInDefaultCtor = true;
 
+  /// Adds [@override] annotation if true
+  bool isOverride = false;
+
   // custom <class Member>
 
   /// [Member] has no children
@@ -365,19 +368,22 @@ class Member extends Object with Entity {
 
   String get finalDecl => isFinal ? 'final ' : '';
   String get observableDecl => isObservable ? '@observable ' : '';
+  String get overrideDecl => isOverride ? '@override ' : '';
   String get staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreinit =>
       (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
       (owner as Class).defaultCtorStyle != null &&
       !isJsonTransient;
 
+  get _declType => '${overrideDecl}${observableDecl}${staticDecl}${finalDecl}${type}';
+
   /// returns the member annotated, suitable for decl or parm in function
   String get annotated =>
-      '${observableDecl}${staticDecl}${finalDecl}${type} ${varName}';
+      '$_declType $varName';
 
   /// returns the member annotated named without private
   String get annotatedPublic =>
-      '${observableDecl}${staticDecl}${finalDecl}${type} ${name}';
+      '$_declType $name';
 
   /// returns the declaration
   String get decl => brCompact([

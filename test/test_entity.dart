@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 // custom <additional imports>
 // end <additional imports>
 
-final _logger = new Logger('test_entity');
+final Logger _logger = new Logger('test_entity');
 
 class Base {
   int ownershipCount = 0;
@@ -86,7 +86,7 @@ class GreatGrandchildEntity extends Base with Entity {
 // custom <library test_entity>
 // end <library test_entity>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

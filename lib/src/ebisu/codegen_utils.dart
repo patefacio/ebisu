@@ -614,4 +614,22 @@ String findGitRepo(String filePath) => findParentPath(
         .listSync()
         .any((fse) => fse is Directory && path.basename(fse.path) == '.git'));
 
+/// Path to root folder containing pubspec.yaml for given script
+String _scriptRootPath;
+
+/// Assumes script being run is within a dart package, searches up the path and
+/// returns the first folder containing a pubspec.yaml file
+String get scriptRootPath {
+  if (_scriptRootPath != null) return _scriptRootPath;
+
+  Directory current = new Directory(path.dirname(Platform.script.toFilePath()));
+  while (current.path != '/') {
+    if (new File(path.join(current.path, 'pubspec.yaml')).existsSync()) {
+      return _scriptRootPath = current.path;
+    }
+    current = current.parent;
+  }
+  throw "Could not find script root path";
+}
+
 // end <part codegen_utils>

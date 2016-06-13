@@ -7,12 +7,12 @@ import 'scratch_remove_me/lib/two_parts.dart';
 // custom <additional imports>
 // end <additional imports>
 
-final _logger = new Logger('expect_multi_parts');
+final Logger _logger = new Logger('expect_multi_parts');
 
 // custom <library expect_multi_parts>
 // end <library expect_multi_parts>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

@@ -30,7 +30,7 @@ part 'src/ebisu/entity.dart';
 part 'src/ebisu/json_support.dart';
 part 'src/ebisu/random_support.dart';
 
-final _logger = new Logger('ebisu');
+final Logger _logger = new Logger('ebisu');
 
 // custom <library ebisu>
 

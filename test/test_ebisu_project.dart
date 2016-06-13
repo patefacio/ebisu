@@ -12,12 +12,12 @@ import 'package:path/path.dart';
 
 // end <additional imports>
 
-final _logger = new Logger('test_ebisu_project');
+final Logger _logger = new Logger('test_ebisu_project');
 
 // custom <library test_ebisu_project>
 // end <library test_ebisu_project>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;

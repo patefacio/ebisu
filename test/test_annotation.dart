@@ -8,13 +8,13 @@ import 'package:test/test.dart';
 import 'package:ebisu/ebisu_dart_meta.dart';
 // end <additional imports>
 
-final _logger = new Logger('test_annotation');
+final Logger _logger = new Logger('test_annotation');
 
 // custom <library test_annotation>
 
 // end <library test_annotation>
 
-main([List<String> args]) {
+void main([List<String> args]) {
   Logger.root.onRecord.listen(
       (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
   Logger.root.level = Level.OFF;
