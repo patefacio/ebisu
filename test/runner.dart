@@ -12,7 +12,7 @@ import 'test_code_generation.dart' as test_code_generation;
 import 'test_ebisu_project.dart' as test_ebisu_project;
 import 'test_command_line_parser.dart' as test_command_line_parser;
 
-main() {
+void main() {
   Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');

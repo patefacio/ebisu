@@ -31,7 +31,8 @@ void main([List<String> args]) {
   test('isObservable', () {
     final cls = class_('foo')..members.add(member('foo')..isObservable = true);
     expect(
-        darkMatter(cls.definition).contains(darkMatter('@observable String foo')),
+        darkMatter(cls.definition)
+            .contains(darkMatter('@observable String foo')),
         true);
   });
 

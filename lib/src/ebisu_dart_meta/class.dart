@@ -366,24 +366,23 @@ class Member extends Object with Entity {
   bool get hasPublicCode => isPublic || hasGetter || hasSetter;
   bool get hasPrivateCode => !isPublic;
 
-  String get finalDecl => isFinal ? 'final ' : '';
-  String get observableDecl => isObservable ? '@observable ' : '';
-  String get overrideDecl => isOverride ? '@override ' : '';
-  String get staticDecl => isStatic ? 'static ' : '';
+  String get _finalDecl => isFinal ? 'final ' : '';
+  String get _observableDecl => isObservable ? '@observable ' : '';
+  String get _overrideDecl => isOverride ? '@override ' : '';
+  String get _staticDecl => isStatic ? 'static ' : '';
   bool get _ignoreinit =>
       (owner as Class).nonTransientMembers.every((m) => m.isFinal) &&
       (owner as Class).defaultCtorStyle != null &&
       !isJsonTransient;
 
-  get _declType => '${overrideDecl}${observableDecl}${staticDecl}${finalDecl}${type}';
+  get _declType =>
+      '${_overrideDecl}${_observableDecl}${_staticDecl}${_finalDecl}${type}';
 
   /// returns the member annotated, suitable for decl or parm in function
-  String get annotated =>
-      '$_declType $varName';
+  String get annotated => '$_declType $varName';
 
   /// returns the member annotated named without private
-  String get annotatedPublic =>
-      '$_declType $name';
+  String get annotatedPublic => '$_declType $name';
 
   /// returns the declaration
   String get decl => brCompact([

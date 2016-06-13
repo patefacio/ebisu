@@ -272,7 +272,7 @@ ${testLibraries
   .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
   .join('\n')}
 
-main() {
+void main() {
   Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('\${rec.level.name}: \${rec.time}: \${rec.message}');
