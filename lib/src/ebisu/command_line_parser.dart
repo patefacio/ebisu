@@ -3,9 +3,11 @@ part of ebisu.ebisu;
 class ParsedOption {
   const ParsedOption(this.name, this.value);
 
+  @override
   bool operator ==(ParsedOption other) =>
       identical(this, other) || name == other.name && value == other.value;
 
+  @override
   int get hashCode => hash2(name, value);
 
   final String name;
@@ -26,12 +28,14 @@ class ArgDetails {
       : _optionIndices = optionIndices ?? [],
         _parsedOption = parsedOption;
 
+  @override
   bool operator ==(ArgDetails other) =>
       identical(this, other) ||
       _index == other._index &&
           const ListEquality().equals(_optionIndices, other._optionIndices) &&
           _parsedOption == other._parsedOption;
 
+  @override
   int get hashCode => hash3(
       _index, const ListEquality<int>().hash(_optionIndices), _parsedOption);
 

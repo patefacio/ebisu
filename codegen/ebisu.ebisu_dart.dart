@@ -628,8 +628,9 @@ member('foo')..init = [1,2,3]
                     'If true includes custom block for additional user supplied ctor code'
                 ..init = false,
               member('is_const')
-                ..doc = 'True if the variable is const'
-                ..init = false,
+                ..doc = 'If true the ctor will be declared const'
+                ..access = WO
+                ..type = 'bool',
               member('calls_init')
                 ..doc = 'If true implementation is `=> _init()`'
                 ..init = false,

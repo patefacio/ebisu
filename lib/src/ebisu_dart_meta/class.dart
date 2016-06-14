@@ -57,8 +57,8 @@ class Ctor extends Object with CustomCodeBlock {
   /// If true includes custom block for additional user supplied ctor code
   bool hasCustom = false;
 
-  /// True if the variable is const
-  bool isConst = false;
+  /// If true the ctor will be declared const
+  set isConst(bool isConst) => _isConst = isConst;
 
   /// If true implementation is `=> _init()`
   bool callsInit = false;
@@ -69,6 +69,8 @@ class Ctor extends Object with CustomCodeBlock {
 
   String get qualifiedName =>
       _isDefaultCtor ? className : '${className}.${name}';
+
+  get isConst => _isConst ?? false;
 
   get classId => idFromString(className);
   get _hasOptMembers => optMembers.isNotEmpty;
@@ -252,6 +254,7 @@ $blockText
 
   // end <class Ctor>
 
+  bool _isConst;
 }
 
 /// Metadata associated with a member of a Dart class
@@ -747,6 +750,7 @@ _hashCode != null? _hashCode :
 
   String get hasOpEqualsMethod => hasUntypedOpEquals
       ? '''
+@override
 bool operator==(other) =>
   identical(this, other) || (runtimeType == other.runtimeType &&
 ${nonTransientMembers
@@ -754,9 +758,11 @@ ${nonTransientMembers
   .map((m) => memberCompare(m))
     .join(' &&\n')});
 
+@override
 int get hashCode => ${overrideHashCode};
 '''
       : '''
+@override
 bool operator==($_className other) =>
   identical(this, other) ||
 ${nonTransientMembers
@@ -764,6 +770,7 @@ ${nonTransientMembers
   .map((m) => memberCompare(m))
     .join(' &&\n')};
 
+@override
 int get hashCode => ${overrideHashCode};
 ''';
 
@@ -920,10 +927,14 @@ int compareTo($otherType other) {
       addCtor(ctorName) {
         var ctor = ctors[ctorName];
         if (ctor == null) {
+          bool makeConst = defaultCtorStyle == requiredParms &&
+              allMembersFinal &&
+              transientMembers.isEmpty;
+
           ctor = new Ctor()
             ..name = ctorName
             ..hasCustom = ctorCustoms.contains(ctorName)
-            ..isConst = ctorConst.contains(ctorName)
+            .._isConst ??= ctorConst.contains(ctorName) || makeConst
             ..className = _className;
 
           if (ctor.hasContent && ctor.tag == null) {
@@ -944,12 +955,6 @@ int compareTo($otherType other) {
       m.ctorsNamed.forEach(
           (ctorName) => addCtor(makeCtorName(ctorName))..namedMembers.add(m));
     });
-
-    if (defaultCtorStyle != null &&
-        allMembersFinal &&
-        transientMembers.length == 0) {
-      _ctors[''].isConst = true;
-    }
 
     if (ctorCallsInit) {
       _ctors[''].callsInit = true;
