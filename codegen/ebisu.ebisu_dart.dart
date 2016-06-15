@@ -669,6 +669,7 @@ If provided the member will be initialized to this text in generated
 ctor initializers. If this is null defaulted ctor args will be
 initialized to [init].
 '''
+                ..type = 'dynamic'
                 ..access = WO,
               member('ctors')
                 ..doc = "List of ctor names to include this member in"

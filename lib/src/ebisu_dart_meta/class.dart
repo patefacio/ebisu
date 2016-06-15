@@ -284,7 +284,7 @@ class Member extends Object with Entity {
   /// If provided the member will be initialized to this text in generated
   /// ctor initializers. If this is null defaulted ctor args will be
   /// initialized to [init].
-  set ctorInit(String ctorInit) => _ctorInit = ctorInit;
+  set ctorInit(dynamic ctorInit) => _ctorInit = ctorInit;
 
   /// List of ctor names to include this member in
   List<String> ctors = [];
@@ -415,7 +415,7 @@ class Member extends Object with Entity {
   final Id _id;
   Access _access;
   dynamic _init;
-  String _ctorInit;
+  dynamic _ctorInit;
   String _name;
   String _varName;
 }
