@@ -783,7 +783,7 @@ int get hashCode => ${overrideHashCode};
       bool simpleCopy = _simpleCopies.contains(jsonMapValueType(type));
       final rhs = simpleCopy ? '$varname[k]' : '$varname[k]?.copy()';
       return '''
-$varname ?. keys.fold({}, (prev, k) => prev..[k] = $rhs)''';
+$varname ?. keys ?. fold({}, (prev, k) => prev..[k] = $rhs)''';
     } else if (isSplayTreeSetType(type)) {
       final elementType = templateParameterType(type);
       //      return 'ebisu.deepCopySplayTreeSet($varname)';
