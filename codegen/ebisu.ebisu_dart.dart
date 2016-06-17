@@ -488,12 +488,10 @@ Prints:
                     'If true scopes the enum values to library by assigning to var outside class'
                 ..init = false,
               member('is_snake_string')
-                ..doc =
-                    'If true string value for each entry is snake case'
+                ..doc = 'If true string value for each entry is snake case'
                 ..init = false,
               member('is_shout_string')
-                ..doc =
-                    'If true string value for each entry is shout'
+                ..doc = 'If true string value for each entry is shout'
                 ..init = false,
               member('requires_class')
                 ..doc = '''

@@ -2,10 +2,10 @@ part of ebisu.ebisu_dart_meta;
 
 /// Access for member variable - ia - inaccessible, ro - read/only, rw read/write
 class Access implements Comparable<Access> {
-  static const IA = const Access._(0);
-  static const RO = const Access._(1);
-  static const RW = const Access._(2);
-  static const WO = const Access._(3);
+  static const Access IA = const Access._(0);
+  static const Access RO = const Access._(1);
+  static const Access RW = const Access._(2);
+  static const Access WO = const Access._(3);
 
   static get values => [IA, RO, RW, WO];
 
@@ -58,9 +58,9 @@ class Access implements Comparable<Access> {
 
 /// Dependency type of a PubDependency
 class PubDepType implements Comparable<PubDepType> {
-  static const PATH = const PubDepType._(0);
-  static const GIT = const PubDepType._(1);
-  static const HOSTED = const PubDepType._(2);
+  static const PubDepType PATH = const PubDepType._(0);
+  static const PubDepType GIT = const PubDepType._(1);
+  static const PubDepType HOSTED = const PubDepType._(2);
 
   static get values => [PATH, GIT, HOSTED];
 

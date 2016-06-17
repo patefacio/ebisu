@@ -56,7 +56,7 @@ void generateTestLibraries() {
               member('m_string_string')..type = 'Map<String,String>',
             ]
             ..customCodeBlock.snippets.add('''
-bool fooExists() async => (await new File("foo").exists());
+Future<bool> fooExists() async => (await new File("foo").exists());
 Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
 '''),
           class_('class_with_init')

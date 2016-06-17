@@ -2,12 +2,12 @@ part of ebisu.ebisu_dart_meta;
 
 /// Specifies type of argument like (https://docs.python.org/2/library/optparse.html#optparse-standard-option-types)
 class ArgType implements Comparable<ArgType> {
-  static const STRING = const ArgType._(0);
-  static const INT = const ArgType._(1);
-  static const LONG = const ArgType._(2);
-  static const CHOICE = const ArgType._(3);
-  static const DOUBLE = const ArgType._(4);
-  static const BOOL = const ArgType._(5);
+  static const ArgType STRING = const ArgType._(0);
+  static const ArgType INT = const ArgType._(1);
+  static const ArgType LONG = const ArgType._(2);
+  static const ArgType CHOICE = const ArgType._(3);
+  static const ArgType DOUBLE = const ArgType._(4);
+  static const ArgType BOOL = const ArgType._(5);
 
   static get values => [STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
 
