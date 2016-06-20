@@ -183,8 +183,10 @@ ${valueId(v)}'''
   get _docComment => doc != null ? dartComment(doc) : '';
 
   get _enumEntries => values
-      .map((v) =>
-          'static const $enumName ${valueId(v)} = const $enumName._(${v.value});')
+      .map((v) => brCompact([
+            v.doc != null ? dartComment(v.doc) : '',
+            'static const $enumName ${valueId(v)} = const $enumName._(${v.value});'
+          ]))
       .join('\n');
 
   get _enumValues => values.map((v) => v.shout).join(',\n  ');
