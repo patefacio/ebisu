@@ -699,6 +699,11 @@ initialized to [init].
               member('is_observable')
                 ..doc = 'If true annotated with observable'
                 ..init = false,
+              member('is_in_equality')
+                ..doc =
+                    'If true and member is in class with *hasOpEquals* then will be included in *operator ==*'
+                ..type = 'bool'
+                ..init = 'true',
               member('is_in_comparable')
                 ..doc =
                     'If true and member is in class that is comparable, it will be included in compareTo method'

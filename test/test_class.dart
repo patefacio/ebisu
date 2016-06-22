@@ -229,5 +229,49 @@ class SomeClass {
 '''));
   });
 
+  test('isIn... members', () {
+    final c = class_('c')
+      ..hasOpEquals = true
+      ..isComparable = true
+      ..members = [
+        member('in_equality'),
+        member('not_in_equality')..isInEquality = false,
+        member('in_comparable'),
+        member('not_in_compare_to')..isInComparable = false,
+        member('in_hash_code'),
+        member('not_in_hash_code')..isInHashCode = false,
+      ];
+
+    expect(darkMatter(c.definition).contains(darkMatter('''
+  @override
+  bool operator==(C other) =>
+    identical(this, other) ||
+    inEquality == other.inEquality &&
+    inComparable == other.inComparable &&
+    notInCompareTo == other.notInCompareTo &&
+    inHashCode == other.inHashCode &&
+    notInHashCode == other.notInHashCode;
+
+  @override
+  int get hashCode => hashObjects([
+    inEquality,
+    notInEquality,
+    inComparable,
+    notInCompareTo,
+    inHashCode]);
+
+  int compareTo(C other) {
+    int result = 0;
+    ((result = inEquality.compareTo(other.inEquality)) == 0) &&
+    ((result = notInEquality.compareTo(other.notInEquality)) == 0) &&
+    ((result = inComparable.compareTo(other.inComparable)) == 0) &&
+    ((result = inHashCode.compareTo(other.inHashCode)) == 0) &&
+    ((result = notInHashCode.compareTo(other.notInHashCode)) == 0);
+    return result;
+  }
+''')), true);
+
+  });
+
 // end <main>
 }

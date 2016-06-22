@@ -310,6 +310,9 @@ class Member extends Object with Entity {
   /// If true annotated with observable
   bool isObservable = false;
 
+  /// If true and member is in class with *hasOpEquals* then will be included in *operator ==*
+  bool isInEquality = true;
+
   /// If true and member is in class that is comparable, it will be included in compareTo method
   bool isInComparable = true;
 
@@ -754,7 +757,7 @@ _hashCode != null? _hashCode :
 bool operator==(other) =>
   identical(this, other) || (runtimeType == other.runtimeType &&
 ${nonTransientMembers
-  .where((m) => m.id.id != 'hash_code')
+  .where((m) => m.isInEquality && m.id.id != 'hash_code')
   .map((m) => memberCompare(m))
     .join(' &&\n')});
 
@@ -766,7 +769,7 @@ int get hashCode => ${overrideHashCode};
 bool operator==($_className other) =>
   identical(this, other) ||
 ${nonTransientMembers
-  .where((m) => m.id.id != 'hash_code')
+  .where((m) => m.isInEquality && m.id.id != 'hash_code')
   .map((m) => memberCompare(m))
     .join(' &&\n')};
 
