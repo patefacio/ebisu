@@ -239,13 +239,13 @@ indentBlock(
 
   get _toJson => hasJsonSupport
       ? '''
-  int toJson() => value;'''
+  toJson() => toString();'''
       : '';
 
   get _fromJson => hasJsonSupport
       ? '''
-  static $enumName fromJson(int v) {
-    return v==null? null : values[v];
+  static $enumName fromJson(dynamic v) {
+    return  (v is String)? fromString(v) : (v is int)? values[v] : v;
   }
 '''
       : '';

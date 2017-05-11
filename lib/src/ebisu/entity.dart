@@ -77,7 +77,8 @@ abstract class Entity implements Identifiable {
     bool isRoot = newOwner == null;
 
     if (_owner != null) {
-      _logger.severe('Owner being set when already has value ${_owner.id}');
+      _logger.severe('Owner set multiple times '
+          '($runtimeType:$id):(${_owner.runtimeType}:${_owner.id})\n${getStackTrace()}');
     }
 
     _owner = newOwner;
