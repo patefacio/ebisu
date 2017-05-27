@@ -1207,7 +1207,6 @@ generated the source.
             ..extend = 'Base'
             ..mixins = ['Entity'],
         ],
-      library('test_drudge_script')..imports = ['package:drudge/drudge.dart',],
       library('test_code_generation')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
@@ -1232,6 +1231,7 @@ generated the source.
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
       ..version = '0.7.4'
+      ..author = 'Daniel Davidson'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
 other languages like D) using a fairly declarative aproach.

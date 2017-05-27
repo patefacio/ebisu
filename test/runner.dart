@@ -7,7 +7,6 @@ import 'test_class.dart' as test_class;
 import 'test_annotation.dart' as test_annotation;
 import 'test_member.dart' as test_member;
 import 'test_entity.dart' as test_entity;
-import 'test_drudge_script.dart' as test_drudge_script;
 import 'test_code_generation.dart' as test_code_generation;
 import 'test_ebisu_project.dart' as test_ebisu_project;
 import 'test_command_line_parser.dart' as test_command_line_parser;
@@ -26,7 +25,6 @@ void main() {
   test_annotation.main();
   test_member.main();
   test_entity.main();
-  test_drudge_script.main();
   test_code_generation.main();
   test_ebisu_project.main();
   test_command_line_parser.main();

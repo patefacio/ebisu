@@ -179,10 +179,6 @@ Only "version" and "path" overrides are supported.
       }
     }
 
-    pubSpec
-      ..addDevDependency(new PubDependency('yaml'))
-      ..addDevDependency(new PubDependency('browser'), true);
-
     if (generateDrudge) {
       final drudgeScript = join(rootPath, 'bin', 'drudge.${id.snake}.dart');
       mergeWithFile(new DrudgeScriptGenerator(this).contents, drudgeScript);
