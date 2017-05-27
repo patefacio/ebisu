@@ -72,13 +72,17 @@ abstract class Entity implements Identifiable {
   /// Returns true if this has the brief or more detailed comment
   get hasComment => brief != null || descr != null;
 
+  get _displayKey => '($id:$runtimeType)';
+
   /// Establishes the [Entity] that *this* [Entity] is owned by.
   set owner(Entity newOwner) {
     bool isRoot = newOwner == null;
 
+    _logger.info('Setting owner of ${_displayKey} to ${newOwner?._displayKey}');
+
     if (_owner != null) {
       _logger.severe('Owner set multiple times '
-          '($runtimeType:$id):(${_owner.runtimeType}:${_owner.id})\n${getStackTrace()}');
+          '$key:${_owner._displayKey}:${newOwner.key}\n${getStackTrace()}');
     }
 
     _owner = newOwner;
@@ -89,9 +93,6 @@ abstract class Entity implements Identifiable {
         ..addAll(newOwner.entityPath)
         ..add(this);
     }
-
-    _logger.info('SetOwner: ($id:${runtimeType}) to '
-        '${newOwner == null? "root" : "(${newOwner.id}:${newOwner.runtimeType})"}');
 
     for (final child in children) {
       child.owner = this;

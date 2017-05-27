@@ -912,7 +912,6 @@ int compareTo($otherType other) {
       }
     }
 
-    members.forEach((m) => m.owner = this);
     _addMemberToDefaultCtor();
 
     // Iterate on all members and create the appropriate ctors
