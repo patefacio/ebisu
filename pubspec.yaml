@@ -22,6 +22,8 @@ dependencies:
   stack_trace: "^1.4.1"
   yaml: ^2.1.12
   args: ">=0.12.0 < 0.14.0"
+  drudge:
+    git: git://github.com/patefacio/drudge
 
 # end <ebisu dependencies>
 
@@ -30,8 +32,6 @@ dev_dependencies:
 # custom <ebisu dev dependencies>
 
   test: ">=0.12.0 < 0.14.0"
-  drudge:
-    git: git://github.com/patefacio/drudge
 
 # end <ebisu dev dependencies>
 
