@@ -310,5 +310,7 @@ void main([List<String> args]) {
     });
   });
 
+  tearDownAll(() async => destroyTempData());
+
 // end <main>
 }
