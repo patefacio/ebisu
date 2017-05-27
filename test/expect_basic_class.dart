@@ -2,7 +2,7 @@ library ebisu.expect_basic_class;
 
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'scratch_remove_me/lib/basic_class.dart';
+import 'sample_generated_code/lib/basic_class.dart';
 
 // custom <additional imports>
 // end <additional imports>

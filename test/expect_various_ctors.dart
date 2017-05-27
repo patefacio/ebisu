@@ -2,7 +2,7 @@ library ebisu.expect_various_ctors;
 
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'scratch_remove_me/lib/various_ctors.dart';
+import 'sample_generated_code/lib/various_ctors.dart';
 
 // custom <additional imports>
 // end <additional imports>

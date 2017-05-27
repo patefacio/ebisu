@@ -11,19 +11,19 @@ import 'package:test/test.dart';
 
 final Logger _logger = new Logger('setup');
 
-String _scratchRemoveMeFolder;
+String _sampleGeneratedCodeFolder;
 
 // custom <library setup>
 
 String get tempPath {
-  if (_scratchRemoveMeFolder == null) {
+  if (_sampleGeneratedCodeFolder == null) {
     String packageRootPath =
         dirname(dirname(absolute(Platform.script.toFilePath())));
-    _scratchRemoveMeFolder =
-        joinAll([packageRootPath, 'test', 'scratch_remove_me']);
+    _sampleGeneratedCodeFolder =
+        joinAll([packageRootPath, 'test', 'sample_generated_code']);
   }
 
-  return _scratchRemoveMeFolder;
+  return _sampleGeneratedCodeFolder;
 }
 
 System tempSystem(String id) => system(id)..rootPath = tempPath;

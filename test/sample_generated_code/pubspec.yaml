@@ -1,0 +1,30 @@
+name: test_code_generation
+version: 1.1.1
+author: Ignatius J. Reilly
+homepage: http://confederacy_of_dunces.com
+description: >
+  Test pubspec
+environment:
+  sdk: '>=1.8.2 <2.0.0'
+
+dependencies:
+  quiver: "any"
+
+# custom <test_code_generation dependencies>
+# end <test_code_generation dependencies>
+
+dev_dependencies:
+  test: "any"
+
+# custom <test_code_generation dev dependencies>
+# end <test_code_generation dev dependencies>
+
+dependency_overrides:
+# custom <test_code_generation dependency overrides>
+# end <test_code_generation dependency overrides>
+
+transformers:
+
+# custom <test_code_generation transformers>
+# end <test_code_generation transformers>
+

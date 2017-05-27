@@ -1165,7 +1165,7 @@ generated the source.
           'package:path/path.dart',
           'io',
         ]
-        ..variables = [variable('scratch_remove_me_folder')..isPublic = false]
+        ..variables = [variable('sample_generated_code_folder')..isPublic = false]
         ..includesLogger = true,
       library('test_dart_meta')
         ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
@@ -1218,11 +1218,11 @@ generated the source.
         ]
         ..includesLogger = true,
       library('expect_basic_class')
-        ..imports = ['scratch_remove_me/lib/basic_class.dart',],
+        ..imports = ['sample_generated_code/lib/basic_class.dart',],
       library('expect_various_ctors')
-        ..imports = ['scratch_remove_me/lib/various_ctors.dart',],
+        ..imports = ['sample_generated_code/lib/various_ctors.dart',],
       library('expect_multi_parts')
-        ..imports = ['scratch_remove_me/lib/two_parts.dart',],
+        ..imports = ['sample_generated_code/lib/two_parts.dart',],
       library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',],
       library('test_command_line_parser')
         ..imports = ['package:ebisu/ebisu.dart',],
