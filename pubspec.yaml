@@ -1,6 +1,5 @@
 name: ebisu
 version: 0.7.3
-author: Daniel Davidson <dbdavidson@yahoo.com>
 homepage: https://github.com/patefacio/ebisu
 description: >
   A library that supports code generation of the structure Dart (and potentially
@@ -34,9 +33,6 @@ dev_dependencies:
 #  dart_analyzer: "^1.1.2"
   drudge:
     git: git://github.com/patefacio/drudge
-
-environment:
-  sdk: ">=1.8.0 <2.0.0"
 
 # end <ebisu dev dependencies>
 

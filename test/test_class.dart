@@ -270,7 +270,6 @@ class SomeClass {
     return result;
   }
 ''')), true);
-
   });
 
 // end <main>

@@ -39,7 +39,11 @@ void generateTestLibraries() {
     ..pubSpec.addDevDependency(pubdep('test'))
     ..libraries = [
       library('basic_class')
-        ..imports = ['io', 'async', 'package:path/path.dart',]
+        ..imports = [
+          'io',
+          'async',
+          'package:path/path.dart',
+        ]
         ..enums = [
           enum_('color')
             ..hasJsonSupport = true
@@ -196,10 +200,18 @@ Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
               variable('p1_v1')..init = 3,
               variable('p1_v2')..init = 4
             ]
-            ..classes = [class_('p1_c1'), class_('p1_c2'),],
+            ..classes = [
+              class_('p1_c1'),
+              class_('p1_c2'),
+            ],
           part('p2')
-            ..variables = [variable('p2_v1')..init = 'goo',]
-            ..classes = [class_('p2_c1'), class_('p2_c2'),],
+            ..variables = [
+              variable('p2_v1')..init = 'goo',
+            ]
+            ..classes = [
+              class_('p2_c1'),
+              class_('p2_c2'),
+            ],
         ]
     ];
 

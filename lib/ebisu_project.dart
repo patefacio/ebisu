@@ -193,8 +193,11 @@ String here = absolute(Platform.script.toFilePath());
   }
 
   runGitLsFiles() {
-    final result = Process.runSync('git',
-        ['--git-dir=${repoPath}/.git', '--work-tree=${repoPath}', 'ls-files',]);
+    final result = Process.runSync('git', [
+      '--git-dir=${repoPath}/.git',
+      '--work-tree=${repoPath}',
+      'ls-files',
+    ]);
     print(result.stdout.split('\n').map((l) => join(repoPath, l)).join('\n'));
   }
 

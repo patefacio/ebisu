@@ -52,10 +52,10 @@ class Access implements Comparable<Access> {
     }
   }
 
-  int toJson() => value;
+  toJson() => toString();
 
-  static Access fromJson(int v) {
-    return v == null ? null : values[v];
+  static Access fromJson(dynamic v) {
+    return (v is String) ? fromString(v) : (v is int) ? values[v] : v;
   }
 }
 
@@ -105,10 +105,10 @@ class PubDepType implements Comparable<PubDepType> {
     }
   }
 
-  int toJson() => value;
+  toJson() => toString();
 
-  static PubDepType fromJson(int v) {
-    return v == null ? null : values[v];
+  static PubDepType fromJson(dynamic v) {
+    return (v is String) ? fromString(v) : (v is int) ? values[v] : v;
   }
 }
 
