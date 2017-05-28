@@ -276,7 +276,7 @@ void main() {
 
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
-  .map((t) => "  ${t.id.snake}.main();")
+  .map((t) => "  ${t.id.snake}.main(null);")
   .join('\n')}
 }
 

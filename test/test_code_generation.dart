@@ -222,9 +222,11 @@ Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
 // end <library test_code_generation>
 
 void main([List<String> args]) {
-  Logger.root.onRecord.listen(
-      (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
-  Logger.root.level = Level.OFF;
+  if (args?.isEmpty ?? false) {
+    Logger.root.onRecord.listen(
+        (LogRecord r) => print("${r.loggerName} [${r.level}]:\t${r.message}"));
+    Logger.root.level = Level.OFF;
+  }
 // custom <main>
 
   // Logger.root.onRecord.listen((LogRecord r) =>

@@ -326,13 +326,18 @@ class Library extends Object with CustomCodeBlock, Entity {
 
   get _libraryCustom => indentBlock(blockText);
 
-  get _initLogger => isTest
-      ? r"""
-  Logger.root.onRecord.listen((LogRecord r) =>
-      print("${r.loggerName} [${r.level}]:\t${r.message}"));
-  Logger.root.level = Level.OFF;
-"""
-      : '';
+  get _initLogger {
+    if (isTest) {
+      return r"""
+  if(args?.isEmpty ?? false) {
+    Logger.root.onRecord.listen((LogRecord r) =>
+        print("${r.loggerName} [${r.level}]:\t${r.message}"));
+    Logger.root.level = Level.OFF;
+  }
+""";
+    }
+    return '';
+  }
 
   get mainCustomBlock => _mainCustomBlock =
       _mainCustomBlock == null ? new CodeBlock(null) : _mainCustomBlock;

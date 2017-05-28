@@ -17,15 +17,15 @@ void main() {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
-  test_dart_meta.main();
-  test_functions.main();
-  test_library.main();
-  test_enums.main();
-  test_class.main();
-  test_annotation.main();
-  test_member.main();
-  test_entity.main();
-  test_code_generation.main();
-  test_ebisu_project.main();
-  test_command_line_parser.main();
+  test_dart_meta.main(null);
+  test_functions.main(null);
+  test_library.main(null);
+  test_enums.main(null);
+  test_class.main(null);
+  test_annotation.main(null);
+  test_member.main(null);
+  test_entity.main(null);
+  test_code_generation.main(null);
+  test_ebisu_project.main(null);
+  test_command_line_parser.main(null);
 }
