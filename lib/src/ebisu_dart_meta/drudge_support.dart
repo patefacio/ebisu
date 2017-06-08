@@ -54,7 +54,7 @@ Drudge(\$here)
           runTests
         ])),
     fileSystemEventRunner(
-        changeSpec(FileSystemEvent.ALL, [ '\${libPath}**.dart' ]),
+        changeSpec(FileSystemEvent.ALL, [ '\${libPath}**.dart', '\${testPath}**.dart' ]),
         recipe('run_tests', [
           runTests
         ]))
