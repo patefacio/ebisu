@@ -1,5 +1,24 @@
 part of ebisu.ebisu_dart_meta;
 
+enum LibraryScopedValuesCase { camelCase, capCamelCase, snakeCase, shoutCase }
+
+/// Convenient access to LibraryScopedValuesCase.camelCase with *camelCase* see [LibraryScopedValuesCase].
+///
+const LibraryScopedValuesCase camelCase = LibraryScopedValuesCase.camelCase;
+
+/// Convenient access to LibraryScopedValuesCase.capCamelCase with *capCamelCase* see [LibraryScopedValuesCase].
+///
+const LibraryScopedValuesCase capCamelCase =
+    LibraryScopedValuesCase.capCamelCase;
+
+/// Convenient access to LibraryScopedValuesCase.snakeCase with *snakeCase* see [LibraryScopedValuesCase].
+///
+const LibraryScopedValuesCase snakeCase = LibraryScopedValuesCase.snakeCase;
+
+/// Convenient access to LibraryScopedValuesCase.shoutCase with *shoutCase* see [LibraryScopedValuesCase].
+///
+const LibraryScopedValuesCase shoutCase = LibraryScopedValuesCase.shoutCase;
+
 /// Define the id and value for an enum value
 class EnumValue {
   EnumValue(this._id, this.value);
@@ -93,7 +112,11 @@ class Enum extends Object with Entity {
   bool hasCustom = false;
 
   /// If true scopes the enum values to library by assigning to var outside class
-  bool hasLibraryScopedValues = false;
+  set hasLibraryScopedValues(bool hasLibraryScopedValues) =>
+      _hasLibraryScopedValues = hasLibraryScopedValues;
+
+  /// If set, hasLibraryScopedValues assumed true and values named accordingly
+  LibraryScopedValuesCase libraryScopedValuesCase;
 
   /// If true string value for each entry is snake case
   bool isSnakeString = false;
@@ -117,12 +140,15 @@ class Enum extends Object with Entity {
   /// Enum has no children
   Iterable<Entity> get children => new Iterable<Entity>.generate(0);
 
+  get hasLibraryScopedValues =>
+      libraryScopedValuesCase != null ? true : _hasLibraryScopedValues ?? false;
+
   /// Setting of values accepts [ (String|Id|EnumValue),... ]
 
   _evCheckValue(EnumValue ev, int index) =>
       ev.value == null ? ((new EnumValue(ev.id, index))..doc = ev.doc) : ev;
 
-  set values(List values) => _values = enumerate(values)
+  set values(Iterable values) => _values = enumerate(values)
       .map((IndexedValue iv) => iv.value is String
           ? new EnumValue(idFromString(iv.value), iv.index)
           : iv.value is Id
@@ -150,7 +176,23 @@ class Enum extends Object with Entity {
       ? value.shout
       : isSnakeString ? value.snake : value.capCamel;
 
+  String casedName(EnumValue v) =>
+      libraryScopedValuesCase == camelCase
+          ? v.id.camel
+          : libraryScopedValuesCase == capCamelCase
+              ? v.id.capCamel
+              : libraryScopedValuesCase == shoutCase
+                  ? v.id.shout
+                  : libraryScopedValuesCase == snakeCase
+                      ? v.id.snake
+                      : throw new ArgumentError(
+                          "Invalid case type ${libraryScopedValuesCase}");
+
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
+
+  String libraryValueId(EnumValue v) => libraryScopedValuesCase != null
+      ? casedName(v)
+      : requiresClass ? v.shout : v.camel;
 
   String enumValueEntry(EnumValue v) => v.doc != null
       ? '''
@@ -268,7 +310,7 @@ Convenient access to ${enumName}.${valueId(v)} with *${valueId(v)}* see [${enumN
 $userComment''';
     return '''
 ${chomp(dartComment(comment), true)}
-const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
+const ${enumName} ${libraryValueId(v)} = ${enumName}.${valueId(v)};
 ''';
   }
 
@@ -282,6 +324,7 @@ const ${enumName} ${valueId(v)} = ${enumName}.${valueId(v)};
   List<EnumValue> _values = [];
   String _name;
   String _enumName;
+  bool _hasLibraryScopedValues = false;
   bool _requiresClass;
 }
 

@@ -82,7 +82,7 @@ abstract class Entity implements Identifiable {
 
     if (_owner != null) {
       _logger.severe('Owner set multiple times '
-          '$key:${_owner._displayKey}:${newOwner.key}\n${getStackTrace()}');
+          '${_owner._displayKey}:${newOwner._displayKey}\n${getStackTrace()}');
     }
 
     _owner = newOwner;

@@ -66,6 +66,36 @@ enum Rgb {
 
     expect(
         darkMatter((enum_('rgb')
+                  ..values = ['red', 'green', 'blue']
+                  ..libraryScopedValuesCase = capCamelCase)
+                .define())
+            .contains(darkMatter('''
+    const Rgb Red = Rgb.red;
+    ''')),
+        true);
+
+    expect(
+        darkMatter((enum_('rgb')
+                  ..values = ['red', 'green', 'blue']
+                  ..libraryScopedValuesCase = camelCase)
+                .define())
+            .contains(darkMatter('''
+    const Rgb red = Rgb.red;
+    ''')),
+        true);
+
+    expect(
+        darkMatter((enum_('rgb')
+                  ..values = ['red', 'green', 'blue']
+                  ..libraryScopedValuesCase = shoutCase)
+                .define())
+            .contains(darkMatter('''
+    const Rgb RED = Rgb.red;
+    ''')),
+        true);
+
+    expect(
+        darkMatter((enum_('rgb')
                   ..hasCustom = true
                   ..isSnakeString = true
                   ..values = ['red', 'green', 'blue'])

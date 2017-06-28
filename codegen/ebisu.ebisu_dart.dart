@@ -120,7 +120,10 @@ classes with JSON support.
     ..parts = [
       part('annotation')
         ..classes = [
-          class_('annotation')..members = [member('text')..access = RO,]
+          class_('annotation')
+            ..members = [
+              member('text')..access = RO,
+            ]
         ],
       part('system')
         ..classes = [
@@ -416,6 +419,11 @@ If not set, id of system is used.
             ],
         ],
       part('enum')
+        ..enums = [
+          enum_('library_scoped_values_case')
+          ..hasLibraryScopedValues = true
+            ..values = ['camel_case', 'cap_camel_case', 'snake_case', 'shout_case']
+        ]
         ..classes = [
           class_('enum_value')
             ..doc = 'Define the id and value for an enum value'
@@ -486,7 +494,12 @@ Prints:
               member('has_library_scoped_values')
                 ..doc =
                     'If true scopes the enum values to library by assigning to var outside class'
-                ..init = false,
+                ..init = false
+                ..access = WO,
+              member('library_scoped_values_case')
+                ..doc =
+                    'If set, hasLibraryScopedValues assumed true and values named accordingly'
+                ..type = 'LibraryScopedValuesCase',
               member('is_snake_string')
                 ..doc = 'If true string value for each entry is snake case'
                 ..init = false,
@@ -567,7 +580,11 @@ member('foo')..init = [1,2,3]
             ],
           enum_('json_key_format')
             ..doc = 'When serializing json, how to name the keys'
-            ..values = [id('camel'), id('cap_camel'), id('snake'),],
+            ..values = [
+              id('camel'),
+              id('cap_camel'),
+              id('snake'),
+            ],
           enum_('default_ctor_style')
             ..doc = '''Select various styles for default generated ctor.
 
@@ -1148,7 +1165,12 @@ generated the source.
             ..hasJsonSupport = true
             ..doc =
                 'Access for member variable - ia - inaccessible, ro - read/only, rw read/write'
-            ..values = [id('ia'), id('ro'), id('rw'), id('wo'),],
+            ..values = [
+              id('ia'),
+              id('ro'),
+              id('rw'),
+              id('wo'),
+            ],
           enum_('pub_dep_type')
             ..doc = 'Dependency type of a PubDependency'
             ..hasJsonSupport = true
@@ -1165,11 +1187,18 @@ generated the source.
           'package:path/path.dart',
           'io',
         ]
-        ..variables = [variable('sample_generated_code_folder')..isPublic = false]
+        ..variables = [
+          variable('sample_generated_code_folder')..isPublic = false
+        ]
         ..includesLogger = true,
       library('test_dart_meta')
-        ..imports = ['package:ebisu/ebisu_dart_meta.dart',],
-      library('test_functions')..imports = ['package:ebisu/ebisu.dart',],
+        ..imports = [
+          'package:ebisu/ebisu_dart_meta.dart',
+        ],
+      library('test_functions')
+        ..imports = [
+          'package:ebisu/ebisu.dart',
+        ],
       library('test_library')..imports = [],
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
@@ -1178,7 +1207,10 @@ generated the source.
       library('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
-          class_('base')..members = [member('ownership_count')..init = 0,],
+          class_('base')
+            ..members = [
+              member('ownership_count')..init = 0,
+            ],
           class_('root_entity')
             ..extend = 'Base'
             ..mixins = ['Entity']
@@ -1218,19 +1250,30 @@ generated the source.
         ]
         ..includesLogger = true,
       library('expect_basic_class')
-        ..imports = ['sample_generated_code/lib/basic_class.dart',],
+        ..imports = [
+          'sample_generated_code/lib/basic_class.dart',
+        ],
       library('expect_various_ctors')
-        ..imports = ['sample_generated_code/lib/various_ctors.dart',],
+        ..imports = [
+          'sample_generated_code/lib/various_ctors.dart',
+        ],
       library('expect_multi_parts')
-        ..imports = ['sample_generated_code/lib/two_parts.dart',],
-      library('test_ebisu_project')..imports = ['package:ebisu/ebisu.dart',],
+        ..imports = [
+          'sample_generated_code/lib/two_parts.dart',
+        ],
+      library('test_ebisu_project')
+        ..imports = [
+          'package:ebisu/ebisu.dart',
+        ],
       library('test_command_line_parser')
-        ..imports = ['package:ebisu/ebisu.dart',],
+        ..imports = [
+          'package:ebisu/ebisu.dart',
+        ],
     ]
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.7.8'
+      ..version = '0.7.9'
       ..author = 'Daniel Davidson <dbdavidson@yahoo.com>'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
@@ -1358,7 +1401,10 @@ generates code that requires packages.
               class_('parsed_option')
                 ..isImmutable = true
                 ..hasOpEquals = true
-                ..members = [member('name'), member('value'),],
+                ..members = [
+                  member('name'),
+                  member('value'),
+                ],
               class_('arg_details')
                 ..defaultCtorStyle = namedParms
                 ..defaultMemberAccess = RO
