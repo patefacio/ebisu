@@ -260,12 +260,14 @@ ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('t
 
     if (generateRunner) {
       String testRunnerPath = "${rootPath}/test/runner.dart";
+      testLibRelativePath(Library testLib) =>
+          relative(testLib.libStubPath, from: dirname(testRunnerPath));
       mergeWithDartFile(
           '''
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
-  .map((t) => "import '${t.id.snake}.dart' as ${t.id.snake};")
+  .map((t) => "import '${testLibRelativePath(t)}' as ${t.id.snake};")
   .join('\n')}
 
 void main() {

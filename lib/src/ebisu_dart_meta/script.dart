@@ -14,7 +14,8 @@ class ArgType implements Comparable<ArgType> {
 
   static const ArgType BOOL = const ArgType._(5);
 
-  static get values => [STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
+  static List<ArgType> get values =>
+      const <ArgType>[STRING, INT, LONG, CHOICE, DOUBLE, BOOL];
 
   final int value;
 
@@ -22,7 +23,7 @@ class ArgType implements Comparable<ArgType> {
 
   const ArgType._(this.value);
 
-  copy() => this;
+  ArgType copy() => this;
 
   int compareTo(ArgType other) => value.compareTo(other.value);
 

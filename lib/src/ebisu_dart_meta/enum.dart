@@ -176,17 +176,16 @@ class Enum extends Object with Entity {
       ? value.shout
       : isSnakeString ? value.snake : value.capCamel;
 
-  String casedName(EnumValue v) =>
-      libraryScopedValuesCase == camelCase
-          ? v.id.camel
-          : libraryScopedValuesCase == capCamelCase
-              ? v.id.capCamel
-              : libraryScopedValuesCase == shoutCase
-                  ? v.id.shout
-                  : libraryScopedValuesCase == snakeCase
-                      ? v.id.snake
-                      : throw new ArgumentError(
-                          "Invalid case type ${libraryScopedValuesCase}");
+  String casedName(EnumValue v) => libraryScopedValuesCase == camelCase
+      ? v.id.camel
+      : libraryScopedValuesCase == capCamelCase
+          ? v.id.capCamel
+          : libraryScopedValuesCase == shoutCase
+              ? v.id.shout
+              : libraryScopedValuesCase == snakeCase
+                  ? v.id.snake
+                  : throw new ArgumentError(
+                      "Invalid case type ${libraryScopedValuesCase}");
 
   String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
 
@@ -237,7 +236,7 @@ ${valueId(v)}'''
 class $enumName implements Comparable<$enumName> {
 ${indentBlock(_enumEntries)}
 
-  static get values => [
+  static List<$enumName> get values => const <$enumName>[
   ${indentBlock(_enumValues)}
   ];
 
@@ -247,7 +246,7 @@ ${indentBlock(_enumEntries)}
 
   const $enumName._(this.value);
 
-  copy() => this;
+  $enumName copy() => this;
 
   int compareTo($enumName other) => value.compareTo(other.value);
 ''';
@@ -281,13 +280,13 @@ indentBlock(
 
   get _toJson => hasJsonSupport
       ? '''
-  toJson() => toString();'''
+  String toJson() => toString();'''
       : '';
 
   get _fromJson => hasJsonSupport
       ? '''
   static $enumName fromJson(dynamic v) {
-    return  (v is String)? fromString(v) : (v is int)? values[v] : v;
+    return  (v is String)? fromString(v) : (v is int)? values[v] : v as $enumName;
   }
 '''
       : '';

@@ -16,7 +16,7 @@ class Color implements Comparable<Color> {
 
   static const Color BLUE = const Color._(2);
 
-  static get values => [RED, GREEN, BLUE];
+  static List<Color> get values => const <Color>[RED, GREEN, BLUE];
 
   final int value;
 
@@ -24,7 +24,7 @@ class Color implements Comparable<Color> {
 
   const Color._(this.value);
 
-  copy() => this;
+  Color copy() => this;
 
   int compareTo(Color other) => value.compareTo(other.value);
 
@@ -54,10 +54,10 @@ class Color implements Comparable<Color> {
     }
   }
 
-  toJson() => toString();
+  String toJson() => toString();
 
   static Color fromJson(dynamic v) {
-    return (v is String) ? fromString(v) : (v is int) ? values[v] : v;
+    return (v is String) ? fromString(v) : (v is int) ? values[v] : v as Color;
   }
 }
 

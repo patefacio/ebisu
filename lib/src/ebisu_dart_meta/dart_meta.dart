@@ -10,7 +10,7 @@ class Access implements Comparable<Access> {
 
   static const Access WO = const Access._(3);
 
-  static get values => [IA, RO, RW, WO];
+  static List<Access> get values => const <Access>[IA, RO, RW, WO];
 
   final int value;
 
@@ -18,7 +18,7 @@ class Access implements Comparable<Access> {
 
   const Access._(this.value);
 
-  copy() => this;
+  Access copy() => this;
 
   int compareTo(Access other) => value.compareTo(other.value);
 
@@ -52,10 +52,10 @@ class Access implements Comparable<Access> {
     }
   }
 
-  toJson() => toString();
+  String toJson() => toString();
 
   static Access fromJson(dynamic v) {
-    return (v is String) ? fromString(v) : (v is int) ? values[v] : v;
+    return (v is String) ? fromString(v) : (v is int) ? values[v] : v as Access;
   }
 }
 
@@ -67,7 +67,7 @@ class PubDepType implements Comparable<PubDepType> {
 
   static const PubDepType HOSTED = const PubDepType._(2);
 
-  static get values => [PATH, GIT, HOSTED];
+  static List<PubDepType> get values => const <PubDepType>[PATH, GIT, HOSTED];
 
   final int value;
 
@@ -75,7 +75,7 @@ class PubDepType implements Comparable<PubDepType> {
 
   const PubDepType._(this.value);
 
-  copy() => this;
+  PubDepType copy() => this;
 
   int compareTo(PubDepType other) => value.compareTo(other.value);
 
@@ -105,10 +105,12 @@ class PubDepType implements Comparable<PubDepType> {
     }
   }
 
-  toJson() => toString();
+  String toJson() => toString();
 
   static PubDepType fromJson(dynamic v) {
-    return (v is String) ? fromString(v) : (v is int) ? values[v] : v;
+    return (v is String)
+        ? fromString(v)
+        : (v is int) ? values[v] : v as PubDepType;
   }
 }
 

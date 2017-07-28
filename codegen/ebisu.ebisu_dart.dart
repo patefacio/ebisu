@@ -1273,7 +1273,7 @@ generated the source.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.7.9'
+      ..version = '0.7.10'
       ..author = 'Daniel Davidson <dbdavidson@yahoo.com>'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially
