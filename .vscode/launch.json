@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "test code block",
+            "type": "dart-cli",
+            "request": "launch",
+            "program": "${workspaceRoot}/test/test_code_block.dart"
+        },
+        {
+            "name": "test enums",
+            "type": "dart-cli",
+            "request": "launch",
+            "program": "${workspaceRoot}/test/test_enums.dart"
+        },
+        {
+            "name": "runner",
+            "type": "dart-cli",
+            "request": "launch",
+            "program": "${workspaceRoot}/test/runner.dart"
+        }
+    ]
+}
