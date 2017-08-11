@@ -421,8 +421,13 @@ If not set, id of system is used.
       part('enum')
         ..enums = [
           enum_('library_scoped_values_case')
-          ..hasLibraryScopedValues = true
-            ..values = ['camel_case', 'cap_camel_case', 'snake_case', 'shout_case']
+            ..hasLibraryScopedValues = true
+            ..values = [
+              'camel_case',
+              'cap_camel_case',
+              'snake_case',
+              'shout_case'
+            ]
         ]
         ..classes = [
           class_('enum_value')
@@ -1199,6 +1204,7 @@ generated the source.
         ..imports = [
           'package:ebisu/ebisu.dart',
         ],
+      library('test_code_block')..imports = ['package:ebisu/ebisu.dart'],
       library('test_library')..imports = [],
       library('test_enums')..imports = [],
       library('test_class')..imports = ['package:ebisu/ebisu.dart'],
@@ -1581,6 +1587,7 @@ would give:
 
 '''
                 ..hasCtorSansNew = true
+                ..isCopyable = true
                 ..members = [
                   member('tag')
                     ..doc =

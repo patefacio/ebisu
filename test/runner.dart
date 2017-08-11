@@ -1,6 +1,7 @@
 import 'package:logging/logging.dart';
 import 'test_dart_meta.dart' as test_dart_meta;
 import 'test_functions.dart' as test_functions;
+import 'test_code_block.dart' as test_code_block;
 import 'test_library.dart' as test_library;
 import 'test_enums.dart' as test_enums;
 import 'test_class.dart' as test_class;
@@ -19,6 +20,7 @@ void main() {
 
   test_dart_meta.main(null);
   test_functions.main(null);
+  test_code_block.main(null);
   test_library.main(null);
   test_enums.main(null);
   test_class.main(null);

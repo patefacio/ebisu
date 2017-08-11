@@ -132,6 +132,8 @@ class CustomCodeBlock {
 class CodeBlock {
   CodeBlock(this.tag);
 
+  copy() => new CodeBlock._copy(this);
+
   /// Tag for protect block. If present includes protect block
   String tag;
 
@@ -162,6 +164,11 @@ class CodeBlock {
 
   // end <class CodeBlock>
 
+  CodeBlock._copy(CodeBlock other)
+      : tag = other.tag,
+        snippets =
+            other.snippets == null ? null : new List.from(other.snippets),
+        hasSnippetsFirst = other.hasSnippetsFirst;
 }
 
 /// Create CodeBlock without new, for more declarative construction
