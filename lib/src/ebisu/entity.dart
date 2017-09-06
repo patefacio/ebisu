@@ -97,10 +97,15 @@ abstract class Entity implements Identifiable {
     for (final child in children) {
       child.owner = this;
     }
+
+    onChildrenOwnershipEstablished();
   }
 
   /// Called when an owner is assigned to the [Entity]
   void onOwnershipEstablished() {}
+
+  /// Called when children ownership establishment completed [Entity]
+  void onChildrenOwnershipEstablished() {}
 
   /// Returns a list of all children recursively
   List<Entity> get progeny => children.fold(
