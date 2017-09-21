@@ -20,37 +20,30 @@ void main([List<String> args]) {
   }
 // custom <main>
 
-test('code block snippets first', () {
-  final cb = codeBlock('cb_1')..snippets = [
-    '...this',
-    '...is a test'
-  ];
-  expect(cb.hasSnippetsFirst, false);
-  expect(darkMatter(cb),
-  darkMatter('''
+  test('code block snippets first', () {
+    final cb = codeBlock('cb_1')..snippets = ['...this', '...is a test'];
+    expect(cb.hasSnippetsFirst, false);
+    expect(darkMatter(cb), darkMatter('''
 // custom <cb_1>
 // end <cb_1>
 ...this
 ...is a test  
   '''));
 
-  final cb2 = cb.copy();
-  expect(cb2.hasSnippetsFirst, false);
-  cb2.hasSnippetsFirst = true;
-  cb2.snippets[0] = '...that';
-  /// copy was deep
-  expect(cb.snippets[0], '...this');
-  expect(darkMatter(cb2),
-  darkMatter('''
+    final cb2 = cb.copy();
+    expect(cb2.hasSnippetsFirst, false);
+    cb2.hasSnippetsFirst = true;
+    cb2.snippets[0] = '...that';
+
+    /// copy was deep
+    expect(cb.snippets[0], '...this');
+    expect(darkMatter(cb2), darkMatter('''
 ...that
 ...is a test
 // custom <cb_1>
 // end <cb_1>
   '''));
-
-});
-
-
+  });
 
 // end <main>
 }

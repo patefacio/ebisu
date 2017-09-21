@@ -64,6 +64,19 @@ enum Rgb {
 ''')),
         true);
 
+    final rgb = enum_('rgb')
+      ..hasCustom = true
+      ..hasCamelNames = true
+      ..values = ['red', 'green', 'blue'];
+
+    expect(darkMatter(rgb.define()).contains(darkMatter('''
+  static List<Rgb> get values => const <Rgb>[
+    red,
+    green,
+    blue
+  ];
+    ''')), true);
+
     expect(
         darkMatter((enum_('rgb')
                   ..values = ['red', 'green', 'blue']

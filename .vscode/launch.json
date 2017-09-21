@@ -2,6 +2,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "codegen",
+            "type": "dart-cli",
+            "request": "launch",
+            "program": "${workspaceRoot}/codegen/ebisu.ebisu_dart.dart"
+        },
+        {
             "name": "test code block",
             "type": "dart-cli",
             "request": "launch",

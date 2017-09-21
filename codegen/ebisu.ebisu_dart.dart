@@ -505,6 +505,9 @@ Prints:
                 ..doc =
                     'If set, hasLibraryScopedValues assumed true and values named accordingly'
                 ..type = 'LibraryScopedValuesCase',
+              member('has_camel_names')
+              ..doc = 'By convention class-style enums have shout names, this allows overriding to camel'
+              ..init = false,
               member('is_snake_string')
                 ..doc = 'If true string value for each entry is snake case'
                 ..init = false,

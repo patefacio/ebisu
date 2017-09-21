@@ -118,6 +118,9 @@ class Enum extends Object with Entity {
   /// If set, hasLibraryScopedValues assumed true and values named accordingly
   LibraryScopedValuesCase libraryScopedValuesCase;
 
+  /// By convention class-style enums have shout names, this allows overriding to camel
+  bool hasCamelNames = false;
+
   /// If true string value for each entry is snake case
   bool isSnakeString = false;
 
@@ -187,7 +190,8 @@ class Enum extends Object with Entity {
                   : throw new ArgumentError(
                       "Invalid case type ${libraryScopedValuesCase}");
 
-  String valueId(EnumValue v) => requiresClass ? v.shout : v.camel;
+  String valueId(EnumValue v) =>
+      requiresClass && !hasCamelNames ? v.shout : v.camel;
 
   String libraryValueId(EnumValue v) => libraryScopedValuesCase != null
       ? casedName(v)
@@ -230,7 +234,7 @@ ${valueId(v)}'''
           ]))
       .join('\n');
 
-  get _enumValues => values.map((v) => v.shout).join(',\n  ');
+  get _enumValues => values.map((v) => valueId(v)).join(',\n  ');
 
   get _enumClassBegin => '''
 class $enumName implements Comparable<$enumName> {
