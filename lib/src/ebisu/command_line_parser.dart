@@ -37,7 +37,9 @@ class ArgDetails {
 
   @override
   int get hashCode => hash3(
-      _index, const ListEquality<int>().hash(_optionIndices), _parsedOption);
+      _index,
+      const ListEquality<int>().hash(_optionIndices ?? const []),
+      _parsedOption);
 
   int get index => _index;
 

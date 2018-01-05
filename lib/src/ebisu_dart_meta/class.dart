@@ -723,7 +723,7 @@ class Class extends Object with CustomCodeBlock, Entity {
     var parts = [];
     parts.addAll(hashableMembers.map((Member m) {
       if (m.isList) {
-        return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName})';
+        return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName} ?? const [])';
       } else if (m.isMap) {
         return 'const MapEquality().hash(${m.varName})';
       } else {
