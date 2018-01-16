@@ -415,7 +415,7 @@ If not set, id of system is used.
               member('pub_transformers')
                 ..type = 'List<PubTransformer>'
                 ..init = '[]',
-              member('sdk')..init = '>=1.8.2 <2.0.0',
+              member('sdk')..init = '>=1.8.2 <=2.0.0-dev.12.0',
             ],
         ],
       part('enum')

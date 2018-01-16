@@ -261,7 +261,9 @@ class Library extends Object with CustomCodeBlock, Entity {
   String get rootPath => (rootEntity as System).rootPath ?? '/tmp';
 
   String get _additionalPathParts {
-    List relPath = split(relative(dirname(libStubPath), from: rootPath));
+    List relPath = split(relative(dirname(libStubPath), from: rootPath))
+        .map((part) => part == '..' ? '_' : part)
+        .toList();
     if (relPath.length > 0 &&
         (relPath.first == '.' || relPath.first == 'lib')) {
       relPath.removeAt(0);
