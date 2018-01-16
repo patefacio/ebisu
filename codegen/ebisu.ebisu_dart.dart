@@ -415,7 +415,7 @@ If not set, id of system is used.
               member('pub_transformers')
                 ..type = 'List<PubTransformer>'
                 ..init = '[]',
-              member('sdk')..init = '>=1.8.2 <=2.0.0-dev.12.0',
+              member('sdk')..init = '>=1.8.2 <=2.0.0-dev.20.0',
             ],
         ],
       part('enum')
@@ -1282,7 +1282,7 @@ generated the source.
     ..license = 'boost'
     ..rootPath = _topDir
     ..pubSpec = (pubspec('ebisu')
-      ..version = '0.7.10'
+      ..version = '0.7.11'
       ..author = 'Daniel Davidson <dbdavidson@yahoo.com>'
       ..doc = '''
 A library that supports code generation of the structure Dart (and potentially

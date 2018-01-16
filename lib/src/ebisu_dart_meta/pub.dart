@@ -165,7 +165,7 @@ class PubSpec extends Object with Entity {
   List<PubDependency> dependencies = [];
   List<PubDependency> devDependencies = [];
   List<PubTransformer> pubTransformers = [];
-  String sdk = '>=1.8.2 <=2.0.0-dev.12.0';
+  String sdk = '>=1.8.2 <=2.0.0-dev.20.0';
 
   // custom <class PubSpec>
 
