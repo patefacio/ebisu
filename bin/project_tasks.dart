@@ -22,7 +22,7 @@ This script performs tasks (e.g. run tests, regenerate code) on specified ebisu
 projects
 
 ''');
-  print(_parser.getUsage());
+  print(_parser.usage);
 }
 
 //! Method to parse command line options.
@@ -30,11 +30,11 @@ projects
 Map _parseArgs(List<String> args) {
   ArgResults argResults;
   Map result = {};
-  List remaining = [];
 
   _parser = new ArgParser();
   try {
     /// Fill in expectations of the parser
+
     _parser.addFlag('git-status',
         help: r'''
 Run *git status* on all the projects
@@ -142,7 +142,6 @@ main(List<String> args) {
   Logger.root.level = Level.OFF;
   Map argResults = _parseArgs(args);
   Map options = argResults['options'];
-  List positionals = argResults['rest'];
   // custom <projectTasks main>
 
   List projectPaths = options['project-path'].isEmpty

@@ -18,7 +18,7 @@ void _usage() {
   print(r'''
 Bootstrap new ebisu project
 ''');
-  print(_parser.getUsage());
+  print(_parser.usage);
 }
 
 //! Method to parse command line options.
@@ -26,11 +26,11 @@ Bootstrap new ebisu project
 Map _parseArgs(List<String> args) {
   ArgResults argResults;
   Map result = {};
-  List remaining = [];
 
   _parser = new ArgParser();
   try {
     /// Fill in expectations of the parser
+
     _parser.addFlag('dart',
         help: r'''
 Include dart codegen script
@@ -131,7 +131,6 @@ main(List<String> args) {
   Logger.root.level = Level.OFF;
   Map argResults = _parseArgs(args);
   Map options = argResults['options'];
-  List positionals = argResults['rest'];
   try {
     if (options["parent-path"] == null)
       throw new ArgumentError("option: parent-path is required");

@@ -144,6 +144,12 @@ class CodeBlock {
   /// protection block or after
   bool hasSnippetsFirst = false;
 
+  /// If set will only use snippets even if tag exists.
+  /// Useful for situations where you want to not have the protect block
+  /// but still want the tag as a form of identification for the block.
+  ///
+  bool noProtect = false;
+
   // custom <class CodeBlock>
 
   /// Returns true if has [tag] string that is not empty
@@ -154,7 +160,7 @@ class CodeBlock {
 
   /// Returns [CodeBlock] text contents suitable for protection on regeneration
   String toString() {
-    if (hasTag) {
+    if (hasTag && !noProtect) {
       return hasSnippetsFirst
           ? brCompact([snippets, customBlock(tag)])
           : br([customBlock(tag)]..add(brCompact(snippets)));
@@ -168,7 +174,8 @@ class CodeBlock {
       : tag = other.tag,
         snippets =
             other.snippets == null ? null : new List.from(other.snippets),
-        hasSnippetsFirst = other.hasSnippetsFirst;
+        hasSnippetsFirst = other.hasSnippetsFirst,
+        noProtect = other.noProtect;
 }
 
 /// Create CodeBlock without new, for more declarative construction

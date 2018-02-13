@@ -506,8 +506,9 @@ Prints:
                     'If set, hasLibraryScopedValues assumed true and values named accordingly'
                 ..type = 'LibraryScopedValuesCase',
               member('has_camel_names')
-              ..doc = 'By convention class-style enums have shout names, this allows overriding to camel'
-              ..init = false,
+                ..doc =
+                    'By convention class-style enums have shout names, this allows overriding to camel'
+                ..init = false,
               member('is_snake_string')
                 ..doc = 'If true string value for each entry is snake case'
                 ..init = false,
@@ -1606,6 +1607,12 @@ Determines whether the injected code snippets come before the
 protection block or after
 '''
                     ..init = false,
+                  member('no_protect')
+                    ..doc = '''If set will only use snippets even if tag exists.
+Useful for situations where you want to not have the protect block
+but still want the tag as a form of identification for the block.                  
+                  '''
+                    ..init = false
                 ],
               class_('script_code_block')
                 ..doc =

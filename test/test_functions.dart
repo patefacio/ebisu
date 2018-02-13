@@ -30,31 +30,22 @@ void main([List<String> args]) {
   test('chomp can remove multiple new lines',
       () => expect(chomp("test\n\n\n", true), "test"));
 
-  test(
-      'indentBlock indents a block, 2 space default',
-      () => expect(
-          indentBlock('''
+  test('indentBlock indents a block, 2 space default',
+      () => expect(indentBlock('''
 class C {
   int x;
 }
-'''),
-          '''
+'''), '''
   class C {
     int x;
   }
 '''));
 
-  test(
-      'indentBlock can indent block 4 spaces',
-      () => expect(
-          indentBlock(
-              '''
+  test('indentBlock can indent block 4 spaces', () => expect(indentBlock('''
 class C {
   int x;
 }
-''',
-              '    '),
-          '''
+''', '    '), '''
     class C {
       int x;
     }
@@ -216,29 +207,19 @@ class C {
   });
 
   test('scriptComment', () {
-    expect(
-        darkSame(
-            scriptComment('''
+    expect(darkSame(scriptComment('''
 this is
-a test'''),
-            '''
+a test'''), '''
 #   this is
 #   a test
-'''),
-        true);
+'''), true);
 
-    expect(
-        darkSame(
-            scriptComment(
-                '''
+    expect(darkSame(scriptComment('''
 this is
-a test''',
-                ' '),
-            '''
+a test''', ' '), '''
 # this is
 # a test
-'''),
-        true);
+'''), true);
   });
 
   test('doubleQuote', () {

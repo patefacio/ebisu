@@ -818,18 +818,14 @@ $varname == null ? null :
 
   String get copyMethod => 'copy() => new ${className}._copy(this);';
 
-  String get _copyCtor => isCopyable
-      ? indentBlock(
-          '''
+  String get _copyCtor => isCopyable ? indentBlock('''
 ${className}._copy(${className} other) :
 ${
   indentBlock(members
     .map((m) => '${m.varName} = ${_assignCopy(m.type, "other.${m.varName}")}')
     .join(',\n'), '  ')
 };
-''',
-          '  ')
-      : '';
+''', '  ') : '';
 
   String get comparableMethod {
     var comparableMembers = members.where((m) => m.isInComparable).toList();

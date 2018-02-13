@@ -141,6 +141,8 @@ abstract class Entity implements Identifiable {
   /// Alias to [rootEntity] - deprecated
   get root => rootEntity;
 
+  withThis(f(Entity e)) => f(this);
+
   // end <class Entity>
 
   Entity _owner;

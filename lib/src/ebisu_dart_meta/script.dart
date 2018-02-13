@@ -215,12 +215,15 @@ Select log level from:
 
   get _argMap => args.isEmpty
       ? null
-      : '''
+      : brCompact([
+          '''
   Map argResults = _parseArgs(args);
-  Map options = argResults['options'];
-  List positionals = argResults['rest'];
+  Map options = argResults['options'];''',
+          _hasPositionals ? "List positionals = argResults['rest'];" : null,
+          '''
 ${_requiredArgs}
-''';
+'''
+        ]);
 
   get _argParser => '''
 //! The parser for this script
@@ -233,7 +236,7 @@ void _usage() {
   print(r\'\'\'
 $doc
 \'\'\');
-  print(_parser.getUsage());
+  print(_parser.usage);
 }
 ''';
 
@@ -264,19 +267,26 @@ if(result['log-level'] != null) {
 }
 """));
 
-  get _parseArgs => '''
+  get _remainingDecl => _hasPositionals ? 'List remaining = [];' : null;
+
+  get _parseArgs => brCompact([
+        '''
 //! Method to parse command line options.
 //! The result is a map containing all options, including positional options
 Map _parseArgs(List<String> args) {
   ArgResults argResults;
   Map result = { };
-  List remaining = [];
+''',
+        _remainingDecl,
+        '''
 
   _parser = new ArgParser();
   try {
     /// Fill in expectations of the parser
-$_addFlags
-$_addOptions
+''',
+        '\n$_addFlags',
+        '\n$_addOptions',
+        '''
     /// Parse the command line options (excluding the script)
     argResults = _parser.parse(args);
     if(argResults.wasParsed('help')) {
@@ -286,9 +296,12 @@ $_addOptions
 ${
 indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
 }
-$_pullPositionals
-$_positionals
-$_logLevelCode
+''',
+        '\n$_pullPositionals',
+        '\n$_positionals',
+        '\n$_logLevelCode',
+        '''
+        
     return { 'options': result, 'rest': argResults.rest };
 
   } catch(e) {
@@ -296,7 +309,8 @@ $_logLevelCode
     throw e;
   }
 }
-''';
+'''
+      ]);
 
   _defaultsTo(ScriptArg arg) =>
       arg.defaultsTo == null ? null : smartQuote(arg.defaultsTo.toString());
@@ -325,6 +339,8 @@ ${arg.doc}
     // Pull out positional args as they were named
     remaining = new List.from(argResults.rest);'''
       : '';
+
+  get _hasPositionals => args.any((sa) => sa.position != null);
 
   get _positionals => args.where((sa) => sa.position != null).map((sa) => '''
     if(${sa.position} >= remaining.length) {
