@@ -54,6 +54,9 @@ abstract class Entity implements Identifiable {
   /// Returns an iterable of ids from root to this item
   Iterable<Id> get entityPathIds => _entityPath.map((e) => e.id);
 
+  /// Returns the path to the entity in dotted form
+  String get dottedPath => entityPathIds.map((id) => id.snake).join('.');
+
   /// In order to provide a unique id which may be used as *tag* of custom
   /// block, this method creates a string of the entire path and uses its
   /// hashcode
