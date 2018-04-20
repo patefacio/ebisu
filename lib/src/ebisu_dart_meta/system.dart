@@ -165,7 +165,10 @@ Only "version" and "path" overrides are supported.
   }
 
   /// Generate the code
-  void generate({generateRunner: true, generateDrudge: true}) {
+  void generate(
+      {generateRunner: true,
+      generateDrudge: true,
+      reportNonGeneratedFiles: false}) {
     setAsRoot();
 
     if (rootPath == null) rootPath = '.';
@@ -208,7 +211,8 @@ Only "version" and "path" overrides are supported.
 
     {
       String gitIgnorePath = "${rootPath}/.gitignore";
-      scriptMergeWithFile('''
+      scriptMergeWithFile(
+          '''
 *.~*~
 .packages
 packages
@@ -224,7 +228,8 @@ build/
 *.js.deps
 *.js.map
 ${scriptCustomBlock('additional')}
-''', gitIgnorePath);
+''',
+          gitIgnorePath);
     }
 
     if (includesReadme ||
@@ -232,7 +237,8 @@ ${scriptCustomBlock('additional')}
         introduction != null ||
         purpose != null) {
       String readmePath = "${rootPath}/README.md";
-      panDocMergeWithFile('''
+      panDocMergeWithFile(
+          '''
 # ${id.title}
 
 
@@ -251,14 +257,16 @@ ${panDocCustomBlock('examples')}
 
 ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
-''', readmePath);
+''',
+          readmePath);
     }
 
     if (generateRunner) {
       String testRunnerPath = "${rootPath}/test/runner.dart";
       testLibRelativePath(Library testLib) =>
           relative(testLib.libStubPath, from: dirname(testRunnerPath));
-      mergeWithDartFile('''
+      mergeWithDartFile(
+          '''
 import 'package:logging/logging.dart';
 ${testLibraries
   .where((t) => t.id.snake.startsWith('test_'))
@@ -277,11 +285,19 @@ ${testLibraries
   .join('\n')}
 }
 
-''', testRunnerPath);
+''',
+          testRunnerPath);
     }
 
     if (testLibraries.length > 0) {
       /// *TODO* Figure out how html testing works in [test]
+    }
+
+    if (reportNonGeneratedFiles) {
+      print('''
+**** NON GENERATED FILES ****
+${indentBlock(brCompact(nonGeneratedFiles))}
+''');
     }
   }
 

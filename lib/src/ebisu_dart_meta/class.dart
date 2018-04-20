@@ -725,7 +725,7 @@ class Class extends Object with CustomCodeBlock, Entity {
       if (m.isList) {
         return 'const ListEquality<${jsonListValueType(m.type)}>().hash(${m.varName} ?? const [])';
       } else if (m.isMap) {
-        return 'const MapEquality().hash(${m.varName})';
+        return 'const MapEquality().hash(${m.varName} ?? const {})';
       } else {
         return '${m.varName}';
       }
