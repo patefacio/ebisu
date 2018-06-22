@@ -152,7 +152,7 @@ class Enum extends Object with Entity {
       ev.value == null ? ((new EnumValue(ev.id, index))..doc = ev.doc) : ev;
 
   set values(Iterable values) => _values = enumerate(values)
-      .map((IndexedValue iv) => iv.value is String
+      .map<EnumValue>((IndexedValue iv) => iv.value is String
           ? new EnumValue(idFromString(iv.value), iv.index)
           : iv.value is Id
               ? new EnumValue(iv.value, iv.index)

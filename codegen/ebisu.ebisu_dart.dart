@@ -51,7 +51,7 @@ generate() {
     ..type = 'Id'
     ..access = Access.RO;
 
-  Library ebisu_dart_meta = library('ebisu_dart_meta')
+  Library ebisu_dart_meta = library_('ebisu_dart_meta')
     ..doc = '''
 
 Support for storing dart meta data for purpose of generating *Dart*
@@ -62,7 +62,7 @@ _.._ operator, which allows one to conveniently string together accessor calls
 to objects. For example, the following is the structure of the imported id
 library.
 
-      library('id')
+      library_('id')
       ..doc = '...'
       ..includesLogger = true
       ..imports = [
@@ -1190,7 +1190,7 @@ generated the source.
 
   System ebisu = system('ebisu')
     ..testLibraries = [
-      library('setup')
+      library_('setup')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
           'package:path/path.dart',
@@ -1200,21 +1200,21 @@ generated the source.
           variable('sample_generated_code_folder')..isPublic = false
         ]
         ..includesLogger = true,
-      library('test_dart_meta')
+      library_('test_dart_meta')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
         ],
-      library('test_functions')
+      library_('test_functions')
         ..imports = [
           'package:ebisu/ebisu.dart',
         ],
-      library('test_code_block')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_library')..imports = [],
-      library('test_enums')..imports = [],
-      library('test_class')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_annotation')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_member')..imports = ['package:ebisu/ebisu.dart'],
-      library('test_entity')
+      library_('test_code_block')..imports = ['package:ebisu/ebisu.dart'],
+      library_('test_library')..imports = [],
+      library_('test_enums')..imports = [],
+      library_('test_class')..imports = ['package:ebisu/ebisu.dart'],
+      library_('test_annotation')..imports = ['package:ebisu/ebisu.dart'],
+      library_('test_member')..imports = ['package:ebisu/ebisu.dart'],
+      library_('test_entity')
         ..imports = ['package:ebisu/ebisu.dart', 'package:id/id.dart']
         ..classes = [
           class_('base')
@@ -1249,7 +1249,7 @@ generated the source.
             ..extend = 'Base'
             ..mixins = ['Entity'],
         ],
-      library('test_code_generation')
+      library_('test_code_generation')
         ..imports = [
           'package:ebisu/ebisu_dart_meta.dart',
           'setup.dart',
@@ -1259,23 +1259,23 @@ generated the source.
           'async',
         ]
         ..includesLogger = true,
-      library('expect_basic_class')
+      library_('expect_basic_class')
         ..imports = [
           'sample_generated_code/lib/basic_class.dart',
         ],
-      library('expect_various_ctors')
+      library_('expect_various_ctors')
         ..imports = [
           'sample_generated_code/lib/various_ctors.dart',
         ],
-      library('expect_multi_parts')
+      library_('expect_multi_parts')
         ..imports = [
           'sample_generated_code/lib/two_parts.dart',
         ],
-      library('test_ebisu_project')
+      library_('test_ebisu_project')
         ..imports = [
           'package:ebisu/ebisu.dart',
         ],
-      library('test_command_line_parser')
+      library_('test_command_line_parser')
         ..imports = [
           'package:ebisu/ebisu.dart',
         ],
@@ -1292,7 +1292,7 @@ other languages like D) using a fairly declarative aproach.
       ..homepage = 'https://github.com/patefacio/ebisu'
       ..devDependencies = [])
     ..libraries = [
-      library('ebisu_project')
+      library_('ebisu_project')
         ..imports = [
           'dart:io',
           'package:id/id.dart',
@@ -1338,7 +1338,7 @@ other languages like D) using a fairly declarative aproach.
               member('pubspec')..doc = 'The contents of the pubspec file',
             ]
         ],
-      library('ebisu')
+      library_('ebisu')
         ..doc = '''
 Library with common utilities for generating code.
 

@@ -38,7 +38,7 @@ void generateTestLibraries() {
     ..pubSpec.addDependency(pubdep('quiver'))
     ..pubSpec.addDevDependency(pubdep('test'))
     ..libraries = [
-      library('basic_class')
+      library_('basic_class')
         ..imports = [
           'io',
           'async',
@@ -158,7 +158,7 @@ Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
                 ..init = 'new ClassJson()',
             ]
         ],
-      library('various_ctors')
+      library_('various_ctors')
         ..includesMain = true
         ..classes = [
           class_('various_ctors')
@@ -187,7 +187,7 @@ Stream<List<int>> get fooStream => new File(join('/', 'foo')).openRead();
                 ..ctorsOpt = [''],
             ]
         ],
-      library('two_parts')
+      library_('two_parts')
         ..variables = [
           variable('l_v1_public')..init = 4,
           variable('l_v1_private')
@@ -297,7 +297,7 @@ void main([List<String> args]) {
       dartFile = join(testPath, dartFile);
 
       test('$dartFile completed', () {
-        return Process.run(Platform.executable, ['--checked', dartFile]).then(
+        return Process.run(Platform.executable, [dartFile]).then(
             (ProcessResult processResult) {
           print("Results of running dart subprocess $dartFile");
           print(processResult.stdout);

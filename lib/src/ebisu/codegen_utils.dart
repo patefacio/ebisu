@@ -191,11 +191,11 @@ const List _defaultProtections = const [_defaultProtectionPair];
 
 /// Defines a function that can be used to post-process merged,
 /// generated text prior to writing it to a target file
-typedef String PostProcessor(String);
+typedef String PostProcessor(String generatedText);
 
 /// The set of all generated files, whether *created*, *overwritten*,
 /// or *unchanged*
-final _generatedFiles = new Set();
+final _generatedFiles = new Set<String>();
 
 /// All directories into which code was targeted
 Iterable<String> get targetedDirectories => new Set<String>.from(
@@ -303,7 +303,7 @@ bool mergeWithFile(String generated, String destFilePath,
 ///
 /// returns: string with the merged text
 ///
-/// [beginProtect] and [endProtect] are used to idenfity the style of
+/// [beginProtect] and [endProtect] are used to identity the style of
 /// protection block tags protecting the text.
 String mergeWithContents(String generated, String currentText,
     String beginProtect, String endProtect) {
@@ -590,7 +590,7 @@ scrubPubFilesFromRoot(String packageRoot) {
 
 /// Searches up directories of [startPath] until [dirTest] is true or root is
 /// reached
-String findParentPath(String startPath, dirTest(String)) {
+String findParentPath(String startPath, bool dirTest(String filePath)) {
   if (!path.isAbsolute(startPath)) {
     startPath = path.join(Directory.current.path, startPath);
   }

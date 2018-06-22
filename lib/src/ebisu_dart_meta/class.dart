@@ -123,11 +123,11 @@ class Ctor extends Object with CustomCodeBlock {
         ');'
       ]);
 
-  get _filteredMembers =>
+  Iterable<Member> get _filteredMembers =>
       members.where((Member m) => !_isDefaultCtor || m.isInDefaultCtor);
-  get _filteredOptMembers =>
+  Iterable<Member> get _filteredOptMembers =>
       optMembers.where((m) => !_isDefaultCtor || m.isInDefaultCtor);
-  get _filteredNamedMembers =>
+  Iterable<Member> get _filteredNamedMembers =>
       namedMembers.where((m) => !_isDefaultCtor || m.isInDefaultCtor);
 
   get _memberSig => brCompact([
@@ -1064,7 +1064,7 @@ ${
   get definition => define();
 
   String define() {
-    if (owner == null) owner = library('stub');
+    if (owner == null) owner = library_('stub');
     return _content;
   }
 

@@ -95,7 +95,7 @@ class ClassWithInferredType {
   int mInt = 0;
   double mDouble = 1.0;
   bool mBool = false;
-  List mList = [];
+  List<dynamic> mList = [];
   Map mMap = {};
 
   // custom <class ClassWithInferredType>
@@ -108,7 +108,7 @@ class ClassReadOnly {
   int get mInt => _mInt;
   double get mDouble => _mDouble;
   bool get mBool => _mBool;
-  List get mList => _mList;
+  List<int> get mList => _mList;
   Map get mMap => _mMap;
 
   // custom <class ClassReadOnly>
@@ -118,7 +118,7 @@ class ClassReadOnly {
   int _mInt = 3;
   double _mDouble = 3.14;
   bool _mBool = false;
-  List _mList = [1, 2, 3];
+  List<int> _mList = [1, 2, 3];
   Map _mMap = {1: 2};
 }
 
@@ -130,7 +130,7 @@ class ClassInaccessible {
   int _mInt = 3;
   double _mDouble = 3.14;
   bool _mBool = false;
-  List _mList = [1, 2, 3];
+  List<int> _mList = [1, 2, 3];
   Map _mMap = {1: 2};
 }
 
@@ -176,7 +176,7 @@ class ClassJson {
   int get mInt => _mInt;
   double get mDouble => _mDouble;
   bool get mBool => _mBool;
-  List get mList => _mList;
+  List<int> get mList => _mList;
   Map get mMap => _mMap;
   Color get mEnum => _mEnum;
   Map<Color, String> get mColorMap => _mColorMap;
@@ -213,30 +213,30 @@ class ClassJson {
         _mInt = jsonMap["mInt"],
         _mDouble = jsonMap["mDouble"],
         _mBool = jsonMap["mBool"],
-        // mList is List
+        // mList is List<int>
         _mList =
-            ebisu.constructListFromJsonData(jsonMap["mList"], (data) => data),
+            ebisu.constructListFromJsonData<int>(jsonMap["mList"], (data) => data),
         // mMap is Map
         _mMap =
             ebisu.constructMapFromJsonData(jsonMap["mMap"], (value) => value),
         _mEnum = Color.fromJson(jsonMap["mEnum"]),
         // mColorMap is Map<Color,String>
-        _mColorMap = ebisu.constructMapFromJsonData(jsonMap["mColorMap"],
+        _mColorMap = ebisu.constructMapFromJsonData<Color, String>(jsonMap["mColorMap"],
             (value) => value, (key) => Color.fromString(key)),
         // mColorColorMap is Map<Color,Color>
-        _mColorColorMap = ebisu.constructMapFromJsonData(
+        _mColorColorMap = ebisu.constructMapFromJsonData<Color, Color>(
             jsonMap["mColorColorMap"],
             (value) => Color.fromJson(value),
             (key) => Color.fromString(key)),
         // mStringSimpleMap is Map<String,SimpleJson>
-        _mStringSimpleMap = ebisu.constructMapFromJsonData(
+        _mStringSimpleMap = ebisu.constructMapFromJsonData<String, SimpleJson>(
             jsonMap["mStringSimpleMap"], (value) => SimpleJson.fromJson(value));
 
   String _mString = 'foo';
   int _mInt = 3;
   double _mDouble = 3.14;
   bool _mBool = false;
-  List _mList = [1, 2, 3];
+  List<int> _mList = [1, 2, 3];
   Map _mMap = {1: 2};
   Color _mEnum = Color.GREEN;
   Map<Color, String> _mColorMap = {Color.GREEN: "olive"};

@@ -7,7 +7,7 @@
 /// to objects. For example, the following is the structure of the imported id
 /// library.
 ///
-///       library('id')
+///       library_('id')
 ///       ..doc = '...'
 ///       ..includesLogger = true
 ///       ..imports = [

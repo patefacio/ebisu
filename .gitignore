@@ -13,6 +13,7 @@ build/
 *.js.deps
 *.js.map
 # custom <additional>
+.dart_tool/**
 
 pubspec.lock
 

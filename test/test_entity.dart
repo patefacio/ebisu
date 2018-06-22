@@ -33,7 +33,7 @@ class RootEntity extends Base with Entity {
 
   final Id _id;
   RootEntity(id) : _id = makeId(id);
-  get id => _id;
+  Id get id => _id;
   onOwnershipEstablished() => ownerSet();
 
   // end <class RootEntity>
@@ -47,7 +47,7 @@ class ChildEntity extends Base with Entity {
 
   final Id _id;
   ChildEntity(id) : _id = makeId(id);
-  get id => _id;
+  Id get id => _id;
   Iterable<Entity> get children => grandChildren;
   onOwnershipEstablished() => ownerSet();
 
@@ -62,7 +62,7 @@ class GrandchildEntity extends Base with Entity {
 
   final Id _id;
   GrandchildEntity(id) : _id = makeId(id);
-  get id => _id;
+  Id get id => _id;
   Iterable<Entity> get children => greatGrandChildren;
   onOwnershipEstablished() => ownerSet();
 
@@ -75,7 +75,7 @@ class GreatGrandchildEntity extends Base with Entity {
 
   final Id _id;
   GreatGrandchildEntity(id) : _id = makeId(id);
-  get id => _id;
+  Id get id => _id;
   Iterable<Entity> get children => [];
   onOwnershipEstablished() => ownerSet();
 

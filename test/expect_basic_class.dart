@@ -33,37 +33,22 @@ void main([List<String> args]) {
       test('mString is null', () => expect(classNoInit.mString == null, true));
       test('mString can assign string',
           () => expect((classNoInit.mString = 'foo') == 'foo', true));
-      test('mString can not assign int',
-          () => expect(() => classNoInit.mString = 3, throws));
 
       test('mInt is null', () => expect(classNoInit.mInt == null, true));
       test('mInt can assign int',
           () => expect((classNoInit.mInt = 42) == 42, true));
-      test('mInt can not assign String',
-          () => expect(() => classNoInit.mInt = 'foo', throws));
 
       test('mDouble is null', () => expect(classNoInit.mDouble == null, true));
-      test('mDouble can not assign int',
-          () => expect(() => classNoInit.mDouble = 42, throws));
       test('mDouble can assign double',
           () => expect((classNoInit.mDouble = 42.5) == 42.5, true));
-      test('mDouble can not assign String',
-          () => expect(() => classNoInit.mDouble = 'foo', throws));
 
       test('mBool is null', () => expect(classNoInit.mBool == null, true));
-      test('mBool can not assign int',
-          () => expect(() => classNoInit.mBool = 42, throws));
       test('mBool can assign bool',
           () => expect((classNoInit.mBool = true) == true, true));
-      test('mBool can not assign String',
-          () => expect(() => classNoInit.mBool = 'foo', throws));
 
       test(
           'mListInt is null', () => expect(classNoInit.mListInt == null, true));
-      test('mListInt can not assign int',
-          () => expect(() => classNoInit.mListInt = 42, throws));
-      test('mListInt can not assign String',
-          () => expect(() => classNoInit.mListInt = 'foo', throws));
+
       test(
           'mListInt can assign empty list',
           () => expect(
@@ -111,7 +96,6 @@ void main([List<String> args]) {
     group('class with read only members', () {
       test('mString is foo', () {
         expect(classReadOnly.mString, "foo");
-        expect(() => classReadOnly.mString = "goo", throws);
       });
       test('mInt is int', () => expect(classReadOnly.mInt, 3));
       test('mDouble is double', () => expect(classReadOnly.mDouble, 3.14));
@@ -120,33 +104,6 @@ void main([List<String> args]) {
           () => expect(classReadOnly.mList.toString(), [1, 2, 3].toString()));
       test('mListInt is Map',
           () => expect(classReadOnly.mMap.toString(), {1: 2}.toString()));
-    });
-
-    group('class with inaccessible members', () {
-      test('mString is foo', () {
-        expect(() => classInaccessible.mString, throws);
-        expect(() => classInaccessible.mString = "goo", throws);
-      });
-      test('mInt is int', () {
-        expect(() => classInaccessible.mInt, throws);
-        expect(() => classInaccessible.mInt = 5, throws);
-      });
-      test('mDouble is double', () {
-        expect(() => classInaccessible.mDouble, throws);
-        expect(() => classInaccessible.mDouble = 4.0, throws);
-      });
-      test('mBool is bool', () {
-        expect(() => classInaccessible.mBool, throws);
-        expect(() => classInaccessible.mBool = true, throws);
-      });
-      test('mListInt is List', () {
-        expect(() => classInaccessible.mList, throws);
-        expect(() => classInaccessible.mList = [], throws);
-      });
-      test('mMap is Map', () {
-        expect(() => classInaccessible.mMap, throws);
-        expect(() => classInaccessible.mMap = {}, throws);
-      });
     });
 
     group('class json support', () {

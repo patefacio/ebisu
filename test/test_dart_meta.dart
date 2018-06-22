@@ -33,8 +33,8 @@ void main([List<String> args]) {
   });
 
   group('mainCustomBlock', () {
-    final l1 = library('x')..mainCustomBlock.snippets.add('// foo');
-    final l2 = library('x')
+    final l1 = library_('x')..mainCustomBlock.snippets.add('// foo');
+    final l2 = library_('x')
       ..mainCustomBlock.snippets.add('// foo')
       ..includesMain = true;
 

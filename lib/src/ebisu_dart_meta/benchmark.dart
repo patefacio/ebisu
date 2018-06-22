@@ -20,7 +20,7 @@ class Benchmark extends Object with Entity {
     final idStr = _id.snake;
     final dir = join(root.rootPath, 'benchmarks');
     final benchSnake = 'bench_$idStr';
-    final benchLib = library(benchSnake)
+    final benchLib = library_(benchSnake)
       ..imports = ['package:benchmark_harness/benchmark_harness.dart'];
 
     final klass = class_(benchSnake)

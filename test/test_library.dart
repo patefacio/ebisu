@@ -23,7 +23,7 @@ void main([List<String> args]) {
 // custom <main>
 
   test('export statement', () {
-    final l = library('has_exports')
+    final l = library_('has_exports')
       ..exports = [
         'src/details.dart',
       ];
@@ -35,10 +35,10 @@ void main([List<String> args]) {
       ..libraryGroups = [
         libraryGroup('feature_set')
           ..externalLibraries = [
-            library('clean'),
+            library_('clean'),
           ]
           ..internalLibraries = [
-            library('details'),
+            library_('details'),
           ]
       ];
 
@@ -55,9 +55,9 @@ void main([List<String> args]) {
     final sys = system('sys')
       ..rootPath = '/goo'
       ..libraries = [
-        library('normal_lib'),
-        library('private_lib')..isPrivate = true,
-        library('placed_lib')..path = '/wherever/foo/boo',
+        library_('normal_lib'),
+        library_('private_lib')..isPrivate = true,
+        library_('placed_lib')..path = '/wherever/foo/boo',
       ]
       ..setAsRoot();
 

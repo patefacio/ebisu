@@ -125,7 +125,7 @@ Id id(String _id) => new Id(_id);
 Enum enum_(_id) => new Enum(makeId(_id));
 System system(_id) => new System(makeId(_id));
 App app(_id) => new App(makeId(_id));
-Library library(_id) => new Library(makeId(_id));
+Library library_(_id) => new Library(makeId(_id));
 LibraryGroup libraryGroup(_id) => new LibraryGroup(makeId(_id));
 Variable variable(_id) => new Variable(makeId(_id));
 Part part(_id) => new Part(makeId(_id));
@@ -188,7 +188,7 @@ String templateParameterType(String t) {
   return 'dynamic';
 }
 
-Library testLibrary(String s) => library(s)..isTest = true;
+Library testLibrary(String s) => library_(s)..isTest = true;
 String importUri(String s) => Library.importUri(s);
 String importStatement(String s) => Library.importStatement(s);
 
