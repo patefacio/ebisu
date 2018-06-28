@@ -92,17 +92,17 @@ class EbisuProject {
   get libPath => join(_projectPath, 'lib');
   get libDIr => new Directory(libPath);
 
-  get _binScriptFiles => binDir.existsSync()
+  Iterable<FileSystemEntity> get _binScriptFiles => binDir.existsSync()
       ? binDir.listSync().where((fe) => fe is File && fe.path.endsWith('.dart'))
       : [];
 
-  get _testScriptFiles => testDir.existsSync()
+  Iterable<FileSystemEntity> get _testScriptFiles => testDir.existsSync()
       ? testDir
           .listSync()
           .where((fe) => fe is File && fe.path.endsWith('.dart'))
       : [];
 
-  get _codegenScriptFiles => codegenDir
+  Iterable<FileSystemEntity> get _codegenScriptFiles => codegenDir
       .listSync()
       .where((fe) => fe is File && fe.path.endsWith('.dart'));
 
@@ -116,7 +116,7 @@ class EbisuProject {
     _readLanguages();
   }
 
-  get title => '$id(version=$version)';
+  String get title => '$id(version=$version)';
 
   toString() => brCompact([
         'EbisuProject(${id.snake}:repo($repoPath))',

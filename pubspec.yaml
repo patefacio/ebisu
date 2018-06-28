@@ -7,22 +7,21 @@ description: >
   other languages like D) using a fairly declarative aproach.
 
 environment:
-  sdk: '>=2.0.0-dev.64 <2.0.0'
+  sdk: '>=1.8.2 <=2.0.0-dev.20.0'
 
 dependencies:
 
 # custom <ebisu dependencies>
 
-  args: "^1.4.3"
-  collection: "^1.14.10"
-  dart_style: "^1.1.0"
-  id:
-    path: ../id
-  quiver: "^0.29.0"
-  logging: "^0.11.3"
-  path: "^1.6.1"
-  stack_trace: "^1.9.2"
-  yaml: "^2.1.14"
+  args: "^0.13.7"
+  collection: ">=1.1.0<1.14.0"
+  dart_style: "^1.0.6"
+  id: "^1.0.16"
+  logging: ">=0.9.3<0.12.0"
+  path: "^1.4.1"
+  quiver: ">=0.21.0<0.25.0"
+  stack_trace: ">1.6.0<1.8.0"
+  yaml: "^2.1.12"
 
 # end <ebisu dependencies>
 
@@ -30,7 +29,10 @@ dev_dependencies:
 
 # custom <ebisu dev dependencies>
 
-  test: "^1.0.0"
+  test: "^0.12.20"
+
+  drudge:
+    git: git://github.com/patefacio/drudge
 
 # end <ebisu dev dependencies>
 

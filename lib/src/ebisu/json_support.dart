@@ -110,17 +110,18 @@ String prettyJsonMap(dynamic item,
 
 typedef T FromJsonConstructor<T>(Object jsonData);
 
-constructMapFromJsonData<K,V>(Map map, FromJsonConstructor<V> ctor,
+constructMapFromJsonData<K, V>(Map map, FromJsonConstructor<V> ctor,
         [FromJsonConstructor<K> keyCtor]) =>
     map == null
         ? null
         : map.keys.fold(
-            <K,V>{},
+            <K, V>{},
             (newMap, key) => newMap
               ..[keyCtor == null ? key : keyCtor(key)] = ctor(map[key]));
 
-constructListFromJsonData<T>(List list, FromJsonConstructor<T> ctor) => list == null
-    ? null
-    : list.fold(<T>[], (List<T> newList, key) => newList..add(ctor(key)));
+constructListFromJsonData<T>(List list, FromJsonConstructor<T> ctor) =>
+    list == null
+        ? null
+        : list.fold(<T>[], (List<T> newList, key) => newList..add(ctor(key)));
 
 // end <part json_support>

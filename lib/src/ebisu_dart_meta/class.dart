@@ -1033,7 +1033,7 @@ int compareTo($otherType other) {
         result = '''
 // ${member.name} is ${member.type}
 $lhs = ebisu
-  .constructMapFromJsonData(
+  .constructMapFromJsonData<${generalMapKeyType(member.type)}, ${jsonMapValueType(member.type)}>(
     $value,
     (value) => ${_fromJsonData(jsonMapValueType(member.type), 'value')}$convertKey)
 ''';
@@ -1041,7 +1041,7 @@ $lhs = ebisu
         result = '''
 // ${member.name} is ${member.type}
 $lhs = ebisu
-  .constructListFromJsonData($value,
+  .constructListFromJsonData<${jsonListValueType(member.type)}>($value,
                              (data) => ${_fromJsonData(jsonListValueType(member.type), 'data')})
 ''';
       } else {
