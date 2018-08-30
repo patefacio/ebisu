@@ -102,7 +102,7 @@ String prettyJsonMap(dynamic item,
 
       result.add(prettyJsonMap(map, indent, showCount));
     } else {
-      result.add(convert.JSON.encode(item));
+      result.add(convert.json.encode(item));
     }
   }
   return result.join('');

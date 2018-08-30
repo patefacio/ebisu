@@ -83,7 +83,7 @@ main() {
 
   get _content => brCompact([
         "import 'package:mdv/mdv.dart' as mdv;",
-        brCompact(classes.forEach((c) => c.definition())),
+        brCompact(classes.map((c) => c.definition())),
         '''
 void main() {
   mdv.initialize();
