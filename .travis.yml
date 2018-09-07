@@ -1,5 +1,5 @@
 language: dart
 sudo: false
 dart:
-  - stable
+  - "1.24.3"
 script: ./tool/travis.sh
