@@ -4,8 +4,9 @@ class ParsedOption {
   const ParsedOption(this.name, this.value);
 
   @override
-  bool operator ==(ParsedOption other) =>
-      identical(this, other) || name == other.name && value == other.value;
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is ParsedOption && name == other.name && value == other.value);
 
   @override
   int get hashCode => hash2(name, value);
@@ -29,11 +30,12 @@ class ArgDetails {
         _parsedOption = parsedOption;
 
   @override
-  bool operator ==(ArgDetails other) =>
+  bool operator ==(other) =>
       identical(this, other) ||
-      _index == other._index &&
+      (other is ArgDetails &&
+          _index == other._index &&
           const ListEquality().equals(_optionIndices, other._optionIndices) &&
-          _parsedOption == other._parsedOption;
+          _parsedOption == other._parsedOption);
 
   @override
   int get hashCode => hash3(

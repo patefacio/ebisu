@@ -756,22 +756,16 @@ _hashCode != null? _hashCode :
 @override
 bool operator==(other) =>
   identical(this, other) || (runtimeType == other.runtimeType &&
-${nonTransientMembers
-  .where((m) => m.isInEquality && m.id.id != 'hash_code')
-  .map((m) => memberCompare(m))
-    .join(' &&\n')});
+${nonTransientMembers.where((m) => m.isInEquality && m.id.id != 'hash_code').map((m) => memberCompare(m)).join(' &&\n')});
 
 @override
 int get hashCode => ${overrideHashCode};
 '''
       : '''
 @override
-bool operator==($_className other) =>
-  identical(this, other) ||
-${nonTransientMembers
-  .where((m) => m.isInEquality && m.id.id != 'hash_code')
-  .map((m) => memberCompare(m))
-    .join(' &&\n')};
+bool operator==(other) =>
+  identical(this, other) || (other is $_className &&
+${nonTransientMembers.where((m) => m.isInEquality && m.id.id != 'hash_code').map((m) => memberCompare(m)).join(' &&\n')});
 
 @override
 int get hashCode => ${overrideHashCode};
@@ -820,11 +814,7 @@ $varname == null ? null :
 
   String get _copyCtor => isCopyable ? indentBlock('''
 ${className}._copy(${className} other) :
-${
-  indentBlock(members
-    .map((m) => '${m.varName} = ${_assignCopy(m.type, "other.${m.varName}")}')
-    .join(',\n'), '  ')
-};
+${indentBlock(members.map((m) => '${m.varName} = ${_assignCopy(m.type, "other.${m.varName}")}').join(',\n'), '  ')};
 ''', '  ') : '';
 
   String get comparableMethod {
@@ -1053,12 +1043,7 @@ $lhs = ebisu
 
   String fromJsonMapImpl() => '''
 $className._fromJsonMapImpl(Map jsonMap) :
-${
-   chomp(indentBlock(
-     members
-       .where((m) => !m.isJsonTransient)
-       .map((m) => chomp(_fromJsonMapMember(m)))
-       .join(',\n')))};
+${chomp(indentBlock(members.where((m) => !m.isJsonTransient).map((m) => chomp(_fromJsonMapMember(m))).join(',\n')))};
 ''';
 
   get definition => define();
@@ -1126,7 +1111,7 @@ ${_abstractTag}class $className extends $_extendClass with ${mixins.join(', ')}'
   get _jsonMembers => members
       .where((m) => !m.isJsonTransient)
       .map((m) =>
-          '"${_formattedMember(m)}": ebisu.toJson(${m.hasGetter? m.name : m.varName}),')
+          '"${_formattedMember(m)}": ebisu.toJson(${m.hasGetter ? m.name : m.varName}),')
       .join('\n');
 
   get _jsonExtend => extend != null
@@ -1150,7 +1135,7 @@ ${indentBlock(_jsonMembers, '      ')}$_jsonExtend
   static $name fromJson(Object json) {
     if(json == null) return null;
     if(json is String) {
-      json = convert.JSON.decode(json);
+      json = convert.json.decode(json);
     }
     assert(json is Map);
 ${indentBlock(jsonCtor, '    ')}
@@ -1192,11 +1177,7 @@ ${indentBlock(fromJsonMapImpl())}'''
             .toList())
         ..bottomInjection = '''
 ${className} buildInstance() => new ${className}(
-${indentBlock(
-formatFill(nonTransientMembers
-           .map((m)=>m.varName)
-           .join(',\n')
-           .split('\n'), indent:''), '  ')});
+${indentBlock(formatFill(nonTransientMembers.map((m) => m.varName).join(',\n').split('\n'), indent: ''), '  ')});
 
 factory ${className}Builder.copyFrom(${className} _) =>
   new ${className}Builder._copyImpl(_.copy());

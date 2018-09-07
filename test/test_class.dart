@@ -44,10 +44,10 @@ class A {}
                   ..hasOpEquals = true)
                 .definition)
             .contains(darkMatter('''
-  bool operator==(A other) =>
-    identical(this, other) ||
+  bool operator==(other) =>
+    identical(this, other) || (other is A &&
     a == other.a &&
-    b == other.b;
+    b == other.b);
 ''')),
         true);
 
@@ -246,13 +246,13 @@ class SomeClass {
 
     expect(darkMatter(c.definition).contains(darkMatter('''
   @override
-  bool operator==(C other) =>
-    identical(this, other) ||
+  bool operator==(other) =>
+    identical(this, other) || (other is C &&
     inEquality == other.inEquality &&
     inComparable == other.inComparable &&
     notInCompareTo == other.notInCompareTo &&
     inHashCode == other.inHashCode &&
-    notInHashCode == other.notInHashCode;
+    notInHashCode == other.notInHashCode);
 
   @override
   int get hashCode => hashObjects([

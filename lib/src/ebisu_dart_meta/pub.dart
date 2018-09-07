@@ -56,7 +56,7 @@ class PubDependency {
 
     if (isHosted) {
       result = '''
-  ${name}: ${version!=null? '"${version}"' : ''}
+  ${name}: ${version != null ? '"${version}"' : ''}
 ''';
     } else if (isPath || isGit) {
       result = '''

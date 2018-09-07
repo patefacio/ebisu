@@ -258,11 +258,7 @@ ${indentBlock(_enumEntries)}
   get _toString => '''
   String toString() {
     switch(this) {
-${
-indentBlock(
-  values.map((v) =>
-    'case ${valueId(v)}: return "${valueAsString(v)}";').join('\n'), '      ')
-}
+${indentBlock(values.map((v) => 'case ${valueId(v)}: return "${valueAsString(v)}";').join('\n'), '      ')}
     }
     return null;
   }
@@ -272,11 +268,7 @@ indentBlock(
   static $enumName fromString(String s) {
     if(s == null) return null;
     switch(s) {
-${
-indentBlock(
-  values.map((v) =>
-    'case "${valueAsString(v)}": return ${valueId(v)};').join('\n'), '      ')
-}
+${indentBlock(values.map((v) => 'case "${valueAsString(v)}": return ${valueId(v)};').join('\n'), '      ')}
       default: return null;
     }
   }

@@ -293,9 +293,7 @@ Map _parseArgs(List<String> args) {
       _usage();
       exit(0);
     }
-${
-indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
-}
+${indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')}
 ''',
         '\n$_pullPositionals',
         '\n$_positionals',
@@ -320,18 +318,18 @@ indentBlock(nonPositionalArgs.map((arg) => _coerceArg(arg)).join('\n'), '    ')
       help: r\'\'\'
 ${arg.doc}
 \'\'\',
-      abbr: ${arg.abbr == null? null : "'${arg.abbr}'"},
-      defaultsTo: ${arg.defaultsTo == null? false : arg.defaultsTo}
+      abbr: ${arg.abbr == null ? null : "'${arg.abbr}'"},
+      defaultsTo: ${arg.defaultsTo == null ? false : arg.defaultsTo}
     );''').join('\n') + '\n';
 
   get _addOptions =>
       args.where((arg) => !arg.isFlag && arg.position == null).map((arg) => '''
     _parser.addOption('${arg.name}',
-      help: ${arg.doc == null? "''" : "r\'\'\'\n${arg.doc}\n\'\'\'"},
+      help: ${arg.doc == null ? "''" : "r\'\'\'\n${arg.doc}\n\'\'\'"},
       defaultsTo: ${_defaultsTo(arg)},
       allowMultiple: ${arg.isMultiple},
-      abbr: ${arg.abbr == null? null : "'${arg.abbr}'"},
-      allowed: ${arg.allowed.length>0? arg.allowed.map((a) => "'$a'").toList() : null}
+      abbr: ${arg.abbr == null ? null : "'${arg.abbr}'"},
+      allowed: ${arg.allowed.length > 0 ? arg.allowed.map((a) => "'$a'").toList() : null}
     );''').join('\n') + '\n';
 
   get _pullPositionals => args.where((sa) => sa.position != null).length > 0
@@ -355,7 +353,7 @@ ${arg.doc}
   get _main => brCompact([
         '''
 
-main(List<String> args) ${isAsync? 'async ':''}{
+main(List<String> args) ${isAsync ? 'async ' : ''}{
   Logger.root.onRecord.listen((LogRecord r) =>
       print("\${r.loggerName} [\${r.level}]:\\t\${r.message}"));
   Logger.root.level = Level.OFF;''',

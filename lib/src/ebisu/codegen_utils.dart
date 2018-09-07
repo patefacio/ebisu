@@ -393,7 +393,7 @@ String br(Object o, [nl = '\n\n', chompFirst = true]) => o == null
     ? null
     : o is Iterable
         ? br(combine(o, nl, chompFirst), nl, chompFirst)
-        : _ignored(o) ? '' : '${chompFirst?chomp(o,true):o}$nl';
+        : _ignored(o) ? '' : '${chompFirst ? chomp(o, true) : o}$nl';
 
 /// combines the parts recursively if necessary
 String combine(Iterable<Object> parts, [nl = '', chompFirst = false]) {
@@ -515,7 +515,7 @@ Id addSuffixToId(suffix, id, [preventDupe = true]) {
 /// returns [s] capped to length [length] with and including a trailing ellipsis
 String substringWithEllipsis(String s, int length) {
   final sLength = s.length;
-  return sLength > length ? '${s.substring(0, length-3)}...' : s;
+  return sLength > length ? '${s.substring(0, length - 3)}...' : s;
 }
 
 /// Return a stack trace object
@@ -547,15 +547,7 @@ $txt
 /// Stack trace associated with generated code. Useful for determining what
 /// code generated this file
 ////////////////////////////////////////////////////////////////////////////////
-${
-blockComment(
-  chomp(
-    brCompact(
-      getStackTrace()
-      .frames
-      .skip(3)
-      .takeWhile((f) => !f.member.contains('_startIsolate'))
-      .map((f) => '${f.library}:${showLine?f.line:""}\n  ${f.member}'))))}''';
+${blockComment(chomp(brCompact(getStackTrace().frames.skip(3).takeWhile((f) => !f.member.contains('_startIsolate')).map((f) => '${f.library}:${showLine ? f.line : ""}\n  ${f.member}'))))}''';
 
 scrubPubFilesFromRoot(String packageRoot) {
   final rootDirectory = new Directory(packageRoot);

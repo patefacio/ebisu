@@ -78,7 +78,7 @@ class Variable extends Object with Entity {
   get _uninitialized => '$type $varName;';
   get _initialized => '$type $varName = $_initVal;';
   get _initVal => type == 'String' ? smartQuote(init) : init;
-  get _init => '$_const$_final${init == null? _uninitialized : _initialized}';
+  get _init => '$_const$_final${init == null ? _uninitialized : _initialized}';
 
   // end <class Variable>
 

@@ -239,11 +239,11 @@ ${scriptCustomBlock('additional')}
 # ${id.title}
 
 
-${(introduction != null)? introduction : ''}
+${(introduction != null) ? introduction : ''}
 ${panDocCustomBlock('introduction')}
 
 # Purpose
-${(purpose != null)? purpose : ''}
+${(purpose != null) ? purpose : ''}
 ${panDocCustomBlock('purpose')}
 
 ${panDocCustomBlock('body')}
@@ -252,7 +252,7 @@ ${panDocCustomBlock('body')}
 
 ${panDocCustomBlock('examples')}
 
-${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
+${(todos.length > 0) ? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('todos')}" : ""}
 
 ''', readmePath);
     }
@@ -263,10 +263,7 @@ ${(todos.length > 0)? "# Todos\n\n- ${todos.join('\n-')}\n${panDocCustomBlock('t
           relative(testLib.libStubPath, from: dirname(testRunnerPath));
       mergeWithDartFile('''
 import 'package:logging/logging.dart';
-${testLibraries
-  .where((t) => t.id.snake.startsWith('test_'))
-  .map((t) => "import '${testLibRelativePath(t)}' as ${t.id.snake};")
-  .join('\n')}
+${testLibraries.where((t) => t.id.snake.startsWith('test_')).map((t) => "import '${testLibRelativePath(t)}' as ${t.id.snake};").join('\n')}
 
 void main() {
   Logger.root.level = Level.OFF;
@@ -274,10 +271,7 @@ void main() {
     print('\${rec.level.name}: \${rec.time}: \${rec.message}');
   });
 
-${testLibraries
-  .where((t) => t.id.snake.startsWith('test_'))
-  .map((t) => "  ${t.id.snake}.main(null);")
-  .join('\n')}
+${testLibraries.where((t) => t.id.snake.startsWith('test_')).map((t) => "  ${t.id.snake}.main(null);").join('\n')}
 }
 
 ''', testRunnerPath);

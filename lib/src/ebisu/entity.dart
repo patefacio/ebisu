@@ -70,7 +70,7 @@ abstract class Entity implements Identifiable {
   set doc(String d) => descr = d;
 
   /// Gets the detailed portion of the comment (ie [descr]).
-  get doc => descr;
+  String get doc => descr;
 
   /// Returns true if this has the brief or more detailed comment
   get hasComment => brief != null || descr != null;
