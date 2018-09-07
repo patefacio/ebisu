@@ -165,10 +165,7 @@ Only "version" and "path" overrides are supported.
   }
 
   /// Generate the code
-  void generate(
-      {generateRunner: true,
-      generateDrudge: true,
-      reportNonGeneratedFiles: false}) {
+  void generate({generateRunner: true, reportNonGeneratedFiles: false}) {
     setAsRoot();
 
     if (rootPath == null) rootPath = '.';
@@ -180,11 +177,6 @@ Only "version" and "path" overrides are supported.
           ..addDependency(new PubDependency('path'))
           ..addDependency(new PubDependency('polymer'));
       }
-    }
-
-    if (generateDrudge) {
-      final drudgeScript = join(rootPath, 'bin', 'drudge.${id.snake}.dart');
-      mergeWithFile(new DrudgeScriptGenerator(this).contents, drudgeScript);
     }
 
     finalize();

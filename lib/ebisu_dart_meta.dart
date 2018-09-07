@@ -60,7 +60,6 @@ part 'src/ebisu_dart_meta/app.dart';
 part 'src/ebisu_dart_meta/benchmark.dart';
 part 'src/ebisu_dart_meta/class.dart';
 part 'src/ebisu_dart_meta/dart_meta.dart';
-part 'src/ebisu_dart_meta/drudge_support.dart';
 part 'src/ebisu_dart_meta/emacs_support.dart';
 part 'src/ebisu_dart_meta/enum.dart';
 part 'src/ebisu_dart_meta/library.dart';

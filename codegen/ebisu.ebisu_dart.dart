@@ -243,17 +243,6 @@ generated the source.
                 ..init = '[]',
             ]
         ],
-      part('drudge_support')
-        ..doc =
-            'Support for generating a drudge script to auto-run codegen files'
-        ..classes = [
-          class_('drudge_script_generator')
-            ..members = [
-              member('system')
-                ..type = 'System'
-                ..access = RO
-            ]
-        ],
       part('emacs_support')
         ..doc =
             'Support for generating emacs functions for accessing generated code'
