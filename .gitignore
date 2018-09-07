@@ -16,6 +16,7 @@ build/
 .dart_tool/**
 
 pubspec.lock
+test/sample_generated_code/**
 
 # end <additional>
 
