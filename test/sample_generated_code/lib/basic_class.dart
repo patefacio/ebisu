@@ -149,7 +149,7 @@ class SimpleJson {
   static SimpleJson fromJson(Object json) {
     if (json == null) return null;
     if (json is String) {
-      json = convert.json.decode(json);
+      json = ebisu.decodeJson(json);
     }
     assert(json is Map);
     return new SimpleJson._fromJsonMapImpl(json);
@@ -202,7 +202,7 @@ class ClassJson {
   static ClassJson fromJson(Object json) {
     if (json == null) return null;
     if (json is String) {
-      json = convert.json.decode(json);
+      json = ebisu.decodeJson(json);
     }
     assert(json is Map);
     return new ClassJson._fromJsonMapImpl(json);
@@ -261,7 +261,7 @@ class ClassJsonOuter {
   static ClassJsonOuter fromJson(Object json) {
     if (json == null) return null;
     if (json is String) {
-      json = convert.json.decode(json);
+      json = ebisu.decodeJson(json);
     }
     assert(json is Map);
     return new ClassJsonOuter._fromJsonMapImpl(json);

@@ -624,4 +624,6 @@ String get scriptRootPath {
   throw "Could not find script root path";
 }
 
+Map decodeJson(String json) => convert.JSON.decode(json);
+String encodeJson(Object json) => convert.JSON.encode(json);
 // end <part codegen_utils>

@@ -127,7 +127,7 @@ class System extends Object with Entity {
   void overridePubs() {
     var overrideFile = new File(ebisuPubVersions);
     if (overrideFile.existsSync()) {
-      var overrideJson = convert.json.decode(overrideFile.readAsStringSync());
+      var overrideJson = decodeJson(overrideFile.readAsStringSync());
       var overrides = overrideJson['versions'];
       _logger.fine("Found version overides: ${overrideJson}");
       var deps = new List.from(pubSpec.dependencies)

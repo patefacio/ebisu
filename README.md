@@ -164,7 +164,7 @@ will generate these additional methods for the _Point_ class:
  }
 
  static Point fromJson(String json) {
-   Map jsonMap = convert.JSON.decode(json);
+   Map jsonMap = ebisu.decodeJson(json);
    Point result = new Point();
    result._fromJsonMapImpl(jsonMap);
    return result;

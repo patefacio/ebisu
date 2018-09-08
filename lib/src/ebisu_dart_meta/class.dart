@@ -1135,7 +1135,7 @@ ${indentBlock(_jsonMembers, '      ')}$_jsonExtend
   static $name fromJson(Object json) {
     if(json == null) return null;
     if(json is String) {
-      json = convert.json.decode(json);
+      json = ebisu.decodeJson(json);
     }
     assert(json is Map);
 ${indentBlock(jsonCtor, '    ')}
