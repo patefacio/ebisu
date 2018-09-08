@@ -232,7 +232,8 @@ Set<String> get nonGeneratedFiles =>
 /// on merged contents prior to being written. An example usage is
 /// running merged text through a formatter.
 bool mergeBlocksWithFile(String generated, String destFilePath,
-    [List protections = _defaultProtections, PostProcessor postProcessor]) {
+    [List protections = _defaultProtections,
+    PostProcessor postProcessor, bool noAnnounce = false]) {
   File inFile = new File(destFilePath);
   bool fileWritten = false;
 
@@ -247,11 +248,11 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
     }
 
     if (generated == currentText) {
-      print('No change: $destFilePath');
+      if (!noAnnounce) print('No change: $destFilePath');
     } else {
       inFile.writeAsStringSync(generated);
       fileWritten = true;
-      print('Wrote: $destFilePath');
+      if (!noAnnounce) print('Wrote: $destFilePath');
     }
   } else {
     new Directory(path.dirname(destFilePath))..createSync(recursive: true);
@@ -261,7 +262,7 @@ bool mergeBlocksWithFile(String generated, String destFilePath,
     }
 
     inFile.writeAsStringSync(generated);
-    print('Created: $destFilePath');
+    if (!noAnnounce) print('Created: $destFilePath');
     fileWritten = true;
   }
 
@@ -296,6 +297,23 @@ bool mergeWithFile(String generated, String destFilePath,
         [beginProtect, endProtect]
       ],
       postProcessor);
+}
+
+/// Similar to `mefgeWithFile` but allows user to prevent logging of
+/// whether file was updated or not (id `noAnnounce`)
+bool mergeWithFileExt(String generated, String destFilePath,
+    {String beginProtect = customBegin,
+    String endProtect = customEnd,
+    bool noAnnounce = false,
+    PostProcessor postProcessor}) {
+  return mergeBlocksWithFile(
+      generated,
+      destFilePath,
+      [
+        [beginProtect, endProtect]
+      ],
+      postProcessor,
+      noAnnounce);
 }
 
 /// Take [generated] text and merge with contents of [currentText]
