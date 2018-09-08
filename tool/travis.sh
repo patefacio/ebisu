@@ -7,7 +7,7 @@ set -e
 # $(dirname -- "$0")/ensure_dartfmt.sh
 
 # Run the tests.
-dart test/runner.dart
+time dart test/runner.dart
 
 # Run the build.dart file - just to make sure it works
 $(dirname $(readlink -f `which dart`))/dartanalyzer lib/*.dart test/*.dart
